@@ -1,7 +1,9 @@
 const Hero = () => {
   return (
-    <div className="flex items-center justify-center w-full h-[250px] bg-[url('Hero.jpg')] from-[rgba(0, 0, 0, 0.5)] to-[rgba(0, 0, 0, 0.5)] bg-center bg-no-repeat bg-cover">
-      <h1 className="text-white text-3xl font-black">BLACK FRIDAY</h1>
+    <div className="hero-image mt-4 py-4">
+      <h1 className="text-white text-2xl font-black">DISCOUNT</h1>
+      <h1 className="text-white text-5xl font-black">Black Friday</h1>
+      <p className="text-xl text-yellow-300 mt-2">#SALE</p>
     </div>
   );
 };

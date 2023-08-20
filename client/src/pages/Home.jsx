@@ -1,5 +1,7 @@
+import Content from "../components/Content";
 import Hero from "../components/Hero";
 import Container from "../layouts/Container";
+import Footer from "../layouts/Footer";
 import Header from "../layouts/Header";
 import Layout from "../layouts/Layout";
 
@@ -8,11 +10,10 @@ const Home = () => {
     <Layout>
       <Header />
       <Container>
-        <div className="mx-8">
-          <Hero />
-          <h1>Hello World!</h1>
-        </div>
+        <Hero />
+        <Content />
       </Container>
+      <Footer />
     </Layout>
   );
 };
