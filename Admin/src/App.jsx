@@ -3,44 +3,20 @@ import { FiSettings } from "react-icons/fi";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 import "./App.css";
-import {
-  Dashboard,
-  Users,
-  Settings,
-  Navbar,
-  Sidebar,
-  Topbar,
-} from "./components"; // ./components/index.jsx
+import { Dashboard, Users, Settings, Navbar, Sidebar } from "./components"; // ./components/index.jsx
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <div className="app">
-          <Navbar />
+        <Navbar />
+        <div className="app flex pt-16 min-h-screen">
           <Sidebar />
-          <div className="content">
-            {/* <nav>
-              <ul>
-                <li>
-                  <a href={`/`}>Dashboard</a>
-                </li>
-                <li>
-                  <a href={`/users`}>Users</a>
-                </li>
-                <li>
-                  <a href={`/settings`}>Settings</a>
-                </li>
-              </ul>
-            </nav> */}
-
-            <Topbar />
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/settings" element={<Settings />} />
-            </Routes>
-          </div>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
         </div>
       </BrowserRouter>
     </>

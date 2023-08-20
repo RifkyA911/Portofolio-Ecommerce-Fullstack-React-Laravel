@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
 function Settings() {
-    // Konten komponen Settings
-    return (
-        <div>
-        {/* Isi komponen Settings */}
-        </div>
-    );
-}  
+  // Konten komponen Settings
+  return (
+    <div>
+      <h1>Adios...</h1>
+    </div>
+  );
+}
 export default Settings;
