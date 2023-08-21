@@ -14,5 +14,39 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('percobaan', [
+        'judul' => 'Home',
+        'nama' => 'cikidaw',
+        'phone' => '08123456789',
+        'img' => 'bogeng.png'
+    ]);
+});
+
+Route::get('/about', function (){
+    return view('about', [
+        'judul' => 'About',
+        'nama' => 'dodi',
+        'phone' => '08222222',
+        'img' => 'altera_dance.gif'
+    ]);
+});
+Route::get('/product', function () {
+    $produk = [
+        [
+            'nama'=>'ayam',
+            'harga'=>'10000'
+        ],
+        [
+            'nama'=>'ikan',
+            'harga'=>'9000'
+        ],
+        [
+            'nama'=>'sepatu',
+            'harga'=>'90000'
+        ],
+    ];
+    return view('product',[
+        'judul'=>'product',
+        'product'=> $produk
+    ]);
 });

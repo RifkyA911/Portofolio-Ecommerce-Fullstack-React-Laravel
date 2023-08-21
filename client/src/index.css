@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;1,100;1,300;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,800;0,900;1,100;1,300;1,400;1,700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,6 +13,7 @@
 body {
   font-family: "Lato", sans-serif;
   background-color: black;
+  color: black;
 }
 
 h1,
@@ -23,7 +24,8 @@ h3 {
 
 .hero-image {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url("Hero.jpg");
@@ -33,4 +35,5 @@ h3 {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  border-radius: 10%;
 }
