@@ -3,17 +3,22 @@ import * as HeroIcons from "@heroicons/react/24/solid";
 
 const sideNavigation = [
   { name: "Dashboard", href: "/", current: true, icon: "ComputerDesktopIcon" },
-  { name: "Inbox", href: "#", current: false, icon: "ChatBubbleOvalLeftIcon" },
+  {
+    name: "Inbox",
+    href: "/inbox",
+    current: false,
+    icon: "ChatBubbleOvalLeftIcon",
+  },
   { name: "Users", href: "/users", current: false, icon: "UsersIcon" },
-  { name: "Revenue", href: "#", current: false, icon: "HomeIcon" },
-  { name: "Statistic", href: "#", current: false, icon: "HomeIcon" },
-  { name: "My Profile", href: "#", current: false, icon: "UserIcon" },
+  { name: "Revenue", href: "/revenue", current: false, icon: "HomeIcon" },
+  { name: "Statistic", href: "/statistic", current: false, icon: "HomeIcon" },
+  { name: "My Profile", href: "/profile", current: false, icon: "UserIcon" },
   { name: "Settings", href: "/settings", current: false, icon: "CogIcon" },
 ];
 
 //HeroIcons.ComputerDesktopIcon
 
-const Sidebar = ({ toggleNavbar }) => {
+const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -28,11 +33,13 @@ const Sidebar = ({ toggleNavbar }) => {
     return null;
   };
 
+  const aku = "hjah";
+
   return (
     <div className="bg-white">
       {/* Sidebar */}
       <div
-        className={`bg-white fixed w-full h-full text-dark font-medium w-64 flex-shrink-0 overflow-hidden transition-transform duration-300 ${
+        className={`bg-slate-200 text-dark font-medium fixed h-full mt-16 w-64 flex-shrink-0 overflow-hidden transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
