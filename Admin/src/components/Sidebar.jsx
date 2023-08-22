@@ -47,7 +47,7 @@ const Sidebar = () => {
           <HeroIcons.HomeIcon className="h-6 w-6 mr-4" />
           My Admin Panel
         </div>
-        <nav className="flex-1 overflow-hidden shadow-md h-full">
+        <nav className="flex-1 overflow-hidden shadow-sm h-full">
           <ul className="py-4 space-y-1 text-left">
             {sideNavigation.map((item) => (
               <li key={item.name} className="flex items-center">

@@ -5,24 +5,26 @@ const Navbar = () => {
   return (
     <nav className="bg-slate-200 fixed w-full z-50">
       {/* <p>{aku}</p> */}
-      <div className="container mx-auto flex justify-between items-center max-h-16 h-full py-3 px-8">
-        <div className="text-lg font-bold">Admin Panel</div>
-        <button
-          className="toggler flex-shrink-0 p-2 text-gray-500"
-          // onClick={toggleSidebar}
-        >
-          <HeroIcons.Bars3Icon className="h-6 w-6 text-dark text-bold" />
-        </button>
+      <div className=" flex justify-between max-h-16 h-full py-3 px-6">
+        <div className="flex order-first items-center justify-between w-72 font-bold">
+          <div className="text-lg font-bold hidden sm:flex">Admin Panel</div>
+          <button
+            className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
+            // onClick={toggleSidebar}
+          >
+            <HeroIcons.Bars3Icon className="h-6 w-6 text-dark text-bold" />
+          </button>
+        </div>
 
         {/* Profile */}
-        <div className="flex">
+        <div className="flex order-last items-center">
           <button className="">
-            <div className="flex bg-violet-200 p-2 rounded-xl">
+            <div className="flex p-2 rounded-xl transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200">
               <HeroIcons.BellIcon className="h-6 w-6 mx-auto text-center " />
             </div>
           </button>
-          <button className=" mr-4 p-3">
-            <div className="flex bg-violet-200 p-2">
+          <button className="pl-2">
+            <div className="flex p-2 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-200">
               <img
                 src="\src\assets\user.png"
                 alt="profile"
