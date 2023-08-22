@@ -1,14 +1,17 @@
 import React, { useState } from "react";
+import * as HeroIcons from "@heroicons/react/24/solid";
 
 const sideNavigation = [
-  { name: "Dashboard", href: "/", current: true },
-  { name: "Inbox", href: "#", current: false },
-  { name: "Users", href: "/users", current: false },
-  { name: "Revenue", href: "#", current: false },
-  { name: "Statistic", href: "#", current: false },
-  { name: "My Profile", href: "#", current: false },
-  { name: "Settings", href: "/settings", current: false },
+  { name: "Dashboard", href: "/", current: true, icon: "ComputerDesktopIcon" },
+  { name: "Inbox", href: "#", current: false, icon: "ChatBubbleOvalLeftIcon" },
+  { name: "Users", href: "/users", current: false, icon: "UsersIcon" },
+  { name: "Revenue", href: "#", current: false, icon: "HomeIcon" },
+  { name: "Statistic", href: "#", current: false, icon: "HomeIcon" },
+  { name: "My Profile", href: "#", current: false, icon: "UserIcon" },
+  { name: "Settings", href: "/settings", current: false, icon: "CogIcon" },
 ];
+
+//HeroIcons.ComputerDesktopIcon
 
 const Sidebar = ({ toggleNavbar }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -17,29 +20,39 @@ const Sidebar = ({ toggleNavbar }) => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const getHeroIconComponent = (iconName) => {
+    const HeroIconComponent = HeroIcons[iconName];
+    if (HeroIconComponent) {
+      return <HeroIconComponent className="h-6 w-6 mr-4" />;
+    }
+    return null;
+  };
+
   return (
-    <div className="flex h-screen bg-white">
+    <div className="bg-white">
       {/* Sidebar */}
       <div
-        className={`bg-gray-800 text-white w-56 flex-shrink-0 overflow-hidden transition-transform duration-300 ${
+        className={`bg-white fixed w-full h-full text-dark font-medium w-64 flex-shrink-0 overflow-hidden transition-transform duration-300 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="h-16 flex items-center justify-center">
-          Sidebar Logo
+          <HeroIcons.HomeIcon className="h-6 w-6 mr-4" />
+          My Admin Panel
         </div>
-        <nav className="flex-1 overflow-hidden">
+        <nav className="flex-1 overflow-hidden shadow-md h-full">
           <ul className="py-4 space-y-1 text-left">
             {sideNavigation.map((item) => (
-              <li key={item.name}>
+              <li key={item.name} className="flex items-center">
                 <a
                   href={item.href}
-                  className={`block pl-4 pr-6 py-2 ${
+                  className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
                     item.current
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700"
+                      ? "bg-violet-200 text-gray-800"
+                      : "text-gray-800 hover:bg-violet-100"
                   }`}
                 >
+                  {getHeroIconComponent(item.icon)}
                   {item.name}
                 </a>
               </li>
@@ -49,25 +62,12 @@ const Sidebar = ({ toggleNavbar }) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="fixed bg-yellow-200 justify-center mt-28">
         <button
           className="toggler flex-shrink-0 p-2 text-gray-500"
           onClick={toggleSidebar}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
+          <HeroIcons.Bars3Icon className="h-6 w-6 text-dark text-bold" />
         </button>
       </div>
     </div>
