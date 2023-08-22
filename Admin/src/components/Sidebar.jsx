@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import * as HeroIcons from "@heroicons/react/24/solid";
+import * as MuiIcons from "@mui/icons-material";
 
 const sideNavigation = [
   { name: "Dashboard", href: "/", current: true, icon: "ComputerDesktopIcon" },
@@ -29,6 +30,14 @@ const Sidebar = () => {
     const HeroIconComponent = HeroIcons[iconName];
     if (HeroIconComponent) {
       return <HeroIconComponent className="h-6 w-6 mr-4" />;
+    }
+    return null;
+  };
+
+  const getMuiIconComponent = (iconName) => {
+    const MuiIconComponent = MuiIcons[iconName];
+    if (MuiIconComponent) {
+      return <MuiIconComponent className="h-6 w-6 mr-4" />;
     }
     return null;
   };
@@ -67,7 +76,6 @@ const Sidebar = () => {
           </ul>
         </nav>
       </div>
-
       {/* Main Content */}
       <div className="fixed bg-yellow-200 justify-center mt-28">
         <button

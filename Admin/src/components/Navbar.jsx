@@ -1,5 +1,7 @@
-import React from "react";
-import * as HeroIcons from "@heroicons/react/24/solid";
+import { Menu, Transition } from "@headlessui/react";
+import { Fragment, useEffect, useRef, useState, React } from "react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import * as MuiIcons from "@mui/icons-material";
 
 const Navbar = () => {
   return (
@@ -12,7 +14,7 @@ const Navbar = () => {
             className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
             // onClick={toggleSidebar}
           >
-            <HeroIcons.Bars3Icon className="h-6 w-6 text-dark text-bold" />
+            <MuiIcons.Menu className="h-6 w-6 text-dark text-bold" />
           </button>
         </div>
 
@@ -20,7 +22,7 @@ const Navbar = () => {
         <div className="flex order-last items-center">
           <button className="">
             <div className="flex p-2 rounded-xl transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200">
-              <HeroIcons.BellIcon className="h-6 w-6 mx-auto text-center " />
+              <MuiIcons.NotificationsNone className="h-6 w-6 text-dark text-bold" />
             </div>
           </button>
           <button className="pl-2">
