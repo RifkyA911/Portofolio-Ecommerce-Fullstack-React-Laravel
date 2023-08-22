@@ -3,11 +3,11 @@ const Sidebar = ({ isOpen }) => {
   return (
     <div
       className={
-        "fixed top-0 m-0 p-0 bg-black h-full w-[40%] duration-700 ease-out " +
+        "fixed top-0 left-0 m-0 p-0 bg-black h-full w-[40%] xl:w-1/4 lg:w-1/3 duration-700 ease-out " +
         (isOpen ? "translate-x-0" : "-translate-x-full opacity-0")
       }
     >
-      <div className="mt-16 px-8 w-full flex flex-col justify-center">
+      <div className="mt-16 w-full flex flex-col justify-center items-center">
         <ul className="flex flex-col justify-center">
           <li className="mb-8">
             <a
@@ -34,12 +34,15 @@ const Sidebar = ({ isOpen }) => {
               Contact
             </a>
           </li>
+          <li className="mb-8">
+            <a
+              href="#"
+              className="px-4 rounded-3xl py-1 border-[1px] border-white text-sm text-white hover:bg-white hover:text-black"
+            >
+              Login
+            </a>
+          </li>
         </ul>
-        <div className="flex">
-          <button className="px-4 rounded-3xl py-1 border-[1px] border-white text-sm text-white hover:bg-white hover:text-black">
-            <a href="#">Login</a>
-          </button>
-        </div>
       </div>
     </div>
   );

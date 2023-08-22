@@ -3,6 +3,41 @@
 @tailwind components;
 @tailwind utilities;
 
+.theme-light {
+  --brand-primary: rgb(47, 112, 193);
+  --brand-secondary: rgb(116, 97, 195);
+  --brand-alternative: rgb(19, 120, 134);
+  --background-site: rgb(249, 249, 249);
+  --background-code: rgb(244, 244, 244);
+  --text-body: rgb(54, 49, 61);
+  --text-comment: rgb(99, 94, 105);
+  --text-high-contrast: rgb(49, 49, 49);
+  --text-medium-contrast: rgb(99, 94, 105);
+  --text-low-contrast: rgb(116, 109, 118);
+  --detail-high-contrast: rgb(192, 192, 192);
+  --detail-medium-contrast: rgb(234, 234, 234);
+  --detail-low-contrast: rgb(240, 240, 242);
+  --admonition-note: rgb(46, 109, 188);
+  --admonition-warning: rgb(255, 196, 9);
+  --admonition-danger: rgb(220, 38, 38);
+  --brand-primary-rgb-value: 47, 112, 193;
+  --brand-secondary-rgb-value: 116, 97, 195;
+  --brand-alternative-rgb-value: 19, 120, 134;
+  --background-site-rgb-value: 249, 249, 249;
+  --background-code-rgb-value: 244, 244, 244;
+  --text-body-rgb-value: 54, 49, 61;
+  --text-comment-rgb-value: 99, 94, 105;
+  --text-high-contrast-rgb-value: 49, 49, 49;
+  --text-medium-contrast-rgb-value: 99, 94, 105;
+  --text-low-contrast-rgb-value: 116, 109, 118;
+  --detail-high-contrast-rgb-value: 192, 192, 192;
+  --detail-medium-contrast-rgb-value: 234, 234, 234;
+  --detail-low-contrast-rgb-value: 240, 240, 242;
+  --admonition-note-rgb-value: 46, 109, 188;
+  --admonition-warning-rgb-value: 255, 196, 9;
+  --admonition-danger-rgb-value: 220, 38, 38;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -12,28 +47,12 @@
 
 body {
   font-family: "Lato", sans-serif;
-  background-color: black;
   color: black;
+  overflow-x: hidden;
 }
 
 h1,
 h2,
 h3 {
   font-family: "Alegreya", serif;
-}
-
-.hero-image {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("Hero.jpg");
-  /* Set a specific height */
-  height: 250px;
-  /* Position and center the image to scale nicely on all screens */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-radius: 10%;
 }
