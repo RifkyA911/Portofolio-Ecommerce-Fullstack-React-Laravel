@@ -4,7 +4,7 @@ const ProductCard = () => {
   return (
     <a
       href="#"
-      className="basis-[49%] px-4 py-6 rounded-3xl min-h-full mb-3 flex flex-col justify-center items-center hover:bg-gray-200"
+      className="basis-[49%] lg:basis-[24%] px-4 py-6 rounded-3xl min-h-full mb-3 flex flex-col justify-center items-center hover:bg-gray-200"
     >
       <div className="relative">
         <img
