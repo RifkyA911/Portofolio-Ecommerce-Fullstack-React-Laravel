@@ -4,7 +4,7 @@ function Settings() {
   // Konten komponen Settings
   return (
     <div>
-      <h1>Adios...</h1>
+      <h1 className="text-center fixed">Adios...</h1>
     </div>
   );
 }

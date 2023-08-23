@@ -9,12 +9,12 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Navbar />
+        {/* <Navbar /> */}
         <Sidebar />
         <div className="app flex pt-14 min-h-screen max-w-full">
           <Routes>
-            <Route path="/" element={<Container />} />
-            {/* <Route path="/Users" element={<Users />} /> */}
+            <Route path="/" element={<Container selectedPage="dashboard" />} />
+            <Route path="/Users" element={<Container selectedPage="users" />} />
           </Routes>
         </div>
       </BrowserRouter>
