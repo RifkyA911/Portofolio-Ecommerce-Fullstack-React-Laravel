@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AdminsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,23 +32,9 @@ Route::get('/about', function (){
         'img' => 'altera_dance.gif'
     ]);
 });
-Route::get('/product', function () {
-    $produk = [
-        [
-            'nama'=>'ayam',
-            'harga'=>'10000'
-        ],
-        [
-            'nama'=>'ikan',
-            'harga'=>'9000'
-        ],
-        [
-            'nama'=>'sepatu',
-            'harga'=>'90000'
-        ],
-    ];
-    return view('product',[
-        'judul'=>'product',
-        'product'=> $produk
-    ]);
-});
+Route::get('/product', [ProductController::class, 'index']);
+
+Route::get('/product/{name}', [ProductController::class, 'show']);
+
+Route::get('/admins', [AdminsController::class, 'index']);
+Route::get('/admins/{id}', [AdminsController::class, 'find']);
