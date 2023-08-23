@@ -1,0 +1,6 @@
+keterangan lbh lanjut ...\server\routes\api.php
+
+GET semua admin = ".../api/admins"
+GET admin by id= ".../api/admins/$id"
+GET semua user = ".../api/user"
+GET user by id= ".../api/user/$id"

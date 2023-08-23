@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 // import model
-use App\Models\Admins;
+use App\Models\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -16,9 +16,12 @@ class AdminsController extends Controller
     public function index()
     {
         //get all posts
-        $admins = Admins::all();
+        $admins = Admin::all();
 
         //return collection of posts as a resource
         return new PostResource(true, 'List Data Admin', $admins);
+    }
+    public function find($id) {
+        return new PostResource(true, "data admin :", Admin::find($id));
     }
 }

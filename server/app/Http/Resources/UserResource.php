@@ -5,13 +5,17 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AdminsResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
      */
+    // public function toArray(Request $request): array
+    // {
+    //     return parent::toArray($request);
+    // }
     public $status;
     public $message;
     public $resource;
@@ -19,11 +23,11 @@ class AdminsResource extends JsonResource
     public function __construct($status, $message, $resource)
     {
         parent::__construct($resource);
-        $this->$status;
-        $this->$message;
+        $this->status = $status;
+        $this->message = $message;
     }
     
-    public function toArray($request)
+    public function toArray(Request $request)
     {
         return [
             "status" => $this->status,

@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\AdminsController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +20,8 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::apiResource(name:'/admins', controller:App\Http\Controllers\Api\AdminsController::class);
+Route::get('/admins', [AdminsController::class, 'index']);
+Route::get('/admins/{id}', [AdminsController::class, 'find']);
+
+Route::get('/user', [UserController::class, 'index']);
+Route::get('/user/{id}', [UserController::class, 'show']);

@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
     @foreach ($product as $item)
-        <h2>{{ ucwords($item['nama']) }}</h2>
+        <h2><a href="/product/{{ $item['nama'] }}">{{ ucwords($item['nama']) }}</a></h2>
         <h5>Harga : Rp{{ number_format($item['harga'], 0, ',', '.') }},-</h5>
         <hr>
     @endforeach
