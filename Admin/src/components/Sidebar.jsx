@@ -4,21 +4,33 @@ import * as MuiIcons from "@mui/icons-material";
 import Navbar from "./Navbar";
 
 const sideNavigation = [
-  { name: "Dashboard", href: "/", current: true, icon: "ComputerDesktopIcon" },
+  {
+    name: "Dashboard",
+    href: "/",
+    current: true,
+    icon: "DesktopWindowsOutlined",
+  },
   {
     name: "Inbox",
     href: "/inbox",
     current: false,
-    icon: "ChatBubbleOvalLeftIcon",
+    icon: "Mail",
   },
-  { name: "Users", href: "/users", current: false, icon: "UsersIcon" },
-  { name: "Revenue", href: "/revenue", current: false, icon: "HomeIcon" },
-  { name: "Statistic", href: "/statistic", current: false, icon: "HomeIcon" },
-  { name: "My Profile", href: "/profile", current: false, icon: "UserIcon" },
-  { name: "Settings", href: "/settings", current: false, icon: "CogIcon" },
+  { name: "Users", href: "/users", current: false, icon: "PeopleAlt" },
+  {
+    name: "Statistic",
+    href: "/statistic",
+    current: false,
+    icon: "BarChart",
+  },
+  {
+    name: "My Profile",
+    href: "/profile",
+    current: false,
+    icon: "ManageAccounts",
+  },
+  { name: "Settings", href: "/settings", current: false, icon: "Settings" },
 ];
-
-//HeroIcons.ComputerDesktopIcon
 
 const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -73,7 +85,8 @@ const Sidebar = () => {
                       : "text-gray-800 hover:bg-violet-100"
                   }`}
                 >
-                  {getHeroIconComponent(item.icon)}
+                  {getMuiIconComponent(item.icon)}
+                  {/* {getHeroIconComponent(item.icon)} */}
                   {item.name}
                 </a>
               </li>

@@ -5,12 +5,6 @@ import * as MuiIcons from "@mui/icons-material";
 import Sidebar from "./Sidebar";
 
 const Navbar = (props) => {
-  const [toggle, setToggle] = useState(false);
-  const Toggler = () => {
-    console.log(toggle);
-    setToggle((prevToggle) => !prevToggle);
-  };
-
   return (
     <nav className="bg-slate-200 fixed w-full z-50">
       <div className=" flex justify-between max-h-16 h-full py-3 px-6">

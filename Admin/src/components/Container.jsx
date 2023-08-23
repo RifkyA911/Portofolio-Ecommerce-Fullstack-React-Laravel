@@ -1,7 +1,7 @@
 import React from "react";
-import Dashboard from "./Dashboard";
+import Dashboard from "./Pages/Dashboard";
 
-function Container() {
+export default function Container() {
   // Konten komponen
   return (
     <>
@@ -13,4 +13,3 @@ function Container() {
     </>
   );
 }
-export default Container;
