@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { FiSettings } from "react-icons/fi";
 
 import "./App.css";
-import { Dashboard, Users, Settings, Navbar, Sidebar } from "./components"; // ./components/index.jsx
+import { Container, Navbar, Sidebar } from "./components"; // ./components/index.jsx
+// import Users from "./components/Pages/Users";
 
 function App() {
   return (
@@ -12,9 +13,8 @@ function App() {
         <Sidebar />
         <div className="app flex pt-14 min-h-screen max-w-full">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/" element={<Container />} />
+            {/* <Route path="/Users" element={<Users />} /> */}
           </Routes>
         </div>
       </BrowserRouter>

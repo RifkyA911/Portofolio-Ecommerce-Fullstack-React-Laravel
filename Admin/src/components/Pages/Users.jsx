@@ -2,7 +2,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
-export default function Example() {
+function Users() {
   return (
     <div className="fixed top-16 w-56 text-right">
       <Menu as="div" className="relative inline-block text-left">
@@ -147,6 +147,8 @@ export default function Example() {
     </div>
   );
 }
+
+export default Users;
 
 function EditInactiveIcon(props) {
   return (
