@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import * as HeroIcons from "@heroicons/react/24/solid";
 import * as MuiIcons from "@mui/icons-material";
+import Navbar from "./Navbar";
 
 const sideNavigation = [
   { name: "Dashboard", href: "/", current: true, icon: "ComputerDesktopIcon" },
@@ -21,9 +22,14 @@ const sideNavigation = [
 
 const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [toggle, setToggle] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+
+  const Toggler = () => {
+    setToggle((prevToggle) => !prevToggle);
   };
 
   const getHeroIconComponent = (iconName) => {
@@ -42,10 +48,9 @@ const Sidebar = () => {
     return null;
   };
 
-  const aku = "hjah";
-
   return (
     <div className="bg-white">
+      <Navbar toggleSidebar={toggleSidebar} NavbarSidebar={Toggler} />
       {/* Sidebar */}
       <div
         className={`bg-slate-200 text-dark font-medium fixed h-full mt-16 w-64 flex-shrink-0 overflow-hidden transition-transform duration-300 ${
@@ -77,14 +82,7 @@ const Sidebar = () => {
         </nav>
       </div>
       {/* Main Content */}
-      <div className="fixed bg-yellow-200 justify-center mt-28">
-        <button
-          className="toggler flex-shrink-0 p-2 text-gray-500"
-          onClick={toggleSidebar}
-        >
-          <HeroIcons.Bars3Icon className="h-6 w-6 text-dark text-bold" />
-        </button>
-      </div>
+      <div></div>
     </div>
   );
 };

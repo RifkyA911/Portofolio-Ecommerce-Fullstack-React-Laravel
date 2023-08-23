@@ -15,17 +15,17 @@ function Dashboard() {
   return (
     <>
       <div className="bg-white w-full static">
-        <div className="p-4 my-4 md:ml-64 h-full shadow-lg">
+        <div className="p-4 my-4 lg:ml-64 h-full shadow-lg">
           {/* Dashboard */}
           <div className="bg-gray-100 rounded-xl shadow-sm">
             {/* baris-1 */}
-            <div className="font-bold justify-center md:max-h-64">
+            <div className="font-bold justify-center lg:max-h-64">
               <div className="flex flex-wrap lg:flex-nowrap flex-row">
-                <ul className="flex flex-col md:flex-row md:justify-start py-4 md:py-8 px-2 md:px-4 w-full ">
+                <ul className="flex flex-col lg:flex-row lg:justify-start py-4 lg:py-8 px-2 lg:px-4 w-full ">
                   {infoMarket.map((item) => (
                     <li
                       key={item.name}
-                      className={`basis-2/6 shrink rounded-xl ${item.color} p-2 md:p-4 w-full md:w-96 h-24 md:h-48 mb-2 md:mb-0 md:mr-5`}
+                      className={`basis-2/6 shrink rounded-xl ${item.color} p-2 lg:p-4 w-full lg:w-96 h-24 lg:h-48 mb-2 lg:mb-0 lg:mr-5`}
                     >
                       <p>{item.name}</p>
                       <h1 className="text-2xl">$500</h1>
@@ -35,7 +35,7 @@ function Dashboard() {
                     {infoWorks.map((item) => (
                       <div
                         key={item.name}
-                        className={`flex rounded-xl justify-center max-h-20 h-20 p-3 mb-2 sm:m-0 ${item.color}`}
+                        className={`flex rounded-xl justify-center max-h-20 h-20 p-3 mb-2 lg:m-0 ${item.color}`}
                       >
                         <p className="">{item.name}</p>
                       </div>
@@ -45,13 +45,13 @@ function Dashboard() {
               </div>
             </div>
             {/* baris-2 */}
-            <div className="font-bold justify-center md:max-h-64">
+            <div className="font-bold justify-center lg:max-h-64">
               <div className="flex flex-wrap lg:flex-nowrap flex-row">
-                <ul className="flex flex-col md:flex-row md:justify-start py-4 md:py-0 px-2 md:px-4 w-full ">
+                <ul className="flex flex-col lg:flex-row lg:justify-start py-4 lg:py-0 px-2 lg:px-4 w-full ">
                   {infoMarket.map((item) => (
                     <li
                       key={item.name}
-                      className={`basis-2/6 shrink rounded-xl ${item.color} p-2 md:p-4 w-full md:w-96 h-24 md:h-48 mb-2 md:mb-0 md:mr-5`}
+                      className={`basis-2/6 shrink rounded-xl ${item.color} p-2 lg:p-4 w-full lg:w-96 h-24 lg:h-48 mb-2 lg:mb-0 lg:mr-5`}
                     >
                       <p>{item.name}</p>
                       <h1 className="text-2xl">$500</h1>
@@ -61,7 +61,7 @@ function Dashboard() {
                     {infoWorks.map((item) => (
                       <div
                         key={item.name}
-                        className={`flex rounded-xl justify-center max-h-20 h-20 p-3 mb-2 sm:m-0 ${item.color}`}
+                        className={`flex rounded-xl justify-center max-h-20 h-20 p-3 mb-2 lg:m-0 ${item.color}`}
                       >
                         <p className="">{item.name}</p>
                       </div>
