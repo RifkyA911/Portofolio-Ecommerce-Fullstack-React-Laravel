@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import * as HeroIcons from "@heroicons/react/24/solid";
 import * as MuiIcons from "@mui/icons-material";
-import Navbar from "./Navbar";
+import Toggle from "./Navbar";
 // import SidebarButton from "./Buttons";
 import { Link } from "react-router-dom";
 
@@ -18,7 +18,7 @@ const sideNavigation = [
     current: false,
     icon: "Mail",
   },
-  { name: "Users", href: "/pages/users", current: false, icon: "PeopleAlt" },
+  { name: "Users", href: "/users", current: false, icon: "PeopleAlt" },
   {
     name: "Statistic",
     href: "/statistic",
@@ -34,18 +34,7 @@ const sideNavigation = [
   { name: "Settings", href: "/settings", current: false, icon: "Settings" },
 ];
 
-const Sidebar = ({ onPageChange }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [toggle, setToggle] = useState(false);
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  const Toggler = () => {
-    setToggle((prevToggle) => !prevToggle);
-  };
-
+const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
   const getHeroIconComponent = (iconName) => {
     const HeroIconComponent = HeroIcons[iconName];
     if (HeroIconComponent) {
@@ -68,7 +57,6 @@ const Sidebar = ({ onPageChange }) => {
 
   return (
     <div className="bg-white">
-      <Navbar toggleSidebar={toggleSidebar} NavbarSidebar={Toggler} />
       {/* Sidebar */}
       <div
         className={`overflow-hidden hover:overflow-y-scroll bg-slate-200 text-dark font-medium fixed h-full mt-16 w-64 flex-shrink-0 transition-transform duration-300 ${
@@ -77,7 +65,7 @@ const Sidebar = ({ onPageChange }) => {
       >
         <div className="h-16 flex items-center justify-center ">
           <HeroIcons.HomeIcon className="h-6 w-6 mr-4" />
-          My Admin Panel
+          <p>My Admin Panel</p>
         </div>
         <nav className="flex-1 overflow-hidden shadow-sm h-full">
           <ul className="py-4 space-y-1 text-left">

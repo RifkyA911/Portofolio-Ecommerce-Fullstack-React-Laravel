@@ -4,12 +4,12 @@ const infoMarket = [
 ];
 
 const infoWorks = [
-  { name: "NEW USERS", value: "???", color: "bg-violet-400" },
+  { name: "NEW USERS", value: "???", color: "bg-pink-400" },
   { name: "PERFORMANCE", value: "???", color: "bg-lime-400" },
 ];
 
 // Konten komponen
-function Dashboard() {
+function Dashboard(props) {
   {
     /* Dashboard */
   }
