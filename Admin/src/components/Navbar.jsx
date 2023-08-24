@@ -1,35 +1,30 @@
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState, React } from "react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { ChevronDownIcon, HashtagIcon } from "@heroicons/react/20/solid";
 import * as MuiIcons from "@mui/icons-material";
-// import WideScreenButton from "./Buttons";
+import SidebarButton from "./Buttons";
 
-const Navbar = (props, changeWideScreen) => {
-  const sum = (a, b) => {
-    return a + b;
-  };
+function Toggle({ toggleStates }) {
+  return (
+    <>
+      <button
+        className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
+        onClick={toggleStates}
+      >
+        <MuiIcons.Menu className="h-6 w-6 text-dark text-bold" />
+      </button>
+    </>
+  );
+}
 
-  const multiply = (a, b) => {
-    return a * b;
-  };
+const Navbar = ({ toggleStates }) => {
   return (
     <>
       <nav className="bg-slate-200 fixed w-full z-50">
         <div className=" flex justify-between max-h-16 h-full py-3 px-6">
           <div className="flex order-first items-center justify-between w-72 font-bold">
             <div className="text-lg font-bold hidden sm:flex">Admin Panel</div>
-            <button
-              className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
-              onClick={props.toggleSidebar}
-            >
-              <MuiIcons.Menu className="h-6 w-6 text-dark text-bold" />
-            </button>
-            <button
-              className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
-              onClick={props.toggleWideScreen}
-            >
-              <MuiIcons.Laptop className="h-6 w-6 text-dark text-bold" />
-            </button>
+            <Toggle toggleStates={toggleStates} />
           </div>
 
           {/* Profile */}
@@ -55,4 +50,5 @@ const Navbar = (props, changeWideScreen) => {
   );
 };
 
+export { Toggle };
 export default Navbar;
