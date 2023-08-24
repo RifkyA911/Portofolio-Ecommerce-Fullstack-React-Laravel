@@ -1,32 +1,28 @@
 import React, { useState } from "react";
-import { Dashboard, Users, Settings } from "./Pages/index";
+import {
+  Dashboard,
+  Users,
+  Settings,
+  Inbox,
+  Statistic,
+  MyProfile,
+} from "./Pages/index";
 import Navbar from "./Navbar";
+import { FiSettings } from "react-icons/fi";
 
 export default function Container({
   selectedPage,
   wideScreen,
   toggleWideScreen,
 }) {
-  // const [wideScreen, setWideScreen] = useState("lg:ml-64");
-  // const [WToggle, setWToggle] = useState(false);
-
-  // const toggleWideScreen = () => {
-  //   setWideScreen(wideScreen === "lg:ml-64" ? "lg:ml-0" : "lg:ml-64");
-  //   console.log(wideScreen);
-  // };
-
-  // const WToggler = () => {
-  //   setWToggle((prevWToggle) => !prevWToggle);
-  // };
-  // Konten komponen
   return (
     <>
       {/* <Navbar toggleWideScreen={toggleWideScreen} WideScreen={WToggler} /> */}
-      <div className="bg-white w-full static">
+      <main className="bg-white w-full static">
         <div
-          className={`p-4 my-4 ${wideScreen} h-full shadow-lg transition-transform duration-300`}
+          className={`p-4 my-4 ${wideScreen} h-full shadow-lg flex-shrink-0 duration-300`}
         >
-          <div className="bg-gray-100 rounded-xl shadow-sm">
+          <div className="bg-slate-100 rounded-xl shadow-sm">
             {(() => {
               switch (selectedPage) {
                 case "dashboard":
@@ -36,14 +32,18 @@ export default function Container({
                 case "settings":
                   return <Settings />;
                 case "inbox":
-                  return <Dashboard />;
+                  return <Inbox />;
+                case "statistic":
+                  return <Statistic />;
+                case "myprofile":
+                  return <MyProfile />;
                 default:
                   return null;
               }
             })()}
           </div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

@@ -1,11 +1,10 @@
-import React from "react";
+import Button from "@mui/material/Button";
 
-function Settings() {
+export default function Settings() {
   // Konten komponen Settings
   return (
-    <div>
-      <h1 className="text-center fixed">Adios...</h1>
-    </div>
+    <>
+      <Button variant="text">Settings</Button>
+    </>
   );
 }
-export default Settings;
