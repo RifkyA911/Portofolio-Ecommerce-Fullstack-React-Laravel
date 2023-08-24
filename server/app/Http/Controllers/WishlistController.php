@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use App\Http\Resources\PostResource;
 
 class WishlistController extends Controller
 {
@@ -37,6 +38,10 @@ class WishlistController extends Controller
     public function show(Wishlist $wishlist)
     {
         //
+    }
+    public function showByUser($uid)
+    {
+        return new PostResource(true, "Daftar wishlist", Wishlist::where('user_id', '=', $uid)->get());
     }
 
     /**
