@@ -3,12 +3,15 @@
 <table>
     <tr>
         <td align="center" width="96" height="96">
-            Alpha
+            Alpha Test
+        </td>
+        <td align="center" width="96" height="96">
+            API
         </td>
     </tr>
     <tr>
-        <td>
-            
+        <td align="center" width="96" height="96">
+            Beta Test
         </td>
     </tr>
 <table>
