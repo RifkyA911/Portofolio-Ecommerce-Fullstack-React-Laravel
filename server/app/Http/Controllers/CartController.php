@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use Illuminate\Http\Request;
+use \App\Http\Resources\PostResource;
 
 class CartController extends Controller
 {
@@ -34,9 +35,18 @@ class CartController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cart $cart)
+    public function showById($id)
     {
-        //
+        //return collection of posts as a resource
+        return new PostResource(true, "data Produk :", Cart::find($id));
+    }
+    public function showByUser($user_id)
+    {
+        //get all posts
+        $cart_list = Cart::where('user_id', '=', $user_id)->get();
+
+        //return collection of posts as a resource
+        return new PostResource(true, "data Produk :", $cart_list);
     }
 
     /**

@@ -19,11 +19,11 @@ class PostResource extends JsonResource
     public function __construct($status, $message, $resource)
     {
         parent::__construct($resource);
-        $this->$status;
-        $this->$message;
+        $this->status = $status;
+        $this->message = $message;
     }
     
-    public function toArray($request)
+    public function toArray(Request $request)
     {
         return [
             "status" => $this->status,
