@@ -1,38 +1,55 @@
 import { useState } from "react";
 import * as HeroIcons from "@heroicons/react/24/solid";
 import * as MuiIcons from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 const sideNavigation = [
   {
+    group: "Dashboard",
     name: "Dashboard",
     href: "/",
-    current: true,
     icon: "DesktopWindowsOutlined",
   },
   {
+    group: "Market",
     name: "Inbox",
     href: "/inbox",
-    current: false,
     icon: "Mail",
   },
-  { name: "Users", href: "/users", current: false, icon: "PeopleAlt" },
   {
+    group: "Market",
     name: "Statistic",
     href: "/statistic",
-    current: false,
     icon: "BarChart",
   },
   {
+    group: "Management",
+    name: "Users",
+    href: "/users",
+    icon: "PeopleAlt",
+  },
+  {
+    group: "Management",
     name: "My Profile",
     href: "/myprofile",
-    current: false,
     icon: "ManageAccounts",
   },
-  { name: "Settings", href: "/settings", current: false, icon: "Settings" },
+  {
+    group: "Management",
+    name: "Settings",
+    href: "/settings",
+    icon: "Settings",
+  },
 ];
 
-const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
+const Sidebar = ({ toggleStates, sidebarOpen, toggleSidebar }) => {
+  const [current, setCurrent] = useState("Dashboard");
+
+  const handleLinkClick = (key) => {
+    setCurrent(key);
+    screenWidth < 1024 ? toggleSidebar() : undefined;
+  };
+
   const getHeroIconComponent = (iconName) => {
     const HeroIconComponent = HeroIcons[iconName];
     if (HeroIconComponent) {
@@ -49,17 +66,20 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
     return null;
   };
 
+  const screenWidth = window.innerWidth;
+
   return (
     <div className="bg-white">
       {/* Sidebar */}
 
       <div
+        onClick={toggleStates}
         className={` lg:hidden ${sidebarOpen ? "" : "hidden"}
-           backdrop-blur-sm bg-opacity-50 bg-gray-800 fixed w-full h-full z-20 transition duration-200`}
+        cursor-pointer backdrop-blur-sm bg-opacity-50 bg-gray-800 fixed w-full h-full z-20 transition duration-200`}
       ></div>
 
       <div
-        className={`overflow-hidden hover:overflow-y-scroll bg-slate-200 text-sm text-dark font-medium fixed h-full mt-16 w-64 flex-shrink-0 transition-transform duration-300 z-30 ${
+        className={`overflow-hidden xhover:overflow-y-scroll bg-slate-200 text-sm text-dark font-medium fixed h-full mt-16 w-64 flex-shrink-0 transition-transform duration-300 z-30 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -68,22 +88,62 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
             <div className="h-14 ml-0 px-6 py-2 flex items-center justify-left font-sm">
               <p>Dashboard</p>
             </div>
-            {sideNavigation.map((item) => (
-              <li key={item.name} className="flex items-center">
-                <Link
-                  to={item.href} // Menggunakan prop 'to' daripada 'href'
-                  className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
-                    item.current
-                      ? "bg-violet-200 text-gray-800"
-                      : "text-gray-800 hover:bg-violet-100"
-                  }`}
-                >
-                  {getMuiIconComponent(item.icon)}
-                  {item.name}
-                </Link>
-              </li>
-            ))}
+            {sideNavigation.map((item) => {
+              if (item.group === "Dashboard") {
+                return (
+                  <li key={item.name} className="flex items-center">
+                    <Link
+                      to={item.href}
+                      onClick={() => handleLinkClick(item.name)}
+                      className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
+                        item.name === current
+                          ? "bg-violet-200 text-gray-800"
+                          : "text-gray-800 hover:bg-violet-100"
+                      }`}
+                    >
+                      {getMuiIconComponent(item.icon)}
+                      {item.name}
+                    </Link>
+                  </li>
+                );
+              } else if (item.group === "Market") {
+                return (
+                  <li key={item.name} className="flex items-center">
+                    <Link
+                      to={item.href}
+                      onClick={() => handleLinkClick(item.name)}
+                      className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
+                        item.name === current
+                          ? "bg-violet-200 text-gray-800"
+                          : "text-gray-800 hover:bg-violet-100"
+                      }`}
+                    >
+                      {getMuiIconComponent(item.icon)}
+                      {item.name}
+                    </Link>
+                  </li>
+                );
+              } else if (item.group === "Management") {
+                return (
+                  <li key={item.name} className="flex items-center">
+                    <Link
+                      to={item.href}
+                      onClick={() => handleLinkClick(item.name)}
+                      className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
+                        item.name === current
+                          ? "bg-violet-200 text-gray-800"
+                          : "text-gray-800 hover:bg-violet-100"
+                      }`}
+                    >
+                      {getMuiIconComponent(item.icon)}
+                      {item.name}
+                    </Link>
+                  </li>
+                );
+              }
+            })}
           </ul>
+          <Outlet />
           <br />
           <br />
           <br />

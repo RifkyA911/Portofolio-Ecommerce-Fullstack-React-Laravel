@@ -20,7 +20,11 @@ function App() {
   return (
     <>
       <Navbar toggleStates={toggleStates} />
-      <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleStates} />
+      <Sidebar
+        toggleStates={toggleStates}
+        sidebarOpen={sidebarOpen}
+        toggleSidebar={toggleStates}
+      />
       <div className="app flex pt-14 min-h-screen max-w-full">
         <Routes>
           <Route
@@ -89,8 +93,8 @@ function App() {
       {/* ============================================================================================= */}
 
       <div className="backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-bold duration-200">
-        <div className="flex flex-col">
-          <span className="bg-cyan-500 font-bold">DEBUGGER</span>
+        <div className="flex flex-col ">
+          <div className="bg-cyan-400 font-bold">DEBUGGER</div>
           <div className="flex-row p-2">
             <button
               className="px-3 py-2 bg-red-400"
@@ -106,9 +110,17 @@ function App() {
             </button>
             <span className="px-4">{count}</span>
           </div>
-          <Link to="#">
+          <Button
+            onClick={() => console.log(window.innerWidth)}
+            className="p-4 bg-green-800"
+            variant="contained"
+            color="success"
+          >
+            Width Screen
+          </Button>
+          {/* <Link to="#">
             <Button variant="contained">X</Button>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </>

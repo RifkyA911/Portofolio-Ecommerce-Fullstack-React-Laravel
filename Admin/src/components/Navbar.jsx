@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useRef, useState, React } from "react";
+import { Link } from "react-router-dom";
+
 import { Menu, Transition, Popover } from "@headlessui/react";
 import { FcAbout } from "react-icons/fc";
 import { ChevronDownIcon, HashtagIcon } from "@heroicons/react/20/solid";
 import * as MuiIcons from "@mui/icons-material";
-import SidebarButton from "./Buttons";
 
 const solutions = [
   {
@@ -47,12 +48,16 @@ const Navbar = ({ toggleStates }) => {
         <div className=" flex justify-between max-h-16 h-full py-3 px-6">
           {/* right */}
           <div className="flex order-first items-center justify-between w-12 md:w-72 font-bold">
-            <img
-              src="src\assets\logo.jpg"
-              alt="logo"
-              className="h-14 w-14 p-2 hidden sm:flex lg:text-center"
-            />
-            <div className="text-lg hidden sm:flex">Admin Panel</div>
+            <Link to="/" className="flex items-center justify-between">
+              <img
+                src="src\assets\logo.png"
+                alt="logo"
+                className="h-14 w-14 p-2 hidden sm:flex text-center"
+              />
+              <div className="text-lg hidden sm:flex pl-3">
+                <span>Admin Panel</span>
+              </div>
+            </Link>
             <Toggle toggleStates={toggleStates} />
           </div>
 
@@ -132,13 +137,13 @@ const Navbar = ({ toggleStates }) => {
             </button>
             {/* profile */}
             <button className="pl-4">
-              <div className="flex rounded-xl bg-gray-200 hover:bg-violet-300 duration-500 items-center">
+              <div className="flex rounded-xl bg-gray-200 hover:bg-blue-500 hover:text-white duration-200 items-center">
                 <img
                   src="\src\assets\user.jpg"
                   alt="profile"
                   className="w-9 h-9 rounded-full text-center"
                 />
-                <p className="px-2 font-semibold  text-sm">RIFKY</p>
+                <p className="px-4 font-semibold text-sm">RIFKY</p>
               </div>
             </button>
           </div>
