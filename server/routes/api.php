@@ -39,6 +39,7 @@ Route::post('/user', [UserController::class, 'store']);
 // Endpoint Product
 Route::get('/produk', [ProductController::class, 'getAll']);
 Route::get('/produk/{id}', [ProductController::class, 'getById']);
+Route::post('/produk', [ProductController::class, 'store']);
 
 // Endpoint Cart/keranjang
 Route::get('/carts/{user_id}', [CartController::class, 'showByUser']);

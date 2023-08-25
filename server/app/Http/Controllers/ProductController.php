@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use \App\Models\Product;
+use Illuminate\Http\Request;
 use \App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -38,7 +39,22 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            "name" => 'required',
+            "category" => 'required',
+            "price" => 'required|numeric',
+            "stock" => 'required|numeric'
+        ]);
+        // $validated = $request->validate([
+        //     "email" => 'required|email|unique:users,email',
+        //     "username" => 'required',
+        //     "password" => 'required|min:6',
+        // ]);
+        if ($validator->fails()) {
+            return new PostResource(false, "validasi data error", $validator->errors());
+        }
+        $addItem = Product::create($validator->validated());
+        return new PostResource(true, "User berhasil ditambahkan.", $addItem);
     }
 
     /**
