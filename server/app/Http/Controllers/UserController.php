@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -17,7 +18,7 @@ class UserController extends Controller
         $admins = User::all();
 
         //return collection of posts as a resource
-        return new UserResource(true, 'List Data Admin', $admins);
+        return new PostResource(true, 'List Data Admin', $admins);
     }
 
     /**
@@ -25,7 +26,21 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            "email" => 'required|email|unique:users,email',
+            "username" => 'required',
+            "password" => 'required|min:6',
+        ]);
+        // $validated = $request->validate([
+        //     "email" => 'required|email|unique:users,email',
+        //     "username" => 'required',
+        //     "password" => 'required|min:6',
+        // ]);
+        if ($validator->fails()) {
+            return new PostResource(false, "validasi data error", $validator->errors());
+        }
+        $addUser = User::create($validator->validated());
+        return new PostResource(true, "User berhasil ditambahkan.", $addUser);
     }
 
     /**
@@ -33,7 +48,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return new UserResource(true, "data admin :", User::find($id));
+        return new PostResource(true, "data admin :", User::find($id));
     }
 
     /**

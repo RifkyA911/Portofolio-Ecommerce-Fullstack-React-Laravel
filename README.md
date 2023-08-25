@@ -3,22 +3,27 @@
 <table>
     <tr>
         <td align="center" width="96" height="96">
-            Alpha
+            Alpha Test
+        </td>
+        <td align="center" width="96" height="96">
+            API
         </td>
     </tr>
     <tr>
-        <td>
-            
+        <td align="center" width="96" height="96">
+            Beta Test
         </td>
     </tr>
 <table>
-
+<p>
 Dokumentasi : 
-pengenalan dan tujuan pembuatan app
-img
-demo??
-struktural integrasi teknologi
-struktural relasional database
-guide installation and command
-comment
+1. pengenalan dan tujuan pembuatan app
+2. documentation img
+3. demo??
+4. struktural integrasi teknologi
+5. struktural relasional database
+6. guide installation and command
+7. comment
 f
+</p>
+

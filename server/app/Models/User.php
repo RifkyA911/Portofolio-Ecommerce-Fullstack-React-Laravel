@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    use HasFactory;
+    protected $fillable = ['email', 'username', 'password', 'address', 'verified', 'pict'];
+    protected $casts = [
+        'password' => 'hashed'
+    ];
+    // use HasFactory;
 }
