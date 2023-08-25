@@ -6,7 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\api\AdminsController;
+use App\Http\Controllers\AdminsController;
 use App\Http\Controllers\TransactionController;
 
 /*
@@ -29,8 +29,12 @@ Route::get('/admins', [AdminsController::class, 'index']);
 Route::get('/admins/{id}', [AdminsController::class, 'find']);
 
 // Endpoint User
+// Route::get('/user', function(){
+//     return [UserController::class, 'index'];
+// });
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
+Route::post('/user', [UserController::class, 'store']);
 
 // Endpoint Product
 Route::get('/produk', [ProductController::class, 'getAll']);
@@ -51,9 +55,8 @@ Route::get('/transaction/{id}', [TransactionController::class, 'show']);
 // tahap = null -> user belum bayar/checkout (tiga kolom pada tabel berisi null)
 // tahap = checkedout -> user sudah bayar/checkout tpi admin belum mengirim barang (kolom check_out sudah terisi tpi kolom sent dan done kosong)
 // begitu seterusnya
-Route::get('/transaction/user/{user_id}', [TransactionController::class, 'showByUser']);
-Route::get('/transaction/user/{user_id}/{tahap}', [TransactionController::class, 'showByUser']);
+// Route::get('/transaction/user/{user_id}', [TransactionController::class, 'showByUser']);
+Route::get('/transaction/user/{user_id}/{tahap?}', [TransactionController::class, 'showByUser']);
 // Endpoint tahap Transaction by admin
 // ketentuan sama dengan endpoint user
-Route::get('/transaction/admin/{adm_id}', [TransactionController::class, 'showByAdmin']);
-Route::get('/transaction/admin/{adm_id}/{tahap}', [TransactionController::class, 'showByAdmin']);
+Route::get('/transaction/admin/{adm_id}/{tahap?}', [TransactionController::class, 'showByAdmin']);
