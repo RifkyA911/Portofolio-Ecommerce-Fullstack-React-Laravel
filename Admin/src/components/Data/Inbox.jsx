@@ -1,0 +1,44 @@
+export const MarketInbox = [
+  {
+    id: "1",
+    name: "Skrixx91",
+    role: "user",
+    message: "when will my order arrive at my house?",
+    img: "84719630_p0.jpg",
+  },
+  {
+    id: "2",
+    name: "John Doe",
+    role: "user",
+    message: "this item is sucks!",
+    img: "85633671_p6.jpg",
+  },
+  {
+    id: "3",
+    name: "Jane Doe",
+    role: "user",
+    message: "do you have system pay method with X Mobile Banking?",
+    img: "88129567_p0.jpg",
+  },
+  {
+    id: "4",
+    name: "Mrs. Janet Doe",
+    role: "user",
+    message: "Is this stuff good?",
+    img: "89937713_p0.jpg",
+  },
+  {
+    id: "5",
+    name: "Mr. Jhonny Doe",
+    role: "user",
+    message: "Is there have a red color?",
+    img: "96898468_p0.jpg",
+  },
+  {
+    id: "6",
+    name: "President",
+    role: "user",
+    message: "test test",
+    img: "89437506_p0.jpg",
+  },
+];

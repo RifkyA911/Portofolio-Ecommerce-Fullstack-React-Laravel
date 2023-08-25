@@ -4,7 +4,7 @@ export default function Staistic() {
   // Konten komponen
   return (
     <>
-      <div className="text-center w-full mt-24">
+      <div className="text-center w-full">
         <Button variant="contained" color="success">
           Statistic
         </Button>

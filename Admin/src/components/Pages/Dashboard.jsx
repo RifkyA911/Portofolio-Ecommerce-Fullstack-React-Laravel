@@ -1,15 +1,7 @@
-const infoMarket = [
-  { flex: "row", name: "TOTAL ORDER", value: "???", color: "bg-violet-400" },
-  { flex: "row", name: "SALES", value: "???", color: "bg-blue-500" },
-  { flex: "col", name: "NEW USERS", value: "???", color: "bg-yellow-400" },
-  { flex: "col", name: "PERFORMANCE", value: "???", color: "bg-green-400" },
-];
+import { infoMarket } from "../Data/DashboardMarket"; //Data
 
 // Konten komponen
 function Dashboard(props) {
-  {
-    /* Dashboard */
-  }
   return (
     <>
       {/* baris-1 */}

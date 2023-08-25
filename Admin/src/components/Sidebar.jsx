@@ -1,62 +1,40 @@
 import { useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { sideNavigation } from "./Data/PagesLink";
+
 import * as HeroIcons from "@heroicons/react/24/solid";
 import * as MuiIcons from "@mui/icons-material";
-import { Link, Outlet } from "react-router-dom";
-
-const sideNavigation = [
-  {
-    group: "Dashboard",
-    name: "Dashboard",
-    href: "/",
-    icon: "DesktopWindowsOutlined",
-  },
-  {
-    group: "Market",
-    name: "Inbox",
-    href: "/inbox",
-    icon: "Mail",
-  },
-  {
-    group: "Market",
-    name: "Statistic",
-    href: "/statistic",
-    icon: "BarChart",
-  },
-  {
-    group: "Management",
-    name: "Users",
-    href: "/users",
-    icon: "PeopleAlt",
-  },
-  {
-    group: "Management",
-    name: "My Profile",
-    href: "/myprofile",
-    icon: "ManageAccounts",
-  },
-  {
-    group: "Management",
-    name: "Settings",
-    href: "/settings",
-    icon: "Settings",
-  },
-];
 
 const Sidebar = ({ toggleStates, sidebarOpen, toggleSidebar }) => {
   const [current, setCurrent] = useState("Dashboard");
 
-  const handleLinkClick = (key) => {
-    setCurrent(key);
-    screenWidth < 1024 ? toggleSidebar() : undefined;
+  const screenWidth = window.innerWidth;
+
+  const SidebarHandler = (key) => {
+    setCurrent(key); // active current page
+    screenWidth < 1024 ? toggleSidebar() : undefined; // responsive utilites for sidebar autohide
   };
 
-  const getHeroIconComponent = (iconName) => {
-    const HeroIconComponent = HeroIcons[iconName];
-    if (HeroIconComponent) {
-      return <HeroIconComponent className="h-6 w-6 mr-4" />;
-    }
-    return null;
-  };
+  const renderSidebarItem = (
+    item // sidebar's menus component
+  ) => (
+    <>
+      <li key={item.id} className="flex items-center">
+        <Link
+          to={item.href}
+          onClick={() => SidebarHandler(item.name)}
+          className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
+            item.name === current
+              ? "bg-violet-200 text-gray-800"
+              : "text-gray-800 hover:bg-violet-100"
+          }`}
+        >
+          {getMuiIconComponent(item.icon)}
+          {item.name}
+        </Link>
+      </li>
+    </>
+  );
 
   const getMuiIconComponent = (iconName) => {
     const MuiIconComponent = MuiIcons[iconName];
@@ -65,8 +43,6 @@ const Sidebar = ({ toggleStates, sidebarOpen, toggleSidebar }) => {
     }
     return null;
   };
-
-  const screenWidth = window.innerWidth;
 
   return (
     <div className="bg-white">
@@ -85,64 +61,19 @@ const Sidebar = ({ toggleStates, sidebarOpen, toggleSidebar }) => {
       >
         <nav className="flex-1 overflow-hidden shadow-sm h-full">
           <ul className="py-4 space-y-1 text-left">
-            <div className="h-14 ml-0 px-6 py-2 flex items-center justify-left font-sm">
-              <p>Dashboard</p>
-            </div>
-            {sideNavigation.map((item) => {
-              if (item.group === "Dashboard") {
-                return (
-                  <li key={item.name} className="flex items-center">
-                    <Link
-                      to={item.href}
-                      onClick={() => handleLinkClick(item.name)}
-                      className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
-                        item.name === current
-                          ? "bg-violet-200 text-gray-800"
-                          : "text-gray-800 hover:bg-violet-100"
-                      }`}
-                    >
-                      {getMuiIconComponent(item.icon)}
-                      {item.name}
-                    </Link>
-                  </li>
-                );
-              } else if (item.group === "Market") {
-                return (
-                  <li key={item.name} className="flex items-center">
-                    <Link
-                      to={item.href}
-                      onClick={() => handleLinkClick(item.name)}
-                      className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
-                        item.name === current
-                          ? "bg-violet-200 text-gray-800"
-                          : "text-gray-800 hover:bg-violet-100"
-                      }`}
-                    >
-                      {getMuiIconComponent(item.icon)}
-                      {item.name}
-                    </Link>
-                  </li>
-                );
-              } else if (item.group === "Management") {
-                return (
-                  <li key={item.name} className="flex items-center">
-                    <Link
-                      to={item.href}
-                      onClick={() => handleLinkClick(item.name)}
-                      className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
-                        item.name === current
-                          ? "bg-violet-200 text-gray-800"
-                          : "text-gray-800 hover:bg-violet-100"
-                      }`}
-                    >
-                      {getMuiIconComponent(item.icon)}
-                      {item.name}
-                    </Link>
-                  </li>
-                );
-              }
-            })}
+            {sideNavigation.map((item, index) => (
+              <div key={item.id}>
+                {index === 0 ||
+                item.group !== sideNavigation[index - 1].group ? (
+                  <div className="h-14 ml-0 px-6 py-2 flex items-center justify-left font-sm">
+                    <p>{item.group}</p>
+                  </div>
+                ) : null}
+                {renderSidebarItem(item)}
+              </div>
+            ))}
           </ul>
+
           <Outlet />
           <br />
           <br />
@@ -172,5 +103,13 @@ const Sidebar = ({ toggleStates, sidebarOpen, toggleSidebar }) => {
     </div>
   );
 };
+
+// const getHeroIconComponent = (iconName) => {
+//   const HeroIconComponent = HeroIcons[iconName];
+//   if (HeroIconComponent) {
+//     return <HeroIconComponent className="h-6 w-6 mr-4" />;
+//   }
+//   return null;
+// };
 
 export default Sidebar;
