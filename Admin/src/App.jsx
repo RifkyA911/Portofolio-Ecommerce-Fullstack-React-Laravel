@@ -1,5 +1,5 @@
 import { Routes, Route, Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Navbar, Sidebar } from "./components"; // ./components/index.jsx
 
 import "./App.css";
@@ -10,6 +10,19 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [wideScreen, setWideScreen] = useState("lg:ml-64");
   const [count, setCount] = useState(6);
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  const setWindowDimensions = () => {
+    setWindowWidth(window.innerWidth);
+    setWindowHeight(window.innerHeight);
+  };
+  useEffect(() => {
+    window.addEventListener("resize", setWindowDimensions);
+    return () => {
+      window.removeEventListener("resize", setWindowDimensions);
+    };
+  }, []);
 
   const toggleStates = () => {
     setSidebarOpen((prevSidebarOpen) => !prevSidebarOpen);
@@ -92,7 +105,7 @@ function App() {
 
       {/* ============================================================================================= */}
 
-      <div className="backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-bold duration-200">
+      <div className="cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-bold duration-200">
         <div className="flex flex-col ">
           <div className="bg-cyan-400 font-bold">DEBUGGER</div>
           <div className="flex-row p-2">
@@ -110,17 +123,9 @@ function App() {
             </button>
             <span className="px-4">{count}</span>
           </div>
-          <Button
-            onClick={() => console.log(window.innerWidth)}
-            className="p-4 bg-green-800"
-            variant="contained"
-            color="success"
-          >
-            Width Screen
-          </Button>
-          {/* <Link to="#">
-            <Button variant="contained">X</Button>
-          </Link> */}
+          <div>
+            Width: {windowWidth} Height: {windowHeight}
+          </div>
         </div>
       </div>
     </>

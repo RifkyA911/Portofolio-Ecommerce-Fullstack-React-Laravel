@@ -3,9 +3,9 @@ import { Link, Outlet } from "react-router-dom";
 import { MarketInbox } from "./Data/Inbox";
 
 import { Menu, Transition, Popover } from "@headlessui/react";
-import { FcAbout } from "react-icons/fc";
-import { ChevronDownIcon, HashtagIcon } from "@heroicons/react/20/solid";
 import * as MuiIcons from "@mui/icons-material";
+// import Badge from "@mui/material/Badge";
+// import { FcAbout } from "react-icons/fc";
 
 //===================================
 const ThemeBG = [{ iconBG: "bg-violet-200" }];
@@ -74,18 +74,19 @@ const Navbar = ({ toggleStates }) => {
                     leaveFrom="opacity-100 translate-y-0"
                     leaveTo="opacity-0 translate-y-1"
                   >
-                    <Popover.Panel className="-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
+                    <Popover.Panel className="-translate-x-[40%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                       <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                         <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                           <span className="text-base font-medium">
                             List Inbox
                           </span>
-                          <button className="hover:origin-center hover:scale-150 transition delay-100 font-bold">
+                          <Popover.Button className="hover:origin-center hover:scale-150 transition delay-100 font-bold">
                             <MuiIcons.Close
                               sx={{ fontSize: 20 }}
                               className="text-red-600 font-sm mr-2 hover:text-violet-600"
                             />
-                          </button>
+                          </Popover.Button>
+                          {/* </button> */}
                         </div>
                         <div className="relative bg-white p-4 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
                           {MarketInbox.map((item) => (
