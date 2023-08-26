@@ -5,9 +5,9 @@ import {
   HeartIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const wishlist = useSelector((state) => state.wishlist.wishlist);
