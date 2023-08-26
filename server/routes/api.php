@@ -34,12 +34,18 @@ Route::get('/admins/{id}', [AdminsController::class, 'find']);
 // });
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
+// create user
 Route::post('/user', [UserController::class, 'store']);
+// update user
+Route::put('/user', [UserController::class, 'update']);
 
 // Endpoint Product
 Route::get('/produk', [ProductController::class, 'getAll']);
 Route::get('/produk/{id}', [ProductController::class, 'getById']);
+// create produk
 Route::post('/produk', [ProductController::class, 'store']);
+// update produk
+Route::put('/produk', [ProductController::class, 'update']);
 
 // Endpoint Cart/keranjang
 Route::get('/carts/{user_id}', [CartController::class, 'showByUser']);

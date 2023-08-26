@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+// use Validator;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -37,7 +40,7 @@ class UserController extends Controller
         //     "password" => 'required|min:6',
         // ]);
         if ($validator->fails()) {
-            return new PostResource(false, "validasi data error", $validator->errors());
+            return new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->all()]);
         }
         $addUser = User::create($validator->validated());
         return new PostResource(true, "User berhasil ditambahkan.", $addUser);
@@ -54,9 +57,38 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            "email" => 'required|email',
+            "username" => 'required',
+            "old_password" => 'required|min:6',
+            "password" => 'min:6|confirmed'
+        ]);
+        
+        if ($validator->fails()) {
+            return new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->all()]);
+        }
+        
+        $updateUser = User::find($request->input('id'));
+        
+        // cek password lama
+        if (!Hash::check($request->input('old_password'), $updateUser->password)) {
+            return new PostResource(false, "Password lama salah.", ['old_input'=>$request->all()]);
+        }
+
+        // isi data baru
+        $updateUser->email = $request->input('email');
+        $updateUser->username = $request->input('username');
+        if ($request->input('password') !== null) {
+            $updateUser->password = $request->input('password');
+        } else {
+            $updateUser->password = $request->input('old_password');
+        }
+        $updateUser->address = $request->input('address');
+        $updateUser->verified = $request->input('verified');
+        $updateUser->pict = $request->input('pict');
+        return new PostResource(true, "User ter-update.", $updateUser->update());
     }
 
     /**
