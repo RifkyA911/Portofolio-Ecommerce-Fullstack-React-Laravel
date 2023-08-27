@@ -10,7 +10,7 @@ export const MarketInbox = [
     id: "2",
     name: "John Doe",
     role: "user",
-    message: "this item is sucks!",
+    message: "this item is great!",
     img: "85633671_p6.jpg",
   },
   {
@@ -52,7 +52,7 @@ export const MarketInbox = [
     id: "8",
     name: "John Doe",
     role: "user",
-    message: "this item is sucks!",
+    message: "this item is good!",
     img: "85633671_p6.jpg",
   },
   {

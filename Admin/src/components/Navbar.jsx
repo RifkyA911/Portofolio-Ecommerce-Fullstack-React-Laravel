@@ -88,7 +88,7 @@ const Navbar = ({ toggleStates }) => {
                           {/* </button> */}
                         </div>
                         <div className="relative bg-white p-4 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
-                          {MarketInbox.map((item) => (
+                          {MarketInbox.slice(0, 5).map((item) => (
                             <Link
                               key={item.id}
                               to={`/inbox?${item.id}`}
