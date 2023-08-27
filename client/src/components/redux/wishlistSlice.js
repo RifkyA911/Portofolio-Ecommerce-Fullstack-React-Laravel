@@ -8,9 +8,6 @@ const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
-    setWishlist: (state, action) => {
-      state.wishlist = action.payload;
-    },
     addToWishlist: (state, action) => {
       state.wishlist = [
         ...state.wishlist,
@@ -19,8 +16,20 @@ const wishlistSlice = createSlice({
         },
       ];
     },
+    removeFromWishlist: (state, action) => {
+      return {
+        ...state,
+        wishlist: state.wishlist.filter(
+          (item) => item.id !== action.payload.id
+        ),
+      };
+    },
+    clearWishlist: () => {
+      return { ...initialState };
+    },
   },
 });
 
-export const { setWishlist, addToWishlist } = wishlistSlice.actions;
+export const { addToWishlist, removeFromWishlist, clearWishlist } =
+  wishlistSlice.actions;
 export default wishlistSlice.reducer;
