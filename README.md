@@ -14,7 +14,7 @@
             Beta Test
         </td>
     </tr>
-<table>
+</table>
 <p>
 Dokumentasi : 
 1. pengenalan dan tujuan pembuatan app
@@ -26,4 +26,10 @@ Dokumentasi :
 7. comment
 f
 </p>
+###1. Laravel Installation : 
+```bash
+composer install
+php artisan migrate
+```
+<br>
 
