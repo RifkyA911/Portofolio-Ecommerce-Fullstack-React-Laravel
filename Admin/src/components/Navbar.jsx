@@ -41,7 +41,6 @@ const Navbar = ({ toggleStates }) => {
             </Link>
             <Toggle toggleStates={toggleStates} />
           </div>
-
           {/* Menu at left */}
           <div className="flex order-last items-center w-72 justify-end">
             {/* mail */}
@@ -116,7 +115,7 @@ const Navbar = ({ toggleStates }) => {
                               </div>
                             </Link>
                           ))}
-                          <Link className="text-center p-3">
+                          <Link to="/inbox" className="text-center p-3">
                             <div className="font-semibold bg-slate-200 rounded-2xl p-2">
                               <span className="pr-3">Check more inbox</span>
                               <MuiIcons.MoreHoriz />

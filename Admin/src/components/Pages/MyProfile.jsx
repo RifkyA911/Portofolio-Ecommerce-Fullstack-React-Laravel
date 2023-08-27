@@ -1,34 +1,25 @@
 import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
-import Input from "@mui/material/Input";
+import { TextField, Input } from "@mui/material/";
 import LinearProgress from "@mui/material/LinearProgress";
 
 export default function MyProfile() {
-  const [progress, setProgress] = useState(0);
+  const [users, setUsers] = useState([]);
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) =>
-        prevProgress >= 100 ? 5 : prevProgress + 5
-      );
-    }, 800);
-    return () => {
-      clearInterval(timer);
-    };
+    fetch("http://127.0.0.1:8000/api/user/1")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data); // Cek data untuk pemeriksaan
+        setUsers(data.users); // Menggunakan data.Users karena 'Users' adalah properti dalam objek
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   }, []);
 
   return (
     <>
-      <label class="block">
-        <span class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
-          Email
-        </span>
-        <input
-          type="email"
-          name="email"
-          class="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
-          placeholder="you@example.com"
-        />
-      </label>
       {/* baris-1 */}
       <div className="font-bold justify-center lg:max-h-64">
         <div className="flex flex-wrap lg:flex-nowrap flex-row">
@@ -42,15 +33,57 @@ export default function MyProfile() {
               </li>
               <li></li>
             </ul>
-            <ul className="flex w-full bg-white"></ul>
+            <ul className="flex w-full bg-white">
+              <form action="post" className="font-base justify-start">
+                <label className="block text-left">
+                  <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
+                    Email
+                  </span>
+                  <input
+                    type="email"
+                    name="email"
+                    className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
+                    placeholder="you@example.com"
+                  />
+                </label>
+                <input
+                  type="checkbox"
+                  className="backdrop:w-96 backdrop:outline-0 hover:outline-4 ring-0 outline-0"
+                />
+              </form>
+            </ul>
           </div>
         </div>
       </div>
-      <Input defaultValue="Hello world" className="ring-0" />
-      <div className="pt-72">
-        {/* <Box sx={{ width: "100%" }}>
-          <LinearProgress variant="determinate" value={progress} />
-        </Box> */}
+
+      <div>
+        <table className="table-auto bg-slate-400 p-4 text-left">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>discountPercentage</th>
+              <th>rating</th>
+              <th>stock</th>
+              <th>brand</th>
+              <th>category</th>
+              <th>Thumbnail</th>
+              <th>img</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr>
+                <td key={user.id}></td>
+                <td key={user.id}>{user.username}</td>
+                <td key={user.id}>{user.email}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <ul></ul>
       </div>
     </>
   );

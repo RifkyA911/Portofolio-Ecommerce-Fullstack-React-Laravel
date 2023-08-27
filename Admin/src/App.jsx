@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Navbar, Sidebar } from "./components"; // ./components/index.jsx
 
 import "./App.css";
+// import UI Component
 import { FiSettings } from "react-icons/fi";
 import Button from "@mui/material/Button";
 
@@ -107,21 +108,21 @@ function App() {
 
       <div className="cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-bold duration-200">
         <div className="flex flex-col ">
-          <div className="bg-cyan-400 font-bold">DEBUGGER</div>
+          <div className="font-bold">DEBUGGER</div>
           <div className="flex-row p-2">
-            <button
-              className="px-3 py-2 bg-red-400"
+            {/* <button
+              className="px-3 py-1 bg-red-400"
               onClick={() => setCount(count - 1)}
             >
               -
             </button>
             <button
-              className="px-3 py-2 bg-green-400"
+              className="px-3 py-1 bg-green-400"
               onClick={() => setCount(count + 1)}
             >
               +
             </button>
-            <span className="px-4">{count}</span>
+            <span className="px-4">{count}</span> */}
           </div>
           <div>
             Width: {windowWidth} Height: {windowHeight}
