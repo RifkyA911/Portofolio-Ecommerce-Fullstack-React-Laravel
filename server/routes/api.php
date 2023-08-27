@@ -27,6 +27,10 @@ use App\Http\Controllers\TransactionController;
 // Endpoint Admin
 Route::get('/admins', [AdminsController::class, 'index']);
 Route::get('/admins/{id}', [AdminsController::class, 'find']);
+//  create admin
+Route::post('/admins', [AdminsController::class, 'store']);
+// update admin
+Route::put('/admins', [AdminsController::class, 'update']);
 
 // Endpoint User
 // Route::get('/user', function(){
