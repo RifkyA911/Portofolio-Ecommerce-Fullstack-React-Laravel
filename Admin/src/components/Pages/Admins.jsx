@@ -22,16 +22,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
-// function createData(name, calories, fat, carbs, protein) {
-//   return {
-//     name,
-//     calories,
-//     fat,
-//     carbs,
-//     protein,
-//   };
-// }
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -48,10 +38,6 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -216,6 +202,14 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
+const rows = [
+  { name: "Cupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+  { name: "sCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+  { name: "dCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+  { name: "gfCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+  { name: "hCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+  { name: "jCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+];
 
 export default function Admins() {
   const [order, setOrder] = useState("asc");
@@ -234,8 +228,7 @@ export default function Admins() {
         const data = await response.json();
         setAdmins(data.data);
         setLoading(false);
-        console.log(data);
-        // setrows((rows = [createData(data)]));
+        console.log(admins);
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(true);
@@ -245,22 +238,14 @@ export default function Admins() {
     fetchData();
   }, []);
 
-  const rows = [
-    { name: "Cupcake", email: 305, role: 3.7, password: 67, auth: 33 },
-    { name: "sCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
-    { name: "dCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
-    { name: "gfCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
-    { name: "hCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
-    { name: "jCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
-  ];
-
   const visibleRows = useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage]
+    Array.isArray(admins)
+      ? stableSort(admins, getComparator(order, orderBy)).slice(
+          page * rowsPerPage,
+          page * rowsPerPage + rowsPerPage
+        )
+      : [],
+    [admins, order, orderBy, page, rowsPerPage]
   );
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -314,82 +299,88 @@ export default function Admins() {
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.name);
-                const labelId = `enhanced-table-checkbox-${index}`;
+    <>
+      {loading == true ? (
+        <span>loading....</span>
+      ) : (
+        <Box sx={{ width: "100%" }}>
+          <Paper sx={{ width: "100%", mb: 2 }}>
+            <EnhancedTableToolbar numSelected={selected.length} />
+            <TableContainer>
+              <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={handleSelectAllClick}
+                  onRequestSort={handleRequestSort}
+                  rowCount={rows.length}
+                />
+                <TableBody>
+                  {visibleRows.map((row, index) => {
+                    const isItemSelected = isSelected(row.name);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.name)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.name}
-                    selected={isItemSelected}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.name)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.name}
+                        selected={isItemSelected}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              "aria-labelledby": labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="right">{row.email}</TableCell>
+                        <TableCell align="right">{row.role}</TableCell>
+                        <TableCell align="right">{row.password}</TableCell>
+                        <TableCell align="right">{row.auth}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: (dense ? 33 : 53) * emptyRows,
+                      }}
                     >
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.email}</TableCell>
-                    <TableCell align="right">{row.role}</TableCell>
-                    <TableCell align="right">{row.password}</TableCell>
-                    <TableCell align="right">{row.auth}</TableCell>
-                  </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </Box>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+        </Box>
+      )}
+    </>
   );
 }
 
