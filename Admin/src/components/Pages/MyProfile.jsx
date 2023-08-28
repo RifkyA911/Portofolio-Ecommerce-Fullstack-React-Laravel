@@ -74,13 +74,13 @@ export default function MyProfile() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr>
-                <td key={user.id}></td>
-                <td key={user.id}>{user.username}</td>
-                <td key={user.id}>{user.email}</td>
-              </tr>
-            ))}
+            {/* {users.slice(0, 1).map((user) => ( */}
+            <tr>
+              <td key={user.id}></td>
+              <td key={user.id}>{user.username}</td>
+              <td key={user.id}>{user.email}</td>
+            </tr>
+            {/* ))} */}
           </tbody>
         </table>
         <ul></ul>

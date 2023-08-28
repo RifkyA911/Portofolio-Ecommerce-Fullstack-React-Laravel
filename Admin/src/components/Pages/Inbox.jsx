@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { MarketInbox } from "../Data/Inbox";
+// import axios from "axios";
 
 import {
   MoreVert,
@@ -13,14 +15,18 @@ import {
 import { Menu } from "@headlessui/react";
 
 export default function Inbox() {
+  const [user, setuser] = useState([]);
+
+  // useEffect()
+
   return (
     <>
-      <div className="container max-w-[1920px] mx-auto h-full">
-        <div className="relative bg-white sbg-slate-800 min-h-[280px] shadow-md">
+      <div className="lg:px-10 lg:py-1 max-w-[1920px] mx-auto h-full">
+        <div className="relative mb-12 bg-white sbg-slate-800 min-h-[280px] shadow-md">
           <div className="flex content mt-8">
             {/* people */}
             <div className="flex">
-              <div className="flex flex-col">
+              <div className="lg:flex flex-col hidden md:block">
                 <nav className="flex sticky top-0 bg-slate-500 z-5 w-full shadow-sm max-h-[60px] min-h-[58px]">
                   <div className="flex flex-row w-full p-4 bg-slate-600 text-white font-medium justify-between">
                     <div className="text-white font-medium bg-slate-600">
@@ -55,7 +61,7 @@ export default function Inbox() {
                           />
                           <div className="flex flex-col px-4 text-left">
                             <p className="font-bold">{user.name}</p>
-                            <p className="w-80 overflow-hidden text-sm text-gray-500 truncate">
+                            <p className="w-40 lg:w-80 overflow-hidden text-sm text-gray-500 truncate">
                               {user.message}
                             </p>
                           </div>

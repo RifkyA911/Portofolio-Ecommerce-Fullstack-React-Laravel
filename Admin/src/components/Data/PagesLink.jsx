@@ -9,9 +9,9 @@ export const sideNavigation = [
   {
     id: 1,
     group: "Market",
-    name: "Inbox",
+    name: "Chat",
     href: "/inbox",
-    icon: "Mail",
+    icon: "Sms",
   },
   {
     id: 2,
@@ -23,8 +23,8 @@ export const sideNavigation = [
   {
     id: 3,
     group: "Management",
-    name: "Users",
-    href: "/users",
+    name: "Admins",
+    href: "/admins",
     icon: "PeopleAlt",
   },
   {

@@ -22,7 +22,7 @@ const Toggle = ({ toggleStates }) => {
   );
 };
 
-const Navbar = ({ toggleStates }) => {
+const Navbar = ({ toggleHideSidebar, toggleStates }) => {
   return (
     <>
       <nav className="bg-slate-200 fixed w-full z-50 text-xs">
@@ -48,6 +48,9 @@ const Navbar = ({ toggleStates }) => {
               {({ open }) => (
                 <>
                   <Popover.Button
+                    onClick={() =>
+                      window.innerWidth > 1024 ? toggleHideSidebar : ""
+                    }
                     className={`
                 ${open ? "" : "text-opacity-90"}
                 rounded-md ${
@@ -55,7 +58,7 @@ const Navbar = ({ toggleStates }) => {
                 } font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
                   >
                     <div className="relative">
-                      <MuiIcons.Mail className="flex h-6 w-6 relative ring-0" />
+                      <MuiIcons.Sms className="flex h-6 w-6 relative ring-0" />
                       <span className="absolute left-4 bottom-3.5">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-4 w-4 bg-sky-500 text-white font-semibold justify-center">
@@ -77,7 +80,7 @@ const Navbar = ({ toggleStates }) => {
                       <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                         <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                           <span className="text-base font-medium">
-                            List Inbox
+                            List Chat
                           </span>
                           <Popover.Button className="hover:origin-center hover:scale-150 transition delay-100 font-bold">
                             <MuiIcons.Close
@@ -138,13 +141,23 @@ const Navbar = ({ toggleStates }) => {
               )}
             </Popover>
             {/* notification */}
-            <button className="pl-2 ring-0">
+            <button
+              className="pl-2 ring-0"
+              onClick={() =>
+                window.innerWidth > 1024 ? toggleHideSidebar : ""
+              }
+            >
               <div className="flex p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500">
                 <MuiIcons.NotificationsNone className="h-6 w-6 text-dark text-bold" />
               </div>
             </button>
             {/* profile */}
-            <button className="pl-4">
+            <button
+              className="pl-4"
+              onClick={() =>
+                window.innerWidth > 1024 ? toggleHideSidebar : ""
+              }
+            >
               <div className="flex rounded-xl bg-gray-200 hover:bg-blue-500 hover:text-white duration-200 items-center">
                 <img
                   src=".\src\assets\admin_avatar\sara.jpg"

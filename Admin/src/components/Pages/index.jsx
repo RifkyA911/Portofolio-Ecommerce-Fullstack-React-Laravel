@@ -1,5 +1,5 @@
 export { default as Dashboard } from "./Dashboard";
-export { default as Users } from "./Users";
+export { default as Admins } from "./Admins";
 export { default as Settings } from "./Settings";
 export { default as Inbox } from "./Inbox";
 export { default as Content } from "./Content";
