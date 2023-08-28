@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   Dashboard,
-  Users,
+  Admins,
   Settings,
   Inbox,
   Statistic,
@@ -27,8 +27,8 @@ export default function Container({
               switch (selectedPage) {
                 case "dashboard":
                   return <Dashboard />;
-                case "users":
-                  return <Users />;
+                case "admins":
+                  return <Admins />;
                 case "settings":
                   return <Settings />;
                 case "inbox":

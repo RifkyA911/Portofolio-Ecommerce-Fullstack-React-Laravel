@@ -10,20 +10,32 @@ import Button from "@mui/material/Button";
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [wideScreen, setWideScreen] = useState("lg:ml-64");
-  const [count, setCount] = useState(6);
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
   const setWindowDimensions = () => {
     setWindowWidth(window.innerWidth);
-    setWindowHeight(window.innerHeight);
   };
+
   useEffect(() => {
+    // const handleResize = () => {
+    //   setWindowDimensions();
+    //   if (windowWidth <= 1024) {
+    //     setSidebarOpen((prevSidebarOpen) => (prevSidebarOpen = false));
+    //   } else if (windowWidth >= 877) {
+    //     setSidebarOpen((prevSidebarOpen) => (prevSidebarOpen = true));
+    //   }
+    // };
     window.addEventListener("resize", setWindowDimensions);
     return () => {
       window.removeEventListener("resize", setWindowDimensions);
     };
-  }, []);
+  }, [windowWidth]);
+
+  const toggleHideSidebar = () => {
+    setSidebarOpen((prevSidebarOpen) => (prevSidebarOpen = false));
+  };
 
   const toggleStates = () => {
     setSidebarOpen((prevSidebarOpen) => !prevSidebarOpen);
@@ -33,7 +45,10 @@ function App() {
   };
   return (
     <>
-      <Navbar toggleStates={toggleStates} />
+      <Navbar
+        toggleStates={toggleStates}
+        toggleHideSidebar={toggleHideSidebar}
+      />
       <Sidebar
         toggleStates={toggleStates}
         sidebarOpen={sidebarOpen}
@@ -52,10 +67,10 @@ function App() {
             }
           />
           <Route
-            path="/users"
+            path="/admins"
             element={
               <Container
-                selectedPage="users"
+                selectedPage="admins"
                 wideScreen={wideScreen}
                 toggleWideScreen={toggleStates}
               />
@@ -107,9 +122,9 @@ function App() {
       {/* ============================================================================================= */}
 
       <div className="cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-bold duration-200">
-        <div className="flex flex-col ">
-          <div className="font-bold">DEBUGGER</div>
-          <div className="flex-row p-2">
+        <div className="flex-row p-2">
+          <div className="flex flex-col ">
+            <div className="font-bold">DEBUGGER</div>
             {/* <button
               className="px-3 py-1 bg-red-400"
               onClick={() => setCount(count - 1)}

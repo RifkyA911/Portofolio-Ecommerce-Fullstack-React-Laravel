@@ -1,5 +1,4 @@
-import Button from "@mui/material/Button";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -23,24 +22,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
-function createData(name, calories, fat, carbs, protein) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData("Budy", "Superadmin", 3.7, 67),
-  createData("Buda", "Admin", 25.0, 51),
-  createData("Budi", "Admin", 16.0, 24),
-  createData("Budo", "Admin", 6.0, 24),
-  createData("Budu", "Admin", 16.0, 49),
-  createData("Bude", "Admin", 3.2, 87),
-];
+// function createData(name, calories, fat, carbs, protein) {
+//   return {
+//     name,
+//     calories,
+//     fat,
+//     carbs,
+//     protein,
+//   };
+// }
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -79,7 +69,13 @@ const headCells = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Name",
+    label: "Nama",
+  },
+  {
+    id: "email",
+    numeric: true,
+    disablePadding: false,
+    label: "E-mail",
   },
   {
     id: "role",
@@ -88,22 +84,16 @@ const headCells = [
     label: "Role",
   },
   {
-    id: "Authority",
+    id: "password",
+    numeric: true,
+    disablePadding: false,
+    label: "Password",
+  },
+  {
+    id: "auth",
     numeric: true,
     disablePadding: false,
     label: "Authority",
-  },
-  {
-    id: "Description",
-    numeric: true,
-    disablePadding: false,
-    label: "Description",
-  },
-  {
-    id: "space",
-    numeric: true,
-    disablePadding: false,
-    label: "space",
   },
 ];
 
@@ -202,7 +192,7 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          Users
+          Admin Users
         </Typography>
       )}
 
@@ -227,13 +217,55 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function Users() {
+export default function Admins() {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [admins, setAdmins] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    async function fetchData() {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/admins");
+        const data = await response.json();
+        setAdmins(data.data);
+        setLoading(false);
+        console.log(data);
+        // setrows((rows = [createData(data)]));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(true);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const rows = [
+    { name: "Cupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+    { name: "sCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+    { name: "dCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+    { name: "gfCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+    { name: "hCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+    { name: "jCupcake", email: 305, role: 3.7, password: 67, auth: 33 },
+  ];
+
+  const visibleRows = useMemo(
+    () =>
+      stableSort(rows, getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      ),
+    [order, orderBy, page, rowsPerPage]
+  );
+
+  // Avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -279,35 +311,14 @@ export default function Users() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
   const isSelected = (name) => selected.indexOf(name) !== -1;
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const visibleRows = React.useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage]
-  );
 
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-          >
+          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
@@ -349,10 +360,10 @@ export default function Users() {
                     >
                       {row.name}
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
+                    <TableCell align="right">{row.email}</TableCell>
+                    <TableCell align="right">{row.role}</TableCell>
+                    <TableCell align="right">{row.password}</TableCell>
+                    <TableCell align="right">{row.auth}</TableCell>
                   </TableRow>
                 );
               })}
@@ -378,64 +389,47 @@ export default function Users() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
     </Box>
   );
 }
 
-// export default function Users() {
-//   const [products, setProducts] = useState([]);
-//   const i = 1;
+// export default function Admins() {
+//   const [admins, setAdmins] = useState({});
+//   const [loading, setLoading] = useState(true);
+
 //   useEffect(() => {
-//     fetch("https://dummyjson.com/products")
-//       .then((response) => response.json())
-//       .then((data) => {
-//         console.log(data); // Cek data untuk pemeriksaan
-//         setProducts(data.products); // Menggunakan data.products karena 'products' adalah properti dalam objek
-//       })
-//       .catch((error) => {
+//     setLoading(true);
+//     async function fetchData() {
+//       try {
+//         const response = await fetch("http://127.0.0.1:8000/api/admins");
+//         const data = await response.json();
+//         setAdmins(data.data);
+//         setLoading(false);
+//       } catch (error) {
 //         console.error("Error fetching data:", error);
-//       });
+//         setLoading(true);
+//       }
+//     }
+
+//     fetchData();
 //   }, []);
-//   console.log("sd");
 
 //   return (
 //     <div>
-//       <table className="table-auto bg-slate-400 p-4 text-left">
-//         <thead>
-//           <tr>
-//             <th>No</th>
-//             <th>Title</th>
-//             <th>Description</th>
-//             <th>Price</th>
-//             <th>discountPercentage</th>
-//             <th>rating</th>
-//             <th>stock</th>
-//             <th>brand</th>
-//             <th>category</th>
-//             <th>Thumbnail</th>
-//             <th>img</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {products.map((product) => (
-//             <tr>
-//               <td key={product.id}>{i}</td>
-//               <td key={product.id}>{product.title}</td>
-//               <td key={product.id}>{product.description}</td>
-//               <td key={product.id}>{product.price}</td>
-//               <td key={product.id}>{product.discountPercentage}</td>
-//               <td key={product.id}>{product.rating}</td>
-//               <td key={product.id}>{product.stock}</td>
-//               <td key={product.id}>{product.brand}</td>
-//               <td key={product.id}>{product.category}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
+//       {loading == true ? (
+//         <span>loading....</span>
+//       ) : (
+//         admins.map((user, index) => (
+//           <div>
+//             <p>{index + 1}</p>
+//             <p>ID: {user.id}</p>
+//             <p>Email: {user.email}</p>
+//             <p>Username: {user.username}</p>
+//             <p>Address: {user.address}</p>
+//             <p>Verified: {user.verified}</p>
+//           </div>
+//         ))
+//       )}
 //       <ul></ul>
 //     </div>
 //   );
