@@ -48,9 +48,7 @@ const Navbar = ({ toggleHideSidebar, toggleStates }) => {
               {({ open }) => (
                 <>
                   <Popover.Button
-                    onClick={() =>
-                      window.innerWidth > 1024 ? toggleHideSidebar : ""
-                    }
+                    onClick={toggleHideSidebar}
                     className={`
                 ${open ? "" : "text-opacity-90"}
                 rounded-md ${
@@ -141,23 +139,13 @@ const Navbar = ({ toggleHideSidebar, toggleStates }) => {
               )}
             </Popover>
             {/* notification */}
-            <button
-              className="pl-2 ring-0"
-              onClick={() =>
-                window.innerWidth > 1024 ? toggleHideSidebar : ""
-              }
-            >
+            <button className="pl-2 ring-0" onClick={toggleHideSidebar}>
               <div className="flex p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500">
                 <MuiIcons.NotificationsNone className="h-6 w-6 text-dark text-bold" />
               </div>
             </button>
             {/* profile */}
-            <button
-              className="pl-4"
-              onClick={() =>
-                window.innerWidth > 1024 ? toggleHideSidebar : ""
-              }
-            >
+            <button className="pl-4" onClick={toggleHideSidebar}>
               <div className="flex rounded-xl bg-gray-200 hover:bg-blue-500 hover:text-white duration-200 items-center">
                 <img
                   src=".\src\assets\admin_avatar\sara.jpg"

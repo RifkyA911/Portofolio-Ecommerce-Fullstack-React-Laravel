@@ -8,7 +8,7 @@ import { FiSettings } from "react-icons/fi";
 import Button from "@mui/material/Button";
 
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState();
   const [wideScreen, setWideScreen] = useState("lg:ml-64");
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -18,15 +18,17 @@ function App() {
     setWindowWidth(window.innerWidth);
   };
 
+  const checkWindowsWidth = () => {
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    } else {
+      setSidebarOpen(true);
+      setWideScreen("lg:ml-64");
+    }
+  };
+
   useEffect(() => {
-    // const handleResize = () => {
-    //   setWindowDimensions();
-    //   if (windowWidth <= 1024) {
-    //     setSidebarOpen((prevSidebarOpen) => (prevSidebarOpen = false));
-    //   } else if (windowWidth >= 877) {
-    //     setSidebarOpen((prevSidebarOpen) => (prevSidebarOpen = true));
-    //   }
-    // };
+    checkWindowsWidth();
     window.addEventListener("resize", setWindowDimensions);
     return () => {
       window.removeEventListener("resize", setWindowDimensions);
@@ -34,7 +36,10 @@ function App() {
   }, [windowWidth]);
 
   const toggleHideSidebar = () => {
-    setSidebarOpen((prevSidebarOpen) => (prevSidebarOpen = false));
+    if (windowWidth < 1024) {
+      setSidebarOpen((prevSidebarOpen) => (prevSidebarOpen = false));
+      setWideScreen((prevWideScreen) => (prevWideScreen = "lg:ml-0"));
+    }
   };
 
   const toggleStates = () => {
