@@ -1,8 +1,13 @@
 /* eslint-disable react/prop-types */
-const IconHeader = ({ children, data }) => {
+import { useNavigate } from "react-router-dom";
+
+const IconHeader = ({ children, data, route }) => {
+  const navigate = useNavigate();
   return (
     <div className="relative">
-      <button className="w-full">{children}</button>
+      <button className="w-full" onClick={() => navigate(route)}>
+        {children}
+      </button>
       <span
         className={`absolute -top-1 -right-4 text-center w-4 h-4 rounded-full bg-yellow-200 text-xs cursor-default`}
       >
