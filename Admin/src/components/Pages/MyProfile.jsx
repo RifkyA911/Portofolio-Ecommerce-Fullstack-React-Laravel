@@ -7,7 +7,7 @@ export default function MyProfile() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/user/1")
+    fetch("http://127.0.0.1:8000/api/admins/1")
       .then((response) => response.json())
       .then((data) => {
         console.log(data); // Cek data untuk pemeriksaan
@@ -74,13 +74,13 @@ export default function MyProfile() {
             </tr>
           </thead>
           <tbody>
-            {/* {users.slice(0, 1).map((user) => ( */}
-            <tr>
-              <td key={user.id}></td>
-              <td key={user.id}>{user.username}</td>
-              <td key={user.id}>{user.email}</td>
-            </tr>
-            {/* ))} */}
+            {/* {users.slice(0, 1).map((user) => (
+              <tr>
+                <td key={user.id}></td>
+                <td key={user.id}>{user.username}</td>
+                <td key={user.id}>{user.email}</td>
+              </tr>
+            ))} */}
           </tbody>
         </table>
         <ul></ul>

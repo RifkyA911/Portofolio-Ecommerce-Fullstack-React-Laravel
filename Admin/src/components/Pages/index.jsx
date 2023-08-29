@@ -5,3 +5,4 @@ export { default as Inbox } from "./Inbox";
 export { default as Content } from "./Content";
 export { default as Statistic } from "./Statistic";
 export { default as MyProfile } from "./MyProfile";
+export { default as NotFound } from "./NotFound";

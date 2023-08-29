@@ -121,6 +121,16 @@ function App() {
               />
             }
           />
+          <Route
+            path="/Testing"
+            element={
+              <Container
+                selectedPage="Testing"
+                wideScreen={wideScreen}
+                toggleWideScreen={toggleStates}
+              />
+            }
+          />
         </Routes>
       </div>
 

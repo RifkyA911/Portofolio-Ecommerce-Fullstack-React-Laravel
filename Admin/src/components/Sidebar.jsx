@@ -59,8 +59,8 @@ const Sidebar = ({ toggleStates, sidebarOpen, toggleSidebar }) => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <nav className="flex-1 overflow-hidden shadow-sm h-full">
-          <ul className="py-4 space-y-1 text-left">
+        <nav className="flex-1 xoverflow-y-scroll shadow-sm h-full">
+          <ul className="flex-row py-4 space-y-1 text-left">
             {sideNavigation.map((item, index) => (
               <div key={item.id}>
                 {index === 0 ||
@@ -72,30 +72,29 @@ const Sidebar = ({ toggleStates, sidebarOpen, toggleSidebar }) => {
                 {renderSidebarItem(item)}
               </div>
             ))}
+            <Outlet />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
           </ul>
-
-          <Outlet />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
         </nav>
       </div>
       {/* Main Content */}

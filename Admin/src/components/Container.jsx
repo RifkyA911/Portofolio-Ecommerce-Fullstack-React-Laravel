@@ -38,7 +38,7 @@ export default function Container({
                 case "myprofile":
                   return <MyProfile />;
                 default:
-                  return null;
+                  return <NotFound />;
               }
             })()}
           </div>

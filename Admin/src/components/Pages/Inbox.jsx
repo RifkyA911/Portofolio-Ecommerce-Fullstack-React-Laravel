@@ -91,7 +91,7 @@ export default function Inbox() {
                 </div>
               </nav>
               <div className="flex flex-wrap flex-col max-h-[600px] overflow-y-scroll">
-                <ul className="text-white py-4">
+                <ul className="text-white py-4 max-h-[550px] lg:max-h-full">
                   <li className="font-semibold text-slate-700 py-4">
                     <span className=" bg-slate-100 px-4 py-2 rounded-xl">
                       17 Agustus 2023
