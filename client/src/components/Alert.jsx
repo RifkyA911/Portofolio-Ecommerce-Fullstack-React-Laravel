@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import usePrevious from "./hooks/UsePrevious";
+import useComponentDidMount from "./hooks/UseComponentDidMount.js";
 
 const Alert = () => {
   const wishlist = useSelector((state) => state.wishlist.wishlist);
@@ -9,6 +10,7 @@ const Alert = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
+  const isComponentMounted = useComponentDidMount();
 
   const show = () => {
     setShowAlert(true);
@@ -17,21 +19,27 @@ const Alert = () => {
   };
 
   useEffect(() => {
-    setAlertMsg("wishlist");
-    if (prevWishlistCount < wishlist.length) {
-      setIsAdding(true);
-      show();
-    } else if (prevWishlistCount > wishlist.length) {
-      setIsAdding(false);
-      show();
+    if (isComponentMounted) {
+      setAlertMsg("wishlist");
+      if (prevWishlistCount < wishlist.length) {
+        setIsAdding(true);
+        show();
+      } else if (prevWishlistCount > wishlist.length) {
+        setIsAdding(false);
+        show();
+      }
     }
-  }, [wishlist, prevWishlistCount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wishlist]);
 
   useEffect(() => {
-    setShowAlert(true);
-    setAlertMsg("cart");
-    setIsAdding(true);
-    show();
+    if (isComponentMounted) {
+      setShowAlert(true);
+      setAlertMsg("cart");
+      setIsAdding(true);
+      show();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart]);
 
   return (
