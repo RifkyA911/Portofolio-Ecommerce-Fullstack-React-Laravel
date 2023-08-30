@@ -40,8 +40,6 @@ export default function Container({
                   return <Statistic />;
                 case "myprofile":
                   return <MyProfile />;
-                default:
-                  return <NotFound />;
               }
             })()}
           </div>

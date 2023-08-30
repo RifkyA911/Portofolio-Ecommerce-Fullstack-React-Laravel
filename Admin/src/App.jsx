@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { Container, Navbar, Sidebar, NotFound } from "./components"; // ./components/index.jsx
+import { Container, Navbar, Sidebar, NotFound, Login } from "./components"; // ./components/index.jsx
 
 import "./App.css";
 // import UI Component
@@ -38,7 +38,7 @@ function App() {
     } else {
       setShowNav(false);
     }
-    console.log("nav : " + showNav);
+    // console.log("nav : " + showNav);
   }, [location]);
 
   const setWindowDimensions = () => {
@@ -90,7 +90,7 @@ function App() {
       />
       <div className={container}>
         <Routes>
-          <Route path="/login" element={<Container selectedPage="login" />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/"
             element={
@@ -151,16 +151,7 @@ function App() {
               />
             }
           />
-          <Route
-            path="/Testing"
-            element={
-              <Container
-                selectedPage="Testing"
-                // wideScreen={wideScreen}
-                // toggleWideScreen={toggleStates}
-              />
-            }
-          />
+          {/* <Route path="/x" element={<Login />} /> */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
@@ -168,16 +159,16 @@ function App() {
       {/* ============================================================================================= */}
 
       <div className="cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-semibold hover:bg-violet-400 duration-200">
-        <div className="flex-row p-2">
-          <div className="flex flex-col ">
-            <div className="font-bold">Debugger Panel</div>
-          </div>
-          <div>
-            <Link to="/testing">
+        <Link to="/x">
+          <div className="flex-row p-2">
+            <div className="flex flex-col ">
+              <div className="font-bold">Debugger Panel</div>
+            </div>
+            <div>
               Width: {windowWidth} Height: {windowHeight}
-            </Link>
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
     </>
   );
