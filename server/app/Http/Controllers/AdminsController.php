@@ -25,6 +25,39 @@ class AdminsController extends Controller
         return new PostResource(true, 'List Data Admin', $admins);
     }
 
+    public function login(Request $request) {
+        // inisiasi awal respon
+        $respon = PostResource::make(false, 'login gagal', $request->except('auth_key'));
+        // validasi
+        $validator = Validator::make($request->all(), [
+            "email" => "required|email",
+            "pw" => "required",
+            "auth_key" => "required",
+        ]);
+        if ($validator->fails()) {
+            $respon->message = "validasi data error";
+            $respon->resource = ['errors'=>$validator->errors(), 'old_input'=>$request->except('auth_key')];
+            return $respon;
+        }
+
+        // auth_key = cikidaw
+        if (!Hash::check($request->input('auth_key'), '$2y$10$eESkk5EgGHwBqUtGujWmkevQphwrPmkY3LH88Kpxw20p6VZ4kA9bi')) {
+            return $respon;
+        }
+        $admin = Admin::firstWhere('email', $request->input('email'));
+        
+        // cek password
+        if (!Hash::check($request->input('pw'), $admin->pw)) {
+            $respon->message = "Password salah";
+            return $respon;
+        } else {
+            $respon->status = true;
+            $respon->message = 'login berhasil';
+            $respon->resource = $admin->makeHidden(['pw', 'created_at', 'updated_at']);
+            return $respon;
+        }
+    }
+
     public function find($id) {
         return new PostResource(true, "data admin :", Admin::find($id));
     }

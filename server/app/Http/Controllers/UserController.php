@@ -19,10 +19,43 @@ class UserController extends Controller
     public function index()
     {
         //get all posts
-        $admins = User::all();
+        $users = User::all();
 
         //return collection of posts as a resource
-        return new PostResource(true, 'List Data Admin', $admins);
+        return new PostResource(true, 'List Data Admin', $users);
+    }
+
+    public function login(Request $request) {
+        // inisiasi awal respon
+        $respon = PostResource::make(false, 'login gagal', $request->except('auth_key'));
+        // validasi
+        $validator = Validator::make($request->all(), [
+            "email" => "required|email",
+            "password" => "required",
+            "auth_key" => "required",
+        ]);
+        if ($validator->fails()) {
+            $respon->message = "validasi data error";
+            $respon->resource = ['errors'=>$validator->errors(), 'old_input'=>$request->except('auth_key')];
+            return $respon;
+        }
+        
+        // auth_key = cikidaw
+        if (!Hash::check($request->input('auth_key'), '$2y$10$eESkk5EgGHwBqUtGujWmkevQphwrPmkY3LH88Kpxw20p6VZ4kA9bi')) {
+            return $respon;
+        }
+        $user = User::firstWhere('email', $request->input('email'));
+        
+        // cek password
+        if (!Hash::check($request->input('password'), $user->password)) {
+            $respon->message = "Password salah";
+            return $respon;
+        } else {
+            $respon->status = true;
+            $respon->message = 'login berhasil';
+            $respon->resource = $user->makeHidden(['password', 'created_at', 'updated_at']);
+            return $respon;
+        }
     }
 
     /**

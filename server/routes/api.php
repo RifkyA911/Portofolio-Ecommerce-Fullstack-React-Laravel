@@ -31,6 +31,8 @@ Route::get('/admins/{id}', [AdminsController::class, 'find']);
 Route::post('/admins', [AdminsController::class, 'store']);
 // update admin
 Route::put('/admins', [AdminsController::class, 'update']);
+// login for admin
+Route::post('/admins/login', [AdminsController::class, 'login']);
 
 // Endpoint User
 // Route::get('/user', function(){
@@ -42,6 +44,8 @@ Route::get('/user/{id}', [UserController::class, 'show']);
 Route::post('/user', [UserController::class, 'store']);
 // update user
 Route::put('/user', [UserController::class, 'update']);
+// login user
+Route::post('/login', [UserController::class, 'login']);
 
 // Endpoint Product
 Route::get('/produk', [ProductController::class, 'getAll']);
