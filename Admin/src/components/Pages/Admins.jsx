@@ -57,7 +57,7 @@ export default function Admins() {
             <thead className="bg-slate-400 p-4">
               <tr>
                 <th className="p-2 ">No</th>
-                <th className="p-4">Avatar</th>
+                <th className="p-4">Picture</th>
                 <th className="p-4">E-mail</th>
                 <th className="p-4">Username</th>
                 <th className="p-4">Role</th>

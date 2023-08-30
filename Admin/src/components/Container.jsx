@@ -11,13 +11,13 @@ import Navbar from "./Navbar";
 import { FiSettings } from "react-icons/fi";
 
 export default function Container({
+  showNav,
   selectedPage,
   wideScreen,
   toggleWideScreen,
 }) {
   return (
     <>
-      {/* <Navbar toggleWideScreen={toggleWideScreen} WideScreen={WToggler} /> */}
       <main className="bg-white w-full static">
         <div
           className={`p-4 my-4 ${wideScreen} h-full shadow-lg flex-shrink-0 duration-300`}

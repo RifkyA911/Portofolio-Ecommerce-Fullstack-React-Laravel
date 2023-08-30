@@ -35,6 +35,7 @@ const Sidebar = ({ toggleStates, sidebarOpen, toggleSidebar }) => {
       </li>
     </>
   );
+  console.log("sidebar is:" + sidebarOpen);
 
   const getMuiIconComponent = (iconName) => {
     const MuiIconComponent = MuiIcons[iconName];
