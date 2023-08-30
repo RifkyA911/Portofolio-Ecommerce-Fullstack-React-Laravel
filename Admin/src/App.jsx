@@ -1,11 +1,10 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { Container, Navbar, Sidebar } from "./components"; // ./components/index.jsx
+import { Container, Navbar, Sidebar, NotFound } from "./components"; // ./components/index.jsx
 
 import "./App.css";
 // import UI Component
 import { FiSettings } from "react-icons/fi";
-import Button from "@mui/material/Button";
 
 function App() {
   // login component
@@ -14,12 +13,16 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState();
   const [wideScreen, setWideScreen] = useState("lg:ml-64");
   const [showNav, setShowNav] = useState();
+  const [container, setContainer] = useState(
+    "app flex pt-14 min-h-screen max-w-full"
+  );
   // container component
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   const location = useLocation();
 
+  // show nav components
   useEffect(() => {
     const allowedPaths = [
       "/",
@@ -29,7 +32,12 @@ function App() {
       "/statistic",
       "/myprofile",
     ];
-    setShowNav(allowedPaths.includes(location.pathname));
+
+    if (allowedPaths.includes(location.pathname)) {
+      setShowNav(true);
+    } else {
+      setShowNav(false);
+    }
     console.log("nav : " + showNav);
   }, [location]);
 
@@ -80,8 +88,9 @@ function App() {
         toggleStates={toggleStates}
         toggleSidebar={toggleStates}
       />
-      <div className="app flex pt-14 min-h-screen max-w-full">
+      <div className={container}>
         <Routes>
+          <Route path="/login" element={<Container selectedPage="login" />} />
           <Route
             path="/"
             element={
@@ -147,11 +156,12 @@ function App() {
             element={
               <Container
                 selectedPage="Testing"
-                wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // wideScreen={wideScreen}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
 
@@ -163,7 +173,9 @@ function App() {
             <div className="font-bold">Debugger Panel</div>
           </div>
           <div>
-            Width: {windowWidth} Height: {windowHeight}
+            <Link to="/testing">
+              Width: {windowWidth} Height: {windowHeight}
+            </Link>
           </div>
         </div>
       </div>

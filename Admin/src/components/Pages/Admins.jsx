@@ -68,10 +68,12 @@ export default function Admins() {
               {admins.map((user, index) => (
                 <tr key={user.id}>
                   <td className="p-3 bg-slate-300">{index + 1}</td>
-                  <img
-                    src={`./src/assets/admin_avatar/${user.pict}`}
-                    className="p-4 w-28 h-28 rounded-full"
-                  />
+                  <td className="p-4 ">
+                    <img
+                      src={`./src/assets/admin_avatar/${user.pict}`}
+                      className="w-28 h-28 rounded-full"
+                    />
+                  </td>
                   <td className="p-4">{user.email}</td>
                   <td className="p-4">{user.username}</td>
                   <td className="p-4">{user.role}</td>

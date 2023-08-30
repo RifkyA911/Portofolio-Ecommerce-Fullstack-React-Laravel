@@ -6,6 +6,7 @@ import {
   Inbox,
   Statistic,
   MyProfile,
+  NotFound,
 } from "./Pages/index";
 import Navbar from "./Navbar";
 import { FiSettings } from "react-icons/fi";
@@ -25,6 +26,8 @@ export default function Container({
           <div className="bg-slate-100 rounded-xl shadow-sm">
             {(() => {
               switch (selectedPage) {
+                case "login":
+                  return <p>login</p>;
                 case "dashboard":
                   return <Dashboard />;
                 case "admins":
