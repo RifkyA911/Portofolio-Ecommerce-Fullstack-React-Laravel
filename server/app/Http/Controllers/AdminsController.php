@@ -31,7 +31,7 @@ class AdminsController extends Controller
         // validasi
         $validator = Validator::make($request->all(), [
             "email" => "required|email",
-            "pw" => "required",
+            "password" => "required",
             "auth_key" => "required",
         ]);
         if ($validator->fails()) {
@@ -47,13 +47,13 @@ class AdminsController extends Controller
         $admin = Admin::firstWhere('email', $request->input('email'));
         
         // cek password
-        if (!Hash::check($request->input('pw'), $admin->pw)) {
+        if (!Hash::check($request->input('password'), $admin->password)) {
             $respon->message = "Password salah";
             return $respon;
         } else {
             $respon->status = true;
             $respon->message = 'login berhasil';
-            $respon->resource = $admin->makeHidden(['pw', 'created_at', 'updated_at']);
+            $respon->resource = $admin->makeHidden(['password', 'created_at', 'updated_at']);
             return $respon;
         }
     }
@@ -67,7 +67,7 @@ class AdminsController extends Controller
             $validator = Validator::make($request->all(), [
                 "email" => 'required|email|unique:admins,email',
                 "username" => 'required',
-                "pw" => 'required|min:6',
+                "password" => 'required|min:6',
                 "role"=> "required|numeric"
             ]);
 
@@ -89,8 +89,8 @@ class AdminsController extends Controller
         $validator = Validator::make($request->all(), [
             "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
             "username" => 'required',
-            "pw" => 'required|min:6',
-            "newPw" => 'min:6|confirmed'
+            "password" => 'required|min:6',
+            "newPassword" => 'min:6|confirmed'
         ]);
 
         if ($validator->fails()) {
@@ -100,17 +100,17 @@ class AdminsController extends Controller
         $updateAdmin = Admin::find($request->input('id'));
 
         // cek password lama
-        if (!Hash::check($request->input('pw'), $updateAdmin->pw)) {
+        if (!Hash::check($request->input('password'), $updateAdmin->password)) {
             return new PostResource(false, "Password lama salah.", ['old_input'=>$request->except('id')]);
         }
 
         // isi data baru
         $updateAdmin->username = $request->input('username');
         $updateAdmin->email = $request->input('email');
-        if ($request->input('newPw') !== null) {
-            $updateAdmin->pw = $request->input('newPw');
+        if ($request->input('newPassword') !== null) {
+            $updateAdmin->password = $request->input('newPassword');
         } else {
-            $updateAdmin->pw = $request->input('pw');
+            $updateAdmin->password = $request->input('password');
         }
         // if ($updateAdmin->role == 0) {
         //     $updateAdmin->role = $request->input('role');

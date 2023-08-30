@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Model
 {
-    // use HasFactory;
-    protected $fillable = ['email', 'username', 'pw', 'role', 'pict'];
+    use HasFactory;
+    // protected $fillable = ['email', 'username', 'pw', 'role', 'pict'];
+    protected $guard = ['id'];
     protected $casts = [
-        'pw' => 'hashed'
+        'password' => 'hashed'
     ];
 }

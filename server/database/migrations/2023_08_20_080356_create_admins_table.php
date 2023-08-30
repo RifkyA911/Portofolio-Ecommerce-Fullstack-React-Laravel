@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('username');
             $table->string('email')->unique();
-            $table->string('pw');
+            $table->string('password');
             $table->integer('role');
             $table->string('pict')->nullable()->default(null);
+            $table->json('authority')->default('{"chat":"false", "sort_warehouse":"false", "alter_price":"false"}');
             $table->timestamps();
         });
     }
