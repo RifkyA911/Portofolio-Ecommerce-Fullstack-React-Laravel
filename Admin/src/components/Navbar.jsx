@@ -203,7 +203,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                                     <MuiIcons.Insights className="text-lime-500" />
                                   ) : item.status === "danger" ? (
                                     /* Konten untuk status "danger" */
-                                    <MuiIcons.SentimentVeryDissatisfied className="text-red-500" />
+                                    <MuiIcons.DeleteForever className="text-red-500" />
                                   ) : item.status === "warning" ? (
                                     /* Konten untuk status "warning" */
                                     <MuiIcons.Announcement className="text-yellow-500" />
@@ -284,7 +284,8 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                     <div className="px-1 py-1 ">
                       <Menu.Item>
                         {({ active }) => (
-                          <button
+                          <Link
+                            to="/myprofile"
                             className={`${
                               active
                                 ? "bg-violet-500 text-white"
@@ -303,12 +304,13 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                               />
                             )}
                             My Profile
-                          </button>
+                          </Link>
                         )}
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <button
+                          <Link
+                            to="/settings"
                             className={`${
                               active
                                 ? "bg-violet-500 text-white"
@@ -327,7 +329,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                               />
                             )}
                             Settings
-                          </button>
+                          </Link>
                         )}
                       </Menu.Item>
                     </div>
