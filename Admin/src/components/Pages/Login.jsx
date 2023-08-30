@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 function Login() {
+  const [login, setLogin] = useState();
+
   // Konten komponen
   return (
     <>

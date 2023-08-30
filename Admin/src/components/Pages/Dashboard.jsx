@@ -19,7 +19,7 @@ function Dashboard(props) {
                 </li>
               ) : (
                 ""
-              )
+              ),
             )}
             <li key="rows" className="flex basis-2/6 flex-col justify-between">
               {infoMarket

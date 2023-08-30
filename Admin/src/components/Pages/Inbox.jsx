@@ -21,7 +21,7 @@ export default function Inbox() {
 
   return (
     <>
-      <div className="lg:px-10 lg:py-1 max-w-[1920px] mx-auto h-full">
+      <div className="lg:px-10 lg:py-1 max-w-[1920px] mx-auto h-full bg-white">
         <div className="relative mb-12 bg-white sbg-slate-800 min-h-[280px] shadow-md">
           <div className="flex content mt-8">
             {/* people */}

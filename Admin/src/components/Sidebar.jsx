@@ -16,7 +16,7 @@ const Sidebar = ({ showNav, toggleStates, sidebarOpen, toggleSidebar }) => {
   };
 
   const renderSidebarItem = (
-    item // sidebar's menus component
+    item, // sidebar's menus component
   ) => (
     <>
       <li key={item.id} className="flex items-center">

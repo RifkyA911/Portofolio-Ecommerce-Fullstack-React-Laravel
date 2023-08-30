@@ -6,9 +6,8 @@ import {
   Inbox,
   Statistic,
   MyProfile,
-  NotFound,
+  Notification,
 } from "./Pages/index";
-import Navbar from "./Navbar";
 import { FiSettings } from "react-icons/fi";
 
 export default function Container({
@@ -40,6 +39,8 @@ export default function Container({
                   return <Statistic />;
                 case "myprofile":
                   return <MyProfile />;
+                case "notification":
+                  return <Notification />;
               }
             })()}
           </div>

@@ -2,8 +2,11 @@ import { Routes, Route, useLocation, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Container, Navbar, Sidebar, NotFound, Login } from "./components"; // ./components/index.jsx
 
-import "./App.css";
+//import dummy data
+import { sideNavigation } from "./components/Data/PagesLink";
+
 // import UI Component
+import "./App.css";
 import { FiSettings } from "react-icons/fi";
 
 function App() {
@@ -14,7 +17,7 @@ function App() {
   const [wideScreen, setWideScreen] = useState("lg:ml-64");
   const [showNav, setShowNav] = useState();
   const [container, setContainer] = useState(
-    "app flex pt-14 min-h-screen max-w-full"
+    "app flex pt-14 min-h-screen max-w-full",
   );
   // container component
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -24,14 +27,7 @@ function App() {
 
   // show nav components
   useEffect(() => {
-    const allowedPaths = [
-      "/",
-      "/admins",
-      "/inbox",
-      "/settings",
-      "/statistic",
-      "/myprofile",
-    ];
+    const allowedPaths = sideNavigation.map((item) => item.href); // link navigation from data PagesLink
 
     if (allowedPaths.includes(location.pathname)) {
       setShowNav(true);
@@ -72,7 +68,7 @@ function App() {
   const toggleStates = () => {
     setSidebarOpen((prevSidebarOpen) => !prevSidebarOpen);
     setWideScreen((prevWideScreen) =>
-      prevWideScreen === "lg:ml-64" ? "lg:ml-0" : "lg:ml-64"
+      prevWideScreen === "lg:ml-64" ? "lg:ml-0" : "lg:ml-64",
     );
   };
   return (
@@ -146,6 +142,16 @@ function App() {
             element={
               <Container
                 selectedPage="myprofile"
+                wideScreen={wideScreen}
+                toggleWideScreen={toggleStates}
+              />
+            }
+          />
+          <Route
+            path="/notification"
+            element={
+              <Container
+                selectedPage="notification"
                 wideScreen={wideScreen}
                 toggleWideScreen={toggleStates}
               />
