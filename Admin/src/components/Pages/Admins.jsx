@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
+import { Switch } from "@headlessui/react";
 
 export default function Admins() {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [enabled, setEnabled] = useState(false);
+  const [enabled2, setEnabled2] = useState(false);
+  const [enabled3, setEnabled3] = useState(false);
+  const [enabled4, setEnabled4] = useState(false);
 
   async function fetchData() {
     try {
@@ -78,6 +83,27 @@ export default function Admins() {
                   <td className="p-4">{user.username}</td>
                   <td className="p-4">{user.role}</td>
                   <td className="p-4">
+                    <p>Chat : {JSON.parse(user.authority).chat}</p>
+                    <p>
+                      Sortir Barang :{" "}
+                      {JSON.parse(user.authority).sort_warehouse}
+                    </p>
+                    <p>Ubah Harga : {JSON.parse(user.authority).alter_price}</p>
+
+                    <Switch
+                      checked={enabled}
+                      onChange={setEnabled}
+                      className={`${
+                        enabled ? "bg-blue-600" : "bg-gray-200"
+                      } relative inline-flex h-6 w-11 items-center rounded-full`}
+                    >
+                      <span className="sr-only">Enable notifications</span>
+                      <span
+                        className={`${
+                          enabled ? "translate-x-6" : "translate-x-1"
+                        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                      />
+                    </Switch>
                     <button className="p-4 bg-red-400">A</button>
                     <button className="p-4 bg-cyan-400">B</button>
                     <button className="p-4 bg-blue-400">C</button>

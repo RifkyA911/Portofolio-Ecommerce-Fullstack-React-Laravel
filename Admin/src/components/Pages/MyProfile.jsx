@@ -46,43 +46,23 @@ export default function MyProfile() {
                     placeholder="you@example.com"
                   />
                 </label>
-                <input
-                  type="checkbox"
-                  className="backdrop:w-96 backdrop:outline-0 hover:outline-4 ring-0 outline-0"
-                />
+                <label className="block text-left">
+                  <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
+                    Username
+                  </span>
+                  <input
+                    type="username"
+                    name="username"
+                    className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
+                    placeholder="you@example.com"
+                  />
+                </label>
               </form>
             </ul>
           </div>
         </div>
       </div>
-
       <div>
-        <table className="table-auto bg-slate-400 p-4 text-left">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>discountPercentage</th>
-              <th>rating</th>
-              <th>stock</th>
-              <th>brand</th>
-              <th>category</th>
-              <th>Thumbnail</th>
-              <th>img</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* {users.slice(0, 1).map((user) => (
-              <tr>
-                <td key={user.id}></td>
-                <td key={user.id}>{user.username}</td>
-                <td key={user.id}>{user.email}</td>
-              </tr>
-            ))} */}
-          </tbody>
-        </table>
         <ul></ul>
       </div>
     </>
