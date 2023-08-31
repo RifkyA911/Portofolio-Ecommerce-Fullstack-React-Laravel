@@ -16,7 +16,7 @@ const Sidebar = ({ showNav, toggleStates, sidebarOpen, toggleSidebar }) => {
   };
 
   const renderSidebarItem = (
-    item, // sidebar's menus component
+    item // sidebar's menus component
   ) => (
     <>
       <li key={item.id} className="flex items-center">
@@ -66,7 +66,7 @@ const Sidebar = ({ showNav, toggleStates, sidebarOpen, toggleSidebar }) => {
                   <div key={item.id}>
                     {index === 0 ||
                     item.group !== sideNavigation[index - 1].group ? (
-                      <div className="h-14 ml-0 px-6 py-2 flex items-center justify-left font-sm">
+                      <div className="h-12 ml-0 px-6 py-2 flex items-center justify-left font-sm">
                         <p>{item.group}</p>
                       </div>
                     ) : null}

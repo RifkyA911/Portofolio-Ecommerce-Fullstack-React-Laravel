@@ -7,6 +7,8 @@ import {
   Statistic,
   MyProfile,
   Notification,
+  Products,
+  Warehouse,
 } from "./Pages/index";
 import { FiSettings } from "react-icons/fi";
 
@@ -31,6 +33,10 @@ export default function Container({
                   return <Dashboard />;
                 case "admins":
                   return <Admins />;
+                case "products":
+                  return <Products />;
+                case "warehouse":
+                  return <Warehouse />;
                 case "settings":
                   return <Settings />;
                 case "inbox":

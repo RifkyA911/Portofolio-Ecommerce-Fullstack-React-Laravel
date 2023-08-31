@@ -1,7 +1,35 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { loginSuccess } from "../Actions/authActions.jsx";
 
 function Login() {
   const [login, setLogin] = useState();
+  const [email, setEmail] = useState("super.duper@gmail.com");
+  const [password, setPassword] = useState("superadmin");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/admins/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      const user = response.data.data; // Ambil data pengguna dari respons
+      dispatch(loginSuccess(user));
+
+      // Arahkan pengguna ke halaman utama setelah login berhasil
+      navigate.push("/");
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
 
   // Konten komponen
   return (
@@ -24,7 +52,8 @@ function Login() {
                   name="email"
                   className="peer mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
                   placeholder="you@example.com"
-                  value="haha@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <p className="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
                   Please provide a valid email address.
@@ -36,14 +65,18 @@ function Login() {
                 </span>
                 <input
                   type="password"
-                  name="pw"
+                  name="password"
                   className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
                   placeholder="your password"
-                  value="cikidaw"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </label>
               <input type="hidden" name="auth_key" id="" value="cikidaw" />
-              <button className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-blue-500 hover:bg-sky-700 rounded-md">
+              <button
+                onClick={handleLogin}
+                className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-blue-500 hover:bg-sky-700 rounded-md"
+              >
                 Login
               </button>
             </form>

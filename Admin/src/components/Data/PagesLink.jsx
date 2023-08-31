@@ -36,23 +36,31 @@ export const sideNavigation = [
   },
   {
     id: 5,
+    group: "Market",
+    name: "Warehouse",
+    href: "/warehouse",
+    icon: "Warehouse",
+  },
+  {
+    id: 6,
     group: "Management",
     name: "Admins",
     href: "/admins",
     icon: "PeopleAlt",
   },
   {
-    id: 6,
+    id: 7,
     group: "Management",
     name: "My Profile",
     href: "/myprofile",
     icon: "ManageAccounts",
   },
   {
-    id: 7,
+    id: 8,
     group: "Management",
     name: "Settings",
     href: "/settings",
     icon: "Settings",
   },
 ];
+//sederhanakan nanti grouping object

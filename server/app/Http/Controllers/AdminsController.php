@@ -25,7 +25,8 @@ class AdminsController extends Controller
         return new PostResource(true, 'List Data Admin', $admins);
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         // inisiasi awal respon
         $respon = PostResource::make(false, 'login gagal', $request->except('auth_key'));
         // validasi
@@ -36,7 +37,7 @@ class AdminsController extends Controller
         ]);
         if ($validator->fails()) {
             $respon->message = "validasi data error";
-            $respon->resource = ['errors'=>$validator->errors(), 'old_input'=>$request->except('auth_key')];
+            $respon->resource = ['errors' => $validator->errors(), 'old_input' => $request->except('auth_key')];
             return $respon;
         }
 
@@ -45,7 +46,7 @@ class AdminsController extends Controller
             return $respon;
         }
         $admin = Admin::firstWhere('email', $request->input('email'));
-        
+
         // cek password
         if (!Hash::check($request->input('password'), $admin->password)) {
             $respon->message = "Password salah";
@@ -58,23 +59,25 @@ class AdminsController extends Controller
         }
     }
 
-    public function find($id) {
+    public function find($id)
+    {
         return new PostResource(true, "data admin :", Admin::find($id));
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         if ($request->input('role_admin') === "0") {
             $validator = Validator::make($request->all(), [
                 "email" => 'required|email|unique:admins,email',
                 "username" => 'required',
                 "password" => 'required|min:6',
-                "role"=> "required|numeric"
+                "role" => "required|numeric"
             ]);
 
             if ($validator->fails()) {
-                return new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->all()]);
+                return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]);
             }
-            
+
             if (Admin::create($request->except(['role_admin'])) !== false) {
                 return new PostResource(true, "Admin berhasil ditambahkan.", $request->only(['email', 'username']));
             } else {
@@ -84,8 +87,9 @@ class AdminsController extends Controller
         return new PostResource(false, "Akun admin gagal ditambahkan", "Akun anda tidak punya akses dalam pembuatan akun admin.");
     }
 
-    public function update(Request $request){
-             
+    public function update(Request $request)
+    {
+
         $validator = Validator::make($request->all(), [
             "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
             "username" => 'required',
@@ -94,14 +98,14 @@ class AdminsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->except('id')]);
+            return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->except('id')]);
         }
 
         $updateAdmin = Admin::find($request->input('id'));
 
         // cek password lama
         if (!Hash::check($request->input('password'), $updateAdmin->password)) {
-            return new PostResource(false, "Password lama salah.", ['old_input'=>$request->except('id')]);
+            return new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')]);
         }
 
         // isi data baru

@@ -17,7 +17,7 @@ function App() {
   const [wideScreen, setWideScreen] = useState("lg:ml-64");
   const [showNav, setShowNav] = useState();
   const [container, setContainer] = useState(
-    "app flex pt-14 min-h-screen max-w-full",
+    "app flex pt-14 min-h-screen max-w-full"
   );
   // container component
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -68,7 +68,7 @@ function App() {
   const toggleStates = () => {
     setSidebarOpen((prevSidebarOpen) => !prevSidebarOpen);
     setWideScreen((prevWideScreen) =>
-      prevWideScreen === "lg:ml-64" ? "lg:ml-0" : "lg:ml-64",
+      prevWideScreen === "lg:ml-64" ? "lg:ml-0" : "lg:ml-64"
     );
   };
   return (
@@ -148,10 +148,10 @@ function App() {
             }
           />
           <Route
-            path="/notification"
+            path="/products"
             element={
               <Container
-                selectedPage="notification"
+                selectedPage="products"
                 wideScreen={wideScreen}
                 toggleWideScreen={toggleStates}
               />

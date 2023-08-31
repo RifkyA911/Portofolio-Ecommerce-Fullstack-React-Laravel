@@ -16,6 +16,7 @@ import { Menu } from "@headlessui/react";
 
 export default function Inbox() {
   const [user, setuser] = useState([]);
+  const [customerAvatar, setCustomerAvatar] = useState("");
 
   // useEffect()
 
