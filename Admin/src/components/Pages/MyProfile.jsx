@@ -60,21 +60,27 @@ export default function MyProfile() {
         <div className="MyProfile">
           <div className="font-bold justify-center lg:max-h-full">
             <div className="flex flex-wrap lg:flex-nowrap flex-row">
-              <div className="flex flex-col lg:flex-row lg:justify-center py-4 lg:py-5 px-3 lg:px-4 w-full ">
-                <ul className="flex flex-wrap w-full bg-white justify-center items-center">
-                  <form
-                    className="font-base flex flex-row justify-start"
-                    onSubmit={handleSubmit}
-                  >
-                    <li className="flex flex-1 w-64 justify-center items-center">
+              <div className="flex flex-wrap w-full justify-center items-center">
+                <form
+                  className="font-base flex flex-row justify-center"
+                  onSubmit={handleSubmit}
+                >
+                  <ul className="flex flex-col lg:flex-row lg:justify-center py-4 lg:py-5 px-3 lg:px-4 w-full ">
+                    <li className="flex flex-col w-96 justify-center items-center">
                       <img
                         src={`./src/assets/admin_avatar/${formData.pict}`}
-                        className="w-60 h-60 mr-24"
+                        className="w-60 h-60 rounded-xl shadow-md shadow-slate-400"
                       />
+                      <div className="flex justify-center items-center form-control w-full mt-6">
+                        <input
+                          type="file"
+                          className="file-input file-input-bordered file-input-md w-64 text-sm"
+                        />
+                      </div>
                     </li>
                     <li className="flex flex-col flex-1 w-full">
-                      <div className="flex flex-row">
-                        <label className="mb-4 pr-4 block text-left">
+                      <div className="flex flex-col divide-slate-700 w-[350px]">
+                        <label className="mb-4 spr-4 block text-left">
                           <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
                             Email
                           </span>
@@ -87,7 +93,7 @@ export default function MyProfile() {
                             placeholder="Email"
                           />
                         </label>
-                        <label className="mb-4 pr-4 block text-left">
+                        <label className="mb-4 spr-4 block text-left">
                           <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
                             Username
                           </span>
@@ -100,10 +106,8 @@ export default function MyProfile() {
                             placeholder="Username"
                           />
                         </label>
-                      </div>
-                      <div className="flex flex-row">
                         <input type="hidden" name="id" value={formData.id} />
-                        <label className="mb-4 pr-4 block text-left">
+                        <label className="mb-4 spr-4 block text-left">
                           <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
                             Password
                           </span>
@@ -122,8 +126,8 @@ export default function MyProfile() {
                       </button>
                     </li>
                     <li className="flex flex-col"></li>
-                  </form>
-                </ul>
+                  </ul>
+                </form>
               </div>
             </div>
           </div>
