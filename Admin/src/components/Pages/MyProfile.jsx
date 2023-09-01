@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import * as MuiIcons from "@mui/icons-material";
 
 export default function MyProfile() {
   const [formData, setFormData] = useState({
@@ -80,22 +81,22 @@ export default function MyProfile() {
                   className="font-base flex flex-row justify-center"
                   onSubmit={handleSubmit}
                 >
-                  <ul className="flex flex-col lg:flex-row lg:justify-center py-4 lg:py-5 px-3 lg:px-4 w-full ">
+                  <ul className="flex flex-col lg:flex-row lg:justify-center w-full ">
                     <li className="flex flex-col w-96 justify-center items-center">
-                      <img
-                        src={`./src/assets/admin_avatar/${formData.pict}`}
-                        className="w-60 h-60 rounded-xl shadow-md shadow-slate-400"
-                      />
-                      <div className="flex justify-center items-center form-control w-full mt-6">
+                      <div className="flex flex-col justify-center items-center form-control w-full pt-6">
+                        <img
+                          src={`./src/assets/admin_avatar/${formData.pict}`}
+                          className="w-60 h-60 rounded-xl shadow-md shadow-slate-400"
+                        />
                         <input
                           type="file"
                           name="pict"
-                          className="file-input file-input-bordered file-input-md w-64 text-sm"
+                          className="file-input file-input-bordered file-input-md w-64 text-sm mt-6"
                         />
                       </div>
                     </li>
-                    <li className="flex flex-col flex-1 w-full">
-                      <div className="flex flex-col divide-slate-700 w-[350px]">
+                    <li className="flex flex-col w-96 justify-center items-center py-10">
+                      <div className="flex flex-col divide-slate-700 w-[350px] justify-center px-2">
                         <label className="mb-4 spr-4 block text-left">
                           <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
                             Email
@@ -136,10 +137,16 @@ export default function MyProfile() {
                             placeholder="Password"
                           />
                         </label>
+                        <div className="pt-10">
+                          <button
+                            className="btn btn-warning font-bold outline-none border-none w-full"
+                            type="submit"
+                          >
+                            <MuiIcons.SettingsSuggest />
+                            Update Profile
+                          </button>
+                        </div>
                       </div>
-                      <button className="btn btn-warning mt-4" type="submit">
-                        Update Admin
-                      </button>
                     </li>
                     <li className="flex flex-col"></li>
                   </ul>
