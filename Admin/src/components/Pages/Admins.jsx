@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Switch } from "@headlessui/react";
+import Skeleton from "@mui/material/Skeleton";
 
 export default function Admins() {
   const [admins, setAdmins] = useState([]);
@@ -40,79 +41,87 @@ export default function Admins() {
   return (
     <>
       {loading == true ? (
-        <div className="border border-gray-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
-          <span>loading....</span>
-          <div className="animate-pulse flex space-x-4">
-            <div className="rounded-full bg-slate-200 h-10 w-10"></div>
-            <div className="flex-1 space-y-6 py-1">
-              <div className="h-2 bg-slate-200 rounded"></div>
-              <div className="space-y-3">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="h-2 bg-slate-200 rounded col-span-2"></div>
-                  <div className="h-2 bg-slate-200 rounded col-span-1"></div>
-                </div>
-                <div className="h-2 bg-slate-200 rounded"></div>
-              </div>
-            </div>
-          </div>
+        <div className="p-0 bg-white">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <Skeleton key={index} className="p-4" />
+          ))}
         </div>
       ) : (
-        <div className="p-4 ">
-          <table className="p-2 mx-auto ">
-            <thead className="bg-slate-400 p-4">
-              <tr>
-                <th className="p-2 ">No</th>
-                <th className="p-4">Picture</th>
-                <th className="p-4">E-mail</th>
-                <th className="p-4">Username</th>
-                <th className="p-4">Role</th>
-                <th className="p-4">Grant Features</th>
-              </tr>
-            </thead>
-            <tbody className="bg-slate-200">
-              {admins.map((user, index) => (
-                <tr key={user.id}>
-                  <td className="p-3 bg-slate-300">{index + 1}</td>
-                  <td className="p-4 ">
-                    <img
-                      src={`./src/assets/admin_avatar/${user.pict}`}
-                      className="w-28 h-28 rounded-full"
-                    />
-                  </td>
-                  <td className="p-4">{user.email}</td>
-                  <td className="p-4">{user.username}</td>
-                  <td className="p-4">{user.role}</td>
-                  <td className="p-4">
-                    <p>Chat : {JSON.parse(user.authority).chat}</p>
-                    <p>
-                      Sortir Barang :{" "}
-                      {JSON.parse(user.authority).sort_warehouse}
-                    </p>
-                    <p>Ubah Harga : {JSON.parse(user.authority).alter_price}</p>
-
-                    <Switch
-                      checked={enabled}
-                      onChange={setEnabled}
-                      className={`${
-                        enabled ? "bg-blue-600" : "bg-gray-200"
-                      } relative inline-flex h-6 w-11 items-center rounded-full`}
-                    >
-                      <span className="sr-only">Enable notifications</span>
-                      <span
-                        className={`${
-                          enabled ? "translate-x-6" : "translate-x-1"
-                        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                      />
-                    </Switch>
-                    <button className="p-4 bg-red-400">A</button>
-                    <button className="p-4 bg-cyan-400">B</button>
-                    <button className="p-4 bg-blue-400">C</button>
-                    <button className="p-4 bg-violet-400">D</button>
-                  </td>
+        <div className="p-0 ">
+          <div className="overflow-x-auto">
+            <table className="table font-medium text-md">
+              {/* head */}
+              <thead className="bg-slate-300">
+                <tr>
+                  <th>No</th>
+                  <th>
+                    <label>Pilih</label>
+                  </th>
+                  <th>Admin User</th>
+                  <th>Role</th>
+                  <th>Grant Features</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-slate-200">
+                {admins.map((user, index) => (
+                  <tr key={user.id}>
+                    <td className="bg-slate-100 text-center w-0">
+                      {index + 1}
+                    </td>
+                    <th className="w-0">
+                      <label>
+                        <input type="checkbox" className="checkbox" />
+                      </label>
+                    </th>
+                    <td className="px-12 w-[450px]">
+                      <div className="flex items-center space-x-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-16 h-16">
+                            <img
+                              src={`./src/assets/admin_avatar/${user.pict}`}
+                              alt="Avatar Tailwind CSS Component"
+                            />
+                          </div>
+                        </div>
+                        <div className="pl-4">
+                          <div className="font-bold">{user.username}</div>
+                          <div className="mt-2 font-medium text-slate-500">
+                            {user.email}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p className="">
+                        {user.role == 0 ? "Super Admin" : "Admin"}
+                      </p>
+                    </td>
+                    <td>
+                      <div className="text-sm opacity-50">
+                        <p>Chat : {JSON.parse(user.authority).chat}</p>
+                        <input type="checkbox" className="toggle" checked />
+                      </div>
+                      <div className="text-sm opacity-50">
+                        <p>
+                          Sortir Barang :{" "}
+                          {JSON.parse(user.authority).sort_warehouse}
+                          <input type="checkbox" className="toggle" checked />
+                        </p>
+                      </div>
+                      <div className="text-sm opacity-50">
+                        <p>
+                          Ubah Harga :{JSON.parse(user.authority).alter_price}
+                          <input type="checkbox" className="toggle" checked />
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              {/* foot */}
+              <tfoot></tfoot>
+            </table>
+          </div>
         </div>
       )}
       <pre>

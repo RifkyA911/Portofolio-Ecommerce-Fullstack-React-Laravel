@@ -118,6 +118,16 @@ function App() {
             }
           />
           <Route
+            path="/notification"
+            element={
+              <Container
+                selectedPage="notification"
+                wideScreen={wideScreen}
+                toggleWideScreen={toggleStates}
+              />
+            }
+          />
+          <Route
             path="/settings"
             element={
               <Container
@@ -152,6 +162,16 @@ function App() {
             element={
               <Container
                 selectedPage="products"
+                wideScreen={wideScreen}
+                toggleWideScreen={toggleStates}
+              />
+            }
+          />
+          <Route
+            path="/warehouse"
+            element={
+              <Container
+                selectedPage="warehouse"
                 wideScreen={wideScreen}
                 toggleWideScreen={toggleStates}
               />
