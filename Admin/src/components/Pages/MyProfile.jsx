@@ -8,6 +8,7 @@ export default function MyProfile() {
     email: "",
     username: "",
     pict: "",
+    newPassword: "",
   });
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function MyProfile() {
         "http://127.0.0.1:8000/api/admins",
         formData
       );
-      console.log("Admin updated successfully:", response.data);
+      console.log("data send updated successfully:", response.data);
     } catch (error) {
       console.error("Error updating admin:", error);
     }
@@ -82,8 +83,8 @@ export default function MyProfile() {
                   onSubmit={handleSubmit}
                 >
                   <ul className="flex flex-col lg:flex-row lg:justify-center w-full ">
-                    <li className="flex flex-col w-96 justify-center items-center">
-                      <div className="flex flex-col justify-center items-center form-control w-full pt-6">
+                    <li className="flex flex-col w-96">
+                      <div className="flex flex-col justify-center items-center form-control w-full pt-16">
                         <img
                           src={`./src/assets/admin_avatar/${formData.pict}`}
                           className="w-60 h-60 rounded-xl shadow-md shadow-slate-400"
@@ -96,7 +97,7 @@ export default function MyProfile() {
                       </div>
                     </li>
                     <li className="flex flex-col w-96 justify-center items-center py-10">
-                      <div className="flex flex-col divide-slate-700 w-[350px] justify-center px-2">
+                      <div className="flex flex-col divide-slate-700 w-[350px] justify-center px-4">
                         <label className="mb-4 spr-4 block text-left">
                           <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
                             Email
@@ -126,15 +127,26 @@ export default function MyProfile() {
                         <input type="hidden" name="id" value={formData.id} />
                         <label className="mb-4 spr-4 block text-left">
                           <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
-                            Password
+                            Password "superadmin"
                           </span>
                           <input
                             className="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
                             type="password"
                             name="password"
-                            value="superadmin"
                             onChange={handleChange}
                             placeholder="Password"
+                          />
+                        </label>
+                        <label className="mb-4 spr-4 block text-left">
+                          <span className="after:content-[''] after:ml-0.5 after:text-blue-500 block text-sm font-medium text-slate-700">
+                            New Password
+                          </span>
+                          <input
+                            className="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
+                            type="password"
+                            name="newPassword"
+                            onChange={handleChange}
+                            placeholder="New Password"
                           />
                         </label>
                         <div className="pt-10">

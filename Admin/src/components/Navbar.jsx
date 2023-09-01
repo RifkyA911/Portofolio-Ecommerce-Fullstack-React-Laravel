@@ -45,7 +45,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
             </div>
             {/* Menu at left */}
             <div className="flex order-last items-center w-72 justify-end">
-              {/* mail */}
+              {/* Chat */}
               <Popover className="relative pl-2">
                 {({ open }) => (
                   <>
@@ -76,7 +76,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                       leaveFrom="opacity-100 translate-y-0"
                       leaveTo="opacity-0 translate-y-1"
                     >
-                      <Popover.Panel className="-translate-x-[40%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
+                      <Popover.Panel className="-translate-x-[35%] lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                           <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                             <span className="text-base font-medium">
@@ -176,7 +176,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                       leaveFrom="opacity-100 translate-y-0"
                       leaveTo="opacity-0 translate-y-1"
                     >
-                      <Popover.Panel className="-translate-x-[40%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
+                      <Popover.Panel className="-translate-x-[48%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                           <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                             <span className="text-base font-medium">
