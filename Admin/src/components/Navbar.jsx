@@ -3,7 +3,8 @@ import { Link, Outlet } from "react-router-dom";
 import { MarketInbox } from "./Data/Inbox";
 import { MarketNotification } from "./Data/Notification";
 
-import { Menu, Transition, Popover } from "@headlessui/react";
+import { Menu, Transition, Popover, Switch } from "@headlessui/react";
+
 import * as MuiIcons from "@mui/icons-material";
 // import Badge from "@mui/material/Badge";
 // import { FcAbout } from "react-icons/fc";
@@ -24,6 +25,8 @@ const Toggle = ({ toggleStates }) => {
 };
 
 const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
+  const [enabled, setEnabled] = useState(false);
+
   return (
     <>
       {showNav == true ? (
@@ -257,7 +260,73 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                 )}
               </Popover>
               {/* profile */}
-              <Menu as="div" className="relative flex text-left px-4">
+              <Popover className="relative pl-6">
+                {({ open }) => (
+                  <>
+                    <Popover.Button
+                      onClick={toggleHideSidebar}
+                      className={`
+                ${open ? "" : "text-opacity-90"}
+                rounded-md ${
+                  ThemeBG[0].iconBG
+                } font-extralight text-dark rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
+                    >
+                      <div className="relative avatar ">
+                        <div className="w-10 rounded-full">
+                          <img
+                            src=".\src\assets\admin_avatar\sara.jpg"
+                            alt="profile"
+                            className="w-9 h-9 rounded-full text-center"
+                          />
+                        </div>
+                      </div>
+                    </Popover.Button>
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-200"
+                      enterFrom="opacity-0 translate-y-1"
+                      enterTo="opacity-100 translate-y-0"
+                      leave="transition ease-in duration-150"
+                      leaveFrom="opacity-100 translate-y-0"
+                      leaveTo="opacity-0 translate-y-1"
+                    >
+                      <Popover.Panel className="-translate-x-[48%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-72">
+                        <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                          <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
+                            <span className="text-base font-medium">
+                              Admin1
+                            </span>
+                          </div>
+                          <div className="relative bg-white p-4 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
+                            Profile
+                          </div>
+                          <div className="bg-gray-50">
+                            <Link
+                              to="/login"
+                              className="flex flex-1 justify-center items-center p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                            >
+                              <MuiIcons.LogoutOutlined className="text-dark mr-4" />
+                              Log Out
+                            </Link>
+                          </div>
+                        </div>
+                      </Popover.Panel>
+                    </Transition>
+                  </>
+                )}
+              </Popover>
+            </div>
+          </div>
+        </nav>
+      ) : (
+        ""
+      )}
+    </>
+  );
+};
+
+{
+  /* <Menu as="div" className="relative flex text-left px-4">
                 <div>
                   <Menu.Button
                     className="flex rounded-xl bg-gray-200 hover:bg-blue-500 hover:text-white duration-200 items-center"
@@ -362,16 +431,8 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                     </div>
                   </Menu.Items>
                 </Transition>
-              </Menu>
-            </div>
-          </div>
-        </nav>
-      ) : (
-        ""
-      )}
-    </>
-  );
-};
+              </Menu> */
+}
 
 export { Toggle };
 export default Navbar;
