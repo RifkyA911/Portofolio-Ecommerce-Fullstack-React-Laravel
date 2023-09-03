@@ -3,7 +3,7 @@ import { Link, Outlet } from "react-router-dom";
 import { MarketInbox } from "./Data/Inbox";
 import { MarketNotification } from "./Data/Notification";
 
-import { Menu, Transition, Popover, Switch } from "@headlessui/react";
+import { Menu, Transition, Popover, Switch, Tab } from "@headlessui/react";
 
 import * as MuiIcons from "@mui/icons-material";
 // import Badge from "@mui/material/Badge";
@@ -276,7 +276,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                           <img
                             src=".\src\assets\admin_avatar\sara.jpg"
                             alt="profile"
-                            className="w-9 h-9 rounded-full text-center"
+                            className="w-6 h-6 rounded-full text-center"
                           />
                         </div>
                       </div>
@@ -290,23 +290,47 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                       leaveFrom="opacity-100 translate-y-0"
                       leaveTo="opacity-0 translate-y-1"
                     >
-                      <Popover.Panel className="-translate-x-[48%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-72">
+                      <Popover.Panel className="-translate-x-[75%]  lg:-translate-x-[85%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-2 absolute w-60">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                          <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
-                            <span className="text-base font-medium">
-                              Admin1
-                            </span>
+                          {/* <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
+                              <span className="text-base font-medium"></span>
+                            </div> */}{" "}
+                          <div className="lg:p-4 py-2 px-2 flex flex-col w-full bg-slate-50 shadow-sm">
+                            <div className="flex flex-row picture items-center px-4">
+                              <div className="flex relative pr-4">
+                                <img
+                                  src=".\src\assets\admin_avatar\sara.jpg"
+                                  alt="profile"
+                                  className="w-14 h-14 rounded-full text-center"
+                                />
+                              </div>
+                              <div className="flex flex-col text-left">
+                                <p className="font-medium text-base">Admin1</p>
+                                <p className="text-sm">Super Admin</p>
+                              </div>
+                            </div>
                           </div>
-                          <div className="relative bg-white p-4 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
-                            Profile
-                          </div>
-                          <div className="bg-gray-50">
+                          <div className="relative bg-white py-2 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
+                            <Link
+                              to="/myprofile"
+                              className="flex flex-1 items-center py-3 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                            >
+                              <MuiIcons.ManageAccounts className="text-dark mr-4" />
+                              <p>My Profile</p>
+                            </Link>
+                            <Link
+                              to="/myprofile"
+                              className="flex flex-1 items-center py-3 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                            >
+                              <MuiIcons.Settings className="text-dark mr-4" />
+                              <p>Settings</p>
+                            </Link>
                             <Link
                               to="/login"
-                              className="flex flex-1 justify-center items-center p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                              className="border-t-2 border-slate-200 flex flex-1 items-center py-3 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                             >
                               <MuiIcons.LogoutOutlined className="text-dark mr-4" />
-                              Log Out
+                              <p>Log Out</p>
                             </Link>
                           </div>
                         </div>
