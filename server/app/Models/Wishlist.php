@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Wishlist extends Model
 {
-    protected $guard = ['id'];
+    protected $guarded = ['id'];
     public $timestamps = false;
     use HasFactory;
 }

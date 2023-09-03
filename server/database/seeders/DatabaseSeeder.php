@@ -79,7 +79,7 @@ class DatabaseSeeder extends Seeder
 
         Transaction::create([
             'user_id' => '1',
-            'adm_id' => '2',
+            'admin_id' => '2',
             'products_id' => "['1'=>'3']",
             'total_price' => 60000,
             'checked_out' => now(),
@@ -88,7 +88,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Transaction::create([
             'user_id' => '2',
-            'adm_id' => '1',
+            'admin_id' => '1',
             'products_id' => "['2'=>'1']",
             'total_price' => 40000,
             'checked_out' => null,
