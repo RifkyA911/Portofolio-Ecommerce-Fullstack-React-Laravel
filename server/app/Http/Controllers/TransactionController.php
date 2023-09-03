@@ -68,27 +68,27 @@ class TransactionController extends Controller
         return new PostResource(true, $pesan, $trans);
     }
     
-    public function showByAdmin($adm_id, $tahap = null)
+    public function showByAdmin($admin_id, $tahap = null)
     {
         $pesan = "data Transaksi berdasarkan admin tahap ".$tahap." :";
         // parameter tahap berisi null, checkedout, sent, atau done
         if ($tahap == "checkedout") {
             $trans = Transaction::where([
-                ['adm_id', '=', $adm_id],
+                ['admin_id', '=', $admin_id],
                 ['checked_out', '!=', null]
             ])->get();
         } elseif ($tahap == "sent") {
             $trans = Transaction::where([
-                ['adm_id', '=', $adm_id],
+                ['admin_id', '=', $admin_id],
                 ['sent', '!=', null]
             ])->get();
         } elseif ($tahap == "done") {
             $trans = Transaction::where([
-                ['adm_id', '=', $adm_id],
+                ['admin_id', '=', $admin_id],
                 ['done', '!=', null]
             ])->get();
         } else {
-            $trans = Transaction::where('adm_id', '=', $adm_id)->get();
+            $trans = Transaction::where('admin_id', '=', $admin_id)->get();
             $pesan = "data Transaksi berdasarkan admin :";
         }
         return new PostResource(true, $pesan, $trans);

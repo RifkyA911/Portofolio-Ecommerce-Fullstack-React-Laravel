@@ -9,8 +9,12 @@ class Admin extends Model
 {
     use HasFactory;
     // protected $fillable = ['email', 'username', 'pw', 'role', 'pict'];
-    protected $guard = ['id'];
+    protected $guarded = ['id'];
     protected $casts = [
         'password' => 'hashed'
     ];
+
+    public function transaction() {
+        return $this->hasMany(Transaction::class);
+    }
 }

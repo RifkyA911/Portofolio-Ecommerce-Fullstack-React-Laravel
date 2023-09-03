@@ -4,9 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminsController;
+use App\Http\Controllers\DialogController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\AdminsController;
 use App\Http\Controllers\TransactionController;
 
 /*
@@ -74,4 +76,19 @@ Route::get('/transaction/{id}', [TransactionController::class, 'show']);
 Route::get('/transaction/user/{user_id}/{tahap?}', [TransactionController::class, 'showByUser']);
 // Endpoint tahap Transaction by admin
 // ketentuan sama dengan endpoint user
-Route::get('/transaction/admin/{adm_id}/{tahap?}', [TransactionController::class, 'showByAdmin']);
+Route::get('/transaction/admin/{admin_id}/{tahap?}', [TransactionController::class, 'showByAdmin']);
+
+// Endpoint Dialog
+// create new, with or without product id
+// automatically called when start new dialog via message endpoint
+Route::post('/dialog/new', [DialogController::class, 'store']);
+
+// Endpoint Message
+// create new message
+// parameter for add massage :
+// user_id & admin_id (fill one of these only, let the other null)
+// dialog_id (can be null if starting new dialog)
+// message (can't be null)
+// pict (can be null)
+// product_id (can be null if sending direct message to admin)
+Route::post('/message', [MessageController::class, 'store']);
