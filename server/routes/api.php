@@ -57,12 +57,17 @@ Route::post('/produk', [ProductController::class, 'store']);
 // update produk
 Route::put('/produk', [ProductController::class, 'update']);
 
-// Endpoint Cart/keranjang
+// Endpoint Cart/keranjang (user-only feature)
 Route::get('/carts/{user_id}', [CartController::class, 'showByUser']);
 Route::get('/cart/{id}', [CartController::class, 'showById']);
+Route::post('/cart', [CartController::class, 'store']);     // parameter user_id, product_id, count(optional)
+Route::post('/cart/delete', [CartController::class, 'destroy']);    // parameter id
+Route::post('/cart/update', [CartController::class, 'update']);     // parameter id, count
 
-// Endpoint Wishlist
+// Endpoint Wishlist (user-only feature)
 Route::get('/wishlist/{user_id}', [WishlistController::class, 'showByUser']);
+Route::post('/wishlist', [WishlistController::class, 'store']);     // parameter user_id, product_id
+Route::post('/wishlist/delete', [WishlistController::class, 'destroy']);    // parameter id
 
 // Endpoint Transaction
 Route::get('/transaction', [TransactionController::class, 'index']);

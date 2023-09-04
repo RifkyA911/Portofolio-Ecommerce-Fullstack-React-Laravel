@@ -29,7 +29,13 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (!$request->has('count')) {
+            $data = array_merge($request->all(), ['count' => '1']);
+        } else {$data = $request->all();}
+        // return $data;
+        if ($respon = Cart::create($data)) {
+            return new PostResource(true, 'Berhasil menambahkan ke keranjang', $respon);
+        } else {return new PostResource(false, 'Gagal menambahkan ke keranjang', $request);}
     }
 
     /**
@@ -60,16 +66,21 @@ class CartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cart $cart)
+    public function update(Request $request)
     {
-        //
+        $cart = Cart::find($request->input('id'));
+        $cart->count = $request->input('count');
+        return new PostResource(true, 'Berhasil terupdate', $cart->update());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cart $cart)
+    public function destroy(Request $request)
     {
-        //
+        if (Cart::find($request->input('id'))->delete()) {
+            return new PostResource(true, "Item berhasil dihapus dari keranjang", '');
+        }
+        return new PostResource(false, "Item gagal dihapus dari keranjang", $request->all());
     }
 }
