@@ -120,7 +120,7 @@ class UserController extends Controller
             $updateUser->password = $request->input('password');
         }
         $updateUser->address = $request->input('address');
-        $updateUser->verified = $request->input('verified');
+        // $updateUser->verified = $request->input('verified');
         $updateUser->pict = $request->input('pict');
         return new PostResource(true, "User ter-update.", $updateUser->update());
     }
