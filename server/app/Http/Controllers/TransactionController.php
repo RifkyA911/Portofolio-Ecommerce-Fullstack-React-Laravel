@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
-
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\Console\Input\Input;
 
 class TransactionController extends Controller
 {
@@ -31,7 +32,20 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'products_id' => 'required',
+            'total_price' => 'required',
+        ]);
+
+        if ($validator->fails()) {  // jika validasi gagal
+            return new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()]);
+        }
+
+        if ($hasil = Transaction::create($request->all())) {
+            return new PostResource(true, 'Transaksi berhasil', $hasil);
+        }
+        return new PostResource(false, 'Transaksi gagal', ['old_input' => $request->all()]);
     }
 
     /**
@@ -108,6 +122,39 @@ class TransactionController extends Controller
     public function update(Request $request, Transaction $transaction)
     {
         //
+    }
+
+    // update status checkout
+    public function checkout(Request $request) {
+        $transaksi = Transaction::find($request->input('id'));
+        if ($transaksi->user_id == $request->input('user_id')) {
+            $transaksi->checked_out = now();
+            return new PostResource(true, 'Transaksi berhasil', $transaksi->update());
+        } else {
+            return new PostResource(false, 'Gagal check out, forbidden action detected', $request->all());
+        }
+    }
+    // update status sent
+    public function sent(Request $request) {
+        $transaksi = Transaction::find($request->input('id'));
+        if ($request->has('role_admin') && $request->has('admin_id') && ($transaksi->sent == null)) {
+            $transaksi->sent = now();
+            $transaksi->admin_id = $request->input('admin_id');
+            return new PostResource(true, 'Status transaksi berhasil diubah', $transaksi->update());
+        } else {
+            return new PostResource(false, 'Status transaksi gagal diubah', 'forbidden action detected');
+        }
+    }
+    // update status done
+    public function done(Request $request) {
+        $transaksi = Transaction::find($request->input('id'));
+        // check if admin is same as transaction's admin_id, or th user is same as transaction's user_id
+        if (($request->has('role_admin') && ($request->input('admin_id') == $transaksi->admin_id)) || ($transaksi->user_id == $request->input('user_id'))) {
+            $transaksi->done = now();
+            return new PostResource(true, 'Status transaksi berhasil diubah', $transaksi->update());
+        } else {
+            return new PostResource(false, 'Status transaksi gagal diubah', 'forbidden action detected');
+        }
     }
 
     /**

@@ -71,7 +71,6 @@ class ProductController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "id" => 'required|numeric',
             "name" => 'required',
             "category" => 'required',
             "price" => 'required|numeric',
