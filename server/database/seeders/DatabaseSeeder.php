@@ -7,6 +7,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Cart;
+use App\Models\Dialog;
+use App\Models\Message;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\Wishlist;
@@ -112,9 +114,56 @@ class DatabaseSeeder extends Seeder
             'product_id' => 2
         ]);
         Wishlist::factory(5)->create();
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        
+        // message & dialog
+        Dialog::create([
+            'dialog_number' => '1'.time(),
+            'product_id' => '1'
+        ]);
+        Dialog::create([
+            'dialog_number' => '2'.time(),
+            'product_id' => '2'
+        ]);
+        Dialog::create([
+            'dialog_number' => '0'.time(),
+            'product_id' => null
+        ]);
+
+        Message::create([
+            'user_id' => null,
+            'admin_id' => '1',
+            'dialog_id' => '3',
+            'message' => 'Bayar hutang woi'
+        ]);
+        Message::create([
+            'user_id' => '1',
+            'admin_id' => null,
+            'dialog_id' => '3',
+            'message' => 'gamao'
+        ]);
+        Message::create([
+            'user_id' => '1',
+            'admin_id' => null,
+            'dialog_id' => '1',
+            'message' => 'spek?'
+        ]);
+        Message::create([
+            'user_id' => null,
+            'admin_id' => '2',
+            'dialog_id' => '1',
+            'message' => 'spek matalu'
+        ]);
+        Message::create([
+            'user_id' => '3',
+            'admin_id' => null,
+            'dialog_id' => '1',
+            'message' => 'njer'
+        ]);
+        Message::create([
+            'user_id' => '2',
+            'admin_id' => null,
+            'dialog_id' => '2',
+            'message' => 'stok?'
+        ]);
     }
 }

@@ -27,56 +27,77 @@ use App\Http\Controllers\TransactionController;
 // });
 
 // Endpoint Admin
-Route::get('/admins', [AdminsController::class, 'index']);
-Route::get('/admins/{id}', [AdminsController::class, 'find']);
-//  create admin
-Route::post('/admins', [AdminsController::class, 'store']);
-// update admin
-Route::put('/admins', [AdminsController::class, 'update']);
-// login for admin
-Route::post('/admins/login', [AdminsController::class, 'login']);
+Route::controller(AdminsController::class)->group(function () {
+    Route::get('/admins', 'index');
+    Route::get('/admins/{id}', 'find');     // parameter id
+    //  create admin
+    Route::post('/admins', 'store');    // parameter role_admin == 0; data => email, username, password, role
+    // update admin
+    Route::put('/admins', 'update');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    // login for admin
+    Route::post('/admins/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
+});
 
 // Endpoint User
-// Route::get('/user', function(){
-//     return [UserController::class, 'index'];
-// });
-Route::get('/user', [UserController::class, 'index']);
-Route::get('/user/{id}', [UserController::class, 'show']);
-// create user
-Route::post('/user', [UserController::class, 'store']);
-// update user
-Route::put('/user', [UserController::class, 'update']);
-// login user
-Route::post('/login', [UserController::class, 'login']);
+Route::controller(UserController::class)->group(function () {
+    Route::get('/user', 'index');
+    Route::get('/user/{id}', 'show');   // parameter id
+    // create user
+    Route::post('/user', 'store');  // parameter email, username, password(min:6)
+    // update user
+    Route::put('/user', 'update');  // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    // optional : address, pict;
+    // login user
+    Route::post('/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
+});
 
 // Endpoint Product
-Route::get('/produk', [ProductController::class, 'getAll']);
-Route::get('/produk/{id}', [ProductController::class, 'getById']);
-// create produk
-Route::post('/produk', [ProductController::class, 'store']);
-// update produk
-Route::put('/produk', [ProductController::class, 'update']);
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/product', 'getAll');
+    Route::get('/product/{id}', 'getById'); // parameter id
+    // create product
+    Route::post('/product', 'store');   // parameter name, category, price(numeric), stok(numeric)
+    // optional : discount, pict, description
+    // update product
+    Route::put('/product', 'update');   // parameter id, name, category, price(numeric), stok(numeric)
+    // optional : discount, pict, description
+});
 
-// Endpoint Cart/keranjang
-Route::get('/carts/{user_id}', [CartController::class, 'showByUser']);
-Route::get('/cart/{id}', [CartController::class, 'showById']);
+// Endpoint Cart/keranjang (user-only feature)
+Route::controller(CartController::class)->group(function () {
+    Route::get('/carts/{user_id}', 'showByUser');   // parameter user_id
+    Route::get('/cart/{id}', 'showById');   // parameter id
+    Route::post('/cart', 'store');     // parameter user_id, product_id, count(optional)
+    Route::post('/cart/delete', 'destroy');    // parameter id
+    Route::post('/cart/update', 'update');     // parameter id, count
+});
 
-// Endpoint Wishlist
-Route::get('/wishlist/{user_id}', [WishlistController::class, 'showByUser']);
+// Endpoint Wishlist (user-only feature)
+Route::controller(WishlistController::class)->group(function () {
+    Route::get('/wishlist/{user_id}', 'showByUser');    // parameter user_id
+    Route::post('/wishlist', 'store');     // parameter user_id, product_id
+    Route::post('/wishlist/delete', 'destroy');    // parameter id
+});
 
 // Endpoint Transaction
-Route::get('/transaction', [TransactionController::class, 'index']);
-Route::get('/transaction/{id}', [TransactionController::class, 'show']);
-// Endpoint tahap Transaction by user
-// parameter tahap berisi null, checkedout, sent, atau done
-// tahap = null -> user belum bayar/checkout (tiga kolom pada tabel berisi null)
-// tahap = checkedout -> user sudah bayar/checkout tpi admin belum mengirim barang (kolom check_out sudah terisi tpi kolom sent dan done kosong)
-// begitu seterusnya
-// Route::get('/transaction/user/{user_id}', [TransactionController::class, 'showByUser']);
-Route::get('/transaction/user/{user_id}/{tahap?}', [TransactionController::class, 'showByUser']);
-// Endpoint tahap Transaction by admin
-// ketentuan sama dengan endpoint user
-Route::get('/transaction/admin/{admin_id}/{tahap?}', [TransactionController::class, 'showByAdmin']);
+Route::controller(TransactionController::class)->group(function () {
+    Route::get('/transaction', 'index');
+    Route::get('/transaction/{id}', 'show');    // parameter id
+    Route::post('/transaction/buy', 'store');   // parameter user_id, products_id(in array/json form), total_price. all required
+    Route::post('/transaction/checkout', 'checkout');   // parameter id, user_id(same as trans' user)
+    Route::post('/transaction/sent', 'sent');       // parameter id, admin_id, role_admin
+    Route::post('/transaction/done', 'done');       // parameter id. user_id OR (admin_id & role_admin)
+    // Endpoint tahap Transaction by user
+    // parameter tahap berisi null, checkedout, sent, atau done
+    // tahap = null -> user belum bayar/checkout (tiga kolom pada tabel berisi null)
+    // tahap = checkedout -> user sudah bayar/checkout tpi admin belum mengirim barang (kolom check_out sudah terisi tpi kolom sent dan done kosong)
+    // begitu seterusnya
+    // Route::get('/transaction/user/{user_id}', 'showByUser');
+    Route::get('/transaction/user/{user_id}/{tahap?}', 'showByUser'); // parameter user_id, tahap(opional)
+    // Endpoint tahap Transaction by admin
+    // ketentuan sama dengan endpoint user
+    Route::get('/transaction/admin/{admin_id}/{tahap?}', 'showByAdmin'); // parameter admin_id, tahap(optional)
+});
 
 // Endpoint Dialog
 // create new, with or without product id

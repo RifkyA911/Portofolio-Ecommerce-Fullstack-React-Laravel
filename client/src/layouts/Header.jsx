@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import IconHeader from "../components/IconHeader";
 import { useLocation, useNavigate } from "react-router-dom";
+import PageHeader from "./PageHeader";
 
 const Header = () => {
   const wishlist = useSelector((state) => state.wishlist.wishlist);
@@ -42,17 +43,31 @@ const Header = () => {
               <ArrowLeftIcon className="h-6 w-6" />
             </button>
           )}
-          <div className="flex justify-between items-center gap-8">
-            <IconHeader data={wishlist} route="/wishlist">
-              <HeartIcon className="h-6 w-6 hover:fill-red-500 hover:text-red-500" />
-            </IconHeader>
-            <IconHeader data={cart} route="/cart">
+          {location.pathname === "/" ? (
+            <div className="flex justify-between items-center gap-8">
+              <IconHeader data={wishlist} route="/wishlist" indicator={true}>
+                <HeartIcon className="h-6 w-6 hover:fill-red-500 hover:text-red-500" />
+              </IconHeader>
+              <IconHeader data={cart} route="/cart" indicator={true}>
+                <ShoppingBagIcon className="h-6 w-6 hover:fill-yellow-300" />
+              </IconHeader>
+              <IconHeader route="/profile">
+                <UserIcon className="h-6 w-6 hover:fill-black" />
+              </IconHeader>
+            </div>
+          ) : location.pathname === "/cart" ? (
+            <PageHeader data={cart} title={"CART"} indicator={true}>
               <ShoppingBagIcon className="h-6 w-6 hover:fill-yellow-300" />
-            </IconHeader>
-            <button onClick={() => navigate("/profile")}>
-              <UserIcon className="h-6 w-6 hover:fill-black" />
-            </button>
-          </div>
+            </PageHeader>
+          ) : location.pathname === "/wishlist" ? (
+            <PageHeader data={wishlist} title={"WISHLIST"} indicator={true}>
+              <HeartIcon className="h-6 w-6 hover:fill-yellow-300" />
+            </PageHeader>
+          ) : (
+            <PageHeader title={"PROFILE"} indicator={false}>
+              <UserIcon className="h-6 w-6 hover:fill-yellow-300" />
+            </PageHeader>
+          )}
         </div>
       </div>
     </header>

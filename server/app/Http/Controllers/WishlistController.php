@@ -29,7 +29,10 @@ class WishlistController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if ($hasil = Wishlist::create($request->all())) {
+            return new PostResource(true, 'Berhasil ditambah ke Wishlist', $hasil);
+        }
+        return new PostResource(false, 'Gagal ditambah ke Wishlist', $request->all());
     }
 
     /**
@@ -63,8 +66,11 @@ class WishlistController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Wishlist $wishlist)
+    public function destroy(Request $request)
     {
-        //
+        if (Wishlist::find($request->input('id'))->delete()) {
+            return new PostResource(true, "Item berhasil dihapus dari Wishlist", '');
+        }
+        return new PostResource(false, "Item gagal dihapus dari Wishlist", $request->all());
     }
 }
