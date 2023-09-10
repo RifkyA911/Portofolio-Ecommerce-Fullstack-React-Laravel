@@ -1,14 +1,22 @@
 /* eslint-disable react/prop-types */
+import { useDispatch } from "react-redux";
 import QtyButton from "./QtyButton";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { removeFromCart } from "./redux/cartSlice";
 
 const CartItem = ({ item }) => {
+  const dispatch = useDispatch();
+
   return (
     <div className="flex w-full gap-4 py-4">
-      <div className="w-[40%] md:w-1/3">
+      <button onClick={() => dispatch(removeFromCart(item))}>
+        <TrashIcon className="w-6 h-6 text-red-400 hover:fill-red-400 hover:text-red-700" />
+      </button>
+      <div className="flex justify-center items-center w-[40%] md:w-1/3">
         <img
-          src="Hero.jpg"
+          src={item.images[0]}
           alt=""
-          className="rounded-xl w-full h-full object-cover object-center"
+          className="rounded-xl h-[100px] object-cover object-center"
         />
       </div>
       <div className="w-[45%] md:w-[55%] flex flex-col space-y-2">

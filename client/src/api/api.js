@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const PRODUCTS = "https://dummyjson.com/products?limit=10&select=title,price";
+const PRODUCTS =
+  "https://dummyjson.com/products?limit=10&select=title,price,images";
 
 export const fetchProducts = async (callbackFunction) => {
   let response;

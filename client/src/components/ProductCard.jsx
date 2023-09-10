@@ -20,12 +20,8 @@ const ProductCard = ({ product }) => {
   return (
     <div className="flex w-1/2 md:w-1/3 lg:w-1/4 my-2">
       <div className="w-full px-4 py-6 rounded-3xl min-h-full mb-3 flex flex-col hover:bg-gray-200">
-        <div className="relative">
-          <img
-            src="Hero.jpg"
-            alt=""
-            className="rounded-3xl w-[inherit] h-[inherit]"
-          />
+        <div className="relative flex items-center justify-center flex-grow">
+          <img src={product.images[0]} alt="" className="h-[100px]" />
           <button
             className="right-2 bottom-4 absolute flex items-center rounded-full bg-yellow-100"
             onClick={() => addToWishlistHandle(product.id)}
@@ -40,7 +36,7 @@ const ProductCard = ({ product }) => {
             />
           </button>
         </div>
-        <p className="mt-4 px-2 font-extrabold text-base opacity-60 flex-grow">
+        <p className="mt-4 px-2 font-extrabold text-base opacity-60">
           {product.title}
         </p>
         <div className="relative px-2">
