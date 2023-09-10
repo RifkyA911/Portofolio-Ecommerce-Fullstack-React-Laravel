@@ -99,19 +99,16 @@ export default function Admins() {
                     <td>
                       <div className="text-sm opacity-50">
                         <p>Chat : {JSON.parse(user.authority).chat}</p>
-                        <input type="checkbox" className="toggle" checked />
                       </div>
                       <div className="text-sm opacity-50">
                         <p>
                           Sortir Barang :{" "}
                           {JSON.parse(user.authority).sort_warehouse}
-                          <input type="checkbox" className="toggle" checked />
                         </p>
                       </div>
                       <div className="text-sm opacity-50">
                         <p>
                           Ubah Harga :{JSON.parse(user.authority).alter_price}
-                          <input type="checkbox" className="toggle" checked />
                         </p>
                       </div>
                     </td>
