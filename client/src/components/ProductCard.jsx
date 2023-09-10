@@ -49,7 +49,7 @@ const ProductCard = ({ product }) => {
           </p>
           <IconButton
             text={"ADD"}
-            onClick={() => dispatch(addToCart({ id: product.id, qty: 1 }))}
+            onClick={() => dispatch(addToCart({ ...product, qty: 1 }))}
           >
             <ShoppingCartIcon className="w-4 h-4 md:w-6 md:h-6" />
           </IconButton>
