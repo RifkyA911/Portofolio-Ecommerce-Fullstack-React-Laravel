@@ -95,12 +95,18 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $updateUser = User::find($request->input('id'));
-        $validator = Validator::make($request->all(), [
+        // initiate rule for validation
+        $rule = [
             "email" => ['required', 'email', Rule::unique('users', 'email')->ignore($request->input('id'))],
             "username" => 'required',
-            "password" => 'required|min:6',
-            "newPassword" => 'min:6|confirmed'
-        ]);
+            "password" => 'required|min:6'
+        ];
+
+        // if user issuing newPassword then add rule list
+        if ($request->input("newPassword") !== null) {
+            $rule = array_merge($rule, ["newPassword" => "min:6|confirmed"]);
+        }
+        $validator = Validator::make($request->all(), $rule);
 
         if ($validator->fails()) {
             return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->except('id')]);
