@@ -89,19 +89,23 @@ class AdminsController extends Controller
 
     public function update(Request $request)
     {
-
-        $validator = Validator::make($request->all(), [
+        $updateAdmin = Admin::find($request->input('id'));
+        // initiate rule for validation
+        $rule = [
             "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
             "username" => 'required',
-            "password" => 'required|min:6',
-            "newPassword" => 'min:6|confirmed'
-        ]);
+            "password" => 'required|min:6'
+        ];
+
+        // if an Admin issuing newPassword then add rule list
+        if ($request->input("newPassword") !== null) {
+            $rule = array_merge($rule, ["newPassword" => "min:6|confirmed"]);
+        }
+        $validator = Validator::make($request->all(), $rule);
 
         if ($validator->fails()) {
             return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->except('id')]);
         }
-
-        $updateAdmin = Admin::find($request->input('id'));
 
         // cek password lama
         if (!Hash::check($request->input('password'), $updateAdmin->password)) {

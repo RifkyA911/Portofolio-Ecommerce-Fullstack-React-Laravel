@@ -34,8 +34,8 @@ class MessageController extends Controller
         if (!$request->has('dialog_id')) {
             // call dialog function for create new dialog
             // then get the id
-            $id = $dialogController->store($request);
-            $dialog_id = $id->resource->id;
+            $dialog = $dialogController->store($request);
+            $dialog_id = $dialog->resource->id;
             // $dialog_id = 5;
             $data = array_merge($request->except('product_id'), ['dialog_id' => $dialog_id]);
         } else{

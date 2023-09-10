@@ -27,7 +27,7 @@ use App\Http\Controllers\TransactionController;
 // });
 
 // Endpoint Admin
-Route::controller(AdminsController::class)->group(function () {
+Route::controller(AdminsController::class)->group(function(){
     Route::get('/admins', 'index');
     Route::get('/admins/{id}', 'find');     // parameter id
     //  create admin
@@ -39,7 +39,7 @@ Route::controller(AdminsController::class)->group(function () {
 });
 
 // Endpoint User
-Route::controller(UserController::class)->group(function () {
+Route::controller(UserController::class)->group(function(){
     Route::get('/user', 'index');
     Route::get('/user/{id}', 'show');   // parameter id
     // create user
@@ -52,7 +52,7 @@ Route::controller(UserController::class)->group(function () {
 });
 
 // Endpoint Product
-Route::controller(ProductController::class)->group(function () {
+Route::controller(ProductController::class)->group(function(){
     Route::get('/product', 'getAll');
     Route::get('/product/{id}', 'getById'); // parameter id
     // create product
@@ -64,7 +64,7 @@ Route::controller(ProductController::class)->group(function () {
 });
 
 // Endpoint Cart/keranjang (user-only feature)
-Route::controller(CartController::class)->group(function () {
+Route::controller(CartController::class)->group(function(){
     Route::get('/carts/{user_id}', 'showByUser');   // parameter user_id
     Route::get('/cart/{id}', 'showById');   // parameter id
     Route::post('/cart', 'store');     // parameter user_id, product_id, count(optional)
@@ -73,14 +73,14 @@ Route::controller(CartController::class)->group(function () {
 });
 
 // Endpoint Wishlist (user-only feature)
-Route::controller(WishlistController::class)->group(function () {
+Route::controller(WishlistController::class)->group(function(){
     Route::get('/wishlist/{user_id}', 'showByUser');    // parameter user_id
     Route::post('/wishlist', 'store');     // parameter user_id, product_id
     Route::post('/wishlist/delete', 'destroy');    // parameter id
 });
 
 // Endpoint Transaction
-Route::controller(TransactionController::class)->group(function () {
+Route::controller(TransactionController::class)->group(function(){
     Route::get('/transaction', 'index');
     Route::get('/transaction/{id}', 'show');    // parameter id
     Route::post('/transaction/buy', 'store');   // parameter user_id, products_id(in array/json form), total_price. all required
