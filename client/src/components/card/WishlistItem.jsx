@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useDispatch } from "react-redux";
 import { HeartIcon } from "@heroicons/react/24/outline";
-import { removeFromWishlist } from "./redux/wishlistSlice";
+import { removeFromWishlist } from "../redux/wishlistSlice";
 
 const WishlistItem = ({ item }) => {
   const dispatch = useDispatch();

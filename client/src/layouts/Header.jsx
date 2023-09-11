@@ -43,7 +43,8 @@ const Header = () => {
               <ArrowLeftIcon className="h-6 w-6" />
             </button>
           )}
-          {location.pathname === "/" ? (
+          {location.pathname === "/" ||
+          location.pathname.indexOf("/product/") !== -1 ? (
             <div className="flex justify-between items-center gap-8">
               <IconHeader data={wishlist} route="/wishlist" indicator={true}>
                 <HeartIcon className="h-6 w-6 hover:fill-red-500 hover:text-red-500" />
@@ -63,10 +64,12 @@ const Header = () => {
             <PageHeader data={wishlist} title={"WISHLIST"} indicator={true}>
               <HeartIcon className="h-6 w-6 hover:fill-yellow-300" />
             </PageHeader>
-          ) : (
+          ) : location.pathname === "/profile" ? (
             <PageHeader title={"PROFILE"} indicator={false}>
               <UserIcon className="h-6 w-6 hover:fill-yellow-300" />
             </PageHeader>
+          ) : (
+            <PageHeader></PageHeader>
           )}
         </div>
       </div>

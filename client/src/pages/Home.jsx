@@ -1,5 +1,5 @@
-import EmblaCarousel from "../components/Carousel/EmblaCarousel";
-import Content from "../components/Content";
+import EmblaCarousel from "../components/carousel/EmblaCarousel";
+import Content from "../components/content/Content";
 import Container from "../layouts/Container";
 import Footer from "../layouts/Footer";
 import Header from "../layouts/Header";

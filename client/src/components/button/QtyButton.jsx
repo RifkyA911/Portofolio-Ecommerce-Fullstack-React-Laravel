@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addToCart, decreaseCartQty } from "./redux/cartSlice";
+import { addToCart, decreaseCartQty } from "../redux/cartSlice";
 
 const QtyButton = ({ item }) => {
   const [value, setValue] = useState(item.qty ? item.qty : 1);

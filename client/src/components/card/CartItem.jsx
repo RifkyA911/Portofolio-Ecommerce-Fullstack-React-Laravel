@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useDispatch } from "react-redux";
-import QtyButton from "./QtyButton";
+import QtyButton from "../button/QtyButton";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { removeFromCart } from "./redux/cartSlice";
+import { removeFromCart } from "../redux/cartSlice";
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch();

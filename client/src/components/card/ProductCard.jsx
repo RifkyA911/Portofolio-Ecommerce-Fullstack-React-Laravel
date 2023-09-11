@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import { HeartIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
-import { addToWishlist, removeFromWishlist } from "./redux/wishlistSlice";
-import IconButton from "./IconButton";
-import { addToCart } from "./redux/cartSlice";
+import { addToWishlist, removeFromWishlist } from "../redux/wishlistSlice";
+import IconButton from "../button/IconButton";
+import { addToCart } from "../redux/cartSlice";
+import { Link } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
   const wishlist = useSelector((state) => state.wishlist.wishlist);
@@ -36,9 +37,12 @@ const ProductCard = ({ product }) => {
             />
           </button>
         </div>
-        <p className="mt-4 px-2 font-extrabold text-base opacity-60">
+        <Link
+          className="mt-4 px-2 font-extrabold text-base opacity-60 hover:underline hover:underline-offset-4 hover:opacity-100"
+          to={`/product/${product.id}`}
+        >
           {product.title}
-        </p>
+        </Link>
         <div className="relative px-2">
           <p className="font-heading font-extrabold text-base opacity-90">
             $<span className="text-2xl font-extrabold">{product.price}</span>

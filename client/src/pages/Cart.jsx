@@ -1,4 +1,4 @@
-import CartContent from "../components/CartContent";
+import CartContent from "../components/content/CartContent";
 import Container from "../layouts/Container";
 import Footer from "../layouts/Footer";
 import Header from "../layouts/Header";

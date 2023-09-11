@@ -5,7 +5,7 @@ const PageHeader = ({ data, children, title, indicator }) => {
   return (
     <>
       <h1 className="font-bold text-xl">{title}</h1>
-      <IconHeader data={data} route="/cart" indicator={indicator}>
+      <IconHeader data={data} indicator={indicator}>
         {children}
       </IconHeader>
     </>

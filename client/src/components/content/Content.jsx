@@ -1,19 +1,9 @@
-import { useEffect } from "react";
-import ProductCard from "./ProductCard";
-import { fetchProducts } from "../api/api";
-import Alert from "./Alert";
-import { useDispatch, useSelector } from "react-redux";
-import { setProducts } from "./redux/productSlice";
+import ProductCard from "../card/ProductCard";
+import Alert from "../Alert";
+import { useSelector } from "react-redux";
 
 const Content = () => {
   const products = useSelector((state) => state.products.products);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    fetchProducts((status, data) => {
-      status ? dispatch(setProducts(data.products)) : console.log(data);
-    });
-  }, [dispatch]);
 
   return (
     <section className="my-8">

@@ -6,7 +6,7 @@ import imageByIndex from "./imageByIndex";
 import "../../style/embla.css";
 import DotButton from "./EmblaCarouselDotButton";
 import useDotButton from "../hooks/UseDotButton";
-import Hero from "../Hero";
+import Hero from "../section/Hero";
 
 const EmblaCarousel = (props) => {
   const { slides, options } = props;
