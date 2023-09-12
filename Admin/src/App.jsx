@@ -1,4 +1,10 @@
-import { Routes, Route, useLocation, Link } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+  Link,
+} from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Container, Navbar, Sidebar, NotFound, Login } from "./components"; // ./components/index.jsx
 
@@ -9,7 +15,18 @@ import { sideNavigation } from "./components/Data/PagesLink";
 import "./App.css";
 import { FiSettings } from "react-icons/fi";
 
+function getUser() {
+  let user = localStorage.getItem("user");
+  if (user) {
+    user = JSON.parse(user);
+  } else {
+    user = null;
+  }
+  return user;
+}
+
 function App() {
+  const [user, setUser] = useState(getUser());
   // login component
   //...
   // navigation component
@@ -24,6 +41,7 @@ function App() {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   // show nav components
   useEffect(() => {
@@ -71,8 +89,15 @@ function App() {
       prevWideScreen === "lg:ml-64" ? "lg:ml-0" : "lg:ml-64"
     );
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  };
   return (
     <>
+      {/* {!user ? (
+      ) : ()} */}
       <Navbar
         showNav={showNav}
         toggleStates={toggleStates}

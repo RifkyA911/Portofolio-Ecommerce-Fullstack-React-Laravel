@@ -1,33 +1,34 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../Redux/Slices/UserSlice";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 function Login() {
-  const [login, setLogin] = useState();
+  //states
+  const [auth_key, setAuth_key] = useState("cikidaw");
   const [email, setEmail] = useState("super.duper@gmail.com");
   const [password, setPassword] = useState("superadmin");
+
+  // redux state
+  const { loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/admins/login",
-        {
-          email,
-          password,
-        }
-      );
-
-      const user = response.data.data; // Ambil data pengguna dari respons
-      dispatch(loginSuccess(user));
-
-      // Arahkan pengguna ke halaman utama setelah login berhasil
-      navigate.push("/");
-    } catch (error) {
-      console.error("Error during login:", error);
-    }
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    let userCredentials = {
+      email,
+      password,
+      auth_key,
+    };
+    dispatch(loginUser(userCredentials)).then((result) => {
+      if (result.payload) {
+        setEmail("");
+        setPassword("");
+        // Arahkan pengguna ke halaman utama setelah login berhasil
+        navigate("/");
+      }
+    });
   };
 
   // Konten komponen
@@ -35,13 +36,14 @@ function Login() {
     <>
       <main className="bg-gradient-to-b  flex w-full static justify-center">
         <div className={`p-4 my-4 h-full shadow-lg flex-shrink-0 duration-300`}>
-          <p className="bg-red-400">Progress REDUX</p>
+          <p className="bg-yellow-400">Progress REDUX</p>
           <div className="w-96 bg-gradient-to-b from-violet-400 to-blue-400 rounded-xl shadow-sm text-white font-semibold">
             <h1 className="p-4 text-2xl">Login</h1>
             <form
               action="http://127.0.0.1:8000/api/admins/login"
               method="post"
               className="flex flex-col text-left py-6 justify-center"
+              onSubmit={handleLogin}
             >
               <label className="block px-4 mb-2 text-black">
                 <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
@@ -72,15 +74,25 @@ function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </label>
-              <input type="hidden" name="auth_key" id="" value="cikidaw" />
-              <button
-                onClick={handleLogin}
-                className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-blue-500 hover:bg-sky-700 rounded-md"
-              >
-                Login
+              <input type="hidden" name="auth_key" id="" value={auth_key} />
+              <button className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-blue-500 hover:bg-sky-700 rounded-md">
+                {loading ? "Loading..." : "Login"}
               </button>
             </form>
           </div>
+          {error ? (
+            <div className="alert alert-error rounded-none">
+              <span>{error}</span>
+            </div>
+          ) : (
+            ""
+          )}
+          <a
+            href="/logout"
+            className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-blue-500 hover:bg-sky-700 rounded-md"
+          >
+            Logout
+          </a>
         </div>
       </main>
     </>
