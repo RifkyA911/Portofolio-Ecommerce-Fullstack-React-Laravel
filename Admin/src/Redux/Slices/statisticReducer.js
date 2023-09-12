@@ -4,7 +4,8 @@ const statisticReducer = createSlice({
     name: "statistic",
     initialState: {
         revenue: null,
-        market:null
+        market:null,
+        newUser:null
     },
     extraReducers: (builder)=>{
         builder
