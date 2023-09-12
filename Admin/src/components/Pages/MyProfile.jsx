@@ -8,8 +8,8 @@ export default function MyProfile() {
     email: "",
     username: "",
     pict: "",
-    // newPassword: null,
-    // newPassword_confirmation: null,
+    newPassword: null,
+    newPassword_confirmation: null,
   });
 
   useEffect(() => {
@@ -76,9 +76,7 @@ export default function MyProfile() {
         </div>
       ) : (
         <div className="MyProfile">
-          <span className="bg-red-400">
-            NUNGGU FIX SERVER NULL NEW PASSWORD VALIDATOR
-          </span>
+          <span className="bg-red-400">NUNGGU FIX VALIDATOR</span>
           <div className="font-bold justify-center lg:max-h-full">
             <div className="flex flex-wrap lg:flex-nowrap flex-row">
               <div className="flex flex-wrap w-full justify-center items-center">
@@ -141,7 +139,7 @@ export default function MyProfile() {
                             placeholder="Password"
                           />
                         </label>
-                        {/* <label className="mb-4 spr-4 block text-left">
+                        <label className="mb-4 spr-4 block text-left">
                           <span className="after:content-[''] after:ml-0.5 after:text-blue-500 block text-sm font-medium text-slate-700">
                             New Password
                           </span>
@@ -164,7 +162,7 @@ export default function MyProfile() {
                             onChange={handleChange}
                             placeholder="Confirm New Password"
                           />
-                        </label> */}
+                        </label>
                         <div className="pt-10">
                           <button
                             className="btn btn-warning font-bold outline-none border-none w-full"
