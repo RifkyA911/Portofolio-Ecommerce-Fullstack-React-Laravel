@@ -28,7 +28,7 @@ class AdminsController extends Controller
     public function login(Request $request)
     {
         // inisiasi awal respon
-        $respon = PostResource::make(false, 'login gagal', $request->except('auth_key'));
+        $respon = PostResource::make(false, 'SUSpicious activity detected', $request->except('auth_key'));
         // validasi
         $validator = Validator::make($request->all(), [
             "email" => "required|email",
@@ -45,16 +45,21 @@ class AdminsController extends Controller
         if (!Hash::check($request->input('auth_key'), '$2y$10$eESkk5EgGHwBqUtGujWmkevQphwrPmkY3LH88Kpxw20p6VZ4kA9bi')) {
             return $respon;
         }
-        $admin = Admin::firstWhere('email', $request->input('email'));
 
-        // cek password
-        if (!Hash::check($request->input('password'), $admin->password)) {
-            $respon->message = "Password salah";
-            return $respon;
+        // cek email
+        if ($admin = Admin::firstWhere('email', $request->input('email'))) {
+            // cek password
+            if (!Hash::check($request->input('password'), $admin->password)) {
+                $respon->message = "Password salah";
+                return $respon;
+            } else {
+                $respon->status = true;
+                $respon->message = 'login berhasil';
+                $respon->resource = $admin->makeHidden(['password', 'created_at', 'updated_at']);
+                return $respon;
+            }
         } else {
-            $respon->status = true;
-            $respon->message = 'login berhasil';
-            $respon->resource = $admin->makeHidden(['password', 'created_at', 'updated_at']);
+            $respon->message = 'Email salah';
             return $respon;
         }
     }

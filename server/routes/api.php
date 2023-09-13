@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminsController;
 use App\Http\Controllers\DialogController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\TransactionController;
 
@@ -97,6 +98,12 @@ Route::controller(TransactionController::class)->group(function(){
     // Endpoint tahap Transaction by admin
     // ketentuan sama dengan endpoint user
     Route::get('/transaction/admin/{admin_id}/{tahap?}', 'showByAdmin'); // parameter admin_id, tahap(optional)
+});
+
+// Endpoint Review
+Route::controller(ReviewController::class)->group(function(){
+    Route::get('/review', 'index');
+    Route::get('/review/{product_id}', 'getByProduct');
 });
 
 // Endpoint Dialog

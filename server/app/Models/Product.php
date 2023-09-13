@@ -10,4 +10,9 @@ class Product extends Model
     use HasFactory;
     // protected $fillable = ['name', 'category', 'price', 'stock', 'discount', 'pict', 'description'];
     protected $guarded = ['id'];
+
+    // relation
+    public function review() {
+        return $this->hasMany(Review::class);
+    }
 }

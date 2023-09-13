@@ -10,6 +10,7 @@ use App\Models\Cart;
 use App\Models\Dialog;
 use App\Models\Message;
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Transaction;
 use App\Models\Wishlist;
 use Illuminate\Database\Seeder;
@@ -165,5 +166,7 @@ class DatabaseSeeder extends Seeder
             'dialog_id' => '2',
             'message' => 'stok?'
         ]);
+
+        Review::factory(7)->create();
     }
 }

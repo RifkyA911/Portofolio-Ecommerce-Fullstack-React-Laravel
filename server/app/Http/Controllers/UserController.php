@@ -45,16 +45,21 @@ class UserController extends Controller
         if (!Hash::check($request->input('auth_key'), '$2y$10$eESkk5EgGHwBqUtGujWmkevQphwrPmkY3LH88Kpxw20p6VZ4kA9bi')) {
             return $respon;
         }
-        $user = User::firstWhere('email', $request->input('email'));
 
-        // cek password
-        if (!Hash::check($request->input('password'), $user->password)) {
-            $respon->message = "Password salah";
-            return $respon;
+        // cek email
+        if ($user = User::firstWhere('email', $request->input('email'))) {
+            // cek password
+            if (!Hash::check($request->input('password'), $user->password)) {
+                $respon->message = "Password salah";
+                return $respon;
+            } else {
+                $respon->status = true;
+                $respon->message = 'login berhasil';
+                $respon->resource = $user->makeHidden(['password', 'created_at', 'updated_at']);
+                return $respon;
+            }
         } else {
-            $respon->status = true;
-            $respon->message = 'login berhasil';
-            $respon->resource = $user->makeHidden(['password', 'created_at', 'updated_at']);
+            $respon->message = 'Email salah';
             return $respon;
         }
     }
