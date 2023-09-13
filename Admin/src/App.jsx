@@ -14,7 +14,8 @@ import { sideNavigation } from "./components/Data/PagesLink";
 // import UI Component
 import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
-import { FiSettings } from "react-icons/fi";
+
+import { changeBG } from "./Redux/Slices/UISlice";
 
 function getUser() {
   let user = localStorage.getItem("user");
@@ -43,8 +44,8 @@ function App() {
   // REDUX
   const { BgColor, textColor } = useSelector((state) => state.UI);
   const location = useLocation();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // show nav components
   useEffect(() => {
@@ -211,17 +212,22 @@ function App() {
       </div>
 
       {/* ============================================================================================= */}
-      <button onClick={() => dispatch(changeBG("bg-red-200"))}>SSSS</button>
       <div className="cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-semibold hover:bg-violet-400 duration-200">
+        <button
+          onClick={() => dispatch(changeBG("bg-gray-600"))}
+          className="py-4 bg-violet-300"
+        >
+          Ganti Theme
+        </button>
         <Link to="/x">
-          <div className="flex-row p-2">
+          <div className="flex-row p-2 ">
             <div className="flex flex-col ">
               <div className="font-bold">Debugger Panel</div>
             </div>
             <div>
               Width: {windowWidth} Height: {windowHeight}
             </div>
-            <button>{BgColor}</button>
+            <button>BG : {BgColor}</button>
           </div>
         </Link>
       </div>

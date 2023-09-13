@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import store from "./Redux/Store"; // Import store dari file store.js
+import store from "./Redux/store"; // Import store dari file store.js
 import App from "./App.jsx";
 import "./index.css";
+
+import { FiSettings } from "react-icons/fi";
 
 import { BrowserRouter } from "react-router-dom";
 

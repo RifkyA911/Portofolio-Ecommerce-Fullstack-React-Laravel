@@ -36,7 +36,7 @@ function Login() {
     <>
       <main className="bg-gradient-to-b  flex w-full static justify-center">
         <div className={`p-4 my-4 h-full shadow-lg flex-shrink-0 duration-300`}>
-          <p className="bg-yellow-400">Progress REDUX</p>
+          <p className="bg-yellow-400 mb-4">Progress Return Wrong Response</p>
           <div className="w-96 bg-gradient-to-b from-violet-400 to-blue-400 rounded-xl shadow-sm text-white font-semibold">
             <h1 className="p-4 text-2xl">Login</h1>
             <form
