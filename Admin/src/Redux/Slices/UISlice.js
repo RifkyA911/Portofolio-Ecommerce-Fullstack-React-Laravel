@@ -16,6 +16,9 @@ export const UISlice = createSlice({
         },
         changeText : (state, action) => {
           state.textColor = action.payload
+        },
+        changeScreen: (state, action) => {
+          state.wideScreen = action.payload
         }
       }
 })
