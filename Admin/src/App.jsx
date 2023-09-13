@@ -12,6 +12,7 @@ import { Container, Navbar, Sidebar, NotFound, Login } from "./components"; // .
 import { sideNavigation } from "./components/Data/PagesLink";
 
 // import UI Component
+import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 import { FiSettings } from "react-icons/fi";
 
@@ -26,10 +27,9 @@ function getUser() {
 }
 
 function App() {
-  const [user, setUser] = useState(getUser());
   // login component
-  //...
-  // navigation component
+  const [user, setUser] = useState(getUser());
+  // navigation state
   const [sidebarOpen, setSidebarOpen] = useState();
   const [wideScreen, setWideScreen] = useState("lg:ml-64");
   const [showNav, setShowNav] = useState();
@@ -40,8 +40,11 @@ function App() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
+  // REDUX
+  const { BgColor, textColor } = useSelector((state) => state.UI);
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // show nav components
   useEffect(() => {
@@ -208,7 +211,7 @@ function App() {
       </div>
 
       {/* ============================================================================================= */}
-
+      <button onClick={() => dispatch(changeBG("bg-red-200"))}>SSSS</button>
       <div className="cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-semibold hover:bg-violet-400 duration-200">
         <Link to="/x">
           <div className="flex-row p-2">
@@ -218,6 +221,7 @@ function App() {
             <div>
               Width: {windowWidth} Height: {windowHeight}
             </div>
+            <button>{BgColor}</button>
           </div>
         </Link>
       </div>
