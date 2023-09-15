@@ -4,12 +4,12 @@ import { sideNavigation } from "./Data/PagesLink";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { changeScreen } from "../Redux/Slices/UISlice";
-
+// Utility
 import { getMuiIconComponent } from "../utils/MuiComponent";
 
 const Sidebar = ({ showNav, toggleStates }) => {
   const [current, setCurrent] = useState("Dashboard");
+
   // REDUX
   const { BgColor, textColor, screenWidth, sidebarOpen } = useSelector(
     (state) => state.UI
@@ -23,7 +23,7 @@ const Sidebar = ({ showNav, toggleStates }) => {
 
   return (
     <>
-      {showNav == true ? (
+      {showNav ? (
         <div className="bg-white">
           {/* Sidebar */}
           <div
@@ -36,13 +36,13 @@ const Sidebar = ({ showNav, toggleStates }) => {
               BgColor +
               " " +
               textColor +
-              ` overflow-hidden xhover:overflow-y-scroll text-sm font-medium fixed h-full mt-16 w-64 flex-shrink-0 transition-all duration-300 z-30 ${
+              ` overflow-scroll hover:overflow-y-scroll text-sm font-medium fixed h-full mt-16 w-64 flex-shrink-0 transition-all duration-300 z-30 ${
                 sidebarOpen ? "translate-x-0" : "-translate-x-full"
               }`
             }
           >
-            <nav className="flex-1 xoverflow-y-scroll shadow-sm h-full">
-              <ul className="flex-row py-4 space-y-1 text-left">
+            <nav className="flex h-full">
+              <ul className="flex-row w-full py-4 text-left h-full">
                 {sideNavigation.map((group) => (
                   <div key={group.GroupID}>
                     <h3
@@ -55,11 +55,11 @@ const Sidebar = ({ showNav, toggleStates }) => {
                     </h3>
                     <ul>
                       {group.Links.map((link) => (
-                        <li key={link.id}>
+                        <li key={link.id} className="my-1 mx-4">
                           <Link
                             to={link.href}
                             onClick={() => SidebarHandler(link.name)}
-                            className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
+                            className={`flex flex-row items-center w-full px-6 py-3 rounded-xl ${
                               link.name === current
                                 ? "bg-violet-200 text-gray-800"
                                 : textColor + " hover:bg-violet-100"
@@ -73,29 +73,10 @@ const Sidebar = ({ showNav, toggleStates }) => {
                     </ul>
                   </div>
                 ))}
+                <div className="pb-16"></div>
                 <Outlet />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
               </ul>
+              {/* <ul>s</ul> */}
             </nav>
           </div>
         </div>
@@ -105,13 +86,5 @@ const Sidebar = ({ showNav, toggleStates }) => {
     </>
   );
 };
-
-// const getHeroIconComponent = (iconName) => {
-//   const HeroIconComponent = HeroIcons[iconName];
-//   if (HeroIconComponent) {
-//     return <HeroIconComponent className="h-6 w-6 mr-4" />;
-//   }
-//   return null;
-// };
 
 export default Sidebar;

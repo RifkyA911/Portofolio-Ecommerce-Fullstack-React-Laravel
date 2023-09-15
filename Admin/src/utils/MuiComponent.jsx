@@ -8,3 +8,11 @@ export const getMuiIconComponent = (iconName) => {
   }
   return null;
 };
+
+// const getHeroIconComponent = (iconName) => {
+//   const HeroIconComponent = HeroIcons[iconName];
+//   if (HeroIconComponent) {
+//     return <HeroIconComponent className="h-6 w-6 mr-4" />;
+//   }
+//   return null;
+// };

@@ -6,9 +6,10 @@ export const UISlice = createSlice({
     initialState: {
         screenWidth: window.innerWidth,
         screenHeigth: window.innerHeight,
-        BgColor: "bg-slate-100",
+        BgColor: "bg-white",
         ComponentColor: "bg-violet-200",
         textColor: "text-dark",
+        currentClicked: "Dashboard",
         // wideScreen: true,
         sidebarOpen: true,
         showNav: "",
@@ -33,12 +34,12 @@ export const UISlice = createSlice({
           }
           console.log(toggleDark)
         },
-        changeScreen: (state, action) => {
-          window.addEventListener("resize", setWindowWidth(window.innerWidth));
-           return () => {
-              window.removeEventListener("resize", setWindowWidth(window.innerWidth));
-            };
-        },
+        // changeScreen: (state, action) => {
+        //   window.addEventListener("resize", setWindowWidth(window.innerWidth));
+        //    return () => {
+        //       window.removeEventListener("resize", setWindowWidth(window.innerWidth));
+        //     };
+        // },
         toggleSidebar: (state, action) => {
           if(action.payload!=null){
             console.log('aru')
@@ -48,11 +49,15 @@ export const UISlice = createSlice({
             state.sidebarOpen = !state.sidebarOpen
             console.log(`state sidebar = ${state.sidebarOpen}, screen = ${state.wideScreen}`)
           }
+        }, 
+        setCurrent: (state, action)=> {
+          state.currentClicked = action.payload
+          console.log(state.currentClicked)
         }
       }
 })
 
 // this is for dispatch
-export const { changeBG, changeText, changeScreen, toggleSidebar, darkTheme } = UISlice.actions;
+export const { changeBG, changeText, changeScreen, toggleSidebar, darkTheme, setCurrent } = UISlice.actions;
 // this is for configureStore
 export default UISlice.reducer;
