@@ -10,12 +10,18 @@ import * as MuiIcons from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../Redux/Slices/UISlice";
 
-const Navbar = ({ showNav, toggleHideSidebar }) => {
+const Navbar = ({ showNav }) => {
   // REDUX
-  const { BgColor, textColor, ComponentColor } = useSelector(
+  const { BgColor, textColor, screenWidth, ComponentColor } = useSelector(
     (state) => state.UI
   );
   const dispatch = useDispatch();
+
+  const SmartphoneAutoHideSidebar = () => {
+    if (screenWidth < 1024) {
+      dispatch(toggleSidebar(false));
+    }
+  };
 
   return (
     <>
@@ -52,7 +58,7 @@ const Navbar = ({ showNav, toggleHideSidebar }) => {
                 {({ open }) => (
                   <>
                     <Popover.Button
-                      onClick={toggleHideSidebar}
+                      onClick={SmartphoneAutoHideSidebar}
                       className={`
                 ${open ? "" : "text-opacity-90"}
                 rounded-md ${ComponentColor} font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
@@ -141,7 +147,7 @@ const Navbar = ({ showNav, toggleHideSidebar }) => {
                 )}
               </Popover>
               {/* notification */}
-              {/* <button className="pl-2 ring-0" onClick={toggleHideSidebar}>
+              {/* <button className="pl-2 ring-0" onClick={() => dispatch(toggleSidebar())}>
                 <div className="flex p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500">
                   <MuiIcons.NotificationsNone className="h-6 w-6 text-dark text-bold" />
                 </div>
@@ -150,7 +156,7 @@ const Navbar = ({ showNav, toggleHideSidebar }) => {
                 {({ open }) => (
                   <>
                     <Popover.Button
-                      onClick={toggleHideSidebar}
+                      onClick={SmartphoneAutoHideSidebar}
                       className={`
                 ${open ? "" : "text-opacity-90"}
                 rounded-md ${ComponentColor} font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
@@ -259,7 +265,7 @@ const Navbar = ({ showNav, toggleHideSidebar }) => {
                 {({ open }) => (
                   <>
                     <Popover.Button
-                      onClick={toggleHideSidebar}
+                      onClick={SmartphoneAutoHideSidebar}
                       className={`
                 ${open ? "" : "text-opacity-90"}
                 rounded-md ${ComponentColor} font-extralight text-dark rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
@@ -306,21 +312,21 @@ const Navbar = ({ showNav, toggleHideSidebar }) => {
                           <div className="relative bg-white py-2 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
                             <Link
                               to="/myprofile"
-                              className="flex flex-1 items-center py-3 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                              className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                             >
                               <MuiIcons.ManageAccounts className="text-dark mr-4" />
                               <p>My Profile</p>
                             </Link>
                             <Link
                               to="/myprofile"
-                              className="flex flex-1 items-center py-3 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                              className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                             >
                               <MuiIcons.Settings className="text-dark mr-4" />
                               <p>Settings</p>
                             </Link>
                             <Link
                               to="/login"
-                              className="border-t-2 border-slate-200 flex flex-1 items-center py-3 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                              className="border-t-2 border-slate-200 flex flex-1 items-center mt-2 py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                             >
                               <MuiIcons.LogoutOutlined className="text-dark mr-4" />
                               <p>Log Out</p>
@@ -347,7 +353,7 @@ const Navbar = ({ showNav, toggleHideSidebar }) => {
                 <div>
                   <Menu.Button
                     className="flex rounded-xl bg-gray-200 hover:bg-blue-500 hover:text-white duration-200 items-center"
-                    onClick={toggleHideSidebar}
+                    onClick={SmartphoneAutoHideSidebar}
                   >
                     <img
                       src=".\src\assets\admin_avatar\sara.jpg"

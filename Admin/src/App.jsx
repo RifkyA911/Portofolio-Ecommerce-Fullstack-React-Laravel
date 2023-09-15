@@ -7,9 +7,11 @@ import {
 } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Container, Navbar, Sidebar, NotFound, Login } from "./components"; // ./components/index.jsx
+// Container
+// import Container from "./layout/container";
 
 //import dummy data
-import { sideNavigation } from "./components/Data/PagesLink";
+import { sideNavigation } from "./components/Data/oldPagesLink";
 
 // import UI Component
 import "./App.css";
@@ -18,7 +20,7 @@ import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 import { darkTheme, toggleSidebar } from "./Redux/Slices/UISlice";
 import Summary from "./utils/Summary";
-import Test from "./Test";
+import { Dashboard } from "@mui/icons-material";
 
 function getUser() {
   let user = localStorage.getItem("user");
@@ -69,90 +71,70 @@ function App() {
     <>
       {/* {!user ? (
       ) : ()} */}
-      <Navbar showNav={showNav} />
-      <Sidebar showNav={showNav} sidebarOpen={sidebarOpen} />
-      <div className="app flex pt-14 min-h-screen max-w-full">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              <Container selectedPage="dashboard" wideScreen={wideScreen} />
-            }
+      <>
+        <Navbar showNav={showNav} />
+        <Sidebar showNav={showNav} sidebarOpen={sidebarOpen} />
+        <div className="app flex pt-14 min-h-screen max-w-full">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Container selectedPage="dashboard" />} />
+            <Route
+              path="/admins"
+              element={<Container selectedPage="admins" />}
+            />
+            <Route path="/inbox" element={<Container selectedPage="inbox" />} />
+            <Route
+              path="/notification"
+              element={<Container selectedPage="notification" />}
+            />
+            <Route
+              path="/settings"
+              element={<Container selectedPage="settings" />}
+            />
+            <Route
+              path="/statistic"
+              element={<Container selectedPage="statistic" />}
+            />
+            <Route
+              path="/myprofile"
+              element={<Container selectedPage="myprofile" />}
+            />
+            <Route
+              path="/products"
+              element={<Container selectedPage="products" />}
+            />
+            <Route
+              path="/warehouse"
+              element={<Container selectedPage="warehouse" />}
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+        {/* ============================================================================================= */}
+        <div className="text-xs cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-semibold hover:bg-gray-300 duration-200">
+          <input
+            type="checkbox"
+            className="toggle"
+            onClick={() => {
+              dispatch(darkTheme());
+            }}
           />
-          <Route
-            path="/admins"
-            element={
-              <Container selectedPage="admins" wideScreen={wideScreen} />
-            }
-          />
-          <Route
-            path="/inbox"
-            element={<Container selectedPage="inbox" wideScreen={wideScreen} />}
-          />
-          <Route
-            path="/notification"
-            element={
-              <Container selectedPage="notification" wideScreen={wideScreen} />
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <Container selectedPage="settings" wideScreen={wideScreen} />
-            }
-          />
-          <Route
-            path="/statistic"
-            element={
-              <Container selectedPage="statistic" wideScreen={wideScreen} />
-            }
-          />
-          <Route
-            path="/myprofile"
-            element={
-              <Container selectedPage="myprofile" wideScreen={wideScreen} />
-            }
-          />
-          <Route
-            path="/products"
-            element={
-              <Container selectedPage="products" wideScreen={wideScreen} />
-            }
-          />
-          <Route
-            path="/warehouse"
-            element={
-              <Container selectedPage="warehouse" wideScreen={wideScreen} />
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
-      {/* ============================================================================================= */}
-      <div className="cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-semibold hover:bg-violet-400 duration-200">
-        <input
-          type="checkbox"
-          className="toggle"
-          onClick={() => {
-            dispatch(darkTheme());
-          }}
-        />
-        <Summary a={2} b={5} />
-        <br />
-        <button>Theme : {BgColor}</button>
-        <hr />
-        <Link to="/x">
-          <div className="flex-row p-2 ">
-            <div className="flex flex-col ">
-              <div className="font-bold">Debugger Panel</div>
+          <Summary a={2} b={5} />
+          <br />
+          <button>Theme : {BgColor}</button>
+          <hr />
+          <Link to="/x">
+            <div className="flex-row p-2">
+              <div className="flex flex-col ">
+                <div className="font-bold">Debugger Panel</div>
+              </div>
+              <div>
+                Width: {screenWidth} Height: {screenHeigth}
+              </div>
             </div>
-            <div>
-              Width: {screenWidth} Height: {screenHeigth}
-            </div>
-          </div>
-        </Link>
-      </div>
+          </Link>
+        </div>
+      </>
     </>
   );
 }

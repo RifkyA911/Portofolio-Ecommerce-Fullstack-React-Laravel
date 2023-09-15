@@ -2,7 +2,7 @@ export { default as Dashboard } from "./Dashboard";
 export { default as Admins } from "./Admins";
 export { default as Settings } from "./Settings";
 export { default as Inbox } from "./Inbox";
-export { default as Content } from "./Content";
+export { default as Order } from "./Order";
 export { default as Statistic } from "./Statistic";
 export { default as MyProfile } from "./MyProfile";
 export { default as Notification } from "./Notification";
