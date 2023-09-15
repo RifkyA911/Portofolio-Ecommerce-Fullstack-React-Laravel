@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { sideNavigation } from "./Data/PagesLink";
+import { sideNavigation } from "../Config/PagesLink";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 // Utility
 import { getMuiIconComponent } from "../utils/MuiComponent";
 
-const Sidebar = ({ showNav, toggleStates }) => {
+const Sidebar = ({ showNav2 }) => {
   const [current, setCurrent] = useState("Dashboard");
 
   // REDUX
   const { BgColor, textColor, screenWidth, sidebarOpen } = useSelector(
     (state) => state.UI
   );
+  const { showNav } = useSelector((state) => state.navigation);
   const dispatch = useDispatch();
 
   const SidebarHandler = (key) => {
@@ -48,7 +49,7 @@ const Sidebar = ({ showNav, toggleStates }) => {
                     <h3
                       className={
                         textColor +
-                        `h-12 ml-0 px-6 py-2 flex items-center justify-left font-sm`
+                        ` ml-0 px-6 py-2 flex items-center justify-left font-sm`
                       }
                     >
                       {group.GroupName}
@@ -59,14 +60,14 @@ const Sidebar = ({ showNav, toggleStates }) => {
                           <Link
                             to={link.href}
                             onClick={() => SidebarHandler(link.name)}
-                            className={`flex flex-row items-center w-full px-6 py-3 rounded-xl ${
+                            className={`flex flex-row items-center w-full px-6 py-2 rounded-lg ${
                               link.name === current
                                 ? "bg-violet-200 text-gray-800"
                                 : textColor + " hover:bg-violet-100"
                             }`}
                           >
                             {getMuiIconComponent(link.icon)}
-                            {link.name}
+                            <span className="text-sm">{link.name}</span>
                           </Link>
                         </li>
                       ))}

@@ -1,3 +1,6 @@
+// import UI Component
+import "./App.css";
+// React
 import {
   Routes,
   Route,
@@ -6,39 +9,25 @@ import {
   Link,
 } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { Container, Navbar, Sidebar, NotFound, Login } from "./components"; // ./components/index.jsx
+//import config data
+import { allowedPaths } from "./utils/ShowNavigation";
 // Container
 // import Container from "./layout/container";
-
-//import dummy data
-import { sideNavigation } from "./components/Data/oldPagesLink";
-
-// import UI Component
-import "./App.css";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { darkTheme, toggleSidebar } from "./Redux/Slices/UISlice";
-import Summary from "./utils/Summary";
-import { Dashboard } from "@mui/icons-material";
+import { navLink } from "./Redux/Slices/NavigationSlice";
 
-function getUser() {
-  let user = localStorage.getItem("user");
-  if (user) {
-    user = JSON.parse(user);
-  } else {
-    user = null;
-  }
-  return user;
-}
+// Utils
+import MyAppRoutes from "./Config/MyAppRoutes";
+import MyDebuggerPanel from "./utils/MyDebuggerPanel";
+import { getUser } from "./utils/Session/Admin";
+// import Summary from "./utils/Summary";
 
 function App() {
   // login component
   const [user, setUser] = useState(getUser());
-  // navigation state
-  const [sidebarOpen, setSidebarOpen] = useState();
-  const [wideScreen, setWideScreen] = useState("lg:ml-64");
-  const [showNav, setShowNav] = useState();
 
   // REDUX
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
@@ -50,91 +39,40 @@ function App() {
 
   // show nav components
   useEffect(() => {
-    // Hide Sidebar and Nav when access wrong url
-    const allowedPaths = sideNavigation.map((item) => item.href); // link navigation from data PagesLink
+    if (!user) {
+      handleLogin();
+    }
 
+    // console.log(location);
     if (allowedPaths.includes(location.pathname)) {
-      setShowNav(true);
+      dispatch(navLink(true));
     } else {
-      setShowNav(false);
+      dispatch(navLink(false));
     }
 
     // auto toggleSidebar if screen size based on devices like smartphone or pc
-    if (window.innerWidth < 1024) {
+    if (screenWidth < 1024) {
       dispatch(toggleSidebar(false));
     } else {
       dispatch(toggleSidebar(true));
     }
   }, [location]);
 
+  const handleLogin = () => {
+    navigate("/login");
+  };
   return (
     <>
       {/* {!user ? (
-      ) : ()} */}
-      <>
-        <Navbar showNav={showNav} />
-        <Sidebar showNav={showNav} sidebarOpen={sidebarOpen} />
-        <div className="app flex pt-14 min-h-screen max-w-full">
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Container selectedPage="dashboard" />} />
-            <Route
-              path="/admins"
-              element={<Container selectedPage="admins" />}
-            />
-            <Route path="/inbox" element={<Container selectedPage="inbox" />} />
-            <Route
-              path="/notification"
-              element={<Container selectedPage="notification" />}
-            />
-            <Route
-              path="/settings"
-              element={<Container selectedPage="settings" />}
-            />
-            <Route
-              path="/statistic"
-              element={<Container selectedPage="statistic" />}
-            />
-            <Route
-              path="/myprofile"
-              element={<Container selectedPage="myprofile" />}
-            />
-            <Route
-              path="/products"
-              element={<Container selectedPage="products" />}
-            />
-            <Route
-              path="/warehouse"
-              element={<Container selectedPage="warehouse" />}
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </div>
-        {/* ============================================================================================= */}
-        <div className="text-xs cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-semibold hover:bg-gray-300 duration-200">
-          <input
-            type="checkbox"
-            className="toggle"
-            onClick={() => {
-              dispatch(darkTheme());
-            }}
-          />
-          <Summary a={2} b={5} />
-          <br />
-          <button>Theme : {BgColor}</button>
-          <hr />
-          <Link to="/x">
-            <div className="flex-row p-2">
-              <div className="flex flex-col ">
-                <div className="font-bold">Debugger Panel</div>
-              </div>
-              <div>
-                Width: {screenWidth} Height: {screenHeigth}
-              </div>
-            </div>
-          </Link>
-        </div>
-      </>
+        <>
+        </>
+      ) : (
+        <>
+          <Login />
+        </>
+      )} */}
+      <MyAppRoutes />
+      <MyDebuggerPanel />
     </>
   );
 }

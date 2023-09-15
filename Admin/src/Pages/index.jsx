@@ -7,6 +7,8 @@ export { default as Statistic } from "./Statistic";
 export { default as MyProfile } from "./MyProfile";
 export { default as Notification } from "./Notification";
 export { default as Products } from "./Products";
-export { default as Warehouse } from "./Warehouse";
+export { default as Invoices } from "./Invoices";
+// export { default as NotFound } from "./NotFound";
+export { default as Login } from "./Login";
 
 export { default as NotFound } from "./NotFound";

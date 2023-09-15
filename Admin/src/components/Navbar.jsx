@@ -1,20 +1,20 @@
 import { Fragment, useEffect, useRef, useState, React } from "react";
 import { Link, Outlet } from "react-router-dom";
 // Data
-import { MarketInbox } from "./Data/Inbox";
-import { MarketNotification } from "./Data/Notification";
+import { MarketInbox, MarketNotification } from "../Config/Temporary";
 // UI
 import { Menu, Transition, Popover, Switch, Tab } from "@headlessui/react";
 import * as MuiIcons from "@mui/icons-material";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar } from "../Redux/Slices/UISlice";
+import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 
-const Navbar = ({ showNav }) => {
+const Navbar = ({ showNav2 }) => {
   // REDUX
   const { BgColor, textColor, screenWidth, ComponentColor } = useSelector(
     (state) => state.UI
   );
+  const { showNav } = useSelector((state) => state.navigation);
   const dispatch = useDispatch();
 
   const SmartphoneAutoHideSidebar = () => {
@@ -25,13 +25,13 @@ const Navbar = ({ showNav }) => {
 
   return (
     <>
-      {showNav == true ? (
+      {showNav ? (
         <nav
           className={
             BgColor + " transition-all duration-300 fixed w-full z-50 text-xs"
           }
         >
-          <div className=" flex justify-between max-h-16 h-full py-3 px-6">
+          <div className="flex justify-between max-h-16 h-full py-3 px-6">
             {/* right */}
             <div className="flex order-first items-center justify-between w-12 md:w-72 font-bold">
               <Link to="/" className="flex items-center justify-between">
@@ -84,6 +84,9 @@ const Navbar = ({ showNav }) => {
                     >
                       <Popover.Panel className="-translate-x-[35%] lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                          <div className="bg-red-500">
+                            Nunggu Data Seeder di DB
+                          </div>
                           <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                             <span className="text-base font-medium">
                               List Chat
@@ -182,6 +185,9 @@ const Navbar = ({ showNav }) => {
                     >
                       <Popover.Panel className="-translate-x-[48%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                          <div className="bg-red-500">
+                            Nunggu Data Seeder di DB
+                          </div>
                           <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                             <span className="text-base font-medium">
                               List Notification
@@ -310,6 +316,15 @@ const Navbar = ({ showNav }) => {
                             </div>
                           </div>
                           <div className="relative bg-white py-2 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
+                            <div className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
+                              <input
+                                type="checkbox"
+                                className="toggle"
+                                onClick={() => {
+                                  dispatch(darkTheme());
+                                }}
+                              />
+                            </div>
                             <Link
                               to="/myprofile"
                               className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"

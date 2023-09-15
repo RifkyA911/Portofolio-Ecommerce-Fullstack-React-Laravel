@@ -7,7 +7,8 @@ export const NavigationSlice = createSlice({
     },
     reducers:{
         navLink: (state, action) => {
-            console.log(showNav)
+            state.showNav = action.payload
+            // console.log('navlink: ',state.showNav)
         }
     }
 })
