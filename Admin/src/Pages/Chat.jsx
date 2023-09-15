@@ -15,7 +15,7 @@ import {
 import { Menu } from "@headlessui/react";
 import Container from "../layout/Container";
 
-export default function Inbox() {
+export default function Chat() {
   const [user, setuser] = useState([]);
   const [customerAvatar, setCustomerAvatar] = useState("");
 

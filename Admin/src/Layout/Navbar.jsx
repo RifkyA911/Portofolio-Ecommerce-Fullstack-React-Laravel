@@ -9,7 +9,7 @@ import * as MuiIcons from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 
-const Navbar = ({ showNav2 }) => {
+const Navbar = () => {
   // REDUX
   const { BgColor, textColor, screenWidth, ComponentColor } = useSelector(
     (state) => state.UI

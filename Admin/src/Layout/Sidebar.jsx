@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 // Utility
 import { getMuiIconComponent } from "../utils/MuiComponent";
 
-const Sidebar = ({ showNav2 }) => {
+const Sidebar = () => {
   const [current, setCurrent] = useState("Dashboard");
 
   // REDUX

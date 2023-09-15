@@ -30,7 +30,7 @@ export const sideNavigation = [
       {
         id: 0,
         name: "Chat",
-        href: "/inbox",
+        href: "/chat",
         icon: "Sms",
       },
       {
@@ -41,8 +41,8 @@ export const sideNavigation = [
       },
       {
         id: 2,
-        name: "Order",
-        href: "/order",
+        name: "Orders",
+        href: "/orders",
         icon: "LocalShipping",
       },
       {
