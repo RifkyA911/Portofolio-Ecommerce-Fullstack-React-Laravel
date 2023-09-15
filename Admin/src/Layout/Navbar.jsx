@@ -1,48 +1,37 @@
 import { Fragment, useEffect, useRef, useState, React } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { MarketInbox } from "./Data/Inbox";
-import { MarketNotification } from "./Data/Notification";
-
+// Data
+import { MarketInbox, MarketNotification } from "../Config/Temporary";
+// UI
 import { Menu, Transition, Popover, Switch, Tab } from "@headlessui/react";
-
 import * as MuiIcons from "@mui/icons-material";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-// import { changeBG } from "./Redux/Slices/UISlice";
+import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 
-//===================================
-const ThemeBG = [{ iconBG: "bg-violet-200" }];
-const Toggle = ({ toggleStates }) => {
-  return (
-    <>
-      <button
-        className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
-        onClick={toggleStates}
-      >
-        <MuiIcons.Menu className="h-6 w-6 text-dark text-bold" />
-      </button>
-    </>
-  );
-};
-
-const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
-  const [enabled, setEnabled] = useState(false);
-
+const Navbar = () => {
   // REDUX
-  const { BgColor, textColor } = useSelector((state) => state.UI);
-  // const location = useLocation();
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const { BgColor, textColor, screenWidth, ComponentColor } = useSelector(
+    (state) => state.UI
+  );
+  const { showNav } = useSelector((state) => state.navigation);
+  const dispatch = useDispatch();
+
+  const SmartphoneAutoHideSidebar = () => {
+    if (screenWidth < 1024) {
+      dispatch(toggleSidebar(false));
+    }
+  };
 
   return (
     <>
-      {showNav == true ? (
+      {showNav ? (
         <nav
           className={
             BgColor + " transition-all duration-300 fixed w-full z-50 text-xs"
           }
         >
-          <div className=" flex justify-between max-h-16 h-full py-3 px-6">
+          <div className="flex justify-between max-h-16 h-full py-3 px-6">
             {/* right */}
             <div className="flex order-first items-center justify-between w-12 md:w-72 font-bold">
               <Link to="/" className="flex items-center justify-between">
@@ -55,7 +44,12 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                   <span>Admin Panel</span>
                 </div>
               </Link>
-              <Toggle toggleStates={toggleStates} />
+              <button
+                className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
+                onClick={() => dispatch(toggleSidebar())}
+              >
+                <MuiIcons.Menu className="h-6 w-6 text-dark text-bold" />
+              </button>
             </div>
             {/* Menu at left */}
             <div className="flex order-last items-center w-72 justify-end">
@@ -64,12 +58,10 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                 {({ open }) => (
                   <>
                     <Popover.Button
-                      onClick={toggleHideSidebar}
+                      onClick={SmartphoneAutoHideSidebar}
                       className={`
                 ${open ? "" : "text-opacity-90"}
-                rounded-md ${
-                  ThemeBG[0].iconBG
-                } font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
+                rounded-md ${ComponentColor} font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
                     >
                       <div className="relative">
                         <MuiIcons.Sms className="flex h-6 w-6 relative ring-0" />
@@ -92,6 +84,9 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                     >
                       <Popover.Panel className="-translate-x-[35%] lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                          <div className="bg-red-500">
+                            Nunggu Data Seeder di DB
+                          </div>
                           <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                             <span className="text-base font-medium">
                               List Chat
@@ -155,7 +150,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                 )}
               </Popover>
               {/* notification */}
-              {/* <button className="pl-2 ring-0" onClick={toggleHideSidebar}>
+              {/* <button className="pl-2 ring-0" onClick={() => dispatch(toggleSidebar())}>
                 <div className="flex p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500">
                   <MuiIcons.NotificationsNone className="h-6 w-6 text-dark text-bold" />
                 </div>
@@ -164,12 +159,10 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                 {({ open }) => (
                   <>
                     <Popover.Button
-                      onClick={toggleHideSidebar}
+                      onClick={SmartphoneAutoHideSidebar}
                       className={`
                 ${open ? "" : "text-opacity-90"}
-                rounded-md ${
-                  ThemeBG[0].iconBG
-                } font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
+                rounded-md ${ComponentColor} font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
                     >
                       <div className="relative">
                         <MuiIcons.NotificationsNone className="flex h-6 w-6 relative ring-0" />
@@ -192,6 +185,9 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                     >
                       <Popover.Panel className="-translate-x-[48%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                          <div className="bg-red-500">
+                            Nunggu Data Seeder di DB
+                          </div>
                           <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                             <span className="text-base font-medium">
                               List Notification
@@ -275,12 +271,10 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                 {({ open }) => (
                   <>
                     <Popover.Button
-                      onClick={toggleHideSidebar}
+                      onClick={SmartphoneAutoHideSidebar}
                       className={`
                 ${open ? "" : "text-opacity-90"}
-                rounded-md ${
-                  ThemeBG[0].iconBG
-                } font-extralight text-dark rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
+                rounded-md ${ComponentColor} font-extralight text-dark rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
                     >
                       <div className="relative avatar ">
                         <div className="w-10 rounded-full">
@@ -322,23 +316,32 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                             </div>
                           </div>
                           <div className="relative bg-white py-2 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
+                            <div className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
+                              <input
+                                type="checkbox"
+                                className="toggle"
+                                onClick={() => {
+                                  dispatch(darkTheme());
+                                }}
+                              />
+                            </div>
                             <Link
                               to="/myprofile"
-                              className="flex flex-1 items-center py-3 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                              className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                             >
                               <MuiIcons.ManageAccounts className="text-dark mr-4" />
                               <p>My Profile</p>
                             </Link>
                             <Link
                               to="/myprofile"
-                              className="flex flex-1 items-center py-3 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                              className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                             >
                               <MuiIcons.Settings className="text-dark mr-4" />
                               <p>Settings</p>
                             </Link>
                             <Link
                               to="/login"
-                              className="border-t-2 border-slate-200 flex flex-1 items-center py-3 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                              className="border-t-2 border-slate-200 flex flex-1 items-center mt-2 py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                             >
                               <MuiIcons.LogoutOutlined className="text-dark mr-4" />
                               <p>Log Out</p>
@@ -365,7 +368,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                 <div>
                   <Menu.Button
                     className="flex rounded-xl bg-gray-200 hover:bg-blue-500 hover:text-white duration-200 items-center"
-                    onClick={toggleHideSidebar}
+                    onClick={SmartphoneAutoHideSidebar}
                   >
                     <img
                       src=".\src\assets\admin_avatar\sara.jpg"
@@ -469,5 +472,4 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
               </Menu> */
 }
 
-export { Toggle };
 export default Navbar;

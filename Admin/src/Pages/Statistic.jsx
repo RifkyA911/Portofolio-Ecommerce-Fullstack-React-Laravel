@@ -1,11 +1,13 @@
 import React from "react";
+import Container from "../layout/Container";
 
 export default function Statistic() {
   // Konten komponen
   return (
     <>
-      <p>Statistic</p>
-      {/* Isi komponen */}
+      <Container>
+        <p>Statistic</p>
+      </Container>
     </>
   );
 }
