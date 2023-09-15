@@ -10,10 +10,7 @@ import * as MuiIcons from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../Redux/Slices/UISlice";
 
-//===================================
-const ThemeBG = [{ iconBG: "bg-violet-200" }];
-
-const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
+const Navbar = ({ showNav, toggleHideSidebar }) => {
   // REDUX
   const { BgColor, textColor, ComponentColor } = useSelector(
     (state) => state.UI

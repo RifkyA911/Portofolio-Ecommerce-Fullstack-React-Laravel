@@ -9,7 +9,7 @@ import * as MuiIcons from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../Redux/Slices/UISlice";
 
-const Sidebar = ({ showNav, toggleStates }) => {
+const Sidebar = ({ showNav }) => {
   const [current, setCurrent] = useState("Dashboard");
   // REDUX
   const { BgColor, textColor, screenWidth, sidebarOpen } = useSelector(

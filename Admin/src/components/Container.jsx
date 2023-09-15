@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function Container({ selectedPage }) {
   // REDUX
-  const { screenWidth, sidebarOpen } = useSelector((state) => state.UI);
+  const { sidebarOpen } = useSelector((state) => state.UI);
   const dispatch = useDispatch();
   return (
     <>
