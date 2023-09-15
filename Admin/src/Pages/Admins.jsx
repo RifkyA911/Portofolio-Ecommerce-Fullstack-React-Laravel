@@ -6,10 +6,6 @@ import Container from "../layout/Container";
 export default function Admins() {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [enabled, setEnabled] = useState(false);
-  const [enabled2, setEnabled2] = useState(false);
-  const [enabled3, setEnabled3] = useState(false);
-  const [enabled4, setEnabled4] = useState(false);
 
   async function fetchData() {
     try {
@@ -100,15 +96,18 @@ export default function Admins() {
                       </td>
                       <td>
                         <div className="text-sm opacity-50">
+                          <input type="checkbox" className="toggle toggle-sm" />
                           <p>Chat : {JSON.parse(user.authority).chat}</p>
                         </div>
                         <div className="text-sm opacity-50">
+                          <input type="checkbox" className="toggle toggle-sm" />
                           <p>
                             Sortir Barang :{" "}
                             {JSON.parse(user.authority).sort_warehouse}
                           </p>
                         </div>
                         <div className="text-sm opacity-50">
+                          <input type="checkbox" className="toggle toggle-sm" />
                           <p>
                             Ubah Harga :{JSON.parse(user.authority).alter_price}
                           </p>

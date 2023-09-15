@@ -84,8 +84,8 @@ const Navbar = () => {
                     >
                       <Popover.Panel className="-translate-x-[35%] lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                          <div className="bg-red-500">
-                            Nunggu Data Seeder di DB
+                          <div className="bg-red-400 text-xl">
+                            Nunggu Data Seeder dari DB
                           </div>
                           <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                             <span className="text-base font-medium">
@@ -185,8 +185,8 @@ const Navbar = () => {
                     >
                       <Popover.Panel className="-translate-x-[48%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                          <div className="bg-red-500">
-                            Nunggu Data Seeder di DB
+                          <div className="bg-red-400 text-xl">
+                            Nunggu Data Seeder dari DB
                           </div>
                           <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                             <span className="text-base font-medium">
@@ -317,6 +317,7 @@ const Navbar = () => {
                           </div>
                           <div className="relative bg-white py-2 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
                             <div className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
+                              Toggle Theme
                               <input
                                 type="checkbox"
                                 className="toggle"
@@ -333,7 +334,7 @@ const Navbar = () => {
                               <p>My Profile</p>
                             </Link>
                             <Link
-                              to="/myprofile"
+                              to="/settings"
                               className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                             >
                               <MuiIcons.Settings className="text-dark mr-4" />
