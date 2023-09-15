@@ -16,7 +16,7 @@ import "./App.css";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { changeBG, changeText } from "./Redux/Slices/UISlice";
+import { changeBG, changeText, toggleSidebar } from "./Redux/Slices/UISlice";
 import Summary from "./utils/Summary";
 
 function getUser() {
@@ -82,19 +82,19 @@ function App() {
     };
   }, [windowWidth]);
 
-  const toggleHideSidebar = () => {
-    if (windowWidth < 1024) {
-      setSidebarOpen((prevSidebarOpen) => (prevSidebarOpen = false));
-      setWideScreen((prevWideScreen) => (prevWideScreen = "lg:ml-0"));
-    }
-  };
+  // const toggleHideSidebar = () => {
+  //   if (windowWidth < 1024) {
+  //     setSidebarOpen((prevSidebarOpen) => (prevSidebarOpen = false));
+  //     setWideScreen((prevWideScreen) => (prevWideScreen = "lg:ml-0"));
+  //   }
+  // };
 
-  const toggleStates = () => {
-    setSidebarOpen((prevSidebarOpen) => !prevSidebarOpen);
-    setWideScreen((prevWideScreen) =>
-      prevWideScreen === "lg:ml-64" ? "lg:ml-0" : "lg:ml-64"
-    );
-  };
+  // const toggleStates = () => {
+  //   setSidebarOpen((prevSidebarOpen) => !prevSidebarOpen);
+  //   setWideScreen((prevWideScreen) =>
+  //     prevWideScreen === "lg:ml-64" ? "lg:ml-0" : "lg:ml-64"
+  //   );
+  // };
 
   return (
     <>
@@ -218,7 +218,7 @@ function App() {
           }}
           className="py-2 px-2 rounded-xl bg-violet-300"
         >
-          Ganti Theme
+          Dark Theme
         </button>
         <Summary a={2} b={5} />
         <br />

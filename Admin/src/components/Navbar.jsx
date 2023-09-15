@@ -1,38 +1,24 @@
 import { Fragment, useEffect, useRef, useState, React } from "react";
 import { Link, Outlet } from "react-router-dom";
+// Data
 import { MarketInbox } from "./Data/Inbox";
 import { MarketNotification } from "./Data/Notification";
-
+// UI
 import { Menu, Transition, Popover, Switch, Tab } from "@headlessui/react";
-
 import * as MuiIcons from "@mui/icons-material";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-// import { changeBG } from "./Redux/Slices/UISlice";
+import { toggleSidebar } from "../Redux/Slices/UISlice";
 
 //===================================
 const ThemeBG = [{ iconBG: "bg-violet-200" }];
-const Toggle = ({ toggleStates }) => {
-  return (
-    <>
-      <button
-        className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
-        onClick={toggleStates}
-      >
-        <MuiIcons.Menu className="h-6 w-6 text-dark text-bold" />
-      </button>
-    </>
-  );
-};
 
 const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
-  const [enabled, setEnabled] = useState(false);
-
   // REDUX
-  const { BgColor, textColor } = useSelector((state) => state.UI);
-  // const location = useLocation();
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const { BgColor, textColor, ComponentColor } = useSelector(
+    (state) => state.UI
+  );
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -55,7 +41,12 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                   <span>Admin Panel</span>
                 </div>
               </Link>
-              <Toggle toggleStates={toggleStates} />
+              <button
+                className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
+                onClick={() => dispatch(toggleSidebar())}
+              >
+                <MuiIcons.Menu className="h-6 w-6 text-dark text-bold" />
+              </button>
             </div>
             {/* Menu at left */}
             <div className="flex order-last items-center w-72 justify-end">
@@ -67,9 +58,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                       onClick={toggleHideSidebar}
                       className={`
                 ${open ? "" : "text-opacity-90"}
-                rounded-md ${
-                  ThemeBG[0].iconBG
-                } font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
+                rounded-md ${ComponentColor} font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
                     >
                       <div className="relative">
                         <MuiIcons.Sms className="flex h-6 w-6 relative ring-0" />
@@ -167,9 +156,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                       onClick={toggleHideSidebar}
                       className={`
                 ${open ? "" : "text-opacity-90"}
-                rounded-md ${
-                  ThemeBG[0].iconBG
-                } font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
+                rounded-md ${ComponentColor} font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
                     >
                       <div className="relative">
                         <MuiIcons.NotificationsNone className="flex h-6 w-6 relative ring-0" />
@@ -278,9 +265,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                       onClick={toggleHideSidebar}
                       className={`
                 ${open ? "" : "text-opacity-90"}
-                rounded-md ${
-                  ThemeBG[0].iconBG
-                } font-extralight text-dark rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
+                rounded-md ${ComponentColor} font-extralight text-dark rounded-xl bg-violet-200 hover:bg-violet-300 duration-500`}
                     >
                       <div className="relative avatar ">
                         <div className="w-10 rounded-full">
@@ -469,5 +454,4 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
               </Menu> */
 }
 
-export { Toggle };
 export default Navbar;

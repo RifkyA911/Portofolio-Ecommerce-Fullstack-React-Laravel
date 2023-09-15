@@ -7,18 +7,19 @@ import * as MuiIcons from "@mui/icons-material";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
+import { toggleSidebar } from "../Redux/Slices/UISlice";
 
-const Sidebar = ({ showNav, toggleStates, sidebarOpen, toggleSidebar }) => {
+const Sidebar = ({ showNav, toggleStates }) => {
   const [current, setCurrent] = useState("Dashboard");
-
-  const screenWidth = window.innerWidth;
-
   // REDUX
-  const { BgColor, textColor } = useSelector((state) => state.UI);
+  const { BgColor, textColor, screenWidth, sidebarOpen } = useSelector(
+    (state) => state.UI
+  );
+  const dispatch = useDispatch();
 
   const SidebarHandler = (key) => {
     setCurrent(key); // active current page
-    screenWidth < 1024 ? toggleSidebar() : undefined; // responsive utilites for sidebar autohide
+    screenWidth < 1024 ? dispatch(toggleSidebar(false)) : undefined; // responsive utilites for sidebar autohide
   };
 
   const renderSidebarItem = (
@@ -57,9 +58,9 @@ const Sidebar = ({ showNav, toggleStates, sidebarOpen, toggleSidebar }) => {
         <div className="bg-white">
           {/* Sidebar */}
           <div
-            onClick={toggleStates}
+            onClick={() => dispatch(toggleSidebar())}
             className={` lg:hidden ${sidebarOpen ? "" : "hidden"}
-        cursor-pointer backdrop-blur-sm bg-opacity-50 bg-gray-800 fixed w-full h-full z-20 transition duration-200`}
+            cursor-pointer backdrop-blur-sm bg-opacity-50 bg-gray-800 fixed w-full h-full z-20 transition duration-200`}
           ></div>
           <div
             className={
