@@ -12,10 +12,12 @@ import { Container, Navbar, Sidebar, NotFound, Login } from "./components"; // .
 import { sideNavigation } from "./components/Data/PagesLink";
 
 // import UI Component
-import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 
-import { changeBG } from "./Redux/Slices/UISlice";
+// REDUX
+import { useDispatch, useSelector } from "react-redux";
+import { changeBG, changeText } from "./Redux/Slices/UISlice";
+import Summary from "./utils/Summary";
 
 function getUser() {
   let user = localStorage.getItem("user");
@@ -94,10 +96,6 @@ function App() {
     );
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-  };
   return (
     <>
       {/* {!user ? (
@@ -214,11 +212,18 @@ function App() {
       {/* ============================================================================================= */}
       <div className="cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-semibold hover:bg-violet-400 duration-200">
         <button
-          onClick={() => dispatch(changeBG("bg-gray-600"))}
-          className="py-4 bg-violet-300"
+          onClick={() => {
+            dispatch(changeBG("bg-slate-800"));
+            dispatch(changeText("text-white"));
+          }}
+          className="py-2 px-2 rounded-xl bg-violet-300"
         >
           Ganti Theme
         </button>
+        <Summary a={2} b={5} />
+        <br />
+        <button>BG : {BgColor}</button>
+        <hr />
         <Link to="/x">
           <div className="flex-row p-2 ">
             <div className="flex flex-col ">
@@ -227,7 +232,6 @@ function App() {
             <div>
               Width: {windowWidth} Height: {windowHeight}
             </div>
-            <button>BG : {BgColor}</button>
           </div>
         </Link>
       </div>

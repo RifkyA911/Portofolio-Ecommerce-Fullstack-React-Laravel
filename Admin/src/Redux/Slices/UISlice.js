@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 export const UISlice = createSlice({
     name: "UI",
     initialState: {
-        BgColor: "bg-slate-200",
-        textColor: "bg-black-500",
+        BgColor: "bg-slate-100",
+        textColor: "text-dark",
         wideScreen: "lg:ml-64",
         sidebarOpen: "",
         showNav: "",

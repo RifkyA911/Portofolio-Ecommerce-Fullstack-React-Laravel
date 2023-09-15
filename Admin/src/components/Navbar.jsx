@@ -6,8 +6,9 @@ import { MarketNotification } from "./Data/Notification";
 import { Menu, Transition, Popover, Switch, Tab } from "@headlessui/react";
 
 import * as MuiIcons from "@mui/icons-material";
-// import Badge from "@mui/material/Badge";
-// import { FcAbout } from "react-icons/fc";
+// REDUX
+import { useDispatch, useSelector } from "react-redux";
+// import { changeBG } from "./Redux/Slices/UISlice";
 
 //===================================
 const ThemeBG = [{ iconBG: "bg-violet-200" }];
@@ -27,10 +28,20 @@ const Toggle = ({ toggleStates }) => {
 const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
   const [enabled, setEnabled] = useState(false);
 
+  // REDUX
+  const { BgColor, textColor } = useSelector((state) => state.UI);
+  // const location = useLocation();
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
+
   return (
     <>
       {showNav == true ? (
-        <nav className="bg-slate-200 fixed w-full z-50 text-xs">
+        <nav
+          className={
+            BgColor + " transition-all duration-300 fixed w-full z-50 text-xs"
+          }
+        >
           <div className=" flex justify-between max-h-16 h-full py-3 px-6">
             {/* right */}
             <div className="flex order-first items-center justify-between w-12 md:w-72 font-bold">
@@ -40,7 +51,7 @@ const Navbar = ({ showNav, toggleHideSidebar, toggleStates }) => {
                   alt="logo"
                   className="h-14 w-14 p-2 hidden sm:flex text-center"
                 />
-                <div className="text-lg hidden sm:flex pl-3">
+                <div className={textColor + ` text-lg hidden sm:flex pl-3`}>
                   <span>Admin Panel</span>
                 </div>
               </Link>

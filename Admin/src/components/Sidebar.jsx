@@ -5,10 +5,16 @@ import { sideNavigation } from "./Data/PagesLink";
 import * as HeroIcons from "@heroicons/react/24/solid";
 import * as MuiIcons from "@mui/icons-material";
 
+// REDUX
+import { useDispatch, useSelector } from "react-redux";
+
 const Sidebar = ({ showNav, toggleStates, sidebarOpen, toggleSidebar }) => {
   const [current, setCurrent] = useState("Dashboard");
 
   const screenWidth = window.innerWidth;
+
+  // REDUX
+  const { BgColor, textColor } = useSelector((state) => state.UI);
 
   const SidebarHandler = (key) => {
     setCurrent(key); // active current page
@@ -26,7 +32,7 @@ const Sidebar = ({ showNav, toggleStates, sidebarOpen, toggleSidebar }) => {
           className={`flex flex-row items-center w-full mx-4 px-6 py-3 rounded-xl ${
             item.name === current
               ? "bg-violet-200 text-gray-800"
-              : "text-gray-800 hover:bg-violet-100"
+              : textColor + " hover:bg-violet-100"
           }`}
         >
           {getMuiIconComponent(item.icon)}
@@ -56,9 +62,14 @@ const Sidebar = ({ showNav, toggleStates, sidebarOpen, toggleSidebar }) => {
         cursor-pointer backdrop-blur-sm bg-opacity-50 bg-gray-800 fixed w-full h-full z-20 transition duration-200`}
           ></div>
           <div
-            className={`overflow-hidden xhover:overflow-y-scroll bg-slate-200 text-sm text-dark font-medium fixed h-full mt-16 w-64 flex-shrink-0 transition-transform duration-300 z-30 ${
-              sidebarOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
+            className={
+              BgColor +
+              " " +
+              textColor +
+              ` overflow-hidden xhover:overflow-y-scroll text-sm font-medium fixed h-full mt-16 w-64 flex-shrink-0 transition-all duration-300 z-30 ${
+                sidebarOpen ? "translate-x-0" : "-translate-x-full"
+              }`
+            }
           >
             <nav className="flex-1 xoverflow-y-scroll shadow-sm h-full">
               <ul className="flex-row py-4 space-y-1 text-left">
@@ -66,7 +77,12 @@ const Sidebar = ({ showNav, toggleStates, sidebarOpen, toggleSidebar }) => {
                   <div key={item.id}>
                     {index === 0 ||
                     item.group !== sideNavigation[index - 1].group ? (
-                      <div className="h-12 ml-0 px-6 py-2 flex items-center justify-left font-sm">
+                      <div
+                        className={
+                          textColor +
+                          `h-12 ml-0 px-6 py-2 flex items-center justify-left font-sm`
+                        }
+                      >
                         <p>{item.group}</p>
                       </div>
                     ) : null}
