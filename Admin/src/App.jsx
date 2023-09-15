@@ -102,14 +102,14 @@ function App() {
       ) : ()} */}
       <Navbar
         showNav={showNav}
-        toggleStates={toggleStates}
-        toggleHideSidebar={toggleHideSidebar}
+        // toggleStates={toggleStates}
+        // toggleHideSidebar={toggleHideSidebar}
       />
       <Sidebar
         showNav={showNav}
         sidebarOpen={sidebarOpen}
-        toggleStates={toggleStates}
-        toggleSidebar={toggleStates}
+        // toggleStates={toggleStates}
+        // toggleSidebar={toggleStates}
       />
       <div className={container}>
         <Routes>
@@ -120,7 +120,7 @@ function App() {
               <Container
                 selectedPage="dashboard"
                 wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
@@ -130,7 +130,7 @@ function App() {
               <Container
                 selectedPage="admins"
                 wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
@@ -140,7 +140,7 @@ function App() {
               <Container
                 selectedPage="inbox"
                 wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
@@ -150,7 +150,7 @@ function App() {
               <Container
                 selectedPage="notification"
                 wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
@@ -160,7 +160,7 @@ function App() {
               <Container
                 selectedPage="settings"
                 wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
@@ -170,7 +170,7 @@ function App() {
               <Container
                 selectedPage="statistic"
                 wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
@@ -180,7 +180,7 @@ function App() {
               <Container
                 selectedPage="myprofile"
                 wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
@@ -190,7 +190,7 @@ function App() {
               <Container
                 selectedPage="products"
                 wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
@@ -200,7 +200,7 @@ function App() {
               <Container
                 selectedPage="warehouse"
                 wideScreen={wideScreen}
-                toggleWideScreen={toggleStates}
+                // toggleWideScreen={toggleStates}
               />
             }
           />
