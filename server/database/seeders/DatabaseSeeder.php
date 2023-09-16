@@ -25,29 +25,50 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Admin::create([
-            'username' => 'super duper admin',
+            'username' => 'Superidol Admin',
             'email' => 'super.duper@gmail.com',
             'password' => Hash::make('superadmin'),
             'role' => '0',
-            'pict' => 'superadmin.png' 
+            'pict' => '78949689_p1.png'
         ]);
         Admin::create([
-            'username' => 'admin 1',
+            'username' => 'Admin 1',
             'email' => 'admin.satu@gmail.com',
             'password' => Hash::make('123456'),
             'role' => 1,
-            'pict' => 'admin1.png'
+            'pict' => '84719630_p1.png'
+        ]);
+        Admin::create([
+            'username' => 'Admin 2',
+            'email' => 'admin.dua@gmail.com',
+            'password' => Hash::make('123456'),
+            'role' => 1,
+            'pict' => '77845097_p7.png'
+        ]);
+        Admin::create([
+            'username' => 'Admin 3',
+            'email' => 'admin.tiga@gmail.com',
+            'password' => Hash::make('123456'),
+            'role' => 1,
+            'pict' => '78949689_p1.png'
+        ]);
+        Admin::create([
+            'username' => 'Admin X',
+            'email' => 'admin.X@gmail.com',
+            'password' => Hash::make('123456'),
+            'role' => 1,
+            'pict' => '77845097_p0.png'
         ]);
         Admin::factory(5)->create();
 
-        
+
         User::create([
             'username' => 'bogeng',
             'email' => 'bogeng@gmail.com',
             'password' => Hash::make('bogeng'),
             'address' => 'pluto',
             'verified' => null,
-            'pict' => null,
+            'pict' => '78949689_p4.png',
         ]);
         User::factory(10)->create();
 
@@ -115,18 +136,18 @@ class DatabaseSeeder extends Seeder
             'product_id' => 2
         ]);
         Wishlist::factory(5)->create();
-        
+
         // message & dialog
         Dialog::create([
-            'dialog_number' => '1'.time(),
+            'dialog_number' => '1' . time(),
             'product_id' => '1'
         ]);
         Dialog::create([
-            'dialog_number' => '2'.time(),
+            'dialog_number' => '2' . time(),
             'product_id' => '2'
         ]);
         Dialog::create([
-            'dialog_number' => '0'.time(),
+            'dialog_number' => '0' . time(),
             'product_id' => null
         ]);
 

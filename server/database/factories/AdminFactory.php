@@ -22,8 +22,9 @@ class AdminFactory extends Factory
             'username' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('123456'),
-            'role' => mt_rand(0,1),
-            'pict' => Str::random(7).'.png'
+            'role' => mt_rand(0, 1),
+            // 'pict' => Str::random(7).'.png'
+            'pict' => '77845097_p8.png'
         ];
     }
 }
