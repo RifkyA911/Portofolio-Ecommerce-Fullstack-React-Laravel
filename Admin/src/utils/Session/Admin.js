@@ -7,3 +7,9 @@ export function getUser() {
     }
     return user;
   }
+
+  
+export function logOutUser () {
+  localStorage.clear();
+};
+

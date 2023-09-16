@@ -8,6 +8,8 @@ import * as MuiIcons from "@mui/icons-material";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
+// UTILS
+import { getUser, logOutUser } from "../utils/Session/Admin";
 
 const Navbar = () => {
   // REDUX
@@ -16,6 +18,7 @@ const Navbar = () => {
   );
   const { showNav } = useSelector((state) => state.navigation);
   const dispatch = useDispatch();
+  const userSession = getUser();
 
   const SmartphoneAutoHideSidebar = () => {
     if (screenWidth < 1024) {
@@ -26,6 +29,12 @@ const Navbar = () => {
   return (
     <>
       {showNav ? (
+        // userSession !== null ? (
+        //   <>
+        //   </>
+        // ) : (
+        //   ""
+        // )
         <nav
           className={
             BgColor + " transition-all duration-300 fixed w-full z-50 text-xs"
@@ -150,11 +159,6 @@ const Navbar = () => {
                 )}
               </Popover>
               {/* notification */}
-              {/* <button className="pl-2 ring-0" onClick={() => dispatch(toggleSidebar())}>
-                <div className="flex p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500">
-                  <MuiIcons.NotificationsNone className="h-6 w-6 text-dark text-bold" />
-                </div>
-              </button> */}
               <Popover className="relative pl-2">
                 {({ open }) => (
                   <>
@@ -279,7 +283,7 @@ const Navbar = () => {
                       <div className="relative avatar ">
                         <div className="w-10 rounded-full">
                           <img
-                            src=".\src\assets\admin_avatar\sara.jpg"
+                            src={`./src/assets/admin_avatar/${userSession.pict}`}
                             alt="profile"
                             className="w-6 h-6 rounded-full text-center"
                           />
@@ -304,14 +308,20 @@ const Navbar = () => {
                             <div className="flex flex-row picture items-center px-4">
                               <div className="flex relative pr-4">
                                 <img
-                                  src=".\src\assets\admin_avatar\sara.jpg"
+                                  src={`./src/assets/admin_avatar/${userSession.pict}`}
                                   alt="profile"
                                   className="w-14 h-14 rounded-full text-center"
                                 />
                               </div>
                               <div className="flex flex-col text-left">
-                                <p className="font-medium text-base">Admin1</p>
-                                <p className="text-sm">Super Admin</p>
+                                <p className="font-medium text-base">
+                                  {userSession.username}
+                                </p>
+                                <p className="text-sm">
+                                  {userSession.role == 0
+                                    ? "Super Admin"
+                                    : "Admin"}
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -342,6 +352,7 @@ const Navbar = () => {
                             </Link>
                             <Link
                               to="/login"
+                              onClick={logOutUser}
                               className="border-t-2 border-slate-200 flex flex-1 items-center mt-2 py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                             >
                               <MuiIcons.LogoutOutlined className="text-dark mr-4" />
@@ -363,114 +374,5 @@ const Navbar = () => {
     </>
   );
 };
-
-{
-  /* <Menu as="div" className="relative flex text-left px-4">
-                <div>
-                  <Menu.Button
-                    className="flex rounded-xl bg-gray-200 hover:bg-blue-500 hover:text-white duration-200 items-center"
-                    onClick={SmartphoneAutoHideSidebar}
-                  >
-                    <img
-                      src=".\src\assets\admin_avatar\sara.jpg"
-                      alt="profile"
-                      className="w-9 h-9 rounded-full text-center"
-                    />
-                    <p className="px-4 font-semibold text-sm">RIFKY</p>
-                  </Menu.Button>
-                </div>
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="absolute top-10 right-8 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="px-1 py-1 ">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            to="/myprofile"
-                            className={`${
-                              active
-                                ? "bg-violet-500 text-white"
-                                : "text-gray-900"
-                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                          >
-                            {active ? (
-                              <MuiIcons.ManageAccountsOutlined
-                                className="mr-2 h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <MuiIcons.ManageAccounts
-                                className="mr-2 h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            )}
-                            My Profile
-                          </Link>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            to="/settings"
-                            className={`${
-                              active
-                                ? "bg-violet-500 text-white"
-                                : "text-gray-900"
-                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                          >
-                            {active ? (
-                              <MuiIcons.SettingsOutlined
-                                className="mr-2 h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <MuiIcons.Settings
-                                className="mr-2 h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            )}
-                            Settings
-                          </Link>
-                        )}
-                      </Menu.Item>
-                    </div>
-                    <div className="px-1 py-1">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            to="/login"
-                            className={`${
-                              active
-                                ? "bg-violet-500 text-white"
-                                : "text-gray-900"
-                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                          >
-                            {active ? (
-                              <MuiIcons.LogoutOutlined
-                                className="mr-2 h-5 w-5 text-violet-400"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <MuiIcons.LogoutOutlined
-                                className="mr-2 h-5 w-5 text-violet-400"
-                                aria-hidden="true"
-                              />
-                            )}
-                            Log Out
-                          </Link>
-                        )}
-                      </Menu.Item>
-                    </div>
-                  </Menu.Items>
-                </Transition>
-              </Menu> */
-}
 
 export default Navbar;

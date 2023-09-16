@@ -36,7 +36,9 @@ function Login() {
     <>
       <main className="bg-gradient-to-b  flex w-full static justify-center">
         <div className={`p-4 my-4 h-full shadow-lg flex-shrink-0 duration-300`}>
-          <p className="bg-yellow-400 mb-4">Progress Return Wrong Response</p>
+          <p className="bg-red-400 mb-4">
+            Nunggu Progress Backend: abort and Return Wrong Response
+          </p>
           <div className="w-96 bg-gradient-to-b from-violet-400 to-blue-400 rounded-xl shadow-sm text-white font-semibold">
             <h1 className="p-4 text-2xl">Login</h1>
             <form
@@ -87,12 +89,6 @@ function Login() {
           ) : (
             ""
           )}
-          <a
-            href="/logout"
-            className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-blue-500 hover:bg-sky-700 rounded-md"
-          >
-            Logout
-          </a>
         </div>
       </main>
     </>

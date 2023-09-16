@@ -63,7 +63,7 @@ const Sidebar = () => {
                             className={`flex flex-row items-center w-full px-6 py-2 rounded-lg ${
                               link.name === current
                                 ? "bg-violet-200 text-gray-800"
-                                : textColor + " hover:bg-violet-100"
+                                : "hover:text-gray-800 hover:bg-violet-100"
                             }`}
                           >
                             {getMuiIconComponent(link.icon)}

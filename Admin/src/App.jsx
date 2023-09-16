@@ -11,8 +11,8 @@ import {
 import React, { useState, useEffect } from "react";
 //import config data
 import { allowedPaths } from "./utils/ShowNavigation";
-// Container
-// import Container from "./layout/container";
+// Pages
+import { NotFound, Login } from "./Pages";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +27,8 @@ import { getUser } from "./utils/Session/Admin";
 
 function App() {
   // login component
-  const [user, setUser] = useState(getUser());
+  const [userSession, setuUserSession] = useState(getUser());
+  // const userSession = getUser();
 
   // REDUX
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
@@ -36,13 +37,14 @@ function App() {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   // show nav components
   useEffect(() => {
-    if (!user) {
-      handleLogin();
+    if (userSession == null) {
+      navigate("/login");
     }
-
+    {
+      navigate("/");
+    }
     // console.log(location);
     if (allowedPaths.includes(location.pathname)) {
       dispatch(navLink(true));
@@ -56,23 +58,20 @@ function App() {
     } else {
       dispatch(toggleSidebar(true));
     }
-  }, [location]);
-
-  const handleLogin = () => {
-    navigate("/login");
-  };
+    console.log(userSession);
+  }, [userSession]);
   return (
     <>
-      {/* {!user ? (
+      {userSession !== null ? (
         <>
+          <MyAppRoutes />
+          <MyDebuggerPanel />
         </>
       ) : (
         <>
           <Login />
         </>
-      )} */}
-      <MyAppRoutes />
-      <MyDebuggerPanel />
+      )}
     </>
   );
 }
