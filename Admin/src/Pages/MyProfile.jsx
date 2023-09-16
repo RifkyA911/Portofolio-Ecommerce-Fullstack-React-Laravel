@@ -1,7 +1,23 @@
+import {
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+  Link,
+} from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import * as MuiIcons from "@mui/icons-material";
 import Container from "../layout/Container";
+
+// REDUX
+import { useDispatch, useSelector } from "react-redux";
+import { darkTheme, toggleSidebar } from "../Redux/Slices/UISlice";
+import { navLink } from "../Redux/Slices/NavigationSlice";
+
+// Utils
+import { getUser } from "../utils/Session/Admin";
+// import Summary from "./utils/Summary";
 
 export default function MyProfile() {
   const [formData, setFormData] = useState({
@@ -13,22 +29,40 @@ export default function MyProfile() {
     newPassword_confirmation: null,
   });
 
+  // REDUX
+  const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
+    (state) => state.UI
+  );
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const userSession = getUser();
+
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/admins/1")
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log(data.data.id); // Cek data untuk pemeriksaan
-        setFormData((prevFormData) => ({
-          ...prevFormData, //spread opreator object
-          id: data.data.id,
-          email: data.data.email,
-          username: data.data.username,
-          pict: data.data.pict,
-        }));
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    // fetch("http://127.0.0.1:8000/api/admins/1")
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     // console.log(data.data.id); // Cek data untuk pemeriksaan
+    //     setFormData((prevFormData) => ({
+    //       ...prevFormData, //spread opreator object
+    //       id: data.data.id,
+    //       email: data.data.email,
+    //       username: data.data.username,
+    //       pict: data.data.pict,
+    //     }));
+    //     // console.log(userSession);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching data:", error);
+    //   });
+
+    setFormData((prevFormData) => ({
+      ...prevFormData, //spread opreator object
+      id: userSession.id,
+      email: userSession.email,
+      username: userSession.username,
+      pict: userSession.pict,
+    }));
   }, []);
   // console.log(formData); // Ini mungkin akan menunjukkan perubahan pada state, tetapi mungkin juga belum terpantau perubahannya.
 
