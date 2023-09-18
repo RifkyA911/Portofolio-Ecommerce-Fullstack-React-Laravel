@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Sidebar from "../components/Sidebar";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IconHeader from "../components/IconHeader";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageHeader from "./PageHeader";
@@ -19,11 +19,28 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const sidebarRef = useRef(null);
+
+  useEffect(() => {
+    // Add event listener to the document object
+    document.addEventListener("mousedown", handleClickOutside);
+    // Remove event listener when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  function handleClickOutside(event) {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      // Clicked outside the side navigation bar, close it
+      setIsOpen(false);
+    }
+  }
 
   return (
     <header className="w-full py-4 sticky top-0 bg-white h-full z-[5]">
       <div className="max-w-screen-xl mx-auto">
-        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+        <Sidebar isOpen={isOpen} ref={sidebarRef} />
         <div className="px-8 flex items-center justify-between">
           {location.pathname === "/" ? (
             isOpen ? (

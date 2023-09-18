@@ -2,7 +2,7 @@
 const Layout = ({ children }) => {
   return (
     <div className="flex flex-col justify-center items-center">
-      <div className="flex flex-col justify-center min-h-screen w-screen items-center bg-white">
+      <div className="flex flex-col min-h-screen w-screen items-center bg-white">
         {children}
       </div>
     </div>

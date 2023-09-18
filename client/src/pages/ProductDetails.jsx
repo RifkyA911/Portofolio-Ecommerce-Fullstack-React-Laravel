@@ -1,18 +1,19 @@
+import { useEffect } from "react";
 import ProductContent from "../components/content/ProductContent";
-import Footer from "../layouts/Footer";
 import Header from "../layouts/Header";
 import Layout from "../layouts/Layout";
 
 const ProductDetails = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Layout>
       <Header />
-      <main className="w-full">
-        <div className="max-w-screen-xl mx-auto">
-          <ProductContent />
-        </div>
+      <main className="flex flex-col w-full flex-grow max-w-screen-xl ">
+        <ProductContent />
       </main>
-      <Footer />
     </Layout>
   );
 };

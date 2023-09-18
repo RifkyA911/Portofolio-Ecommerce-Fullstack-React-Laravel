@@ -8,6 +8,7 @@ import ProductDetails from "./pages/ProductDetails";
 import { useEffect } from "react";
 import { fetchProducts } from "./api/api";
 import { setProducts } from "./components/redux/productSlice";
+import NotFoundPage from "./pages/404";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/product/:slug" element={<ProductDetails />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

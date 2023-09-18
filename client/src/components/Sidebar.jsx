@@ -1,11 +1,14 @@
+import { forwardRef } from "react";
+
 // eslint-disable-next-line react/prop-types
-const Sidebar = ({ isOpen }) => {
+const Sidebar = forwardRef(function Sidebar({ isOpen }, ref) {
   return (
     <div
       className={
         "fixed top-0 left-0 m-0 p-0 bg-black h-full w-[40%] xl:w-1/4 lg:w-1/3 duration-700 ease-out " +
         (isOpen ? "translate-x-0" : "-translate-x-full opacity-0")
       }
+      ref={ref}
     >
       <div className="mt-16 w-full flex flex-col justify-center items-center">
         <ul className="flex flex-col justify-center">
@@ -46,6 +49,6 @@ const Sidebar = ({ isOpen }) => {
       </div>
     </div>
   );
-};
+});
 
 export default Sidebar;
