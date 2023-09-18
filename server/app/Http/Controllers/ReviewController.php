@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
+use Illuminate\Http\Response;
 
 class ReviewController extends Controller
 {
@@ -20,7 +21,8 @@ class ReviewController extends Controller
         if (count($reviews = Review::Where('product_id', $product_id)->get())){
             return new PostResource(true, 'List Review Produk', $reviews);
         }
-        return new PostResource(false, 'Review Produk tidak ditemukan', null);
+        return new PostResource(false, 'Review Produk tidak ditemukan', null, 404);
+        // return new Response(new PostResource(false, 'Review Produk tidak ditemukan', null), 401);
     }
 
     /**

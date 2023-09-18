@@ -39,13 +39,13 @@ class TransactionController extends Controller
         ]);
 
         if ($validator->fails()) {  // jika validasi gagal
-            return new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()]);
+            return new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()], 400);
         }
 
         if ($hasil = Transaction::create($request->all())) {
-            return new PostResource(true, 'Transaksi berhasil', $hasil);
+            return new PostResource(true, 'Transaksi berhasil', $hasil, 201);
         }
-        return new PostResource(false, 'Transaksi gagal', ['old_input' => $request->all()]);
+        return new PostResource(false, 'Transaksi gagal', ['old_input' => $request->all()], 400);
     }
 
     /**
@@ -131,7 +131,7 @@ class TransactionController extends Controller
             $transaksi->checked_out = now();
             return new PostResource(true, 'Transaksi berhasil', $transaksi->update());
         } else {
-            return new PostResource(false, 'Gagal check out, forbidden action detected', $request->all());
+            return new PostResource(false, 'Gagal check out, forbidden action detected', $request->all(), 403);
         }
     }
     // update status sent
@@ -142,7 +142,7 @@ class TransactionController extends Controller
             $transaksi->admin_id = $request->input('admin_id');
             return new PostResource(true, 'Status transaksi berhasil diubah', $transaksi->update());
         } else {
-            return new PostResource(false, 'Status transaksi gagal diubah', 'forbidden action detected');
+            return new PostResource(false, 'Status transaksi gagal diubah', 'forbidden action detected', 403);
         }
     }
     // update status done
@@ -153,7 +153,7 @@ class TransactionController extends Controller
             $transaksi->done = now();
             return new PostResource(true, 'Status transaksi berhasil diubah', $transaksi->update());
         } else {
-            return new PostResource(false, 'Status transaksi gagal diubah', 'forbidden action detected');
+            return new PostResource(false, 'Status transaksi gagal diubah', 'forbidden action detected', 403);
         }
     }
 

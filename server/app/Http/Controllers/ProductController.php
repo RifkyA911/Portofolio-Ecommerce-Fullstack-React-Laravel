@@ -9,19 +9,19 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    public function index() {
-        return view('product',[
-            'judul'=>'product',
-            'product'=> Product::All()
-        ]);
-    }
+    // public function index() {
+    //     return view('product',[
+    //         'judul'=>'product',
+    //         'product'=> Product::All()
+    //     ]);
+    // }
 
-    public function show($name) {
-        return view('detail-product',[
-            'judul'=>'detail product',
-            'product'=> Product::find($name)
-        ]);
-    }
+    // public function show($name) {
+    //     return view('detail-product',[
+    //         'judul'=>'detail product',
+    //         'product'=> Product::find($name)
+    //     ]);
+    // }
     /**
      * Display a listing of the resource.
      */
@@ -51,10 +51,10 @@ class ProductController extends Controller
         //     "password" => 'required|min:6',
         // ]);
         if ($validator->fails()) {
-            return new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->all()]);
+            return new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->all()], 400);
         }
         $addItem = Product::create($validator->validated());
-        return new PostResource(true, "Produk berhasil ditambahkan.", $addItem);
+        return new PostResource(true, "Produk berhasil ditambahkan.", $addItem, 201);
     }
 
     /**
@@ -78,7 +78,7 @@ class ProductController extends Controller
         ]);
         
         if ($validator->fails()) {
-            return new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->all()]);
+            return new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->all()], 400);
         }
         $produk = Product::find($request->input('id'));
         $produk->name = $request->input('name');

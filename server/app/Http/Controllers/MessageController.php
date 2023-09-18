@@ -44,9 +44,9 @@ class MessageController extends Controller
 
         // return $data;
         if ($result = Message::create($data)) {
-            return new PostResource(true, 'pesan berhasil dibuat', $result);
+            return new PostResource(true, 'pesan berhasil dibuat', $result, 201);
         }
-        return new PostResource(false, 'pesan gagal dibuat', ['old_input' => $request]);
+        return new PostResource(false, 'pesan gagal dibuat', ['old_input' => $request], 400);
     }
 
     /**

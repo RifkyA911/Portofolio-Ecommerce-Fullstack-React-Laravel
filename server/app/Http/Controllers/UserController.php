@@ -28,7 +28,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         // inisiasi awal respon
-        $respon = PostResource::make(false, 'login gagal', $request->except('auth_key'));
+        $respon = PostResource::make(false, 'login gagal', $request->except('auth_key'), 400);
         // validasi
         $validator = Validator::make($request->all(), [
             "email" => "required|email",
@@ -43,6 +43,7 @@ class UserController extends Controller
 
         // auth_key = cikidaw
         if (!Hash::check($request->input('auth_key'), '$2y$10$eESkk5EgGHwBqUtGujWmkevQphwrPmkY3LH88Kpxw20p6VZ4kA9bi')) {
+            $respon->code = 403;
             return $respon;
         }
 
@@ -56,10 +57,12 @@ class UserController extends Controller
                 $respon->status = true;
                 $respon->message = 'login berhasil';
                 $respon->resource = $user->makeHidden(['password', 'created_at', 'updated_at']);
+                $respon->code = 200;
                 return $respon;
             }
         } else {
             $respon->message = 'Email salah';
+            $respon->code = 401;
             return $respon;
         }
     }
@@ -80,10 +83,10 @@ class UserController extends Controller
         //     "password" => 'required|min:6',
         // ]);
         if ($validator->fails()) {
-            return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]);
+            return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()], 400);
         }
         $addUser = User::create($request->all());
-        return new PostResource(true, "User berhasil ditambahkan.", $addUser);
+        return new PostResource(true, "User berhasil ditambahkan.", $addUser, 201);
     }
 
     /**
@@ -114,12 +117,12 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), $rule);
 
         if ($validator->fails()) {
-            return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->except('id')]);
+            return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->except('id')], 400);
         }
 
         // cek password lama
         if (!Hash::check($request->input('password'), $updateUser->password)) {
-            return new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')]);
+            return new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')], 403);
         }
 
         // isi data baru
