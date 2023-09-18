@@ -1,0 +1,48 @@
+version: '0.127'
+services:
+    backend:
+        build:
+            context: './server'
+            dockerfile: dockerFile
+        enviroment:
+            DB_HOST: 'db'
+            DB_DATABASE: 'ecommerce'
+            DB_USERNAME: 'root'
+            DB_PASSWORD: ''
+        ports:
+            - 8000:8000
+        volumes:
+            - './server:/app/backend'
+        depends_on:
+            - db
+        networks:
+            - app
+
+    frontend:
+        build:
+            context: './Admin'
+            dockerfile: dockerFile
+        tty: true
+        ports:
+            - 3000:3000
+        volumes:
+            - './server:/app/frontend'
+        depends_on:
+            - backend
+        networks:
+            - app
+
+    db:
+        image: 10.4.27-MariaDB - mariadb.org binary distribution
+        enviroment:
+            MYSQL_DATABSE: 'ecommerce'
+            MYSQL_USER: 'root'
+            MYSQL_PASSWORD: 'root'
+            MYSQL_ROOT_PASSWORD: ''
+
+        networks:
+            - app
+
+networks:
+    app:
+    driver: bridge
