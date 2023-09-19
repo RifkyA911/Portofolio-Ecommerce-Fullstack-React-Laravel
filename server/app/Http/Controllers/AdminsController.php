@@ -28,7 +28,7 @@ class AdminsController extends Controller
     public function login(Request $request)
     {
         // inisiasi awal respon
-        $respon = PostResource::make(false, 'SUSpicious activity detected', $request->except('auth_key'), 400);
+        $respon = PostResource::make(false, 'SUSpicious activity detected', $request->except('auth_key'));
         // validasi
         $validator = Validator::make($request->all(), [
             "email" => "required|email",
@@ -38,12 +38,12 @@ class AdminsController extends Controller
         if ($validator->fails()) {
             $respon->message = "validasi data error";
             $respon->resource = ['errors' => $validator->errors(), 'old_input' => $request->except('auth_key')];
-            return $respon;
+            return response($respon, 400);
         }
 
         // auth_key = cikidaw
         if (!Hash::check($request->input('auth_key'), '$2y$10$eESkk5EgGHwBqUtGujWmkevQphwrPmkY3LH88Kpxw20p6VZ4kA9bi')) {
-            return $respon;
+            return response($respon, 404);
         }
 
         // cek email
@@ -51,18 +51,16 @@ class AdminsController extends Controller
             // cek password
             if (!Hash::check($request->input('password'), $admin->password)) {
                 $respon->message = "Password salah";
-                return $respon;
+                return response($respon, 401);
             } else {
                 $respon->status = true;
                 $respon->message = 'login berhasil';
                 $respon->resource = $admin->makeHidden(['password', 'created_at', 'updated_at']);
-                $respon->code = 200;
-                return $respon;
+                return response($respon, 200);
             }
         } else {
             $respon->message = 'Email salah';
-            $respon->code = 401;
-            return $respon;
+            return response($respon, 401);
         }
     }
 
@@ -82,16 +80,16 @@ class AdminsController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()], 400);
+                return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
             }
 
             if (Admin::create($request->except(['role_admin'])) !== false) {
                 return new PostResource(true, "Admin berhasil ditambahkan.", $request->only(['email', 'username']));
             } else {
-                return new PostResource(false, "validasi data error", "Something went wrong with the DB :(", 403);
+                return response(new PostResource(false, "validasi data error", "Something went wrong with the DB :("), 403);
             }
         }
-        return new PostResource(false, "Akun admin gagal ditambahkan", "Akun anda tidak punya akses dalam pembuatan akun admin.", 403);
+        return response(new PostResource(false, "Akun admin gagal ditambahkan", "Akun anda tidak punya akses dalam pembuatan akun admin."), 403);
     }
 
     public function update(Request $request)
@@ -111,12 +109,12 @@ class AdminsController extends Controller
         $validator = Validator::make($request->all(), $rule);
 
         if ($validator->fails()) {
-            return new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->except('id')], 400);
+            return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->except('id')]), 400);
         }
 
         // cek password lama
         if (!Hash::check($request->input('password'), $updateAdmin->password)) {
-            return new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')], 400);
+            return response(new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')]), 401);
         }
 
         // isi data baru

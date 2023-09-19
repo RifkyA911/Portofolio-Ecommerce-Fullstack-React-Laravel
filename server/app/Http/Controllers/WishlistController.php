@@ -32,7 +32,7 @@ class WishlistController extends Controller
         if ($hasil = Wishlist::create($request->all())) {
             return new PostResource(true, 'Berhasil ditambah ke Wishlist', $hasil);
         }
-        return new PostResource(false, 'Gagal ditambah ke Wishlist', $request->all(), 400);
+        return response(new PostResource(false, 'Gagal ditambah ke Wishlist', $request->all()), 400);
     }
 
     /**
@@ -71,6 +71,6 @@ class WishlistController extends Controller
         if (Wishlist::find($request->input('id'))->delete()) {
             return new PostResource(true, "Item berhasil dihapus dari Wishlist", '');
         }
-        return new PostResource(false, "Item gagal dihapus dari Wishlist", $request->all(), 400);
+        return response(new PostResource(false, "Item gagal dihapus dari Wishlist", $request->all()), 400);
     }
 }

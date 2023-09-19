@@ -18,20 +18,19 @@ class PostResource extends JsonResource
     public $resource;
     public $code;
 
-    public function __construct($status, $message, $resource, $code = 200)
+    public function __construct($status, $message, $resource)
     {
         parent::__construct($resource);
         $this->status = $status;
         $this->message = $message;
-        $this->code = $code;
     }
     
     public function toArray(Request $request)
     {
-        return new Response([
+        return [
             "status" => $this->status,
             "message" => $this->message,
             "data" => $this->resource
-        ], $this->code);
+        ];
     }
 }

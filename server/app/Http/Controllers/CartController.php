@@ -35,7 +35,7 @@ class CartController extends Controller
         // return $data;
         if ($respon = Cart::create($data)) {
             return new PostResource(true, 'Berhasil menambahkan ke keranjang', $respon, 201);
-        } else {return new PostResource(false, 'Gagal menambahkan ke keranjang', $request, 400);}
+        } else {return response(new PostResource(false, 'Gagal menambahkan ke keranjang', $request), 400);}
     }
 
     /**
@@ -81,6 +81,6 @@ class CartController extends Controller
         if (Cart::find($request->input('id'))->delete()) {
             return new PostResource(true, "Item berhasil dihapus dari keranjang", '');
         }
-        return new PostResource(false, "Item gagal dihapus dari keranjang", $request->all(), 400);
+        return response(new PostResource(false, "Item gagal dihapus dari keranjang", $request->all()), 400);
     }
 }

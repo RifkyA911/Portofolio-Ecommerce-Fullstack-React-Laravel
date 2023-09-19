@@ -39,7 +39,7 @@ class DialogController extends Controller
         if ($respon->resource = Dialog::create(['dialog_number' => $dialog_number, 'product_id' => $request->input('product_id')])) {
             return $respon;
         }
-        return new PostResource(false, 'something went wrong :(', '', 400);
+        return response(new PostResource(false, 'something went wrong :(', ''), 400);
     }
 
     /**
