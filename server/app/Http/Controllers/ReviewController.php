@@ -21,7 +21,7 @@ class ReviewController extends Controller
         if (count($reviews = Review::Where('product_id', $product_id)->get())){
             return new PostResource(true, 'List Review Produk', $reviews);
         }
-        return new PostResource(false, 'Review Produk tidak ditemukan', null, 404);
+        return response(new PostResource(false, 'Review Produk tidak ditemukan', null), 404);
         // return new Response(new PostResource(false, 'Review Produk tidak ditemukan', null), 401);
     }
 
