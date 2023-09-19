@@ -67,8 +67,6 @@ function App() {
       {userSession !== null ? (
         <>
           {/* <p>Gaga</p> */}
-          <Navbar />
-          <Sidebar />
           <MyAppRoutes />
           <MyDebuggerPanel />
           <Footer />

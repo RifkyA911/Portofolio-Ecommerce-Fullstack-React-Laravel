@@ -6,7 +6,7 @@ import {
   Link,
 } from "react-router-dom";
 import React from "react";
-// import { Navbar, Sidebar } from "../Layout"; // ./components/index.jsx
+import { Navbar, Sidebar } from "../Layout"; // ./components/index.jsx
 import {
   Dashboard,
   Admins,
@@ -26,8 +26,8 @@ function MyAppRoutes() {
   // Konten komponen
   return (
     <>
-      {/* <Navbar />
-      <Sidebar /> */}
+      <Navbar />
+      <Sidebar />
       <div className="app flex pt-14 min-h-screen max-w-full">
         <Routes>
           <Route path="/login" element={<Login />} />
