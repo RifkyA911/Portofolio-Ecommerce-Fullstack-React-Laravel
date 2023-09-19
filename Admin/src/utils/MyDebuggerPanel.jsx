@@ -19,13 +19,13 @@ function MyDebuggerPanel() {
       <div className="text-xs cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-semibold hover:bg-gray-300 duration-200">
         <div className="font-bold ">Debugger Panel</div>
         <hr />
-        <input
+        {/* <input
           type="checkbox"
           className="toggle toggle-xs my-2"
           onClick={() => {
             dispatch(darkTheme());
           }}
-        />
+        /> */}
         {/* <Summary a={2} b={5} /> */}
         <br />
         <button>Theme : {BgColor}</button>

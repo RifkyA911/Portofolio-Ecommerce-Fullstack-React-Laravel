@@ -26,24 +26,24 @@ function MyAppRoutes() {
   // Konten komponen
   return (
     <>
-      <Navbar />
       <Sidebar />
-      <div className="app flex pt-14 min-h-screen max-w-full">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/admins" element={<Admins />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/notification" element={<Notification />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/statistic" element={<Statistic />} />
-          <Route path="/myprofile" element={<MyProfile />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/invoices" element={<Invoices />} />
-          <Route path="/orders" element={<Order />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+      <Navbar />
+      {/* <div className="app flex pt-14 min-h-screen max-w-full"> */}
+      <Routes>
+        {/* <Route path="/login" element={<Login />} /> */}
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/admins" element={<Admins />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/notification" element={<Notification />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/statistic" element={<Statistic />} />
+        <Route path="/myprofile" element={<MyProfile />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/invoices" element={<Invoices />} />
+        <Route path="/orders" element={<Order />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      {/* </div> */}
     </>
   );
 }

@@ -25,6 +25,7 @@ import MyDebuggerPanel from "./utils/MyDebuggerPanel";
 import { getUser } from "./utils/Session/Admin";
 import Footer from "./Layout/Footer";
 import { Navbar, Sidebar } from "./Layout";
+import LoginRouter from "./Config/LoginRouter";
 // import Summary from "./utils/Summary";
 
 function App() {
@@ -43,8 +44,7 @@ function App() {
   useEffect(() => {
     if (userSession == null) {
       navigate("/login");
-    }
-    {
+    } else {
       navigate("/");
     }
     // console.log(location);
@@ -66,14 +66,21 @@ function App() {
     <>
       {userSession !== null ? (
         <>
-          {/* <p>Gaga</p> */}
           <MyAppRoutes />
+          {/* <Navbar />
+          <Sidebar /> */}
           <MyDebuggerPanel />
           <Footer />
+          {/* <p>Gaga</p> */}
         </>
       ) : (
         <>
-          <Login />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={null} />
+          </Routes>
+          <p>No User</p>
+          {/* <Login /> */}
         </>
       )}
     </>

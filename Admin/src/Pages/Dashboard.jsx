@@ -1,6 +1,6 @@
 import Container from "../layout/Container";
 import { infoMarket } from "../Config/Temporary"; //Data
-
+import { Navbar, Sidebar } from "../Layout"; // ./components/index.jsx
 // Konten komponen
 function Dashboard(pops) {
   return (
@@ -42,7 +42,7 @@ function Dashboard(pops) {
               </ul>
             </div>
           </div>
-          <div className="divider">OR</div>
+
           {/* baris-2 */}
           <div className="font-bold justify-center lg:max-h-64">
             <div className="flex flex-wrap lg:flex-nowrap flex-row"></div>

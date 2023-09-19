@@ -75,6 +75,12 @@ export const sideNavigation = [
         href: "/settings",
         icon: "Settings",
       },
+      // {
+      //   id: 3,
+      //   name: "Customers",
+      //   href: "/customers",
+      //   icon: "Groups",
+      // },
     ],
   },
 ];
