@@ -261,7 +261,7 @@ export const NavbarComponent = () => {
             >
               <Popover.Panel className="-translate-x-[75%]  lg:-translate-x-[85%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-2 absolute w-60">
                 <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div className="lg:p-4 py-2 px-2 flex flex-col w-full bg-slate-50 shadow-sm">
+                  <div className="lg:p-4 py-2 px-2 flex flex-col w-full bg-slate-100 shadow-sm">
                     <div className="flex flex-row picture items-center px-4">
                       <div className="flex relative pr-4">
                         <img
@@ -270,56 +270,55 @@ export const NavbarComponent = () => {
                           className="w-14 h-14 rounded-full text-center"
                         />
                       </div>
-                      <div className="flex flex-col text-left">
-                        <p className="font-medium text-base">
+                      <div className="flex flex-col text-left ">
+                        <p className="flex-none font-medium text-sm text-ellipsis overflow-hidden max-h-[85px] max-w-[85px] ">
                           {userSession.username}
                         </p>
-                        <p className="text-sm">
+                        <p className="text-xs">
                           {userSession.role == 0 ? "Super Admin" : "Admin"}
                         </p>
                       </div>
                     </div>
                   </div>
                   <div className="relative bg-white py-2 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
-                    <div className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
-                      Toggle Theme
-                      <input
-                        type="checkbox"
-                        className="toggle"
-                        onClick={() => {
-                          dispatch(darkTheme());
-                        }}
-                      />
+                    <div className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
+                      <div className="flex toggle-theme mb-1">
+                        {BgColor != "bg-white" ? (
+                          <MuiIcons.NightsStayTwoTone className="text-sky-800 mr-3 transition-transform fade duration-300" />
+                        ) : (
+                          <MuiIcons.Brightness4TwoTone className="text-yellow-500 mr-3 transition-transform duration-300" />
+                        )}
+                        <input
+                          type="checkbox"
+                          className="toggle"
+                          onClick={() => {
+                            dispatch(darkTheme());
+                          }}
+                        />
+                        <div className="divider lg:divider-horizontal"></div>
+                      </div>
                     </div>
                     <Link
                       to="/myprofile"
-                      className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                      className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                     >
                       <MuiIcons.ManageAccounts className="text-dark mr-4" />
                       <p>My Profile</p>
                     </Link>
                     <Link
                       to="/settings"
-                      className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                      className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                     >
                       <MuiIcons.Settings className="text-dark mr-4" />
                       <p>Settings</p>
                     </Link>
-                    <Link
-                      to="/login"
-                      onClick={logOutUser}
-                      className="border-t-2 border-slate-200 flex flex-1 items-center mt-2 py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
-                    >
-                      <MuiIcons.LogoutOutlined className="text-dark mr-4" />
-                      <p>Log Out</p>
-                    </Link>
                     <a
                       href="/login"
                       onClick={logOutUser}
-                      className="bg-red-400 border-t-2 border-slate-200 flex flex-1 items-center mt-2 py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                      className=" border-t-2 border-slate-200 flex flex-1 items-center mt-2 py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                     >
                       <MuiIcons.LogoutOutlined className="text-dark mr-4" />
-                      Logut via HREF
+                      Logout
                     </a>
                   </div>
                 </div>
