@@ -1,5 +1,5 @@
 export function getUser() {
-    let user = localStorage.getItem("user");
+    let user = sessionStorage.getItem("user");
     if (user) {
       user = JSON.parse(user);
     } else {
@@ -10,6 +10,6 @@ export function getUser() {
 
   
 export function logOutUser () {
-  localStorage.clear();
+  sessionStorage.clear();
 };
 
