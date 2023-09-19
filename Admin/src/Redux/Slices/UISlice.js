@@ -6,12 +6,14 @@ export const UISlice = createSlice({
     initialState: {
         screenWidth: window.innerWidth,
         screenHeigth: window.innerHeight,
+        DarkMode: false,
         BgColor: "bg-white",
         BackBgColor: "bg-white",
         ContainerBgColor: "bg-slate-200",
         ComponentColor: "bg-violet-200",
         textColor: "text-dark",
         currentClicked: "Dashboard",
+        transitionColor: "transition-all duration-300",
         // wideScreen: true,
         sidebarOpen: true,
         showNav: "",
@@ -26,12 +28,14 @@ export const UISlice = createSlice({
         },
         darkTheme : (state) => {
           if(toggleDark){
+            state.DarkMode = true
             state.BgColor = "bg-gray-800",
             state.textColor = "text-white",
             state.BackBgColor = "bg-gray-700",
             state.ContainerBgColor = "bg-slate-800",
             toggleDark = !toggleDark
           } else {
+            state.DarkMode = false
             state.BgColor = "bg-white",
             state.textColor = "text-dark",
             state.BackBgColor = "bg-white",
