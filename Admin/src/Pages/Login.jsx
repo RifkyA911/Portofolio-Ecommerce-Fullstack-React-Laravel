@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../Redux/Slices/UserSlice";
 import { useNavigate } from "react-router-dom";
+import { WarningAlert } from "../components/Alert";
 
 function Login() {
   //states
@@ -34,61 +35,64 @@ function Login() {
   // Konten komponen
   return (
     <>
-      <main className="bg-gradient-to-b  flex w-full static justify-center">
-        <div className={`p-4 my-4 h-full shadow-lg flex-shrink-0 duration-300`}>
-          <p className="bg-red-400 mb-4">
-            Nunggu Progress Backend: abort and Return Wrong Response
-          </p>
-          <div className="w-96 bg-gradient-to-b from-violet-400 to-blue-400 rounded-xl shadow-sm text-white font-semibold">
-            <h1 className="p-4 text-2xl">Login</h1>
-            <form
-              action="http://127.0.0.1:8000/api/admins/login"
-              method="post"
-              className="flex flex-col text-left py-6 justify-center"
-              onSubmit={handleLogin}
-            >
-              <label className="block px-4 mb-2 text-black">
-                <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
-                  Email/Username
-                </span>
-                <input
-                  type="email"
-                  name="email"
-                  className="peer mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <p className="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
-                  Please provide a valid email address.
-                </p>
-              </label>
-              <label className="block px-4 mb-8 text-black">
-                <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
-                  Password
-                </span>
-                <input
-                  type="password"
-                  name="password"
-                  className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
-                  placeholder="your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </label>
-              <input type="hidden" name="auth_key" id="" value={auth_key} />
-              <button className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-blue-500 hover:bg-sky-700 rounded-md">
-                {loading ? "Loading..." : "Login"}
-              </button>
-            </form>
-          </div>
-          {error ? (
-            <div className="alert alert-error rounded-none">
-              <span>{error}</span>
+      <main className="bg-gradient-to-b from-violet-400 to-blue-400 w-full h-full min-h-screen static mx-auto ">
+        <div className="flex w-full h-full justify-center min-h-[500px]">
+          <div className="p-4 flex-col h-full duration-300 mt-10">
+            <WarningAlert message="Progressing JWT AUTH" />
+            <div className="w-96 bg-gradient-to-b from-white to-white rounded-xl relative shadow-sm text-slate-800 font-semibold">
+              <h1 className="p-4 text-2xl font-semibold">Login</h1>
+              <form
+                action="http://127.0.0.1:8000/api/admins/login"
+                method="post"
+                className="flex flex-col text-left py-6 justify-center"
+                onSubmit={handleLogin}
+              >
+                <label className="block px-4 mb-2 text-black">
+                  <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
+                    Email/Username
+                  </span>
+                  <input
+                    type="email"
+                    name="email"
+                    className="peer mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <p className="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
+                    Please provide a valid email address.
+                  </p>
+                </label>
+                <label className="block px-4 mb-2 text-black">
+                  <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
+                    Password
+                  </span>
+                  <input
+                    type="password"
+                    name="password"
+                    className="mt-1 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
+                    placeholder="your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </label>
+                <a className="px-4 mb-8 link link-info text-xs">
+                  Forgot Password?
+                </a>
+                <input type="hidden" name="auth_key" id="" value={auth_key} />
+                <button className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-sky-400 hover:bg-sky-500 transition-colors duration-200 rounded-md">
+                  {loading ? "Loading..." : "Login"}
+                </button>
+              </form>
+              {error ? (
+                <div className="p-1 bg-red-400 text-center font-semibold rounded-b-xl">
+                  <span>{error}</span>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
-          ) : (
-            ""
-          )}
+          </div>
         </div>
       </main>
     </>

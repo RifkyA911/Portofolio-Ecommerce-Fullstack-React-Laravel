@@ -29,12 +29,12 @@ const Navbar = () => {
   return (
     <>
       {showNav ? (
-        // userSession !== null ? (
+        // userSession ? (
         //   <>
         //   </>
         // ) : (
-        //   ""
-        // )
+        //   <></>
+        // ))
         <nav
           className={
             BgColor + " transition-all duration-300 fixed w-full z-50 text-xs"
@@ -358,6 +358,14 @@ const Navbar = () => {
                               <MuiIcons.LogoutOutlined className="text-dark mr-4" />
                               <p>Log Out</p>
                             </Link>
+                            <a
+                              href="/login"
+                              onClick={logOutUser}
+                              className="bg-red-400 border-t-2 border-slate-200 flex flex-1 items-center mt-2 py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-300 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                            >
+                              <MuiIcons.LogoutOutlined className="text-dark mr-4" />
+                              Logut via HREF
+                            </a>
                           </div>
                         </div>
                       </Popover.Panel>

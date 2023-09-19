@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin.tiga@gmail.com',
             'password' => Hash::make('123456'),
             'role' => 1,
-            'pict' => '78949689_p1.jpg'
+            'pict' => '77845097_p3.jpg'
         ]);
         Admin::create([
             'username' => 'Admin X',
