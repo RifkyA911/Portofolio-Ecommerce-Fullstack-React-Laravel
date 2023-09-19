@@ -23,6 +23,7 @@ import { navLink } from "./Redux/Slices/NavigationSlice";
 import MyAppRoutes from "./Config/MyAppRoutes";
 import MyDebuggerPanel from "./utils/MyDebuggerPanel";
 import { getUser } from "./utils/Session/Admin";
+import Footer from "./Layout/Footer";
 // import Summary from "./utils/Summary";
 
 function App() {
@@ -64,9 +65,10 @@ function App() {
     <>
       {userSession !== null ? (
         <>
-          <p>Gaga</p>
-          {/* <MyAppRoutes />
-          <MyDebuggerPanel /> */}
+          {/* <p>Gaga</p> */}
+          <MyAppRoutes />
+          <MyDebuggerPanel />
+          <Footer />
         </>
       ) : (
         <>

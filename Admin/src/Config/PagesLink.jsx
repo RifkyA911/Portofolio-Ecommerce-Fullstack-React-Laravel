@@ -7,7 +7,7 @@ export const sideNavigation = [
         id: 0,
         name: "Dashboard",
         href: "/",
-        icon: "DesktopWindowsOutlined",
+        icon: "Home",
       },
       {
         id: 1,

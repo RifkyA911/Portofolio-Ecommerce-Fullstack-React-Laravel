@@ -12,9 +12,10 @@ const Container = (props) => {
         <div
           className={`p-4 my-4 ${
             sidebarOpen ? "lg:ml-64" : "lg:ml-0"
-          } h-full shadow-lg flex-shrink-0 duration-300`}
+          } h-full flex-shrink-0 duration-300`}
         >
-          <div className="bg-slate-100 rounded-xl shadow-sm">
+          {/*max-w-[1700px] mx-auto */}
+          <div className="bg-slate-100 rounded-xl shadow-sm ">
             {props.children}
           </div>
         </div>
