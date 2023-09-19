@@ -15,12 +15,12 @@
 
 /* width */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 0px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #181818;
 }
 
 /* Handle */

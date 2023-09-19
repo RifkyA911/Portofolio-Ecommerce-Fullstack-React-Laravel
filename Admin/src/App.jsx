@@ -67,20 +67,13 @@ function App() {
       {userSession !== null ? (
         <>
           <MyAppRoutes />
-          {/* <Navbar />
-          <Sidebar /> */}
           <MyDebuggerPanel />
           <Footer />
           {/* <p>Gaga</p> */}
         </>
       ) : (
         <>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={null} />
-          </Routes>
-          <p>No User</p>
-          {/* <Login /> */}
+          <LoginRouter />
         </>
       )}
     </>

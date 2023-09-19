@@ -13,7 +13,15 @@ function LoginRouter() {
     <>
       <Routes>
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/" element={<Dashboard />} /> */}
+        <Route
+          path="/"
+          element={
+            <>
+              <p className="mx-auto">Proceed to Dashboard Landing...</p>
+              <span className="loading loading-dots loading-lg"></span>
+            </>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

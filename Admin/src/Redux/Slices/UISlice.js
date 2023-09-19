@@ -9,7 +9,7 @@ export const UISlice = createSlice({
         DarkMode: false,
         BgColor: "bg-white",
         BackBgColor: "bg-white",
-        ContainerBgColor: "bg-slate-200",
+        ContainerBgColor: "bg-slate-100",
         ComponentColor: "bg-violet-200",
         textColor: "text-dark",
         currentClicked: "Dashboard",

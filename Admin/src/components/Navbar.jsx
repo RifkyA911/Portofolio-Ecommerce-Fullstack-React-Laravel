@@ -290,7 +290,7 @@ export const NavbarComponent = () => {
                         )}
                         <input
                           type="checkbox"
-                          className="toggle"
+                          className="toggle  checked:text-white"
                           onClick={() => {
                             dispatch(darkTheme());
                           }}

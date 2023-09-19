@@ -25,7 +25,7 @@ const Sidebar = () => {
   return (
     <>
       {showNav ? (
-        <div className="bg-white">
+        <div className="bg-black">
           {/* Sidebar */}
           <div
             onClick={() => dispatch(toggleSidebar())}

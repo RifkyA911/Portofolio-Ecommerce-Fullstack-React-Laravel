@@ -28,6 +28,7 @@ function Login() {
         setPassword("");
         // Arahkan pengguna ke halaman utama setelah login berhasil
         navigate("/");
+        window.location.reload();
       }
     });
   };
