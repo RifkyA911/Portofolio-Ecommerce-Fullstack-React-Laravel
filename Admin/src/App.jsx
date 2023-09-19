@@ -64,8 +64,9 @@ function App() {
     <>
       {userSession !== null ? (
         <>
-          <MyAppRoutes />
-          <MyDebuggerPanel />
+          <p>Gaga</p>
+          {/* <MyAppRoutes />
+          <MyDebuggerPanel /> */}
         </>
       ) : (
         <>

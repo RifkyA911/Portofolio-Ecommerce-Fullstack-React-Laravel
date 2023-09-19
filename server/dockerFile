@@ -1,0 +1,28 @@
+# Gunakan image PHP dengan Apache sebagai web server
+FROM php:8.2-apache
+
+# Instal dependensi yang diperlukan
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev zip unzip git
+
+# Aktifkan mod_rewrite untuk Laravel
+RUN a2enmod rewrite
+
+# Instal ekstensi PHP yang dibutuhkan
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install gd pdo pdo_mysql
+
+# Salin aplikasi Laravel ke dalam container
+COPY . /var/www/html
+
+# Set owner untuk direktori Laravel
+RUN chown -R www-data:www-data /var/www/html/storage
+
+# Install Composer dan jalankan "composer install"
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer install
+
+# Expose port 80 (HTTP)
+EXPOSE 80
+
+# Perintah untuk menjalankan Apache
+CMD ["apache2-foreground"]
