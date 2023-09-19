@@ -6,7 +6,7 @@ import {
   Link,
 } from "react-router-dom";
 import React from "react";
-import { Dashboard, NotFound, Login } from "../Pages";
+import { NotFound, Login } from "../Pages";
 
 function LoginRouter() {
   return (
@@ -17,7 +17,9 @@ function LoginRouter() {
           path="/"
           element={
             <>
-              <p className="mx-auto">Proceed to Dashboard Landing...</p>
+              <p className="mx-auto mt-10">
+                Proceed Landing to Dashboard Page...
+              </p>
               <span className="loading loading-dots loading-lg"></span>
             </>
           }

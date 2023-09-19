@@ -28,9 +28,7 @@ function MyAppRoutes() {
     <>
       <Sidebar />
       <Navbar />
-      {/* <div className="app flex pt-14 min-h-screen max-w-full"> */}
       <Routes>
-        {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/" element={<Dashboard />} />
         <Route path="/admins" element={<Admins />} />
         <Route path="/chat" element={<Chat />} />
@@ -43,7 +41,6 @@ function MyAppRoutes() {
         <Route path="/orders" element={<Order />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {/* </div> */}
     </>
   );
 }

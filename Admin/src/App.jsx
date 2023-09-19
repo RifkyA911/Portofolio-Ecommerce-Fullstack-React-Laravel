@@ -47,12 +47,12 @@ function App() {
     } else {
       navigate("/");
     }
-    // console.log(location);
-    if (allowedPaths.includes(location.pathname)) {
-      dispatch(navLink(true));
-    } else {
-      dispatch(navLink(false));
-    }
+    // // console.log(location);
+    // if (allowedPaths.includes(location.pathname)) {
+    //   dispatch(navLink(true));
+    // } else {
+    //   dispatch(navLink(false));
+    // }
 
     // auto toggleSidebar if screen size based on devices like smartphone or pc
     if (screenWidth < 1024) {
