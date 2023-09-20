@@ -12,9 +12,9 @@ export const loginUser = createAsyncThunk(
             const response = await request.data.data;
             sessionStorage.setItem('user', JSON.stringify(response)); //rdnom name will
     
-            console.log(request.data.status)
-            console.log(request.data.message)
-            console.log(response)
+            console.log('response status:', request.data.status)
+            console.log('response message:', request.data.message)
+            console.log('response:', response)
             return response;
 
         //   } catch (error) {
@@ -28,6 +28,7 @@ const userSlice = createSlice({
     initialState: {
         loading: false,
         user:null,
+        logged: false,
         error:null
     },
     extraReducers: (builder)=>{
@@ -40,6 +41,7 @@ const userSlice = createSlice({
         .addCase(loginUser.fulfilled, (state, action)=>{
             state.loading = false;
             state.user = action.payload;
+            state.logged = true;
             state.error = null;
         })
         .addCase(loginUser.rejected, (state, action)=>{

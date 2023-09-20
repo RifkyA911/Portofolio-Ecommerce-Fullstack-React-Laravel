@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState, React } from "react";
+import { React } from "react";
 import { Link, Outlet } from "react-router-dom";
 import * as MuiIcons from "@mui/icons-material";
 // REDUX
@@ -56,9 +56,7 @@ const Navbar = () => {
             </nav>
           </>
         ) : (
-          <>
-            <p>No Data user</p>
-          </>
+          <>{console.log("Hide Navbar")}</>
         )
       ) : (
         <></>

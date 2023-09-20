@@ -10,6 +10,7 @@ export function getUser() {
 
   
 export function logOutUser () {
+  console.log('session data are cleared')
   sessionStorage.clear();
 };
 

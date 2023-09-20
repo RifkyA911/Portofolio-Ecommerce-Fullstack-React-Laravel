@@ -1,6 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 let toggleDark = true
+
+function checkScreenWidth(params) {
+  if (window.innerWidth < 1024) {
+    return false
+  } else {
+    return true
+  }
+}
 export const UISlice = createSlice({
     name: "UI",
     initialState: {
@@ -15,7 +23,7 @@ export const UISlice = createSlice({
         currentClicked: "Dashboard",
         transitionColor: "transition-all duration-300",
         // wideScreen: true,
-        sidebarOpen: true,
+        sidebarOpen: checkScreenWidth(),
         showNav: "",
         container: "app flex pt-14 min-h-screen max-w-full"
     },
