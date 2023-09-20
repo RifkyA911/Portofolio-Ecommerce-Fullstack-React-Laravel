@@ -6,7 +6,8 @@ import {
   Link,
 } from "react-router-dom";
 import React from "react";
-import { NotFound, Login } from "../Pages";
+import { Login /*Dashboard*/ } from "../Pages";
+import NotFound from "../Pages/Error/Error";
 
 function LoginRouter() {
   return (

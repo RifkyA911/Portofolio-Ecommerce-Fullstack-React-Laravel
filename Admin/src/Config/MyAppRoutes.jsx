@@ -18,11 +18,21 @@ import {
   Products,
   Settings,
   Statistic,
-  NotFound,
-  Login,
 } from "../Pages";
+import NotFound, {
+  Forbidden,
+  RedirectPage,
+  Unauthorized,
+} from "../Pages/Error/Error";
 
 function MyAppRoutes() {
+  const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (userSession == null) {
+  //     // tambahkan semua kategori
+  //     navigate("/");
+  //   }
+  // }
   // Konten komponen
   return (
     <>
@@ -31,6 +41,7 @@ function MyAppRoutes() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/admins" element={<Admins />} />
+        {/* <Route path="/admins" element={<Unauthorized />} /> */}
         <Route path="/chat" element={<Chat />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/settings" element={<Settings />} />
@@ -40,6 +51,8 @@ function MyAppRoutes() {
         <Route path="/invoices" element={<Invoices />} />
         <Route path="/orders" element={<Order />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/login" element={<Forbidden />} />
+        <Route path="/logout" element={<>LogOut</>} />
       </Routes>
     </>
   );

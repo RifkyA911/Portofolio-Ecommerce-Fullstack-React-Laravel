@@ -34,17 +34,17 @@ function MyDebuggerPanel() {
             {/* <Summary a={2} b={5} /> 
         <br />*/}
             <div className="p-1">
-              <button>Theme : {BgColor}</button>
-              <Link to="/x">
+              <Link to="/x">Theme : {BgColor}</Link>
+              <div>
                 <div className="flex-row">
                   <div className="flex flex-col "></div>
                   <div>
                     Width: {screenWidth} Height: {screenHeigth}
                   </div>
                 </div>
-              </Link>
+              </div>
               <a
-                href="/x"
+                href="/logout"
                 onClick={logOutUser}
                 className="bg-lime-500 rounded-md px-4"
               >

@@ -10,9 +10,8 @@ import {
 } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 //import config data
-import { allowedPaths } from "./utils/ShowNavigation";
+import { allowedPaths } from "./utils/Navigation";
 // Pages
-import { NotFound, Login } from "./Pages";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
@@ -37,45 +36,45 @@ function App() {
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
     (state) => state.UI
   );
+  const { logged } = useSelector((state) => state.user);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // show nav components
   useEffect(() => {
     if (userSession == null) {
+      // tambahkan semua kategori
       navigate("/login");
-    } else {
-      navigate("/");
     }
+    //   //this code else bellow will not works
+    // else {
+    //   setuUserSession(true);
+    //   console.log("proceed navigate to /");
+    //   navigate("/");
+    // }
+    // console.log("user :", userSession);
     // // console.log(location);
     // if (allowedPaths.includes(location.pathname)) {
     //   dispatch(navLink(true));
     // } else {
     //   dispatch(navLink(false));
     // }
-
-    // auto toggleSidebar if screen size based on devices like smartphone or pc
-    if (screenWidth < 1024) {
-      dispatch(toggleSidebar(false));
-    } else {
-      dispatch(toggleSidebar(true));
-    }
-    console.log(userSession);
   }, [userSession]);
   return (
     <>
       {userSession !== null ? (
         <>
           <MyAppRoutes />
-          <MyDebuggerPanel />
+          <Sidebar />
+          <Navbar />
           <Footer />
-          {/* <p>Gaga</p> */}
         </>
       ) : (
         <>
           <LoginRouter />
         </>
       )}
+      <MyDebuggerPanel />
     </>
   );
 }

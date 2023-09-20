@@ -24,35 +24,35 @@ function Login() {
     };
     const requestBody = JSON.stringify(userCredentials);
 
-    fetch("http://127.0.0.1:8000/api/admins/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json", // Mengatur header Content-Type
-      },
-      body: requestBody, // Mengatur body dengan data JSON yang telah diubah
-    })
-      .then((response) => {
-        console.table(response);
+    // fetch("http://127.0.0.1:8000/api/admins/login", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json", // Mengatur header Content-Type
+    //   },
+    //   body: requestBody, // Mengatur body dengan data JSON yang telah diubah
+    // })
+    //   .then((response) => {
+    //     console.table(response);
 
-        return response.json();
-      })
-      .then((data) => {
-        // Menangani data yang diterima dari respons (jika ada)
-      })
-      .catch((error) => {
-        // Menangani kesalahan jika permintaan gagal
-        console.error("Error:", error);
-      });
+    //     return response.json();
+    //   })
+    //   .then((data) => {
+    //     // Menangani data yang diterima dari respons (jika ada)
+    //   })
+    //   .catch((error) => {
+    //     // Menangani kesalahan jika permintaan gagal
+    //     console.error("Error:", error);
+    //   });
 
-    // dispatch(loginUser(userCredentials)).then((result) => {
-    //   if (result.payload) {
-    //     setEmail("");
-    //     setPassword("");
-    //     // Arahkan pengguna ke halaman utama setelah login berhasil dan refresh
-    //     navigate("/");
-    //     window.location.reload();
-    //   }
-    // });
+    dispatch(loginUser(userCredentials)).then((result) => {
+      if (result.payload) {
+        setEmail("");
+        setPassword("");
+        // Arahkan pengguna ke halaman utama setelah login berhasil dan refresh
+        navigate("/"); // temporary view dashborad in <LoginRouter />
+        window.location.reload();
+      }
+    });
   };
 
   // Konten komponen
