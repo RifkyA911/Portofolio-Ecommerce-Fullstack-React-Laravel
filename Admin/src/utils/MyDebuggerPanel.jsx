@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { darkTheme, toggleSidebar } from "../Redux/Slices/UISlice";
 import { navLink } from "../Redux/Slices/NavigationSlice";
+import { logOutUser } from "./Session/Admin";
 
 function MyDebuggerPanel() {
   // REDUX
@@ -16,27 +17,42 @@ function MyDebuggerPanel() {
   // Konten komponen
   return (
     <>
-      <div className="text-xs cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white w-60 fixed left-2/4 bottom-0 z-50 rounded-xl shadow-lg hover:font-semibold hover:bg-gray-300 duration-200">
-        <div className="font-bold ">Debugger Panel</div>
-        <hr />
-        {/* <input
+      <div className="relative min-w-screen z-[99999] bg-slate-500">
+        <div className="fixed bottom-0 left-1/2 -translate-y-2/2 -translate-x-1/2 mx-auto">
+          {/*right-[50%] left-[50%]  */}
+          <div className=" w-56 text-xs cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white  rounded-md shadow-lg hover:font-semibold hover:bg-gray-300 duration-500">
+            <div className="font-bold ">My Debugger Panel</div>
+            {/* <small>@rifky911</small> */}
+            <hr />
+            {/* <input
           type="checkbox"
           className="toggle toggle-xs my-2"
           onClick={() => {
             dispatch(darkTheme());
           }}
         /> */}
-        {/* <Summary a={2} b={5} /> */}
-        <br />
-        <button>Theme : {BgColor}</button>
-        <Link to="/x">
-          <div className="flex-row p-2">
-            <div className="flex flex-col "></div>
-            <div>
-              Width: {screenWidth} Height: {screenHeigth}
+            {/* <Summary a={2} b={5} /> 
+        <br />*/}
+            <div className="p-1">
+              <button>Theme : {BgColor}</button>
+              <Link to="/x">
+                <div className="flex-row">
+                  <div className="flex flex-col "></div>
+                  <div>
+                    Width: {screenWidth} Height: {screenHeigth}
+                  </div>
+                </div>
+              </Link>
+              <a
+                href="/x"
+                onClick={logOutUser}
+                className="bg-lime-500 rounded-md px-4"
+              >
+                Clear Session Data
+              </a>
             </div>
           </div>
-        </Link>
+        </div>
       </div>
     </>
   );
