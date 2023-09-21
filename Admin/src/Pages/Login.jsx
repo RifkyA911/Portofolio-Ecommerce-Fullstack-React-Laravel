@@ -102,7 +102,12 @@ function Login() {
                 <a className="px-4 mb-8 link link-info text-xs">
                   Forgot Password?
                 </a>
-                <input type="hidden" name="auth_key" id="" value={auth_key} />
+                <input
+                  type="hidden"
+                  name="auth_key"
+                  id=""
+                  value={import.meta.env.ADMIN_AUTH_KEY}
+                />
                 <button className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-sky-400 hover:bg-blue-400 transition-colors duration-200 rounded-md">
                   {loading ? "Loading..." : "Login"}
                 </button>
