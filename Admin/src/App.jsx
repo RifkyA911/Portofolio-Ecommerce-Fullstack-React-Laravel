@@ -42,22 +42,18 @@ function App() {
   const navigate = useNavigate();
   // show nav components
   useEffect(() => {
+    {
+      console.log("Mode:", import.meta.env.VITE_MODE);
+    }
     if (userSession == null) {
       // tambahkan semua kategori
       navigate("/login");
     }
-    //   //this code else bellow will not works
+    //   //this code else bellow won't works
     // else {
     //   setuUserSession(true);
     //   console.log("proceed navigate to /");
     //   navigate("/");
-    // }
-    // console.log("user :", userSession);
-    // // console.log(location);
-    // if (allowedPaths.includes(location.pathname)) {
-    //   dispatch(navLink(true));
-    // } else {
-    //   dispatch(navLink(false));
     // }
   }, [userSession]);
   return (
@@ -65,9 +61,6 @@ function App() {
       {userSession !== null ? (
         <>
           <MyAppRoutes />
-          <Sidebar />
-          <Navbar />
-          <Footer />
         </>
       ) : (
         <>

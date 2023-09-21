@@ -24,6 +24,7 @@ import NotFound, {
   RedirectPage,
   Unauthorized,
 } from "../Pages/Error/Error";
+import Footer from "../Layout/Footer";
 
 function MyAppRoutes() {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ function MyAppRoutes() {
         <Route path="/login" element={<Forbidden />} />
         <Route path="/logout" element={<>LogOut</>} />
       </Routes>
+      <Footer />
     </>
   );
 }
