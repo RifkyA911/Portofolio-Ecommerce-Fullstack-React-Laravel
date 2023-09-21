@@ -1,1 +1,3 @@
 Admin/.env
+client/.env
+server/.env

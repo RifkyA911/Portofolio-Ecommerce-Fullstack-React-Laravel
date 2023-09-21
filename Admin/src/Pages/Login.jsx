@@ -6,7 +6,7 @@ import { WarningAlert } from "../components/Alert";
 
 function Login() {
   //states
-  const [auth_key, setAuth_key] = useState("cikidaw");
+  const [auth_key, setAuth_key] = useState(import.meta.env.VITE_ADMIN_AUTH_KEY);
   const [email, setEmail] = useState("super.duper@gmail.com");
   const [password, setPassword] = useState("superadmin");
 
@@ -102,12 +102,6 @@ function Login() {
                 <a className="px-4 mb-8 link link-info text-xs">
                   Forgot Password?
                 </a>
-                <input
-                  type="hidden"
-                  name="auth_key"
-                  id=""
-                  value={import.meta.env.ADMIN_AUTH_KEY}
-                />
                 <button className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-sky-400 hover:bg-blue-400 transition-colors duration-200 rounded-md">
                   {loading ? "Loading..." : "Login"}
                 </button>
