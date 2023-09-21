@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Message extends Model
 {
@@ -11,7 +12,13 @@ class Message extends Model
     protected $guarded = ['id'];
 
     // relation
-    public function dialog() {
-        return $this->belongsTo(Dialog::class);
+    public function dialog(): BelongsTo {
+        return $this->belongsTo(Dialog::class, 'dialog_id');
+    }
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
+    }
+    public function admin(): BelongsTo {
+        return $this->belongsTo(Admin::class);
     }
 }

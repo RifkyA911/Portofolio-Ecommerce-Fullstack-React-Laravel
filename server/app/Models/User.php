@@ -24,4 +24,7 @@ class User extends Model
     public function wishlist() {
         return $this->hasMany(Wishlist::class);
     }
+    public function chat() {
+        return $this->hasMany(Message::class);
+    }
 }

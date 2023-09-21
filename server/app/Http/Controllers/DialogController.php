@@ -50,6 +50,22 @@ class DialogController extends Controller
         return "ahahahaha";
     }
 
+    public function getByProduct(Request $request)
+    {
+        $dialogs = Dialog::where([['product_id', '=', $request->input('product_id')]])->get();
+        return new PostResource(true, 'Daftar percakapan', $dialogs);
+    }
+    public function getById($id)
+    {
+        $dialogs = Dialog::find($id)->get();
+        return new PostResource(true, 'Daftar percakapan', $dialogs);
+    }
+    public function getByIdWithMessage($id)
+    {
+        $dialogs = Dialog::find($id);
+        return $dialogs;
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

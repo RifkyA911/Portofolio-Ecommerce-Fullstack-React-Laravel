@@ -14,7 +14,7 @@ class MessageController extends Controller
      */
     public function index()
     {
-        //
+        return new PostResource(true, 'Daftar pesan', Message::all());
     }
 
     /**
@@ -56,6 +56,22 @@ class MessageController extends Controller
     {
         //
     }
+
+    public function getByDialog(Request $request)
+    {
+        $messages = Message::where('dialog_id', $request->input('dialog_id'))->get();
+        return new PostResource(true, 'Daftar pesan', $messages);
+    }
+
+    public function getByUser(Request $request, DialogController $dialogController)
+    {
+        $messages = Message::where('user_id', $request->input('user_id'))->get('dialog_id')->unique('dialog_id');
+        $dialog_ids = array_column(json_decode($messages), 'dialog_id');
+        $result = Message::whereIn('dialog_id', $dialog_ids)->get()->unique('dialog_id');
+        // return new PostResource(true, 'Daftar pesan', $result);
+        return $result;
+    }
+
 
     /**
      * Show the form for editing the specified resource.

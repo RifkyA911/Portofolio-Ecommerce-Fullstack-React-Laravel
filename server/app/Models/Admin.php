@@ -17,4 +17,7 @@ class Admin extends Model
     public function transaction() {
         return $this->hasMany(Transaction::class);
     }
+    public function chat() {
+        return $this->hasMany(Message::class);
+    }
 }

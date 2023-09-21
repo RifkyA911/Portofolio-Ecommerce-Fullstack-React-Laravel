@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\TransactionController;
+use App\Models\Message;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,4 +120,10 @@ Route::post('/dialog/new', [DialogController::class, 'store']);
 // message (can't be null)
 // pict (can be null)
 // product_id (can be null if sending direct message to admin)
-Route::post('/message', [MessageController::class, 'store']);
+Route::controller(MessageController::class)->group(function(){
+    Route::post('/message/add', 'store');
+    Route::post('/message/getByUser', 'getByUser'); // return dialog and first message where user is involved
+    // parameter : user_id
+    Route::post('/messages', 'getByDialog');    // return messages based on dialog_id
+    // parameter : dialog_id
+});
