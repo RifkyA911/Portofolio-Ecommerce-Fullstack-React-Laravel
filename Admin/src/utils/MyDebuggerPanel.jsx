@@ -20,7 +20,7 @@ function MyDebuggerPanel() {
       <div className="relative min-w-screen z-[99999] bg-slate-500">
         <div className="fixed bottom-[0] left-1/2 -translate-x-1/2 ">
           {/*right-[50%] left-[50%]  */}
-          <div className=" w-56 text-xs cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white  rounded-md shadow-lg hover:font-semibold hover:bg-gray-300 duration-500">
+          <div className=" w-56 text-xs cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white  rounded-md shadow-lg hover:font-semibold hover:bg-sky-200 duration-500">
             <div className="font-bold ">My Debugger Panel</div>
             {/* <small>@rifky911</small> */}
             <hr />

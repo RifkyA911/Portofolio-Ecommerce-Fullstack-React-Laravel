@@ -16,9 +16,11 @@ import { navLink } from "./Redux/Slices/NavigationSlice";
 
 // Utils
 import MyAppRoutes from "./Config/MyAppRoutes";
-import MyDebuggerPanel from "./utils/MyDebuggerPanel";
 import { getUser } from "./utils/Session/Admin";
 import LoginRouter from "./Config/LoginRouter";
+
+import MyDebuggerPanel from "./utils/MyDebuggerPanel";
+import MyToDoList from "./utils/MyToDoList.jsx";
 // import Summary from "./utils/Summary";
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const appMode = import.meta.env.VITE_MODE;
+
   useEffect(() => {
     if (userSession == null) {
       // tambahkan semua kategori
@@ -45,7 +49,8 @@ function App() {
     //   console.log("proceed navigate to /");
     //   navigate("/");
     // }
-    console.info("Mode:", import.meta.env.VITE_MODE);
+
+    console.info("Mode:", appMode);
   }, [userSession]);
   return (
     <>
@@ -58,7 +63,15 @@ function App() {
           <LoginRouter />
         </>
       )}
-      <MyDebuggerPanel />
+      {/* Developer Panel */}
+      {appMode == "DEVELOPMENT" ? (
+        <>
+          <MyDebuggerPanel />
+          <MyToDoList />
+        </>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

@@ -33,6 +33,11 @@ const userSlice = createSlice({
         logged: false,
         error:null
     },
+    reducers: {
+        updateSession: (state, action)=>{
+            state.user = action.payload
+        }
+    },
     extraReducers: (builder)=>{
         builder
         .addCase(loginUser.pending, (state)=>{
@@ -60,3 +65,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer;
+export const {updateSession} = userSlice.actions;
