@@ -30,7 +30,7 @@ function MyToDoList() {
             <div className="font-bold ">My To Do List Panel</div>
             <hr />
             <div className="p-1">
-              <ul className="list-disc px-6 overflow-hidden truncate">
+              <ul className="list-disc  px-6 overflow-hidden truncate">
                 <li>Buat API Handler utk PUT Product</li>
                 <li>???</li>
                 <li>???</li>

@@ -11,8 +11,36 @@ export const infoMarket = [
     value: "???",
     color: "bg-gradient-to-r from-blue-500 to-cyan-500",
   },
-  { flex: "col", name: "NEW USERS", value: "???", color: "bg-yellow-400" },
-  { flex: "col", name: "PERFORMANCE", value: "???", color: "bg-green-400" },
+  {
+    flex: "col",
+    name: "NEW USERS",
+    value: "???",
+    color: "bg-gradient-to-r from-yellow-400 to-amber-500",
+  },
+  {
+    flex: "col",
+    name: "PERFORMANCE",
+    value: "???",
+    color: "bg-gradient-to-r from-lime-400 to-teal-400",
+  },
+
+  // {
+  //   /* <li
+  //                 key="rows"
+  //                 className="flex basis-2/6 flex-col justify-between"
+  //               >
+  //                 {infoMarket
+  //                   .filter((item) => item.flex === "col")
+  //                   .map((workItem) => (
+  //                     <div
+  //                       key={workItem.name}
+  //                       className={`flex rounded-xl justify-center max-h-20 h-20 p-3 mb-2 lg:m-0 ${workItem.color}`}
+  //                     >
+  //                       <p>{workItem.name}</p>
+  //                     </div>
+  //                   ))}
+  //               </li> */
+  // },
 ];
 
 export const MarketNotification = [

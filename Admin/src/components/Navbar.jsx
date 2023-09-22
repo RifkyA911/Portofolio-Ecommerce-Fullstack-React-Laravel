@@ -271,7 +271,7 @@ export const NavbarComponent = () => {
                         />
                       </div>
                       <div className="flex flex-col text-left ">
-                        <p className="flex-none font-medium text-sm text-ellipsis overflow-hidden max-h-[85px] max-w-[85px] ">
+                        <p className="flex-none font-medium text-sm text-ellipsis overflow-hidden max-h-[85px] max-w-[85px] line-clamp-2">
                           {userSession.username}
                         </p>
                         <p className="text-xs">
