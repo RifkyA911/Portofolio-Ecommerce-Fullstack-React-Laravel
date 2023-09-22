@@ -22,7 +22,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { useState, useEffect } from "react";
-import Container from "../layout/Container";
+import Container from "../Layout";
 
 function createData(name, calories, fat, carbs, protein) {
   return {

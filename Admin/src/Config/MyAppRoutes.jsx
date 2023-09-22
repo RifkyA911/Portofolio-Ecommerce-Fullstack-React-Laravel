@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Routes,
   Route,
@@ -5,8 +6,9 @@ import {
   useNavigate,
   Link,
 } from "react-router-dom";
-import React from "react";
 import { Navbar, Sidebar } from "../Layout"; // ./components/index.jsx
+// //import config data
+// import { allowedPaths } from "./utils/Navigation";
 import {
   Dashboard,
   Admins,
@@ -34,6 +36,7 @@ function MyAppRoutes() {
   //     navigate("/");
   //   }
   // }
+
   // Konten komponen
   return (
     <>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Switch } from "@headlessui/react";
 import Skeleton from "@mui/material/Skeleton";
-import Container from "../layout/Container";
+import Container from "../Layout";
 
 export default function Admins() {
   const [admins, setAdmins] = useState([]);

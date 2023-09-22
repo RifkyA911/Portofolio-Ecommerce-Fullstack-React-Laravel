@@ -1,5 +1,5 @@
 import React from "react";
-import Container from "../layout/Container";
+import Container from "../Layout";
 
 export default function Statistic() {
   // Konten komponen

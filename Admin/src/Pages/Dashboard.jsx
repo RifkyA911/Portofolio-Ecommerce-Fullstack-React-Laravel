@@ -1,6 +1,5 @@
-import Container from "../layout/Container";
 import { infoMarket } from "../Config/Temporary"; //Data
-import { Navbar, Sidebar } from "../Layout"; // ./components/index.jsx
+import { Navbar, Sidebar, Container } from "../Layout"; // ./components/index.jsx
 // Konten komponen
 function Dashboard(pops) {
   return (
