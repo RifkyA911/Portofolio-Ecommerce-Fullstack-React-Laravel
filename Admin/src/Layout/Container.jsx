@@ -20,7 +20,7 @@ const Container = (props) => {
           >
             {/*max-w-[1700px] mx-auto */}
             <div
-              className={`${ContainerBgColor} ${textColor} rounded-xl shadow-sm transition-all duration-200`}
+              className={`${ContainerBgColor} ${textColor} rounded-xl shadow-sm`}
             >
               {props.children}
             </div>

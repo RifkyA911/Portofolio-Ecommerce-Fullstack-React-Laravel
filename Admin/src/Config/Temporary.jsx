@@ -1,25 +1,25 @@
 export const infoMarket = [
   {
     flex: "row",
-    name: "TOTAL ORDER",
+    name: "Revenue",
     value: "???",
     color: "bg-gradient-to-r from-indigo-500 to-purple-500",
   },
   {
     flex: "row",
-    name: "SALES",
+    name: "Sales",
     value: "???",
     color: "bg-gradient-to-r from-blue-500 to-cyan-500",
   },
   {
     flex: "col",
-    name: "NEW USERS",
+    name: "Order",
     value: "???",
     color: "bg-gradient-to-r from-yellow-400 to-amber-500",
   },
   {
     flex: "col",
-    name: "PERFORMANCE",
+    name: "User",
     value: "???",
     color: "bg-gradient-to-r from-lime-400 to-teal-400",
   },

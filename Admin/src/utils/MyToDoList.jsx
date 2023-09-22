@@ -31,7 +31,9 @@ function MyToDoList() {
             <hr />
             <div className="p-1">
               <ul className="list-disc  px-6 overflow-hidden truncate">
-                <li>Buat API Handler utk PUT Product</li>
+                <li>
+                  <Link to="/products">Buat API Handler utk PUT Product</Link>
+                </li>
                 <li>???</li>
                 <li>???</li>
                 <li>???</li>
