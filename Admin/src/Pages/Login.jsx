@@ -67,7 +67,7 @@ function Login() {
               <form
                 action="http://127.0.0.1:8000/api/admins/login"
                 method="post"
-                className="flex flex-col text-left py-6 justify-center"
+                className="flex flex-col text-left px-2 py-6 justify-center"
                 onSubmit={handleLogin}
               >
                 <label className="block px-4 mb-2 text-black">

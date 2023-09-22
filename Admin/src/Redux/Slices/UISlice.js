@@ -65,7 +65,6 @@ export const UISlice = createSlice({
           } else {
             console.log('Sidebar Close')
             state.sidebarOpen = !state.sidebarOpen
-            console.log(`state sidebar = ${state.sidebarOpen}, screen = ${state.wideScreen}`)
           }
         }, 
         setCurrent: (state, action)=> {

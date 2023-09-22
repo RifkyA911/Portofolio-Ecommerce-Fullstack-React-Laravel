@@ -12,9 +12,11 @@ export const loginUser = createAsyncThunk(
             const response = await request.data.data;
             sessionStorage.setItem('user', JSON.stringify(response)); //rdnom name will
     
+            // console.log('response:', request)
+            console.log('response code:', request.status)
             console.log('response status:', request.data.status)
             console.log('response message:', request.data.message)
-            console.log('response:', response)
+            //console.log('response:', response) // data from server
             return response;
 
         //   } catch (error) {
