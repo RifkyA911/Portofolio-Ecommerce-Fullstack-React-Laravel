@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Container from "../Layout";
+import { Container } from "../Layout";
 import { getMuiIconComponent } from "./../utils/MuiComponent.jsx";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";

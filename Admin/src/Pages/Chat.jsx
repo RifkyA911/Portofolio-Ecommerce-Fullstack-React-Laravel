@@ -13,7 +13,7 @@ import {
   Person,
 } from "@mui/icons-material";
 import { Menu } from "@headlessui/react";
-import Container from "../Layout";
+import { Container } from "../Layout";
 
 export default function Chat() {
   const [user, setuser] = useState([]);

@@ -1,5 +1,5 @@
 import React from "react";
-import Container from "../Layout";
+import { Container } from "../Layout";
 export default function Invoices() {
   // Konten komponen
   return (

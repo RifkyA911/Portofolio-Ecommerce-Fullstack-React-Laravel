@@ -2,7 +2,7 @@ import React from "react";
 import { sideNavigation } from "../Config/PagesLink";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import Container from "../Layout";
+import { Container } from "../Layout";
 
 function Notification() {
   // REDUX
