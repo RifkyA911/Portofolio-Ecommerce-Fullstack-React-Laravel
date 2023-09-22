@@ -4,11 +4,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Profile from "./pages/Profile";
-import ProductDetails from "./pages/ProductDetails";
 import { useEffect } from "react";
 import { fetchProducts } from "./api/api";
 import { setProducts } from "./components/redux/productSlice";
 import NotFoundPage from "./pages/404";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ export default function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/product/:slug" element={<ProductDetails />} />
+        <Route path="/product/:slug" element={<ProductDetailsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

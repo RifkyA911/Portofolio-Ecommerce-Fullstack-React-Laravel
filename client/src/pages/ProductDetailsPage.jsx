@@ -3,7 +3,7 @@ import ProductContent from "../components/content/ProductContent";
 import Header from "../layouts/Header";
 import Layout from "../layouts/Layout";
 
-const ProductDetails = () => {
+const ProductDetailsPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -18,4 +18,4 @@ const ProductDetails = () => {
   );
 };
 
-export default ProductDetails;
+export default ProductDetailsPage;
