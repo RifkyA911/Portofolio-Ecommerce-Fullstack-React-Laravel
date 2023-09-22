@@ -11,3 +11,6 @@ RUN npm install
 COPY . .
 # run project in the container
 CMD ["npm", "run", "dev"]
+
+# Expose port yang akan digunakan oleh aplikasi React
+EXPOSE 5175
