@@ -70,7 +70,10 @@ const Sidebar = () => {
                                     : "hover:text-gray-800 hover:bg-violet-100"
                                 }`}
                               >
-                                {getMuiIconComponent(link.icon)}
+                                <i className="mr-4">
+                                  {getMuiIconComponent(link.icon)}
+                                </i>
+
                                 <span className="text-sm">{link.name}</span>
                               </Link>
                             </li>

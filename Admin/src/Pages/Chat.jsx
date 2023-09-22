@@ -72,7 +72,7 @@ export default function Chat() {
                             />
                             <div className="flex flex-col px-4 text-left">
                               <p className="font-bold">{user.name}</p>
-                              <p className="w-40 lg:w-80 overflow-hidden text-sm text-gray-500 truncate">
+                              <p className="w-40 lg:w-80 text-sm text-gray-500 overflow-hidden truncate">
                                 {user.message}
                               </p>
                             </div>

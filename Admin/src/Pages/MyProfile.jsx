@@ -10,6 +10,7 @@ import { navLink } from "../Redux/Slices/NavigationSlice";
 
 // Utils
 import { getUser } from "../utils/Session/Admin";
+import { updateSession } from "../Redux/Slices/UserSlice";
 // import Summary from "./utils/Summary";
 
 export default function MyProfile() {
@@ -61,6 +62,7 @@ export default function MyProfile() {
         formData
       );
       console.log("data send successfully:", response.data);
+      // dispatch(updateSession(formData.username));
     } catch (error) {
       console.error("Error updating admin:", error);
     }
