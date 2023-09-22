@@ -18,6 +18,7 @@ export default function Admins() {
       setLoading(false); // Set loading to false in case of error too
     }
   }
+  // console.log("admins:", admins); // Logging the updated admins here
 
   useEffect(() => {
     console.log("start fetching");
@@ -27,10 +28,6 @@ export default function Admins() {
 
     console.log("end fetching");
   }, []);
-
-  useEffect(() => {
-    console.log("admins:", admins); // Logging the updated admins here
-  }, [admins]); // This effect will trigger whenever admins changes
 
   function tes() {
     admins.map((user, index) => console.log(user.name));
@@ -46,32 +43,37 @@ export default function Admins() {
           </div>
         ) : (
           <div className="p-0 ">
-            <div className="overflow-x-auto">
-              <table className="table font-medium text-md">
+            <div className="overflow-x-auto rounded-md">
+              <table className="table font-medium text-[12px]">
                 {/* head */}
                 <thead className="bg-slate-300">
                   <tr>
-                    <th>No</th>
+                    <th className="w-0">No</th>
                     <th>
                       <label>Pilih</label>
                     </th>
-                    <th>Admin User</th>
+                    <th className="px-6">Admin User</th>
                     <th>Role</th>
-                    <th>Grant Features</th>
+                    <th>
+                      Grant Features
+                      <br />
+                      Chat | Sort | Price
+                    </th>
+                    <th>Action</th>
                   </tr>
                 </thead>
-                <tbody className="bg-slate-200">
+                <tbody className="bg-gray-50">
                   {admins.map((user, index) => (
                     <tr key={user.id}>
-                      <td className="bg-slate-100 text-center w-0">
+                      <td className="bg-slate-100 text-center w-0 p-0">
                         {index + 1}
                       </td>
-                      <th className="w-0">
+                      <td className="w-0">
                         <label>
                           <input type="checkbox" className="checkbox" />
                         </label>
-                      </th>
-                      <td className="px-12 w-[450px]">
+                      </td>
+                      <td className="px-6 w-[450px] py-2">
                         <div className="flex items-center space-x-3">
                           <div className="avatar">
                             <div className="mask mask-squircle w-16 h-16">
@@ -94,24 +96,44 @@ export default function Admins() {
                           {user.role == 0 ? "Super Admin" : "Admin"}
                         </p>
                       </td>
-                      <td>
-                        <div className="text-sm opacity-50">
-                          <input type="checkbox" className="toggle toggle-sm" />
-                          <p>Chat : {JSON.parse(user.authority).chat}</p>
+                      <td className="flex px-16">
+                        <div className="flex-row item items-stretch">
+                          <input
+                            type="checkbox"
+                            className="toggle toggle-sm"
+                            onChange={() => console.info("maleh")}
+                            value={
+                              JSON.parse(user.authority).chat ? true : false
+                            }
+                          />
+                          <input
+                            type="checkbox"
+                            className="toggle toggle-sm"
+                            value={
+                              JSON.parse(user.authority).sort_warehouse
+                                ? true
+                                : false
+                            }
+                          />
+                          <input
+                            type="checkbox"
+                            className="toggle toggle-sm"
+                            value={
+                              JSON.parse(user.authority).alter_price
+                                ? true
+                                : false
+                            }
+                          />
                         </div>
-                        <div className="text-sm opacity-50">
-                          <input type="checkbox" className="toggle toggle-sm" />
-                          <p>
-                            Sortir Barang :{" "}
-                            {JSON.parse(user.authority).sort_warehouse}
-                          </p>
-                        </div>
-                        <div className="text-sm opacity-50">
-                          <input type="checkbox" className="toggle toggle-sm" />
-                          <p>
-                            Ubah Harga :{JSON.parse(user.authority).alter_price}
-                          </p>
-                        </div>
+                      </td>
+                      <td className="w-20">
+                        <button className="btn btn-sm btn-danger btn-outline">
+                          H
+                        </button>
+                        <div className="divider"></div>
+                        <button className="btn btn-sm btn-success btn-outline">
+                          S
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -122,9 +144,6 @@ export default function Admins() {
             </div>
           </div>
         )}
-        <pre>
-          prototype fetching data in localhost http://127.0.0.1:8000/api/admins{" "}
-        </pre>
         <ul></ul>
       </Container>
     </>

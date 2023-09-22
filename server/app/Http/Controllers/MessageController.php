@@ -63,9 +63,18 @@ class MessageController extends Controller
         return new PostResource(true, 'Daftar pesan', $messages);
     }
 
-    public function getByUser(Request $request, DialogController $dialogController)
+    public function getByUser(Request $request)
     {
         $messages = Message::where('user_id', $request->input('user_id'))->get('dialog_id')->unique('dialog_id');
+        $dialog_ids = array_column(json_decode($messages), 'dialog_id');
+        $result = Message::whereIn('dialog_id', $dialog_ids)->get()->unique('dialog_id');
+        // return new PostResource(true, 'Daftar pesan', $result);
+        return $result;
+    }
+
+    public function getByAdmin(Request $request)
+    {
+        $messages = Message::where('admin_id', $request->input('admin_id'))->get('dialog_id')->unique('dialog_id');
         $dialog_ids = array_column(json_decode($messages), 'dialog_id');
         $result = Message::whereIn('dialog_id', $dialog_ids)->get()->unique('dialog_id');
         // return new PostResource(true, 'Daftar pesan', $result);

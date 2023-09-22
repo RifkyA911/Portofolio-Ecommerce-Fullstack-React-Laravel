@@ -110,7 +110,7 @@ export default function Chat() {
                     </li>
                     {MarketInbox.slice(0, 1).map((user) => (
                       <li key={user.id} className="flex justify-start">
-                        <div className="flex flex-row py-3 px-6">
+                        <div className="flex flex-row py-2 px-6">
                           <div className="relative">
                             <img
                               src={`./src/assets/user_avatar/${user.img}`}
@@ -139,7 +139,7 @@ export default function Chat() {
                     ))}
                     {MarketInbox.slice(1, 2).map((user) => (
                       <li key={user.id} className="flex justify-end">
-                        <div className="flex flex-row py-4 px-6">
+                        <div className="flex flex-row py-2 px-6">
                           <div className="flex flex-col text-right">
                             <span className="text-slate-800 font-semibold">
                               {user.name}

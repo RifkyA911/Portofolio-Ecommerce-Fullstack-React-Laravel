@@ -121,9 +121,12 @@ Route::post('/dialog/new', [DialogController::class, 'store']);
 // pict (can be null)
 // product_id (can be null if sending direct message to admin)
 Route::controller(MessageController::class)->group(function(){
+    Route::get('/messages', 'index');
     Route::post('/message/add', 'store');
-    Route::post('/message/getByUser', 'getByUser'); // return dialog and first message where user is involved
+    Route::post('/messages/getByUser', 'getByUser'); // return dialog and first message where user is involved
     // parameter : user_id
-    Route::post('/messages', 'getByDialog');    // return messages based on dialog_id
+    Route::post('/messages/getByAdmin', 'getByAdmin'); // return dialog and first message where admin is involved
+    // parameter : admin_id
+    Route::post('/messages/getByDialog', 'getByDialog');    // return messages based on dialog_id
     // parameter : dialog_id
 });
