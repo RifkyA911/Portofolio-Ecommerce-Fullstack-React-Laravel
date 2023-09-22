@@ -6,7 +6,7 @@ import {
   useNavigate,
   Link,
 } from "react-router-dom";
-import { Navbar, Sidebar } from "../Layout"; // ./components/index.jsx
+import { Navbar, Sidebar, Footer } from "../Layout"; // ./components/index.jsx
 // //import config data
 // import { allowedPaths } from "./utils/Navigation";
 import {
@@ -26,7 +26,6 @@ import NotFound, {
   RedirectPage,
   Unauthorized,
 } from "../Pages/Error/Error";
-import Footer from "../Layout/Footer";
 
 function MyAppRoutes() {
   const navigate = useNavigate();
