@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import { navLink } from "../Redux/Slices/NavigationSlice";
 import { logOutUser } from "./Session/Admin";
 
 function MyDebuggerPanel() {
+  const [close, setClose] = useState(false);
   // REDUX
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
     (state) => state.UI
@@ -17,22 +18,23 @@ function MyDebuggerPanel() {
   // Konten komponen
   return (
     <>
-      <div className="relative min-w-screen z-[99999] bg-slate-500">
+      <div
+        className={`${
+          close ? "hidden" : "block"
+        } relative min-w-screen z-[99999] bg-slate-500`}
+      >
         <div className="fixed bottom-[0] left-1/2 -translate-x-1/2 ">
           {/*right-[50%] left-[50%]  */}
           <div className=" w-56 text-xs cursor-pointer backdrop-blur-sm bg-opacity-60 bg-white  rounded-md shadow-lg hover:font-semibold hover:bg-sky-200 duration-500">
-            <div className="font-bold ">My Debugger Panel</div>
-            {/* <small>@rifky911</small> */}
-            <hr />
-            {/* <input
-          type="checkbox"
-          className="toggle toggle-xs my-2"
-          onClick={() => {
-            dispatch(darkTheme());
-          }}
-        /> */}
-            {/* <Summary a={2} b={5} /> 
-        <br />*/}
+            <div className="relative font-bold ">
+              My Debugger Panel{" "}
+              <button
+                className="absolute hover:bg-red-600  bg-red-400 px-1 right-0 rounded-sm"
+                onClick={() => setClose(!close)}
+              >
+                X
+              </button>
+            </div>
             <div className="p-1">
               <Link to="/x">Theme : {BgColor}</Link>
               <div>
