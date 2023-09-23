@@ -10,6 +10,24 @@ export default {
         'black': '#000000', // You can customize the HEX color code here
       },
     },
+    fontFamily: {
+      'sans': ['ui-sans-serif', 'system-ui'],
+      'serif': ['ui-serif', 'Georgia'],
+      'mono': ['ui-monospace', 'SFMono-Regular'],
+      'roboto': ['Roboto', 'sans-serif'],
+      'roboto-black': ['Roboto-Black', 'sans-serif'], //@RifkyA911 custom
+      'roboto-bold': ['Roboto-Bold', 'sans-serif'],
+      'roboto-italic': ['Roboto-Italic', 'sans-serif'],
+      'roboto-light': ['Roboto-Light', 'sans-serif'],
+      'roboto-medium': ['Roboto-Medium', 'sans-serif'],
+      'roboto-medium-italic': ['Roboto-MediumItalic', 'sans-serif'],
+      'roboto-regular': ['Roboto-Regular', 'sans-serif'],
+      'roboto-thin': ['Roboto-Thin', 'sans-serif'],
+      'roboto-black-italic': ['Roboto-BlackItalic', 'sans-serif'],
+      'roboto-bold-italic': ['Roboto-BoldItalic', 'sans-serif'],
+      'roboto-light-italic': ['Roboto-LightItalic', 'sans-serif'],
+      'roboto-thin-italic': ['Roboto-ThinItalic', 'sans-serif'],
+    }
   },
   plugins: [
     require('@tailwindcss/forms')({ strategy: 'class' }),
