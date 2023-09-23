@@ -20,84 +20,105 @@ const Dashboard = (pops) => {
                       key={item.name}
                       className={`relative text-left text-xl text-gray-50 overflow-hidden basis-2/6 shrink rounded-xl ${
                         item.color
-                      } p-2 lg:px-8 lg:py-4 w-full lg:w-96 h-24 lg:h-44 mb-2 lg:mb-0 ${
+                      } p-2 lg:px-8 lg:py-3 w-full lg:w-96 h-24 lg:h-44 mb-2 lg:mb-0 ${
                         item.name != "User" ? "lg:mr-4" : "lg:mr-0"
                       }`}
                     >
-                      <div className="relative bg-transparent w-full h-full bg-opacity-100 z-20">
-                        <h1 className="text-lg line-clamp-2 py-4 font-roboto-bold">
-                          <i
-                            className={`mr-2 text-gray-100 bg-white rounded-lg p-1 bg-opacity-20 backdrop-blur-xl shadow-sm subpixel-antialiased`}
-                          >
+                      <div className="px-7 lg:px-0 flex lg:block relative bg-transparent w-full h-full bg-opacity-100 z-10">
+                        <div className="flex-row lg:block">
+                          <h1 className="flex items-center text-lg line-clamp-2 py-4 font-roboto-bold z-10">
+                            <i
+                              className={`mr-2 text-gray-100 bg-white rounded-lg py-1 px-2 bg-opacity-20 backdrop-blur-xl shadow-sm subpixel-antialiased`}
+                            >
+                              {item.name == "Income" && (
+                                <i className="">
+                                  {getMuiIconComponent("StoreOutlined")}
+                                </i>
+                              )}
+                              {item.name == "Sales" &&
+                                getMuiIconComponent("SellOutlined")}
+                              {item.name == "Order" &&
+                                getMuiIconComponent("ShoppingCartOutlined")}
+                              {item.name == "User" &&
+                                getMuiIconComponent("GroupAddOutlined")}
+                            </i>
+                            <span className="capitalize text-2xl lg:text-xl">
+                              {item.name}
+                            </span>
+                            <i className="px-2">
+                              {getMuiIconComponent("TrendingUp")}
+                            </i>
+                          </h1>
+                          <h2 className="text-xl line-clamp-2 ">
                             {item.name == "Income" && (
-                              <i className="">
-                                {getMuiIconComponent("StoreOutlined")}
-                              </i>
+                              <div className="lg:flex-col">
+                                <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
+                                  $ {item.value}
+                                </div>
+                                <div className="py-4 font-roboto-bold shadow-sm line-clamp-1">
+                                  <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
+                                    4.20%
+                                  </span>
+                                  <small className="text-xs font-roboto-reguler ">
+                                    Since Last Month
+                                  </small>
+                                </div>
+                              </div>
                             )}
-                            {item.name == "Sales" &&
-                              getMuiIconComponent("SellOutlined")}
-                            {item.name == "Order" &&
-                              getMuiIconComponent("ShoppingCartOutlined")}
-                            {item.name == "User" &&
-                              getMuiIconComponent("GroupAddOutlined")}
-                          </i>
-                          <span className="capitalize">{item.name}</span>
-                          <i className="px-2">
-                            {getMuiIconComponent("TrendingUp")}
-                          </i>
-                        </h1>
-                        <h2 className="text-xl line-clamp-2 bg-">
-                          {item.name == "Income" && (
-                            <div className="flex-col">
-                              <div className="">$ {item.value}</div>
-                              <div className="text-sm py-4 font-roboto-bold">
-                                <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
-                                  4.20%
-                                </span>
-                                <small className="">Since Last Month</small>
+                            {item.name == "Sales" && (
+                              <div className="flex-col">
+                                <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
+                                  $ {item.value}
+                                </div>
+                                <div className="py-4 font-roboto-bold shadow-sm line-clamp-1">
+                                  <span className="text-xs text-red-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
+                                    -1.20%
+                                  </span>
+                                  <small className="text-xs font-roboto-reguler">
+                                    Since Last Month
+                                  </small>
+                                </div>
                               </div>
-                            </div>
-                          )}
-                          {item.name == "Sales" && (
-                            <div className="flex-col">
-                              <div>${item.value}</div>
-                              <div className="text-sm py-4 font-roboto-bold">
-                                <span className="text-xs text-red-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
-                                  -1.20%
-                                </span>
-                                <small className="">Since Last Month</small>
+                            )}
+                            {item.name == "Order" && (
+                              <div className="flex-col">
+                                <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
+                                  + {item.value}
+                                </div>
+                                <div className="py-4 font-roboto-bold shadow-sm line-clamp-1">
+                                  <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
+                                    160%
+                                  </span>
+                                  <small className="text-xs font-roboto-reguler">
+                                    Since Last Month
+                                  </small>
+                                </div>
                               </div>
-                            </div>
-                          )}
-                          {item.name == "Order" && (
-                            <div className="flex-col">
-                              <div>${item.value}</div>
-                              <div className="text-sm py-4 font-roboto-bold">
-                                <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
-                                  +44
-                                </span>
-                                <small className="">Since Last Month</small>
+                            )}
+                            {item.name == "User" && (
+                              <div className="flex-col">
+                                <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
+                                  + {item.value}
+                                </div>
+                                <div className="py-4 font-roboto-bold shadow-sm line-clamp-1">
+                                  <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
+                                    102%
+                                  </span>
+                                  <small className="text-xs font-roboto-reguler">
+                                    Since Last Month
+                                  </small>
+                                </div>
                               </div>
-                            </div>
-                          )}
-                          {item.name == "User" && (
-                            <div className="flex-col">
-                              <div>${item.value}</div>
-                              <div className="text-sm py-4 font-roboto-bold">
-                                <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
-                                  +126
-                                </span>
-                                <small className="">Since Last Month</small>
-                              </div>
-                            </div>
-                          )}
-                        </h2>
+                            )}
+                          </h2>
+                        </div>
                       </div>
+                      {/* Backdrop Images */}
                       <div className="z-0">
-                        <div className="absolute left-[-20px] top-[-50px] w-20 h-20 rounded-full bg-white bg-opacity-[0.04] backdrop-blur-0"></div>
-                        {/* <div className="absolute left-[-150px] top-[-120px] w-56 h-56 rounded-full bg-white bg-opacity-5  backdrop-blur-0"></div> */}
-                        <div className="absolute right-[10px] bottom-[-110px] w-40 h-40 rounded-full bg-slate-900 bg-opacity-[0.03] backdrop-blur"></div>
-                        <div className="absolute right-[-100px] bottom-[-150px] w-56 h-56 rounded-full bg-slate-800 bg-opacity-[0.05]  backdrop-blur"></div>
+                        <div className="absolute left-[-20px] top-[-30px] lg:top-[-55px] w-20 h-20 rounded-full bg-white bg-opacity-[0.04] backdrop-blur-0 z-0"></div>
+                        <div className="absolute left-[5px] bottom-[15px] lg:bottom-[-6px] w-5 h-5 rounded-full bg-white bg-opacity-[0.04]  backdrop-blur-0 z-0"></div>
+                        <div className="absolute right-[10px] bottom-[-110px] w-40 h-40 rounded-full bg-slate-900 bg-opacity-[0.03] backdrop-blur-0 z-0"></div>
+                        <div className="absolute right-[-100px] bottom-[-150px] w-56 h-56 rounded-full bg-slate-800 bg-opacity-[0.05]  backdrop-blur-0 z-0"></div>
                       </div>
                     </li>
                   ) : (
@@ -109,7 +130,7 @@ const Dashboard = (pops) => {
           </div>
           <div className="divider mb-0"></div>
           {/* baris-2 */}
-          <div className="flex w-full font-bold justify-between lg:max-h-[400px] py-4">
+          <div className="flex w-full font-bold justify-between lg:max-h-[450px] py-4 overflow-x-scroll">
             <div className="mockup-code bg-slate-700 w-full h-96 lg:mr-4 flex-wrap lg:flex-nowrap">
               <pre data-prefix="$" className="text-success">
                 <code>Line Chart Sales Monthly</code>
@@ -124,7 +145,7 @@ const Dashboard = (pops) => {
           </div>
 
           {/* baris-3 */}
-          <div className="flex font-bold justify-between lg:max-h-[400px] py-4 ">
+          <div className="flex font-bold justify-between lg:max-h-[450px] py-4 overflow-x-scroll">
             <div className="mockup-code bg-slate-700 w-full lg:mr-4 h-96">
               <pre data-prefix="$" className="text-success">
                 <code>Summary Table Latest Order</code>

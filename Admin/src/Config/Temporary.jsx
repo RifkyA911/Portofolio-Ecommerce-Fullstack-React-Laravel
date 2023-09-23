@@ -15,7 +15,8 @@ export const infoMarket = [
     flex: "col",
     name: "Order",
     value: "44",
-    color: "bg-gradient-to-r from-amber-500 to-yellow-400",
+    color:
+      "bg-gradient-to-r from-orange-400 from-[-40%] via-yellow-500 to-yellow-400 to-[100%]",
   },
   {
     flex: "col",

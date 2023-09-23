@@ -49,5 +49,26 @@
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */
       }
+
+            /* width */
+      ::-webkit-scrollbar {
+        width: 0px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: #181818;
+      }
+
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #cecece;
+        border-radius: 5px;
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a5a5a5;
+}
     }
   }

@@ -4,6 +4,7 @@ import { sideNavigation } from "../Config/PagesLink";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
+import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 // Utility
 import { getMuiIconComponent } from "../utils/MuiComponent";
 import { getUser } from "../utils/Session/Admin";
@@ -32,9 +33,9 @@ const Sidebar = () => {
             <div className="bg-black">
               {/* Sidebar */}
               <div
-                onClick={() => dispatch(toggleSidebar())}
+                onClick={() => dispatch(toggleSidebar(false))}
                 className={` lg:hidden ${sidebarOpen ? "" : "hidden"}
-            cursor-pointer backdrop-blur-sm bg-opacity-50 bg-gray-800 fixed w-full h-full z-20 transition duration-200`}
+            cursor-pointer backdrop-blur-sm bg-opacity-50 bg-gray-800 fixed w-full h-full z-[20] transition duration-200`}
               ></div>
               <div
                 className={
@@ -46,7 +47,7 @@ const Sidebar = () => {
                   }`
                 }
               >
-                <nav className="flex h-full">
+                <nav className="flex h-full z-[100]">
                   <ul className="flex-row w-full py-4 text-left h-full">
                     {sideNavigation.map((group) => (
                       <div key={group.GroupID}>
