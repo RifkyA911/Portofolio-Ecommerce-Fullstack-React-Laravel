@@ -1,27 +1,27 @@
 export const infoMarket = [
   {
     flex: "row",
-    name: "Revenue",
-    value: "???",
+    name: "Income",
+    value: "500",
     color: "bg-gradient-to-r from-indigo-500 to-purple-500",
   },
   {
     flex: "row",
     name: "Sales",
-    value: "???",
+    value: "123",
     color: "bg-gradient-to-r from-blue-500 to-cyan-500",
   },
   {
     flex: "col",
     name: "Order",
-    value: "???",
-    color: "bg-gradient-to-r from-yellow-400 to-amber-500",
+    value: "44",
+    color: "bg-gradient-to-r from-amber-500 to-yellow-400",
   },
   {
     flex: "col",
     name: "User",
-    value: "???",
-    color: "bg-gradient-to-r from-lime-400 to-teal-400",
+    value: "62",
+    color: "bg-gradient-to-r from-green-500 to-lime-400",
   },
 
   // {

@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin')
+
 export default {
   content: [
     "./index.html",
@@ -11,9 +13,6 @@ export default {
       },
     },
     fontFamily: {
-      'sans': ['ui-sans-serif', 'system-ui'],
-      'serif': ['ui-serif', 'Georgia'],
-      'mono': ['ui-monospace', 'SFMono-Regular'],
       'roboto': ['Roboto', 'sans-serif'],
       'roboto-black': ['Roboto-Black', 'sans-serif'], //@RifkyA911 custom
       'roboto-bold': ['Roboto-Bold', 'sans-serif'],
@@ -33,6 +32,14 @@ export default {
     require('@tailwindcss/forms')({ strategy: 'class' }),
     'prettier-plugin-tailwindcss',
     require("daisyui"),
+    // my custom
+    plugin(function({ addComponents }) {
+      addComponents({
+        '.dashboard-badge-percentage': {
+          padding: '.5rem 1rem',
+        }
+      })
+    })
   ],
     // daisyUI config (optional - here are the default values)
     daisyui: {

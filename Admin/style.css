@@ -33,15 +33,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #a5a5a5;
 }
-
-/* Custom Font */
-/* @font-face {
-  font-family: "Roboto-Medium";
-  src: local("Roboto-Medium"),
-   url("./src/assets/font/Roboto-Medium.ttf") format("truetype");
- } */
  
-
 @layer utilities {
     @variants responsive {
       /* Hide scrollbar for Chrome, Safari and Opera */
