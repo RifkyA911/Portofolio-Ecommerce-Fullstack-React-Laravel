@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 // UI
+import TablePagination from "@mui/material/TablePagination";
 import Skeleton from "@mui/material/Skeleton";
 import { Container } from "../Layout";
 import { getMuiIcon, getReactIconHi2 } from "../utils/RenderIcons";
@@ -9,8 +10,12 @@ import { useSelector } from "react-redux";
 export default function Admins() {
   const [loading, setLoading] = useState(true);
   const [admins, setAdmins] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const [sortBy, setSortBy] = useState("username");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [page, setPage] = useState(2);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // REDUX
   const {
@@ -25,6 +30,11 @@ export default function Admins() {
 
   const URLadmins = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
   // console.log(URLadmins);
+  useEffect(() => {
+    setLoading(true);
+    fetchData(URLadmins); //Asynx boss
+  }, []);
+
   async function fetchData(url) {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/admins");
@@ -36,12 +46,16 @@ export default function Admins() {
       setLoading(false); // Set loading to false in case of error too
     }
   }
-  // console.table(admins); // Logging the updated admins here
 
   useEffect(() => {
-    setLoading(true);
-    fetchData(); //Asynx boss
-  }, []);
+    // Filter admins based on the search term
+    const filteredAdmins = admins.filter((admin) =>
+      admin.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(filteredAdmins);
+  }, [searchTerm, admins]);
+
+  // console.table(admins); // Logging the updated admins here
 
   const sortByColumn = (column) => {
     const sortedAdmins = [...admins].sort((a, b) => {
@@ -59,6 +73,17 @@ export default function Admins() {
     setSortBy(column);
   };
   // console.log(sortedData);
+
+  // Pagination
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <>
       <Container>
@@ -69,46 +94,69 @@ export default function Admins() {
             ))}
           </div>
         ) : (
-          <div className="p-4 rounde-lg text-sm ">
-            <div className="flex my-2 w-full justify-between items-end">
-              <div className="flex-row justify-start ">
+          <div className="p-4 rounded-lg text-sm ">
+            <div className="flex flex-col lg:flex-row my-2 lg:my-4 w-full justify-between items-end overflow-x-hidden">
+              <div className="flex justify-center lg:justify-start w-full mb-4 lg:mb-0">
                 <input
                   type="text"
-                  placeholder="Type here"
+                  placeholder="Cari Nama Admin"
+                  value={searchTerm}
                   className="input input-bordered input-info w-[512px] max-w-lg "
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <div className="flex-row justify-end">
-                <button className="hidden focus:outline-none flex-row bg-gradient-to-r from-red-500 to-red-400 p-2 rounded-md font-roboto-medium text-white items-center ">
-                  Delete
+              <div className="flex justify-center lg:justify-end w-80 mb-4 lg:mb-0">
+                <button className="mx-1 grow-0 shrink-0 focus:outline-none bg-red-500 hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-500 transition-all duration-300 p-2 rounded-md font-roboto-medium text-white items-center">
+                  <i className="font-xs">{getMuiIcon("PersonRemove")}</i>
+                  <span className="font-base px-2">Delete</span>
                 </button>
                 <button
-                  className="flex flex-row focus:outline-none bg-gradient-to-r from-blue-500 to-sky-500 p-2 rounded-md font-roboto-medium text-white items-center"
+                  className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 transition-all duration-200 p-2 rounded-md font-roboto-medium text-white items-center "
                   onClick={() =>
-                    document.getElementById("my_modal_3").showModal()
+                    document.getElementById("AddAdmin").showModal()
                   }
                 >
                   <i className="font-xs">{getMuiIcon("PersonAdd")}</i>
                   <span className="font-base px-2">New</span>
                 </button>
-                <dialog id="my_modal_3" className={`${textColor} modal`}>
-                  <div className={`modal-box ${BgColor}`}>
-                    <form method="dialog">
-                      {/* if there is a button in form, it will close the modal */}
-                      <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                        ✕
-                      </button>
-                    </form>
-                    <h3 className="font-bold text-lg">Hello!</h3>
-                    <p className="py-4">
-                      Press ESC key or click on ✕ button to close
-                    </p>
-                  </div>
-                </dialog>
+                <button className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 p-2 rounded-md font-roboto-medium text-white items-center ">
+                  {getMuiIcon("Refresh")}
+                </button>
               </div>
             </div>
-            <div className="overflow-x-auto rounded-lg bg-white outline-none">
-              <table className="text-sm w-full outline-none">
+            <dialog id="AddAdmin" className={`${textColor} modal`}>
+              <div className={`modal-box ${BgColor}`}>
+                <form method="dialog">
+                  {/* if there is a button in form, it will close the modal */}
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                    ✕
+                  </button>
+                </form>
+                <h3 className="font-bold text-lg">Add Admin</h3>
+                <p className="py-4">
+                  Press ESC key or click on ✕ button to close
+                </p>
+              </div>
+            </dialog>
+            <dialog id="ShowPict" className={`${textColor} modal `}>
+              <div
+                className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden`}
+              >
+                <div className="flex flex-col justify-center items-center">
+                  <h3 className="font-bold text-lg ">This Admin Name</h3>
+                  <img
+                    src="./src/assets/user_avatar/78949689_p3.jpg"
+                    alt="Admin\src\assets\user_avatar\78949689_p6.jpg"
+                    className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden"
+                  />
+                </div>
+              </div>
+              <form method="dialog" className="modal-backdrop">
+                <button>close</button>
+              </form>
+            </dialog>
+            <div className="overflow-x-auto rounded-lg bg-white ">
+              <table className="text-sm w-full outline-none ">
                 {/* head */}
                 <thead
                   className={`${BgOuterTable} cursor-pointer shadow-lg ${textColor} font-roboto-regular outline-none`}
@@ -156,12 +204,10 @@ export default function Admins() {
                         </p>
                       </div>
                     </th>
-                    <th className="p-2 text-center w-48 ">
-                      <span className="text-center lg:border-0 border-b-2 border-slate-500 pr-2">
-                        Grant Features
-                      </span>
+                    <th className="p-2 text-center w-96 lg:w-48 ">
+                      <span className="text-center  pr-2">Grant Features</span>
                       <br />
-                      <div className="lg:flex-row flex flex-col justify-center">
+                      <div className="lg:flex-row flex flex-col justify-center lg:border-0 border-t-2 border-slate-500">
                         <span className="lg:border-r-2 lg:border-slate-500 lg:pr-2">
                           Chat
                         </span>
@@ -175,7 +221,7 @@ export default function Admins() {
                   </tr>
                 </thead>
                 <tbody className={BgTable}>
-                  {admins.map((admin, index) => (
+                  {searchResults.map((admin, index) => (
                     <tr key={admin.id} className="divide-y">
                       <td
                         className={`${BgOuterTable} text-center w-0 p-0 font-roboto-bold divide-y divide-white`}
@@ -189,8 +235,13 @@ export default function Admins() {
                       </td>
                       <td className="px-4 w-[450px] py-2">
                         <div className="flex items-center space-x-3">
-                          <div className="avatar">
-                            <div className="mask mask-squircle w-16 h-16 cursor-pointer">
+                          <div
+                            className="avatar "
+                            onClick={() =>
+                              document.getElementById("ShowPict").showModal()
+                            }
+                          >
+                            <div className="mask mask-squircle w-16 h-16 cursor-pointer ">
                               <img
                                 src={`./src/assets/admin_avatar/${admin.pict}`}
                                 alt="Avatar Tailwind CSS Component"
@@ -214,7 +265,7 @@ export default function Admins() {
                       </td>
                       {admin.role == 1 ? (
                         <>
-                          <td className="flex-1 px-4">
+                          <td className="flex-1 px-6 lg:px-4 ">
                             <div className="w-full flex flex-col lg:flex-row justify-around items-center">
                               <input
                                 type="checkbox"
@@ -249,10 +300,10 @@ export default function Admins() {
                           </td>
                           <td className="">
                             <div className="flex justify-center flex-wrap ">
-                              <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-red-500 hover:outline-none outline outline-2 outline-red-400 transition-all duration-200">
+                              <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-red-600 hover:to-red-500 hover:outline-none outline outline-2 outline-red-400 transition-all duration-200">
                                 {getMuiIcon("PersonOff")}
                               </button>
-                              <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-blue-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200">
+                              <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:bg-sky-600 hover:to-sky-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200">
                                 {getMuiIcon("Settings")}
                               </button>
                             </div>
@@ -268,8 +319,21 @@ export default function Admins() {
                   ))}
                 </tbody>
                 {/* foot */}
-                <tfoot></tfoot>
+                <tfoot className="border border-b-4 border-black"></tfoot>
               </table>
+              <div
+                className={`bg-white border border-t-3 border-gray-200 flex justify-center w-full`}
+              >
+                <TablePagination
+                  component="div"
+                  count={100}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  rowsPerPage={rowsPerPage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  className={`${textColor}`}
+                />
+              </div>
             </div>
           </div>
         )}

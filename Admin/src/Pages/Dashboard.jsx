@@ -39,7 +39,17 @@ const Dashboard = (props) => {
         data: [120, 200, 150, 80, 70, 110, 130],
         type: "line",
         areaStyle: {},
+        backgroundColor: "rgba(0, 0, 255, 0.2)", // Gunakan warna yang sesuai
+        borderColor: "rgba(0, 0, 255, 1)", // Contoh warna garis
+        borderWidth: 1, // Lebar garis
         smooth: true,
+      },
+      // Menambahkan data lain di bawah ini
+      {
+        data: [90, 150, 100, 60, 50, 80, 100], // Data baru
+        type: "line", // Tipe grafik (dalam contoh ini, "line")
+        areaStyle: {}, // Opsi tambahan jika diperlukan
+        smooth: true, // Opsi tambahan jika diperlukan
       },
     ],
   };
