@@ -29,9 +29,9 @@ use App\Models\Message;
 // });
 
 // Endpoint Admin
-Route::controller(AdminsController::class)->group(function(){
+Route::controller(AdminsController::class)->group(function () {
     Route::get('/admins', 'index');
-    Route::get('/admins/{id}', 'find');     // parameter id
+    Route::get('/admin/{id}', 'find');     // parameter id
     //  create admin
     Route::post('/admins', 'store');    // parameter role_admin == 0; data => email, username, password, role
     // update admin
@@ -41,8 +41,8 @@ Route::controller(AdminsController::class)->group(function(){
 });
 
 // Endpoint User
-Route::controller(UserController::class)->group(function(){
-    Route::get('/user', 'index');
+Route::controller(UserController::class)->group(function () {
+    Route::get('/users', 'index');
     Route::get('/user/{id}', 'show');   // parameter id
     // create user
     Route::post('/user', 'store');  // parameter email, username, password(min:6)
@@ -54,8 +54,8 @@ Route::controller(UserController::class)->group(function(){
 });
 
 // Endpoint Product
-Route::controller(ProductController::class)->group(function(){
-    Route::get('/product', 'getAll');
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/products', 'getAll');
     Route::get('/product/{id}', 'getById'); // parameter id
     // create product
     Route::post('/product', 'store');   // parameter name, category, price(numeric), stok(numeric)
@@ -66,7 +66,7 @@ Route::controller(ProductController::class)->group(function(){
 });
 
 // Endpoint Cart/keranjang (user-only feature)
-Route::controller(CartController::class)->group(function(){
+Route::controller(CartController::class)->group(function () {
     Route::get('/carts/{user_id}', 'showByUser');   // parameter user_id
     Route::get('/cart/{id}', 'showById');   // parameter id
     Route::post('/cart', 'store');     // parameter user_id, product_id, count(optional)
@@ -75,15 +75,15 @@ Route::controller(CartController::class)->group(function(){
 });
 
 // Endpoint Wishlist (user-only feature)
-Route::controller(WishlistController::class)->group(function(){
+Route::controller(WishlistController::class)->group(function () {
     Route::get('/wishlist/{user_id}', 'showByUser');    // parameter user_id
     Route::post('/wishlist', 'store');     // parameter user_id, product_id
     Route::post('/wishlist/delete', 'destroy');    // parameter id
 });
 
 // Endpoint Transaction
-Route::controller(TransactionController::class)->group(function(){
-    Route::get('/transaction', 'index');
+Route::controller(TransactionController::class)->group(function () {
+    Route::get('/transactions', 'index');
     Route::get('/transaction/{id}', 'show');    // parameter id
     Route::post('/transaction/buy', 'store');   // parameter user_id, products_id(in array/json form), total_price. all required
     Route::post('/transaction/checkout', 'checkout');   // parameter id, user_id(same as trans' user)
@@ -102,8 +102,8 @@ Route::controller(TransactionController::class)->group(function(){
 });
 
 // Endpoint Review
-Route::controller(ReviewController::class)->group(function(){
-    Route::get('/review', 'index');
+Route::controller(ReviewController::class)->group(function () {
+    Route::get('/reviews', 'index');
     Route::get('/review/{product_id}', 'getByProduct');
 });
 
@@ -120,7 +120,7 @@ Route::post('/dialog/new', [DialogController::class, 'store']);
 // message (can't be null)
 // pict (can be null)
 // product_id (can be null if sending direct message to admin)
-Route::controller(MessageController::class)->group(function(){
+Route::controller(MessageController::class)->group(function () {
     Route::get('/messages', 'index');
     Route::post('/message/add', 'store');
     Route::post('/messages/getByUser', 'getByUser'); // return dialog and first message where user is involved
