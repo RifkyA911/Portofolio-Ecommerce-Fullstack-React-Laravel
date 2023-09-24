@@ -3,12 +3,25 @@ import { useEffect, useState } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import { Container } from "../Layout";
 import { getMuiIcon, getReactIconHi2 } from "../utils/RenderIcons";
+// REDUX
+import { useSelector } from "react-redux";
 
 export default function Admins() {
   const [loading, setLoading] = useState(true);
   const [admins, setAdmins] = useState([]);
   const [sortBy, setSortBy] = useState("username");
   const [sortOrder, setSortOrder] = useState("asc");
+
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+  } = useSelector((state) => state.UI);
 
   const URLadmins = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
   // console.log(URLadmins);
@@ -56,11 +69,50 @@ export default function Admins() {
             ))}
           </div>
         ) : (
-          <div className="p-0 ">
-            <div className="overflow-x-auto rounded-md">
-              <table className="text-sm w-full">
+          <div className="p-4 rounde-lg text-sm ">
+            <div className="flex my-2 w-full justify-between items-end">
+              <div className="flex-row justify-start ">
+                <input
+                  type="text"
+                  placeholder="Type here"
+                  className="input input-bordered input-info w-[512px] max-w-lg "
+                />
+              </div>
+              <div className="flex-row justify-end">
+                <button className="hidden focus:outline-none flex-row bg-gradient-to-r from-red-500 to-red-400 p-2 rounded-md font-roboto-medium text-white items-center ">
+                  Delete
+                </button>
+                <button
+                  className="flex flex-row focus:outline-none bg-gradient-to-r from-blue-500 to-sky-500 p-2 rounded-md font-roboto-medium text-white items-center"
+                  onClick={() =>
+                    document.getElementById("my_modal_3").showModal()
+                  }
+                >
+                  <i className="font-xs">{getMuiIcon("PersonAdd")}</i>
+                  <span className="font-base px-2">New</span>
+                </button>
+                <dialog id="my_modal_3" className={`${textColor} modal`}>
+                  <div className={`modal-box ${BgColor}`}>
+                    <form method="dialog">
+                      {/* if there is a button in form, it will close the modal */}
+                      <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                        ✕
+                      </button>
+                    </form>
+                    <h3 className="font-bold text-lg">Hello!</h3>
+                    <p className="py-4">
+                      Press ESC key or click on ✕ button to close
+                    </p>
+                  </div>
+                </dialog>
+              </div>
+            </div>
+            <div className="overflow-x-auto rounded-lg bg-white outline-none">
+              <table className="text-sm w-full outline-none">
                 {/* head */}
-                <thead className="bg-slate-200 cursor-pointer shadow-lg text-gray-600 font-roboto-regular">
+                <thead
+                  className={`${BgOuterTable} cursor-pointer shadow-lg ${textColor} font-roboto-regular outline-none`}
+                >
                   <tr className="">
                     <th className="px-4" onClick={() => sortByColumn("id")}>
                       <span className="text-[14px] relative">
@@ -105,15 +157,15 @@ export default function Admins() {
                       </div>
                     </th>
                     <th className="p-2 text-center w-48 ">
-                      <span className="text-center lg:border-0 border-b-2 border-slate-600 pr-2">
+                      <span className="text-center lg:border-0 border-b-2 border-slate-500 pr-2">
                         Grant Features
                       </span>
                       <br />
                       <div className="lg:flex-row flex flex-col justify-center">
-                        <span className="lg:border-r-2 lg:border-slate-600 lg:pr-2">
+                        <span className="lg:border-r-2 lg:border-slate-500 lg:pr-2">
                           Chat
                         </span>
-                        <span className="lg:border-r-2 lg:border-slate-600 lg:px-2">
+                        <span className="lg:border-r-2 lg:border-slate-500 lg:px-2">
                           Sort
                         </span>
                         <span className="lg:pl-2"> Price</span>
@@ -122,10 +174,12 @@ export default function Admins() {
                     <th className="text-[14px] w-[160px]">Action</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white ">
+                <tbody className={BgTable}>
                   {admins.map((admin, index) => (
                     <tr key={admin.id} className="divide-y">
-                      <td className="bg-slate-100 text-center w-0 p-0 font-roboto-bold divide-y divide-white">
+                      <td
+                        className={`${BgOuterTable} text-center w-0 p-0 font-roboto-bold divide-y divide-white`}
+                      >
                         {index + 1}
                       </td>
                       <td className="w-2">
@@ -143,7 +197,7 @@ export default function Admins() {
                               />
                             </div>
                           </div>
-                          <div className="pl-4 text-left">
+                          <div className={`${textTable} pl-4 text-left`}>
                             <div className="font-bold line-clamp-2 font-roboto-regular">
                               {admin.username}
                             </div>
@@ -154,58 +208,68 @@ export default function Admins() {
                         </div>
                       </td>
                       <td>
-                        <p className="font-semibold font-roboto-regular">
+                        <p className="font-semibold font-roboto-regular text-slate-800">
                           {admin.role == 0 ? "Super Admin" : "Admin"}
                         </p>
                       </td>
-                      <td className="flex-1 px-4">
-                        <div className="w-full flex flex-col lg:flex-row justify-around items-center">
-                          <input
-                            type="checkbox"
-                            className="toggle toggle-info m-2"
-                            onChange={() => console.info("maleh")}
-                            value={
-                              JSON.parse(admin.authority).chat ? true : false
-                            }
-                          />
-                          <input
-                            type="checkbox"
-                            className="toggle toggle-warning m-2"
-                            value={
-                              JSON.parse(admin.authority).sort_warehouse
-                                ? true
-                                : false
-                            }
-                          />
+                      {admin.role == 1 ? (
+                        <>
+                          <td className="flex-1 px-4">
+                            <div className="w-full flex flex-col lg:flex-row justify-around items-center">
+                              <input
+                                type="checkbox"
+                                className="toggle toggle-info m-2"
+                                onChange={() => console.info("maleh")}
+                                value={
+                                  JSON.parse(admin.authority).chat
+                                    ? true
+                                    : false
+                                }
+                              />
+                              <input
+                                type="checkbox"
+                                className="toggle toggle-warning m-2"
+                                value={
+                                  JSON.parse(admin.authority).sort_warehouse
+                                    ? true
+                                    : false
+                                }
+                              />
 
-                          <input
-                            type="checkbox"
-                            className="toggle toggle-error m-2"
-                            value={
-                              JSON.parse(admin.authority).alter_price
-                                ? true
-                                : false
-                            }
-                          />
-                        </div>
-                      </td>
-                      <td className="">
-                        <div className="flex justify-center flex-wrap ">
-                          <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-red-500 hover:outline-none outline outline-2 outline-red-400 transition-all duration-200">
-                            {getMuiIcon("PersonOff")}
-                          </button>
-                          <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-blue-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200">
-                            {getMuiIcon("Settings")}
-                          </button>
-                        </div>
-                      </td>
+                              <input
+                                type="checkbox"
+                                className="toggle toggle-error m-2"
+                                value={
+                                  JSON.parse(admin.authority).alter_price
+                                    ? true
+                                    : false
+                                }
+                              />
+                            </div>
+                          </td>
+                          <td className="">
+                            <div className="flex justify-center flex-wrap ">
+                              <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-red-500 hover:outline-none outline outline-2 outline-red-400 transition-all duration-200">
+                                {getMuiIcon("PersonOff")}
+                              </button>
+                              <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-blue-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200">
+                                {getMuiIcon("Settings")}
+                              </button>
+                            </div>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td></td>
+                          <td></td>
+                        </>
+                      )}
                     </tr>
                   ))}
                 </tbody>
                 {/* foot */}
                 <tfoot></tfoot>
               </table>
-              <div className="divider"></div>
             </div>
           </div>
         )}

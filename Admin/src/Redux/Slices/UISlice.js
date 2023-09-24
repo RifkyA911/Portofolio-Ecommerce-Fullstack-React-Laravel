@@ -25,7 +25,10 @@ export const UISlice = createSlice({
         // wideScreen: true,
         sidebarOpen: checkScreenWidth(),
         showNav: "",
-        container: "app flex pt-14 min-h-screen max-w-full"
+        container: "app flex pt-14 min-h-screen max-w-full",
+        textTable: "text-gray-600",
+        BgTable: "bg-white",
+        BgOuterTable: "bg-slate-200",
     },
     reducers: {
         changeBG : (state, action) => {
@@ -41,13 +44,17 @@ export const UISlice = createSlice({
             state.textColor = "text-white",
             state.BackBgColor = "bg-gray-700",
             state.ContainerBgColor = "bg-slate-800",
+            state.BgTable = "bg-white",
+            state.BgOuterTable = "bg-gray-700",
             toggleDark = !toggleDark
           } else {
             state.DarkMode = false
             state.BgColor = "bg-white",
             state.textColor = "text-dark",
             state.BackBgColor = "bg-white",
-            state.ContainerBgColor = "bg-slate-200",
+            state.ContainerBgColor = "bg-slate-100",
+            state.BgTable = "bg-white",
+            state.BgOuterTable = "bg-slate-200",
             toggleDark = !toggleDark
           }
           console.log("Dark Mode:", toggleDark)

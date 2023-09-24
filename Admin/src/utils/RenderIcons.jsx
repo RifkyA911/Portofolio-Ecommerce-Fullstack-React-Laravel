@@ -3,11 +3,12 @@ import * as MuiIcons from "@mui/icons-material";
 // import * as ReactIconsFi from "react-icons/fi";
 // import * as ReactIconsHi from "react-icons/hi";
 import * as ReactIconsHi2 from "react-icons/hi2";
+import * as ReactIconsIo from "react-icons/io";
 
 export const getMuiIcon = (iconName) => {
   const MuiIcon = MuiIcons[iconName];
   if (MuiIcon) {
-    return <MuiIcon className="h-6 w-6 m-0" />;
+    return <MuiIcon className="m-0" />;
   }
   return null;
 };
@@ -40,6 +41,14 @@ export const getReactIconHi2 = (iconName) => {
   const ReactIconHi2 = ReactIconsHi2[iconName];
   if (ReactIconHi2) {
     return <ReactIconHi2 className="h-6 w-6 mr-4" />;
+  }
+  return null;
+};
+
+export const getReactIconsIo = (iconName) => {
+  const IconComponent = ReactIconsIo[iconName];
+  if (IconComponent) {
+    return <IconComponent className="mr-4" />;
   }
   return null;
 };
