@@ -46,6 +46,7 @@ const Dashboard = (props) => {
 
   async function fetchData() {
     const URLproduct = import.meta.env.VITE_API_URL_GET_ALL_PRODUCT;
+    // console.log(URLproduct);
     try {
       const response = await fetch(URLproduct);
       const data = await response.json();
