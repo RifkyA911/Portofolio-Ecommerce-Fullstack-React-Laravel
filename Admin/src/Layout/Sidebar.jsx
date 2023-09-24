@@ -6,7 +6,7 @@ import { sideNavigation } from "../Config/PagesLink";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 // Utility
-import { getMuiIconComponent } from "../utils/MuiComponent";
+import { getMuiIcon } from "../utils/RenderIcons";
 import { getUser } from "../utils/Session/Admin";
 
 const Sidebar = () => {
@@ -71,9 +71,7 @@ const Sidebar = () => {
                                     : "hover:text-gray-800 hover:bg-violet-100"
                                 }`}
                               >
-                                <i className="mr-4">
-                                  {getMuiIconComponent(link.icon)}
-                                </i>
+                                <i className="mr-4">{getMuiIcon(link.icon)}</i>
 
                                 <span className="text-sm">{link.name}</span>
                               </Link>

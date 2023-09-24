@@ -23,21 +23,23 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { useState, useEffect } from "react";
 import { Container } from "../Layout";
+import { useMemo } from "react";
 
 export default function Products() {
-  const [product, setProduct] = useState([
-    {
-      id: "loading",
-      name: "loading",
-      category: "loading",
-      price: "loading",
-      stock: "loading",
-      discount: "loading",
-      pict: "loading",
-      description: "loading",
-      created_at: "loading",
-      updated_at: "loading",
-    },
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([
+    // {
+    //   id: "loading",
+    //   name: "loading",
+    //   category: "loading",
+    //   price: "loading",
+    //   stock: "loading",
+    //   discount: "loading",
+    //   pict: "loading",
+    //   description: "loading",
+    //   created_at: "loading",
+    //   updated_at: "loading",
+    // },
   ]);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("price");
@@ -46,23 +48,22 @@ export default function Products() {
   const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  let i = 0;
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/product/")
+    fetch("http://127.0.0.1:8000/api/products/")
       .then((response) => response.json())
       .then((data) => {
         // console.log(data.data[0]); // Cek data untuk pemeriksaan
         // console.table(data.data);)
         // console.log(data);
-        setProduct(data.data);
-        console.table(product);
-        console.log(i);
-        i = i + 1;
+        // console.table(products);
+        setProducts(data.data);
+
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []);
+  }, [loading]);
 
   function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -109,7 +110,6 @@ export default function Products() {
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
-            <p>IOWIWJIJ</p>
             <Checkbox
               color="primary"
               indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -190,7 +190,7 @@ export default function Products() {
             id="tableTitle"
             component="div"
           >
-            Products
+            Productss
           </Typography>
         )}
 
@@ -216,7 +216,7 @@ export default function Products() {
   };
 
   const headCells = [
-    // Object.keys(product[0]);
+    // Object.keys(products[0]);
     // id,
     // name,
     // category,
@@ -231,7 +231,7 @@ export default function Products() {
       id: "name",
       numeric: false,
       disablePadding: true,
-      label: "Product",
+      label: "Products",
     },
     {
       id: "category",
@@ -255,19 +255,19 @@ export default function Products() {
       id: "discount",
       numeric: true,
       disablePadding: false,
-      label: "discount",
+      label: "discounts",
     },
   ];
 
   const rows = [
     {
-      id: product[0].id,
-      name: product[0].name,
-      category: product[0].category,
-      price: product[0].category,
-      stock: product[0].stock,
-      discount: product[0].discount,
-      pict: product[0].pict,
+      id: products[0]?.id,
+      name: products[0]?.name,
+      category: products[0]?.category,
+      price: products[0]?.category,
+      stock: products[0]?.stock,
+      discount: products[0]?.discount,
+      pict: products[0]?.pict,
     },
   ];
 
@@ -325,7 +325,7 @@ export default function Products() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () =>
       stableSort(rows, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
@@ -333,107 +333,150 @@ export default function Products() {
       ),
     [order, orderBy, page, rowsPerPage]
   );
-
+  console.table(rows);
+  // console.log()
   return (
-    <Container>
-      <Box sx={{ width: "100%" }}>
-        <Paper sx={{ width: "100%", mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
-          <TableContainer>
-            <Table
-              sx={{ minWidth: 750 }}
-              aria-labelledby="tableTitle"
-              size={dense ? "small" : "medium"}
-            >
-              <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={rows.length}
-              />
-              <TableBody>
-                {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                      sx={{ cursor: "pointer" }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
+    <>
+      {!loading && (
+        <Container>
+          <Box sx={{ width: "100%" }}>
+            <Paper sx={{ width: "100%", mb: 2 }}>
+              <EnhancedTableToolbar numSelected={selected.length} />
+              <TableContainer>
+                <Table
+                  sx={{ minWidth: 750 }}
+                  aria-labelledby="tableTitle"
+                  size={dense ? "small" : "medium"}
+                >
+                  <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onSelectAllClick={handleSelectAllClick}
+                    onRequestSort={handleRequestSort}
+                    rowCount={rows.length}
+                  />
+                  <TableBody>
+                    {products.map((product, index) => (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, product.name)}
+                        role="checkbox"
+                        // aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={product.id}
+                        // selected={isItemSelected}
+                        sx={{ cursor: "pointer" }}
                       >
-                        {row.name}
-                      </TableCell>
-                      {/* <TableCell align="right">
-                        <img src="./src/assets/logo.png" className="w-8 h-8 s" />
-                      </TableCell> */}
-                      {/* // id,
-                        // name,
-                        // category,
-                        // price,
-                        // stock,
-                        // discount,
-                        // pict,
-                        // description,
-                        // created_at,
-                        // updated_at, */}
-                      <TableCell align="right">{row.category}</TableCell>
-                      <TableCell align="right">{row.price}</TableCell>
-                      <TableCell align="right">{row.stock}</TableCell>
-                      <TableCell align="right">{row.discount}</TableCell>
-                    </TableRow>
-                  );
-                })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: (dense ? 33 : 53) * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {/* <button onClick={setProduct("sd")}></button> */}
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-        <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
-          label="Dense padding"
-        />
-      </Box>
-    </Container>
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            // checked={isItemSelected}
+                            // inputProps={{
+                            //   "aria-labelledby": enhanced-table-checkbox-${index},
+                            // }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={product.id}
+                          scope="row"
+                          padding="none"
+                          align="left"
+                        >
+                          {product.name}
+                        </TableCell>
+                        <TableCell align="right">{product.category}</TableCell>
+                        <TableCell align="right">{product.category}</TableCell>
+                        <TableCell align="right">{product.price}</TableCell>
+                        <TableCell align="right">{product.stock}</TableCell>
+                        <TableCell align="right">{product.discout}</TableCell>
+                      </TableRow>
+                    ))}
+
+                    {emptyRows > 0 && (
+                      <TableRow
+                        style={{
+                          height: (dense ? 33 : 53) * emptyRows,
+                        }}
+                      >
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {/* <button onClick={setProducts("sd")}></button> */}
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Paper>
+            <FormControlLabel
+              control={<Switch checked={dense} onChange={handleChangeDense} />}
+              label="Dense padding"
+            />
+          </Box>
+        </Container>
+      )}
+    </>
   );
 }
+
+// {visibleRows.map((row, index) => {
+//   const isItemSelected = isSelected(row.name);
+//   const labelId = `enhanced-table-checkbox-${index}`;
+
+//   return (
+//     <TableRow
+//       hover
+//       onClick={(event) => handleClick(event, row.name)}
+//       role="checkbox"
+//       aria-checked={isItemSelected}
+//       tabIndex={-1}
+//       key={row.name}
+//       selected={isItemSelected}
+//       sx={{ cursor: "pointer" }}
+//     >
+//       <TableCell padding="checkbox">
+//         <Checkbox
+//           color="primary"
+//           checked={isItemSelected}
+//           inputProps={{
+//             "aria-labelledby": labelId,
+//           }}
+//         />
+//       </TableCell>
+//       <TableCell
+//         component="th"
+//         id={labelId}
+//         scope="row"
+//         padding="none"
+//       >
+//         {row.name}
+//       </TableCell>
+//       {/* <TableCell align="right">
+//     <img src="./src/assets/logo.png" className="w-8 h-8 s" />
+//   </TableCell> */}
+//       {/* // id,
+//     // name,
+//     // category,
+//     // price,
+//     // stock,
+//     // discount,
+//     // pict,
+//     // description,
+//     // created_at,
+//     // updated_at, */}
+//       <TableCell align="right">{row.category}</TableCell>
+//       <TableCell align="right">{row.price}</TableCell>
+//       <TableCell align="right">{row.stock}</TableCell>
+//       <TableCell align="right">{row.discount}</TableCell>
+//     </TableRow>
+//   );
+// })}

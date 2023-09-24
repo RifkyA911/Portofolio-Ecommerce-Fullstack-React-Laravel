@@ -16,23 +16,28 @@
 /* width */
 ::-webkit-scrollbar {
   width: 0px;
+  height: 4px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #181818;
+  background: #bdbdbd;
+  width: 0px;
+  height: 1px;
+  border-radius: 1px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #cecece;
-  border-radius: 5px;
+  background: #595959;
+  border-radius: 1px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #a5a5a5;
-}
+  background: #3e3e3e;
+  cursor: pointer;
+} 
  
 @layer utilities {
   @layer responsive {
@@ -49,26 +54,5 @@
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */
       }
-
-            /* width */
-      ::-webkit-scrollbar {
-        width: 0px;
-      }
-
-      /* Track */
-      ::-webkit-scrollbar-track {
-        background: #181818;
-      }
-
-      /* Handle */
-      ::-webkit-scrollbar-thumb {
-        background: #cecece;
-        border-radius: 5px;
-      }
-
-      /* Handle on hover */
-      ::-webkit-scrollbar-thumb:hover {
-        background: #a5a5a5;
-}
     }
   }

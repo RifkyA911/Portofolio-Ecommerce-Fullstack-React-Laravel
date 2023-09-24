@@ -7,8 +7,6 @@ import App from "./App.jsx";
 import "./index.css";
 import "./assets/font/font-roboto.css"; //Roboto Font
 
-import { FiSettings } from "react-icons/fi";
-
 import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

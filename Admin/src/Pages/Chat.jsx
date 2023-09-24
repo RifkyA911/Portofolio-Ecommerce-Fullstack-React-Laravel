@@ -129,7 +129,7 @@ export default function Chat() {
                             {/* iter */}
                             <div className="flex flex-col px-4 py-2 text-left bg-slate-400 rounded-r-lg rounded-bl-2xl">
                               <p className="w-full">{user.message}</p>
-                              <small className="text-right font-semibold">
+                              <small className="text-right font-semibold text-[10px]">
                                 4:40
                               </small>
                             </div>
@@ -146,7 +146,7 @@ export default function Chat() {
                             </span>
                             <div className="flex flex-col px-4 py-2 text-right bg-green-600 rounded-l-lg rounded-br-2xl">
                               <p className="w-full">{user.message}</p>
-                              <small className="text-right font-semibold">
+                              <small className="text-right font-semibold text-[10px]">
                                 4:43
                               </small>
                             </div>

@@ -2,7 +2,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container } from "../Layout";
-import { getMuiIconComponent } from "./../utils/MuiComponent.jsx";
+import { getMuiIcon } from "./../utils/RenderIcons.jsx";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { darkTheme, toggleSidebar } from "../Redux/Slices/UISlice";
@@ -196,7 +196,7 @@ export default function MyProfile() {
                               className="btn btn-warning font-bold outline-none border-none w-full"
                               type="submit"
                             >
-                              {getMuiIconComponent("SettingsSuggest")}
+                              {getMuiIcon("SettingsSuggest")}
                               Update Profile
                             </button>
                           </div>

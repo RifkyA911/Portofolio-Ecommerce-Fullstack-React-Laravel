@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getMuiIconComponent } from "./MuiComponent.jsx";
+import { getMuiIcon } from "./RenderIcons.jsx";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +23,7 @@ function MyToDoList() {
         <div className="fixed bottom-[-120px] right-0 hover:bottom-[0px] transition-all duration-300">
           <div className="w-10 h-8 bg-violet-200 hover:bg-violet-400 mx-auto cursor-pointer rounded-md hover:rotate-180 transition-all duration-300 m-0 p-0">
             <span className="w-full text-center m-0 px-0 py-2">
-              {getMuiIconComponent("KeyboardDoubleArrowUp")}
+              {getMuiIcon("KeyboardDoubleArrowUp")}
             </span>
           </div>
           <div className="w-56 text-xs cursor-pointer backdrop-blur-sm bg-opacity-50 bg-white rounded-md shadow-lg hover:bg-white hover:bg-opacity-100 duration-500">
