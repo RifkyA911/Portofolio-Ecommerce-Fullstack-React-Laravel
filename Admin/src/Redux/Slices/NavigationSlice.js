@@ -4,16 +4,19 @@ export const NavigationSlice = createSlice({
     name: "navigation",
     initialState: {
         showNav: true,
+        currentLocation: 'Dashboard',
     },
     reducers:{
         navLink: (state, action) => {
             state.showNav = action.payload
-            // console.log('navlink: ',state.showNav)
+        },
+        setCurrentSidebar: (state, action) => {
+            state.currentLocation = action.payload
         }
     }
 })
 
 // this is for dispatch
-export const { navLink } = NavigationSlice.actions;
+export const { navLink, setCurrentSidebar } = NavigationSlice.actions;
 // this is for configureStore
 export default NavigationSlice.reducer;

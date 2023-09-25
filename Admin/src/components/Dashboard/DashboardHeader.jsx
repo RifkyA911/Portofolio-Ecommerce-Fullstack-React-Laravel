@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { getMuiIcon } from "./../../utils/RenderIcons";
 // Data
 import { infoMarket } from "./../../Config/Temporary"; //Data
+import { Link } from "react-router-dom";
 
 const DashboardHeader = (props) => {
   return (
@@ -23,6 +24,7 @@ const DashboardHeader = (props) => {
                   <div className="px-7 lg:px-0 flex lg:block relative bg-transparent w-full h-full bg-opacity-100 z-10">
                     <div className="flex-row lg:block">
                       <h1 className="flex product-center text-lg line-clamp-2 py-4 font-roboto-bold z-10">
+                        {/* <Link to=""> </Link> */}
                         <i
                           className={`mr-2 text-gray-100 bg-white rounded-lg lg:text-sm lg:p-1 xl:py-1 xl:px-2 bg-opacity-20 backdrop-blur-xl shadow-sm subpixel-antialiased`}
                         >
@@ -107,6 +109,7 @@ const DashboardHeader = (props) => {
                       </h2>
                     </div>
                   </div>
+
                   {/* Backdrop Images */}
                   <div className="z-0">
                     <div className="absolute left-[-20px] top-[-30px] lg:top-[-55px] w-20 h-20 rounded-full bg-white bg-opacity-[0.04] backdrop-blur-0 z-0"></div>

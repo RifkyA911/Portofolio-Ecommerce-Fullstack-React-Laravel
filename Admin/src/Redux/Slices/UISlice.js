@@ -18,17 +18,20 @@ export const UISlice = createSlice({
         BgColor: "bg-white",
         BackBgColor: "bg-white",
         ContainerBgColor: "bg-slate-100",
+        ContentBgColor: "bg-white",
         ComponentColor: "bg-violet-200",
         textColor: "text-dark",
         currentClicked: "Dashboard",
         transitionColor: "transition-all duration-300",
-        // wideScreen: true,
+        wideScreen: true,
         sidebarOpen: checkScreenWidth(),
         showNav: "",
         container: "app flex pt-14 min-h-screen max-w-full",
         textTable: "text-gray-600",
         BgTable: "bg-white",
         BgOuterTable: "bg-slate-200",
+        BorderOuterTable: "border-[1px] border-gray-300",
+        BorderRowTable: "border-b-2 border-gray-200",
     },
     reducers: {
         changeBG : (state, action) => {
@@ -44,8 +47,11 @@ export const UISlice = createSlice({
             state.textColor = "text-white",
             state.BackBgColor = "bg-gray-700",
             state.ContainerBgColor = "bg-slate-800",
+            state.ContentBgColor = "bg-gray-700",
             state.BgTable = "bg-white",
             state.BgOuterTable = "bg-gray-700",
+            state.BorderOuterTable = "border-[1px] border-gray-600",
+            state.BorderRowTable = "border-b-2 border-gray-600",
             toggleDark = !toggleDark
           } else {
             state.DarkMode = false
@@ -53,8 +59,11 @@ export const UISlice = createSlice({
             state.textColor = "text-dark",
             state.BackBgColor = "bg-white",
             state.ContainerBgColor = "bg-slate-100",
+            state.ContentBgColor = "bg-white",
             state.BgTable = "bg-white",
             state.BgOuterTable = "bg-slate-200",
+            state.BorderOuterTable = "border-[1px] border-gray-300",
+            state.BorderRowTable = "border-b-2 border-gray-200",
             toggleDark = !toggleDark
           }
           console.log("Dark Mode:", toggleDark)

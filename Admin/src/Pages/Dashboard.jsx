@@ -6,53 +6,100 @@ import DashboardHeader from "../components/Dashboard/DashboardHeader";
 // Utils
 import { getMuiIcon } from "./../utils/RenderIcons.jsx";
 // Data
-import ReactEcharts from "echarts-for-react";
+
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+
+const data = [
+  {
+    name: "Page A",
+    product: 4000,
+    order: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Page B",
+    product: 3000,
+    order: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Page C",
+    product: 2000,
+    order: 9800,
+    amt: 2290,
+  },
+  {
+    name: "Page D",
+    product: 2780,
+    order: 3908,
+    amt: 2000,
+  },
+  {
+    name: "Page E",
+    product: 1890,
+    order: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Page F",
+    product: 2390,
+    order: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Page G",
+    product: 3490,
+    order: 4300,
+    amt: 2100,
+  },
+];
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+  index,
+}) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
 
 const Dashboard = (props) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState([]);
-
-  const option = {
-    title: {
-      text: "Stacked Area Chart",
-    },
-    tooltip: {
-      trigger: "axis",
-      axisPointer: {
-        type: "cross",
-        label: {
-          backgroundColor: "#6a7985",
-        },
-      },
-    },
-    xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    },
-    yAxis: {
-      type: "value",
-    },
-    series: [
-      {
-        data: [120, 200, 150, 80, 70, 110, 130],
-        type: "line",
-        areaStyle: {},
-        backgroundColor: "rgba(0, 0, 255, 0.2)", // Gunakan warna yang sesuai
-        borderColor: "rgba(0, 0, 255, 1)", // Contoh warna garis
-        borderWidth: 1, // Lebar garis
-        smooth: true,
-      },
-      // Menambahkan data lain di bawah ini
-      {
-        data: [90, 150, 100, 60, 50, 80, 100], // Data baru
-        type: "line", // Tipe grafik (dalam contoh ini, "line")
-        areaStyle: {}, // Opsi tambahan jika diperlukan
-        smooth: true, // Opsi tambahan jika diperlukan
-      },
-    ],
-  };
 
   async function fetchData() {
     const URLproduct = import.meta.env.VITE_API_URL_GET_ALL_PRODUCT;
@@ -85,20 +132,73 @@ const Dashboard = (props) => {
               <DashboardHeader />
               <div className="divider mb-0"></div>
               {/* baris-2 */}
-              <div className="flex w-full font-bold justify-between lg:max-h-[450px] py-4 overflow-x-scroll">
-                <div className=" bg-white w-full h-96 lg:mr-4 ">
-                  <pre data-prefix="$" className="text-success">
-                    <code>Line Chart Sales Monthly</code>
-                  </pre>
-
-                  <ReactEcharts option={option} />
+              <div className="flex flex-col lg:flex-row w-full font-bold justify-between lg:max-h-[600px] py-4 overflow-scroll">
+                <div className="rounded-xl bg-white w-full h-96 lg:mr-4">
+                  <h3 className="my-4">Line Chart Sales Monthly</h3>
+                  <ResponsiveContainer
+                    width="100%"
+                    height={350}
+                    className="font-roboto-regular font-bold"
+                  >
+                    <LineChart
+                      width={500}
+                      height={300}
+                      data={data}
+                      margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      {/* <CartesianGrid strokeDasharray="3 3" /> */}
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="order"
+                        stroke="#8884d8"
+                        activeDot={{ r: 8 }}
+                        strokeWidth={1}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="product"
+                        stroke="#82ca9d"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
-                <div className=" bg-slate-700 relative w-[700px] h-96">
+                <div className=" bg-white relative w-[700px] h-96">
                   <pre data-prefix="$" className="text-success">
                     <code>Pie Chart Top Selling Product</code>
                   </pre>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart width={400} height={400}>
+                      <Pie
+                        data={data}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={renderCustomizedLabel}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="product"
+                      >
+                        {data.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
+
               {/* baris-3 */}
               <div className="flex font-bold justify-between lg:max-h-[450px] py-4 overflow-x-scroll">
                 <div className="mockup-code bg-slate-700 w-full lg:mr-4 h-96">
