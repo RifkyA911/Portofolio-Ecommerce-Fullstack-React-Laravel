@@ -29,7 +29,7 @@ function Notification() {
         <Content pageName={"Notifications"}>
           <div className={`notifications-header flex flex-col`}>
             <div
-              className={`${textColor} flex flex-row my-2 w-full lg:justify-end`}
+              className={`${textColor} flex flex-row my-2 w-full justify-end`}
             >
               <div className="flex flex-col text-[14px] font-roboto-medium items-end">
                 <label

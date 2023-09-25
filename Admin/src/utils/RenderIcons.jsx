@@ -34,34 +34,10 @@ export const getReactIconsBs = (iconName) => {
   return null;
 };
 
-export const getReactIconFi = (iconName) => {
-  const ReactIconFi = ReactIconsFi[iconName];
-  if (ReactIconFi) {
-    return <ReactIconFi className="m-0" />;
-  }
-  return null;
-};
-
-export const getReactIconFa = (iconName) => {
-  const ReactIconFa = ReactIconsFa[iconName];
-  if (ReactIconFa) {
-    return <ReactIconFa className="m-0" />;
-  }
-  return null;
-};
-
-export const getReactIconHi = (iconName) => {
-  const ReactIconHi = ReactIconsHi[iconName];
-  if (ReactIconHi) {
-    return <ReactIconHi className="m-0" />;
-  }
-  return null;
-};
-
 export const getReactIconHi2 = (iconName) => {
   const ReactIconHi2 = ReactIconsHi2[iconName];
   if (ReactIconHi2) {
-    return <ReactIconHi2 className="h-6 w-6 mr-4" />;
+    return <ReactIconHi2 className="m-0" />;
   }
   return null;
 };

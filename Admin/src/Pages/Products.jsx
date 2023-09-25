@@ -46,12 +46,12 @@ export default function Products() {
       {!loading && (
         <Container>
           <Content pageName={"Products"}>
-            <table className="table">
+            <table className="table text-gray-700 font-roboto-medium">
               <thead>
                 <tr>
-                  <th>A</th>
-                  <th>B</th>
-                  <th>C</th>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Price</th>
                 </tr>
               </thead>
               <tbody>
@@ -59,6 +59,7 @@ export default function Products() {
                   <tr key={product.id}>
                     <td>{product.name}</td>
                     <td>{product.category}</td>
+                    <td>{product.price}</td>
                   </tr>
                 ))}
               </tbody>

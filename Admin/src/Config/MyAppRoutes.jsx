@@ -26,9 +26,13 @@ import NotFound, {
   RedirectPage,
   Unauthorized,
 } from "../Pages/Error/Error";
+import { getUser } from "../utils/Session/Admin";
 
 function MyAppRoutes() {
   const navigate = useNavigate();
+
+  const currentUser = getUser();
+  console.log(currentUser.role);
   // useEffect(() => {
   //   if (userSession == null) {
   //     // tambahkan semua kategori
@@ -43,8 +47,11 @@ function MyAppRoutes() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/admins" element={<Admins />} />
-        {/* <Route path="/admins" element={<Unauthorized />} /> */}
+        {currentUser.role !== 0 ? (
+          <Route path="/admins" element={<Unauthorized />} />
+        ) : (
+          <Route path="/admins" element={<Admins />} />
+        )}
         <Route path="/chat" element={<Chat />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/settings" element={<Settings />} />
