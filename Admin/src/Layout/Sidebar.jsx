@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { sideNavigation } from "../Config/PagesLink";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
+import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utility
 import { getMuiIcon } from "../utils/RenderIcons";
 import { getUser } from "../utils/Session/Admin";
+import { getCurrentEndpoint } from "../utils/Navigation";
 
 const Sidebar = () => {
   const [current, setCurrent] = useState("Dashboard");
@@ -16,9 +18,13 @@ const Sidebar = () => {
   const { BgColor, textColor, screenWidth, sidebarOpen } = useSelector(
     (state) => state.UI
   );
-  const { showNav } = useSelector((state) => state.navigation);
+
+  const { showNav, currentLocation } = useSelector((state) => state.navigation);
   const dispatch = useDispatch();
+  // dispatch(setCurrentSidebar(getCurrentEndpoint()));
   const userSession = getUser();
+
+  useEffect(() => {}, []);
 
   const SidebarHandler = (key) => {
     setCurrent(key); // active current page

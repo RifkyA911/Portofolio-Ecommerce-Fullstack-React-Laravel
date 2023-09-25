@@ -1,5 +1,5 @@
 import React from "react";
-import { Container } from "../Layout";
+import { Container, Content } from "../Layout";
 
 export const textku = "hallo wew";
 function Order() {
@@ -7,7 +7,22 @@ function Order() {
   return (
     <>
       <Container>
-        <main>Order</main>
+        <Content pageName={"Order"}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>A</th>
+                <th>B</th>
+                <th>C</th>
+              </tr>
+            </thead>
+            <tbody>
+              <td>
+                <tr></tr>
+              </td>
+            </tbody>
+          </table>
+        </Content>
       </Container>
     </>
   );

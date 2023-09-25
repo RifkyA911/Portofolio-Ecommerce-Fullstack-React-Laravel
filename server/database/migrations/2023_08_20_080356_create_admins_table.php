@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->integer('role');
             $table->string('pict')->nullable()->default(null);
-            $table->json('authority')->default('{"chat":"false", "sort_warehouse":"false", "alter_price":"false"}');
+            $table->json('authority')->default('{"chat":"true", "sort_warehouse":"true", "alter_price":"false"}');
             $table->timestamps();
         });
     }
