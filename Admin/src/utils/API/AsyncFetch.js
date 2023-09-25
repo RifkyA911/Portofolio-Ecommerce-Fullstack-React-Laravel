@@ -1,11 +1,25 @@
 async function fetchData(url) {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/admins");
+      const response = await fetch(url);
       const data = await response.json();
-      setAdmins(data.data);
-      setLoading(false);
+      // console.log(data)
+      return {
+        response: 200,
+        message: "fetching data success",
+        error: null,
+        data: data.data,
+        loading: false,
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
-      setLoading(false); // Set loading to false in case of error too
+      return {
+        response: 400,
+        message: "fetching data success",
+        error: error,
+        data: data.data,
+        loading: false,
+      }
     }
   }
+
+  export default fetchData;
