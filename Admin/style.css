@@ -21,7 +21,8 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #bdbdbd;
+  background: transparent;
+  backdrop-filter: blur(20px);
   width: 0px;
   height: 1px;
   border-radius: 1px;
@@ -39,6 +40,15 @@
   cursor: pointer;
 } 
  
+g&:focus,
+path&:focus {
+  outline: none !important;
+}
+
+.recharts-wrapper>svg>g {
+  outline: none !important;
+}
+
 @layer utilities {
   @layer responsive {
       /* Hide scrollbar for Chrome, Safari and Opera */
