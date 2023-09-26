@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 import { useSelector } from "react-redux";
+import { RenderAreaChart } from "../components/Recharts";
 
 const data = [
   {
@@ -107,6 +108,18 @@ export default function Statistic() {
               <Line type="monotone" dataKey="product" stroke="#82ca9d" />
             </LineChart>
           </ResponsiveContainer>
+          <div className="flex bg-gray-400 font-bold lg:max-h-[900px]">
+            <div className="flex flex-col lg:flex-row w-full py-2">
+              <div
+                className={`${BgColor} ${textColor} rounded-xl h-20 lg:h-96 w-full lg:w-7/12 mr-4`}
+              >
+                <h4>Line Chart Product & Order</h4>
+              </div>
+              <div className="rounded-xl h-20 lg:h-96 w-full lg:w-5/12 bg-white">
+                <RenderAreaChart />
+              </div>
+            </div>
+          </div>
         </Content>
       </Container>
     </>

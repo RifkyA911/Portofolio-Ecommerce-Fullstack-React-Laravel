@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { darkTheme, toggleSidebar } from "../Redux/Slices/UISlice";
 import { navLink } from "../Redux/Slices/NavigationSlice";
 import { logOutUser } from "./Session/Admin";
-import { getMuiIcon } from "./RenderIcons";
+import { MuiIcon } from "./RenderIcons";
 
 function MyDebuggerPanel() {
   const [close, setClose] = useState(false);

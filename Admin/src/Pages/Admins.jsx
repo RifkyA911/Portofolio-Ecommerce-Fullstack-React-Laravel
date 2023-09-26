@@ -9,7 +9,7 @@ import { Container, Content } from "../Layout";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 // UTILS
-import { MuiIcon, getReactIconHi2 } from "../utils/RenderIcons";
+import { MuiIcon, IconsHi2 } from "../utils/RenderIcons";
 import fetchData from "../utils/API/AsyncFetch";
 import { MyTablePagination } from "../components/Table/MyTablePagination";
 import DashboardHeader from "../components/Dashboard/DashboardHeader";
@@ -229,9 +229,17 @@ export default function Admins(props) {
                         <span className="text-[14px] relative">
                           <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
                             {sortBy === "id" &&
-                              (sortOrder === "asc"
-                                ? getReactIconHi2("HiArrowLongUp")
-                                : getReactIconHi2("HiArrowLongDown"))}
+                              (sortOrder === "asc" ? (
+                                <IconsHi2
+                                  iconName="HiArrowLongUp"
+                                  className=""
+                                />
+                              ) : (
+                                <IconsHi2
+                                  iconName="HiArrowLongDown"
+                                  className=""
+                                />
+                              ))}
                           </i>
                         </span>
                       </th>
@@ -248,11 +256,19 @@ export default function Admins(props) {
                           </span>
                           <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
                             {sortBy === "username" &&
-                              (sortOrder === "asc"
-                                ? getReactIconHi2("HiArrowLongUp")
-                                : getReactIconHi2("HiArrowLongDown"))}
+                              (sortOrder === "asc" ? (
+                                <IconsHi2
+                                  iconName="HiArrowLongUp"
+                                  className=""
+                                />
+                              ) : (
+                                <IconsHi2
+                                  iconName="HiArrowLongDown"
+                                  className=""
+                                />
+                              ))}
                             {/* <span className="absolute left-0 text-[14px] bottom-[0px]">
-                            {getReactIconHi2("HiArrowsUpDown")}
+                            {<IconsHi2 iconName="HiArrowsUpDown" className=""/>}
                           </span> */}
                           </i>
                         </div>
@@ -264,9 +280,17 @@ export default function Admins(props) {
                           </span>
                           <p className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
                             {sortBy === "role" &&
-                              (sortOrder === "asc"
-                                ? getReactIconHi2("HiArrowLongDown")
-                                : getReactIconHi2("HiArrowLongUp"))}
+                              (sortOrder === "asc" ? (
+                                <IconsHi2
+                                  iconName="HiArrowLongDown"
+                                  className=""
+                                />
+                              ) : (
+                                <IconsHi2
+                                  iconName="HiArrowLongUp"
+                                  className=""
+                                />
+                              ))}
                           </p>
                         </div>
                       </th>

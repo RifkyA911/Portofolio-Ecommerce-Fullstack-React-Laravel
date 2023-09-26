@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utils
 import { getCurrentEndpoint } from "../utils/Navigation";
-import { MuiIcon, getReactIconsBs } from "../utils/RenderIcons";
+import { MuiIcon, IconsBs } from "../utils/RenderIcons";
 
 export const Content = (props) => {
   const { pageName } = props;
@@ -21,7 +21,7 @@ export const Content = (props) => {
         <div className="pages-title flex flex-row items-center justify-start text-xl font-roboto-medium mb-3 px-2">
           <h1>{pageName}</h1>
           <i className="px-2 text-md">
-            {pageName == "Notifications" && getReactIconsBs("BsBellFill")}
+            {pageName == "Notifications" && <IconsBs iconName="BsBellFill" />}
             {pageName == "Admins" && (
               <MuiIcon iconName={"PeopleAlt"} fontSize={24} />
             )}

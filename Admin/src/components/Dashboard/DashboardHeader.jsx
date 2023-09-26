@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // Utils
-import { getMuiIcon } from "./../../utils/RenderIcons";
+import { MuiIcon } from "./../../utils/RenderIcons";
 // Data
 import { infoMarket } from "./../../Config/Temporary"; //Data
 import { Link } from "react-router-dom";
@@ -28,21 +28,27 @@ const DashboardHeader = (props) => {
                         <i
                           className={`mr-2 text-gray-100 bg-white rounded-lg lg:text-sm lg:p-1 xl:py-1 xl:px-2 bg-opacity-20 backdrop-blur-xl shadow-sm subpixel-antialiased`}
                         >
-                          {item.name == "Income" && getMuiIcon("StoreOutlined")}
-                          {item.name == "Sales" && getMuiIcon("SellOutlined")}
-                          {item.name == "Order" &&
-                            getMuiIcon("ShoppingCartOutlined")}
-                          {item.name == "User" &&
-                            getMuiIcon("GroupAddOutlined")}
+                          {item.name == "Income" && (
+                            <MuiIcon iconName="StoreOutlined" />
+                          )}
+                          {item.name == "Sales" && (
+                            <MuiIcon iconName="SellOutlined" />
+                          )}
+                          {item.name == "Order" && (
+                            <MuiIcon iconName="ShoppingCartOutlined" />
+                          )}
+                          {item.name == "User" && (
+                            <MuiIcon iconName="GroupAddOutlined" />
+                          )}
                         </i>
                         <span className="capitalize text-2xl lg:text-base xl:text-xl">
                           {item.name}
                         </span>
                         <i className="px-2 lg:text-sm xl:text-xl text-lime-50">
-                          {getMuiIcon("TrendingUp")}
+                          {<MuiIcon iconName="TrendingUp" />}
                         </i>
                         {/* <i className="px-2 text-red-500">
-                              {getMuiIcon("TrendingDown")}
+                              {<MuiIcon iconName="TrendingDown" />}
                             </i> */}
                       </h1>
                       <h2 className="text-xl line-clamp-2 ">

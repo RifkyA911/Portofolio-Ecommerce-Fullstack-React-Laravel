@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utility
-import { getMuiIcon } from "../utils/RenderIcons";
+import { MuiIcon } from "../utils/RenderIcons";
 import { getUser } from "../utils/Session/Admin";
 import { getCurrentEndpoint } from "../utils/Navigation";
 
@@ -77,7 +77,9 @@ const Sidebar = () => {
                                     : "hover:text-gray-800 hover:bg-violet-100"
                                 }`}
                               >
-                                <i className="mr-4">{getMuiIcon(link.icon)}</i>
+                                <i className="mr-4">
+                                  {<MuiIcon iconName={link.icon} />}
+                                </i>
 
                                 <span className="text-sm">{link.name}</span>
                               </Link>

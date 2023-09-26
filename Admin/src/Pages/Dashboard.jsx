@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Content } from "../Layout"; // ./components/index.jsx
 import DashboardHeader from "../components/Dashboard/DashboardHeader";
 // Utils
-import { getMuiIcon } from "./../utils/RenderIcons.jsx";
+import { MuiIcon } from "./../utils/RenderIcons.jsx";
 import fetchData from "./../utils/API/AsyncFetch.js";
 // Data
 import { RenderAreaChart } from "./../components/Recharts.jsx";
@@ -60,9 +60,9 @@ const Dashboard = (props) => {
                 <div className="divider mb-0"></div>
                 {/* baris-2 */}
                 <div className="flex bg-gray-400 font-bold lg:max-h-[900px]">
-                  <div className="flex flex-col lg:flex-row w-full py-2">
+                  <div className="flex flex-col lg:flex-row w-full py-2 h-20 lg:h-[500px] overflow-clip">
                     <div
-                      className={`${BgColor} ${textColor} rounded-xl h-20 lg:h-auto w-full lg:w-7/12 mr-4`}
+                      className={`${BgColor} ${textColor} rounded-xl w-full lg:w-7/12 mr-4 overflow-clip`}
                     >
                       <h4>Line Chart Product & Order</h4>
                       <div className="w-full max-w-full h-auto px-4">
@@ -72,18 +72,7 @@ const Dashboard = (props) => {
                     <div className="rounded-xl h-20 lg:h-96 w-full lg:w-5/12 bg-white"></div>
                   </div>
                 </div>
-                <div className="flex bg-gray-400 font-bold lg:max-h-[900px]">
-                  <div className="flex flex-col lg:flex-row w-full py-2">
-                    <div
-                      className={`${BgColor} ${textColor} rounded-xl h-20 lg:h-96 w-full lg:w-7/12 mr-4`}
-                    >
-                      <h4>Line Chart Product & Order</h4>
-                    </div>
-                    <div className="rounded-xl h-20 lg:h-96 w-full lg:w-5/12 bg-white">
-                      <RenderAreaChart />
-                    </div>
-                  </div>
-                </div>
+
                 {/* baris-3 */}
                 <div className="flex bg-gray-400 font-bold lg:max-h-[900px]">
                   <div className="flex flex-col lg:flex-row w-full py-2">

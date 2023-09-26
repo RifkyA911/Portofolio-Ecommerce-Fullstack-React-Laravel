@@ -1,12 +1,12 @@
 import { React } from "react";
 import { Link, Outlet } from "react-router-dom";
-import * as MuiIcons from "@mui/icons-material";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 // UTILS
 import { getUser, logOutUser } from "../utils/Session/Admin";
 import { NavbarComponent } from "../components/Navbar";
+import { MuiIcon } from "../utils/RenderIcons";
 
 const Navbar = () => {
   // REDUX
@@ -45,7 +45,10 @@ const Navbar = () => {
                     className="toggler flex-shrink-0 p-2 rounded-xl text-gray-800 transition ease-in-out delay-150 bg-violet-200 hover:-translate-y-1 hover:scale-110 hover:bg-violet-300 duration-200"
                     onClick={() => dispatch(toggleSidebar())}
                   >
-                    <MuiIcons.Menu className="h-6 w-6 text-dark text-bold" />
+                    <MuiIcon
+                      iconName="Menu"
+                      className="h-6 w-6 text-dark text-bold"
+                    />
                   </button>
                 </div>
                 {/* Menu at left */}

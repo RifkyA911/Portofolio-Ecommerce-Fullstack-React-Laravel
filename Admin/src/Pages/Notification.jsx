@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utils
 import { getCurrentEndpoint } from "./../utils/Navigation";
-import { getReactIconsBs } from "../utils/RenderIcons";
 
 function Notification() {
   // REDUX
@@ -29,7 +28,7 @@ function Notification() {
         <Content pageName={"Notifications"}>
           <div className={`notifications-header flex flex-col`}>
             <div
-              className={`${textColor} flex flex-row my-2 w-full justify-end`}
+              className={`${textColor} flex flex-row mb-2 w-full justify-end`}
             >
               <div className="flex flex-col text-[14px] font-roboto-medium items-end">
                 <label
@@ -56,7 +55,7 @@ function Notification() {
             </div>
           </div>
 
-          <div className="notifications-list">
+          <div className="notifications-list px-8">
             <div className="flex-row ">
               <div className="flex flex-col w-full line-clamp-4 overflow-hidden bg-slate-50 shadow-sm h-14 rounded-sm border-l-8 border-sky-500 my-2">
                 .box
@@ -77,8 +76,8 @@ function Notification() {
                 .box
               </div>
             </div>
+            <div className="divider my-0"></div>
           </div>
-          <div className="divider my-0"></div>
         </Content>
       </Container>
     </>
