@@ -1,18 +1,27 @@
 import { useEffect, useState } from "react";
-// UI
-import { getMuiIcon, getReactIconHi2 } from "../utils/RenderIcons";
+// Components
+import {
+  isChatEnabled,
+  handleCheckboxChange,
+} from "./../Admins/AdminsTable.jsx"; //Delete after complate atomic
+import { Modal } from "./../Modal";
 // REDUX
 import { useSelector } from "react-redux";
-import { TbSortAscendingNumbers } from "react-icons/tb";
+import { MyTablePagination } from "./MyTablePagination";
+// UTILS
+import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
+import fetchData from "../../utils/API/AsyncFetch";
 
 export const MyTableEngine = (props) => {
-  const [admins, setAdmins] = useState([]);
+  const { inputData, refresh } = props;
+
+  const [data, setData] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [sortBy, setSortBy] = useState("username");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState("id");
+  const [sortOrder, setSortOrder] = useState("desc");
 
   // REDUX
   const {
@@ -28,17 +37,19 @@ export const MyTableEngine = (props) => {
   } = useSelector((state) => state.UI);
 
   useEffect(() => {
-    // Filter admins based on the search term
-    const filteredAdmins = admins.filter((admin) =>
-      admin.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(filteredAdmins);
-  }, [searchTerm, admins]);
+    setData(inputData);
+  }, []);
 
-  // console.table(admins); // Logging the updated admins here
+  useEffect(() => {
+    // Filter data based on the search term
+    const filteredData = data.filter((data) =>
+      data.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(filteredData);
+  }, [searchTerm, data]);
 
   const sortByColumn = (column) => {
-    const sortedAdmins = [...admins].sort((a, b) => {
+    const sortedData = [...data].sort((a, b) => {
       if (a[column] < b[column]) {
         return sortOrder === "asc" ? -1 : 1;
       }
@@ -48,33 +59,83 @@ export const MyTableEngine = (props) => {
       return 0;
     });
 
-    setAdmins(sortedAdmins);
+    setData(sortedData);
     setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // Toggle urutan
     setSortBy(column);
   };
 
   return (
     <>
-      <div className="overflow-x-auto rounded-lg bg-white ">
-        <table className="text-sm w-full outline-none ">
+      {/* HEADER */}
+      <div className="flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-hidden">
+        <div className="flex justify-center lg:justify-start w-full mb-4 lg:mb-0">
+          <input
+            type="text"
+            placeholder="Cari Nama Admin"
+            value={searchTerm}
+            className="input input-bordered input-sm input-info w-[512px] max-w-lg focus:outline-none"
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="flex justify-center lg:justify-end w-80 mb-4 lg:mb-0">
+          <button className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 p-2 rounded-md font-roboto-medium text-white items-center transition-all duration-200 ">
+            <i className="font-xs">
+              <MuiIcon iconName={"PrintSharp"} fontSize={20} />
+            </i>
+            <span className="font-base px-2">Print</span>
+          </button>
+          <button className="mx-1 grow-0 shrink-0 focus:outline-none bg-red-500 hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-500 p-2 rounded-md font-roboto-medium text-white items-center transition-all duration-200 ">
+            <i className="font-xs">
+              <MuiIcon iconName={"FiberManualRecordTwoTone"} fontSize={20} />
+            </i>
+            <span className="font-base px-2">Delete</span>
+            {/* <i className="font-xs"><MuiIcon
+                        iconName={"FiberManualRecordTwoTone"}
+                        fontSize={20}
+                      /></i> */}
+            {/* <span className="font-base px-2">Cancel</span> */}
+          </button>
+          <button
+            className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 p-2 rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
+            onClick={() => document.getElementById("AddAdmin").showModal()}
+          >
+            <i className="font-xs">
+              <MuiIcon iconName={"FiberManualRecordTwoTone"} fontSize={20} />
+            </i>
+            <span className="font-base px-2">New</span>
+          </button>
+          <button
+            onClick={refresh}
+            className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 p-2 rounded-md font-roboto-medium text-white items-center "
+          >
+            <MuiIcon iconName={"FiberManualRecordTwoTone"} fontSize={20} />
+          </button>
+        </div>
+        <Modal />
+      </div>
+      {/* TABLE */}
+      <div
+        className={`${BorderOuterTable} overflow-x-auto rounded-xl bg-white `}
+      >
+        <table className={`text-sm w-full `}>
           <thead
-            className={`${BgOuterTable} cursor-pointer shadow-lg ${textColor} font-roboto-regular outline-none`}
+            className={`${BgOuterTable} cursor-pointer ${textColor} border-b-[2px] border-gray-300 font-roboto-regular antialiased`}
           >
             <tr className="">
               <th className="px-4" onClick={() => sortByColumn("id")}>
                 <span className="text-[14px] relative">
-                  <i className="absolute m-0 w-5 right-[-8px] top-[-14px] overflow-hidden">
+                  <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
                     {sortBy === "id" &&
                       (sortOrder === "asc" ? (
-                        <TbSortAscendingNumbers className="p-2" />
+                        <IconsHi2 iconName="HiArrowLongUp" className="" />
                       ) : (
-                        getReactIconHi2("HiArrowLongUp")
+                        <IconsHi2 iconName="HiArrowLongDown" className="" />
                       ))}
                   </i>
                 </span>
               </th>
-              <th className="px-2">
-                <label>Pilih</label>
+              <th className="px-2 hidden">
+                <label>Select</label>
               </th>
               <th
                 className="px-6 w-[600px]"
@@ -84,11 +145,16 @@ export const MyTableEngine = (props) => {
                   <span className="absolute left-0 text-[14px] bottom-[-10px]">
                     Admin Name
                   </span>
-                  <i className="absolute right-0 bottom-[-12px]">
+                  <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
                     {sortBy === "username" &&
-                      (sortOrder === "asc"
-                        ? getReactIconHi2("HiArrowLongDown")
-                        : getReactIconHi2("HiArrowLongUp"))}
+                      (sortOrder === "asc" ? (
+                        <IconsHi2 iconName="HiArrowLongUp" className="" />
+                      ) : (
+                        <IconsHi2 iconName="HiArrowLongDown" className="" />
+                      ))}
+                    {/* <span className="absolute left-0 text-[14px] bottom-[0px]">
+                            {<IconsHi2 iconName="HiArrowsUpDown" className=""/>}
+                          </span> */}
                   </i>
                 </div>
               </th>
@@ -97,44 +163,59 @@ export const MyTableEngine = (props) => {
                   <span className="absolute left-4 text-[14px] bottom-[-10px] text-center">
                     Role
                   </span>
-                  <p className="absolute right-0 bottom-[-12px]">
+                  <p className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
                     {sortBy === "role" &&
-                      (sortOrder === "asc"
-                        ? getReactIconHi2("HiArrowLongDown")
-                        : getReactIconHi2("HiArrowLongUp"))}
+                      (sortOrder === "asc" ? (
+                        <IconsHi2 iconName="HiArrowLongDown" className="" />
+                      ) : (
+                        <IconsHi2 iconName="HiArrowLongUp" className="" />
+                      ))}
                   </p>
                 </div>
               </th>
-              <th className="p-2 text-center w-96 lg:w-48 ">
-                <span className="text-center  pr-2">Grant Features</span>
-                <br />
-                <div className="lg:flex-row flex flex-col justify-center lg:border-0 border-t-2 border-slate-500">
-                  <span className="lg:border-r-2 lg:border-slate-500 lg:pr-2">
-                    Chat
-                  </span>
-                  <span className="lg:border-r-2 lg:border-slate-500 lg:px-2">
-                    Sort
-                  </span>
-                  <span className="lg:pl-2"> Price</span>
-                </div>
+              <th
+                onClick={() =>
+                  document.getElementById("TipsGrantAccess").showModal()
+                }
+                className="p-2 text-center lg:w-12 mx-auto"
+              >
+                <span className="text-center pr-2">
+                  Grant Features{" "}
+                  <i className="m-0 lg:mx-2 text-gray-400">
+                    <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                  </i>
+                </span>
               </th>
-              <th className="text-[14px] w-[160px]">Action</th>
+              <th
+                onClick={() =>
+                  document.getElementById("ConfirmDelete").showModal()
+                }
+                className="text-[14px] w-[160px]"
+              >
+                <span>
+                  Action{" "}
+                  <i className="m-0 lg:mx-2 text-gray-400">
+                    <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                  </i>
+                </span>
+              </th>
             </tr>
           </thead>
-          <tbody className={BgTable}>
-            {searchResults.map((admin, index) => (
-              <tr key={admin.id} className="divide-y">
-                <td
-                  className={`${BgOuterTable} text-center w-0 p-0 font-roboto-bold divide-y divide-white`}
+          <tbody className={`${BgTable} `}>
+            {searchResults.map((data, index) => (
+              <tr key={data.id} className={`divide-y`}>
+                <th
+                  className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
                 >
-                  {index + 1}
-                </td>
-                <td className="w-2">
+                  {/* {index + 1} */}
+                  {parseInt(data.id) == 0 ? parseInt(data.id) + 1 : data.id}
+                </th>
+                <td className="w-2 hidden">
                   <label>
                     <input type="checkbox" className="checkbox" />
                   </label>
                 </td>
-                <td className="px-4 w-[450px] py-2">
+                <td className="px-8 w-[450px] py-2">
                   <div className="flex items-center space-x-3">
                     <div
                       className="avatar "
@@ -144,43 +225,43 @@ export const MyTableEngine = (props) => {
                     >
                       <div className="mask mask-squircle w-16 h-16 cursor-pointer ">
                         <img
-                          src={`./src/assets/admin_avatar/${admin.pict}`}
+                          src={`./src/assets/admin_avatar/${data.pict}`}
                           alt="Avatar Tailwind CSS Component"
                         />
                       </div>
                     </div>
                     <div className={`${textTable} pl-4 text-left`}>
                       <div className="font-bold line-clamp-2 font-roboto-regular">
-                        {admin.username}
+                        {data.username}
                       </div>
                       <div className="mt-2 font-medium text-slate-500">
-                        {admin.email}
+                        {data.email}
                       </div>
                     </div>
                   </div>
                 </td>
                 <td>
                   <p className="font-semibold font-roboto-regular text-slate-800">
-                    {admin.role == 0 ? "Super Admin" : "Admin"}
+                    {data.role == 0 ? "Super Admin" : "Admin"}
                   </p>
                 </td>
-                {admin.role == 1 ? (
+                {data.role == 1 ? (
                   <>
-                    <td className="flex-1 px-6 lg:px-4 ">
-                      <div className="w-full flex flex-col lg:flex-row justify-around items-center">
+                    <td className="flex-1 px-8 lg:px-4 ">
+                      <div className="w-full flex lg:flex-row justify-around items-center">
                         <input
                           type="checkbox"
                           className="toggle toggle-info m-2"
                           onChange={(e) =>
-                            handleCheckboxChange(admin.id, e.target.checked)
+                            handleCheckboxChange(data.id, e.target.checked)
                           }
-                          checked={isChatEnabled(admin.authority)}
+                          checked={isChatEnabled(data.authority)}
                         />
                         <input
                           type="checkbox"
-                          className="toggle toggle-warning m-2"
+                          className="toggle toggle-success m-2"
                           value={
-                            JSON.parse(admin.authority).sort_warehouse
+                            JSON.parse(data.authority).sort_warehouse
                               ? true
                               : false
                           }
@@ -188,22 +269,28 @@ export const MyTableEngine = (props) => {
 
                         <input
                           type="checkbox"
-                          className="toggle toggle-error m-2"
+                          className="toggle toggle-warning m-2"
                           value={
-                            JSON.parse(admin.authority).alter_price
+                            JSON.parse(data.authority).alter_price
                               ? true
                               : false
                           }
                         />
                       </div>
                     </td>
-                    <td className="">
-                      <div className="flex justify-center flex-wrap ">
+                    <td className="flex-1 px-8 lg:px-4 ">
+                      <div className="w-full flex lg:flex-row justify-around items-center">
                         <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-red-600 hover:to-red-500 hover:outline-none outline outline-2 outline-red-400 transition-all duration-200">
-                          {getMuiIcon("PersonOff")}
+                          <MuiIcon
+                            iconName={"FiberManualRecordTwoTone"}
+                            fontSize={20}
+                          />
                         </button>
-                        <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:bg-sky-600 hover:to-sky-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200">
-                          {getMuiIcon("Settings")}
+                        <button className="p-2 m-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-sky-600 hover:to-indigo-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200">
+                          <MuiIcon
+                            iconName={"FiberManualRecordTwoTone"}
+                            fontSize={20}
+                          />
                         </button>
                       </div>
                     </td>
@@ -218,24 +305,66 @@ export const MyTableEngine = (props) => {
             ))}
           </tbody>
           {/* foot */}
-          <tfoot className="border border-b-4 border-black"></tfoot>
+          <tfoot className="">
+            <tr>
+              <td
+                align="center"
+                colSpan="5"
+                className={`${BgOuterTable} ${textColor} h-12`}
+              >
+                <div className="">
+                  <MyTablePagination items={data} />
+                </div>
+              </td>
+            </tr>
+          </tfoot>
         </table>
-        <div
-          className={`bg-white border border-t-3 border-gray-200 flex justify-center w-full`}
-        >
-          <TablePagination
-            component="div"
-            count={100}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            className={`${textColor}`}
-          />
-        </div>
       </div>
     </>
   );
 };
 
-export default MyTable;
+export const Table = (props) => {
+  return (
+    <>
+      <div></div>
+    </>
+  );
+};
+export const Thead = (props) => {
+  return (
+    <>
+      <div></div>
+    </>
+  );
+};
+export const Tbody = (props) => {
+  return (
+    <>
+      <div></div>
+    </>
+  );
+};
+export const Th = (props) => {
+  return (
+    <>
+      <div></div>
+    </>
+  );
+};
+export const Tr = (props) => {
+  return (
+    <>
+      <div></div>
+    </>
+  );
+};
+export const Td = (props) => {
+  return (
+    <>
+      <div></div>
+    </>
+  );
+};
+
+export default MyTableEngine;
