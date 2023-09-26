@@ -43,9 +43,9 @@ export default function Products() {
 
   return (
     <>
-      {!loading && (
-        <Container>
-          <Content pageName={"Products"}>
+      <Container>
+        <Content pageName={"Products"}>
+          {!loading && (
             <table className="table text-gray-700 font-roboto-medium">
               <thead>
                 <tr>
@@ -64,9 +64,9 @@ export default function Products() {
                 ))}
               </tbody>
             </table>
-          </Content>
-        </Container>
-      )}
+          )}
+        </Content>
+      </Container>
     </>
   );
 }

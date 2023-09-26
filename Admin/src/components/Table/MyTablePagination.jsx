@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getMuiIcon } from "../utils/RenderIcons";
+import { MuiIcon } from "../../utils/RenderIcons";
 
 export const MyTablePagination = (props) => {
   const { items } = props;
@@ -23,42 +23,39 @@ export const MyTablePagination = (props) => {
     }
   };
   return (
-    <>
-      <div>
-        <div className="font-roboto-medium text-md">
-          <span>Rows per page:</span>
-          <select
-            value={itemsPerPage}
-            onChange={(e) => console.log(e.target.value)}
-          >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-          </select>
+    <div className="font-roboto-medium text-base p-0">
+      <span className="px-4 font-roboto-regular">Rows per page:</span>
+      <select
+        className="select select-bordered select-sm"
+        value={itemsPerPage}
+        onChange={(e) => console.log(e.target.value)}
+      >
+        <option value={10}>10</option>
+        <option value={25}>25</option>
+        <option value={50}>50</option>
+        <option value={100}>100</option>
+      </select>
 
-          <span>
-            {currentPage * itemsPerPage - itemsPerPage + 1}-
-            {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems}
-          </span>
+      <span className="px-4">
+        {currentPage * itemsPerPage - itemsPerPage + 1}-
+        {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems}
+      </span>
 
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="p-2"
-          >
-            {getMuiIcon("ArrowBackIosNewTwoTone")}
-          </button>
+      <button
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="p-2 hover:text-violet-500"
+      >
+        <MuiIcon iconName="ArrowBackIosNewTwoTone" fontSize={18} />
+      </button>
 
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="p-2"
-          >
-            {getMuiIcon("ArrowForwardIosTwoTone")}
-          </button>
-        </div>
-      </div>
-    </>
+      <button
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="p-2 hover:text-violet-500"
+      >
+        <MuiIcon iconName="ArrowForwardIosTwoTone" fontSize={18} />
+      </button>
+    </div>
   );
 };

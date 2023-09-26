@@ -14,11 +14,23 @@ import {
 } from "@mui/icons-material";
 import { Menu } from "@headlessui/react";
 import { Container, Content } from "../Layout";
+import { useSelector } from "react-redux";
 
 export default function Chat() {
   const [user, setuser] = useState([]);
   const [customerAvatar, setCustomerAvatar] = useState("");
-
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
   // useEffect()
 
   // async function fetchUsers() {
@@ -33,8 +45,8 @@ export default function Chat() {
     <>
       <Container>
         <Content pageName={"Chat"}>
-          <div className="lg:px-10 lg:py-1 max-w-[1920px] mx-auto h-full bg-white">
-            <div className="relative mb-12 bg-white sbg-slate-800 min-h-[280px] shadow-md">
+          <div className={`lg:px-0 lg:py-1 mx-auto h-full w-full `}>
+            <div className="relative mb-12 bg-white sbg-slate-800 min-h-[280px] shadow-sm ">
               <div className="flex content mt-4">
                 {/* people */}
                 <div className="flex">

@@ -28,7 +28,7 @@ export const Content = (props) => {
           </i>
         </div>
         <div
-          className={`${ContentBgColor} rounded-xl flex flex-col min-h-screen py-2 lg:py-4 px-4 lg:px-8 text-black`}
+          className={`${ContentBgColor} rounded-xl flex flex-col min-h-screen py-2 lg:py-4 px-4 lg:px-4 text-black`}
         >
           {props.children}
         </div>

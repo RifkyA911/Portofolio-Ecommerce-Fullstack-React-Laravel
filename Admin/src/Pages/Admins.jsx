@@ -11,6 +11,8 @@ import { NavLink } from "react-router-dom";
 // UTILS
 import { MuiIcon, getReactIconHi2 } from "../utils/RenderIcons";
 import fetchData from "../utils/API/AsyncFetch";
+import { MyTablePagination } from "../components/Table/MyTablePagination";
+import DashboardHeader from "../components/Dashboard/DashboardHeader";
 
 export default function Admins(props) {
   const [admins, setAdmins] = useState([]);
@@ -37,8 +39,7 @@ export default function Admins(props) {
   // Custom Const
   const URLadmins = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
 
-  // console.log(URLadmins);
-  useEffect(() => {
+  const fetchAdmins = () => {
     fetchData(URLadmins)
       .then((response) => {
         setAdmins(response.data);
@@ -50,6 +51,10 @@ export default function Admins(props) {
         console.error("Error fetching data:", error);
         setErrorMessage("Gagal mengambil data", error);
       });
+  };
+  // console.log(URLadmins);
+  useEffect(() => {
+    fetchAdmins();
   }, []);
 
   useEffect(() => {
@@ -105,14 +110,15 @@ export default function Admins(props) {
   return (
     <>
       <Container>
-        {loading == true ? (
-          <div className="p-0 bg-white">
-            {Array.from({ length: 8 }).map((_, index) => (
-              <Skeleton key={index} className="p-4" />
-            ))}
-          </div>
-        ) : (
-          <Content pageName={"Admins"}>
+        <Content pageName={"Admins"}>
+          <DashboardHeader />
+          {loading == true ? (
+            <div className="p-0 bg-white">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <Skeleton key={index} className="p-4" />
+              ))}
+            </div>
+          ) : (
             <div id="Admins" className="rounded-lg text-sm ">
               <div>
                 {errorMessage && (
@@ -130,7 +136,7 @@ export default function Admins(props) {
                     />
                     <button
                       onClick={() => {
-                        fetchData(URLadmins);
+                        fetchAdmins();
                         setLoading(true);
                       }}
                       className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 p-2 rounded-md font-roboto-medium text-white items-center "
@@ -155,7 +161,7 @@ export default function Admins(props) {
                     type="text"
                     placeholder="Cari Nama Admin"
                     value={searchTerm}
-                    className="input input-bordered input-sm input-info w-[512px] max-w-lg "
+                    className="input input-bordered input-sm input-info w-[512px] max-w-lg focus:outline-none"
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
@@ -196,7 +202,7 @@ export default function Admins(props) {
                   </button>
                   <button
                     onClick={() => {
-                      fetchData(URLadmins);
+                      fetchAdmins();
                       setLoading(true);
                     }}
                     className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 p-2 rounded-md font-roboto-medium text-white items-center "
@@ -401,18 +407,25 @@ export default function Admins(props) {
                     ))}
                   </tbody>
                   {/* foot */}
-                  <tfoot className="border-b-4 border-black"></tfoot>
+                  <tfoot className="">
+                    <tr>
+                      <td
+                        align="center"
+                        colSpan="5"
+                        className={`${BgOuterTable} ${textColor} h-12`}
+                      >
+                        <div className="">
+                          <MyTablePagination items={admins} />
+                        </div>
+                      </td>
+                    </tr>
+                  </tfoot>
                 </table>
-                <div
-                  className={`${BgOuterTable} select-none ${textColor} h-14`}
-                >
-                  {/* Custom */}
-                </div>
               </div>
             </div>
-          </Content>
-        )}
-        <NavLink to={`chat/${admins[0]?.id}`}>SS</NavLink>
+          )}
+          <NavLink to={`chat/${admins[0]?.id}`}>SS</NavLink>
+        </Content>
       </Container>
     </>
   );
