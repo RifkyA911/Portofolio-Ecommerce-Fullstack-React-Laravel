@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Container, Content } from "../Layout";
-
+import { MyTableEngine } from "./../components/Table/MyTableEngine.jsx";
 export default function Products() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([
@@ -17,12 +17,6 @@ export default function Products() {
     //   updated_at: "loading",
     // },
   ]);
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("price");
-  const [selected, setSelected] = useState([]);
-  const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(true);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/products/")
@@ -46,24 +40,28 @@ export default function Products() {
       <Container>
         <Content pageName={"Products"}>
           {!loading && (
-            <table className="table text-gray-700 font-roboto-medium">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product, index) => (
-                  <tr key={product.id}>
-                    <td>{product.name}</td>
-                    <td>{product.category}</td>
-                    <td>{product.price}</td>
+            <>
+              {/* <MyTableEngine inputData={products} /> */}
+
+              <table className="table text-gray-700 font-roboto-medium">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {products.map((product, index) => (
+                    <tr key={product.id}>
+                      <td>{product.name}</td>
+                      <td>{product.category}</td>
+                      <td>{product.price}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </Content>
       </Container>

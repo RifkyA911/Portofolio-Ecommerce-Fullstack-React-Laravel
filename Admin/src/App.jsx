@@ -37,6 +37,7 @@ function App() {
   const navigate = useNavigate();
 
   const appMode = import.meta.env.VITE_MODE;
+  // console.info("Mode:", appMode);
 
   useEffect(() => {
     if (userSession == null) {
@@ -49,8 +50,6 @@ function App() {
     //   console.log("proceed navigate to /");
     //   navigate("/");
     // }
-
-    console.info("Mode:", appMode);
   }, [userSession]);
   return (
     <>

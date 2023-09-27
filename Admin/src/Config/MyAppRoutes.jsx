@@ -32,7 +32,7 @@ function MyAppRoutes() {
   const navigate = useNavigate();
 
   const currentUser = getUser();
-  console.log(currentUser.role);
+  // console.log(currentUser.role);
   // useEffect(() => {
   //   if (userSession == null) {
   //     // tambahkan semua kategori

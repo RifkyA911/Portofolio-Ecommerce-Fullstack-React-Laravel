@@ -324,6 +324,24 @@ export const MyTableEngine = (props) => {
   );
 };
 
+{
+  /* <MyTableEngine>
+                <Table>
+                  <Thead>
+                    <Th>
+                      <Td></Td>
+                    </Th>
+                  </Thead>
+                  <Tbody>
+                    <Tr>
+                      <Td></Td>
+                    </Tr>
+                  </Tbody>
+                  <Pagination />
+                </Table>
+              </MyTableEngine> */
+}
+
 export const Table = (props) => {
   return (
     <>
@@ -332,37 +350,103 @@ export const Table = (props) => {
   );
 };
 export const Thead = (props) => {
+  const { element } = props;
   return (
     <>
-      <div></div>
-    </>
-  );
-};
-export const Tbody = (props) => {
-  return (
-    <>
-      <div></div>
+      <thead
+        className={`${BgOuterTable} cursor-pointer ${textColor} border-b-[2px] border-gray-300 font-roboto-regular antialiased`}
+      >
+        {element}
+      </thead>
     </>
   );
 };
 export const Th = (props) => {
+  const {
+    title,
+    name,
+    key,
+    className,
+    sortBy,
+    sortOrder = "asc",
+    select,
+    hidden,
+    eventClick,
+    modalHelper,
+  } = props;
+  function modalAccess(modalHelper) {
+    !modalHelper
+      ? document.getElementById(modalHelper).showModal()
+      : console.log("no modal");
+  }
   return (
     <>
-      <div></div>
+      <th
+        className="px-4"
+        onClick={() => {
+          // sortByColumn(sortBy);
+          modalAccess();
+          console.log("s");
+        }}
+      >
+        <span className="text-[14px] relative">
+          <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
+            {sortBy === "id" &&
+              (sortOrder === "asc" ? (
+                <IconsHi2 iconName="HiArrowLongUp" className="" />
+              ) : (
+                <IconsHi2 iconName="HiArrowLongDown" className="" />
+              ))}
+          </i>
+        </span>
+      </th>
+      <th className="px-2 hidden">
+        <label>Select</label>
+      </th>
+      <th className="px-6 w-[600px]" onClick={sortBy}>
+        <div className="relative">
+          <span className="absolute left-0 text-[14px] bottom-[-10px]">
+            {title}
+            <i className="m-0 lg:mx-2 text-gray-400">
+              <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+            </i>
+          </span>
+          <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
+            {sortBy === "username" &&
+              (sortOrder === "asc" ? (
+                <IconsHi2 iconName="HiArrowLongUp" className="" />
+              ) : (
+                <IconsHi2 iconName="HiArrowLongDown" className="" />
+              ))}
+          </i>
+        </div>
+      </th>
+      <th className="p-7">fff</th>
+      <th>fff</th>
+    </>
+  );
+};
+export const Tbody = (props) => {
+  const { element } = props;
+  return (
+    <>
+      <tbody>{element}</tbody>
     </>
   );
 };
 export const Tr = (props) => {
+  const { element } = props;
   return (
     <>
-      <div></div>
+      <tr>{element}</tr>
     </>
   );
 };
 export const Td = (props) => {
+  const { element } = props;
   return (
     <>
-      <div></div>
+      <td>{element}</td>
     </>
   );
 };
