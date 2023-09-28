@@ -24,7 +24,16 @@ class UserController extends Controller
         //return collection of posts as a resource
         return new PostResource(true, 'List Data Admin', $users);
     }
+    public function showLimit($page)
+    {
+        $page = (int)$page;
 
+        //get all posts
+        $userss = User::limit($page)->get();
+
+        //return collection of posts as a resource
+        return new PostResource(true, 'List Data User', $userss);
+    }
     public function login(Request $request)
     {
         // inisiasi awal respon

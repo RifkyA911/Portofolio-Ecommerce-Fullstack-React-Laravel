@@ -44,6 +44,7 @@ Route::controller(AdminsController::class)->group(function () {
 // Endpoint User
 Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'index');
+    Route::get('/users/{page}', 'showLimit');
     Route::get('/user/{id}', 'show');   // parameter id
     // create user
     Route::post('/user', 'store');  // parameter email, username, password(min:6)
