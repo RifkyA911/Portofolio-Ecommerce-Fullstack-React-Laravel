@@ -17,7 +17,7 @@ const DashboardHeader = (props) => {
                   key={item.name}
                   className={`relative text-left text-xl text-gray-50 overflow-hidden basis-2/6 shrink rounded-xl ${
                     item.color
-                  } p-2 xl:px-8 lg:px-4 lg:py-3 w-full lg:w-96 h-24 lg:h-44 mb-2 lg:mb-0 ${
+                  } p-2 xl:px-8 lg:px-4 lg:py-2 w-full lg:w-96 h-24 lg:h-44 mb-2 lg:mb-0 ${
                     item.name != "User" ? "lg:mr-4" : "lg:mr-0"
                   }`}
                 >

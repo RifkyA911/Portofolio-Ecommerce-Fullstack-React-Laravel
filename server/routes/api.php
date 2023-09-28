@@ -31,6 +31,7 @@ use App\Models\Message;
 // Endpoint Admin
 Route::controller(AdminsController::class)->group(function () {
     Route::get('/admins', 'index');
+    Route::get('/admins/{page}', 'showLimit');
     Route::get('/admin/{id}', 'find');     // parameter id
     //  create admin
     Route::post('/admins', 'store');    // parameter role_admin == 0; data => email, username, password, role

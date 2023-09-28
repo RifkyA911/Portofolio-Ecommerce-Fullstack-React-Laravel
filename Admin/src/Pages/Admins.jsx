@@ -31,7 +31,8 @@ export default function Admins(props) {
   } = useSelector((state) => state.UI);
 
   // Custom Const
-  const URLadmins = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
+  const APIGetAdmin = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
+  const URLadmins = APIGetAdmin + "/" + 10;
 
   const fetchAdmins = () => {
     fetchData(URLadmins)

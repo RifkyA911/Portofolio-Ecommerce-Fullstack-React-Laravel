@@ -203,19 +203,18 @@ export const MyTableEngine = (props) => {
           </thead>
           <tbody className={`${BgTable} `}>
             {searchResults.map((data, index) => (
-              <tr key={data.id} className={`divide-y`}>
+              <Tr key={data.id || 1} className={`divide-y`}>
                 <th
                   className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
                 >
-                  {/* {index + 1} */}
                   {parseInt(data.id) == 0 ? parseInt(data.id) + 1 : data.id}
                 </th>
-                <td className="w-2 hidden">
+                <Td className="w-2 hidden">
                   <label>
                     <input type="checkbox" className="checkbox" />
                   </label>
-                </td>
-                <td className="px-8 w-[450px] py-2">
+                </Td>
+                <Td className="px-8 w-[450px] py-2">
                   <div className="flex items-center space-x-3">
                     <div
                       className="avatar "
@@ -239,12 +238,12 @@ export const MyTableEngine = (props) => {
                       </div>
                     </div>
                   </div>
-                </td>
-                <td>
+                </Td>
+                <Td>
                   <p className="font-semibold font-roboto-regular text-slate-800">
                     {data.role == 0 ? "Super Admin" : "Admin"}
                   </p>
-                </td>
+                </Td>
                 {data.role == 1 ? (
                   <>
                     <td className="flex-1 px-8 lg:px-4 ">
@@ -301,7 +300,7 @@ export const MyTableEngine = (props) => {
                     <td></td>
                   </>
                 )}
-              </tr>
+              </Tr>
             ))}
           </tbody>
           {/* foot */}
@@ -435,18 +434,20 @@ export const Tbody = (props) => {
   );
 };
 export const Tr = (props) => {
-  const { element } = props;
+  const { element, key, className } = props;
   return (
     <>
-      <tr>{element}</tr>
+      <tr key={key} className={className}>
+        {props.children}
+      </tr>
     </>
   );
 };
 export const Td = (props) => {
-  const { element } = props;
+  const { element, className } = props;
   return (
     <>
-      <td>{element}</td>
+      <td className={className}>{props.children}</td>
     </>
   );
 };
