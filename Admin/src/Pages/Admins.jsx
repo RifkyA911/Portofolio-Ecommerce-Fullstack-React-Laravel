@@ -95,11 +95,11 @@ export default function Admins(props) {
                 )}
               </div>
               {/* Baris 1 */}
-              <WarningAlert
+              {/* <WarningAlert
                 message={
                   "OTW Req SQL SELECT * FROM admins LIMIT dynamic page request"
                 }
-              />
+              /> */}
 
               {/* Baris 2 */}
 
