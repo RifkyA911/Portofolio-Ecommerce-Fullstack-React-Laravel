@@ -4,25 +4,31 @@ import axios from "axios";
 export const loginUser = createAsyncThunk(
     'user/loginUser',
     async(userCredentials)=>{
-        // try {
-            const request = await axios.post(
-              "http://127.0.0.1:8000/api/admins/login",
+        try {
+            const response = await axios.post(
+              'http://127.0.0.1:8000/api/admins/login',
               userCredentials
             );
-            const response = await request.data.data;
-            sessionStorage.setItem('user', JSON.stringify(response)); //rdnom name will
-    
-            // console.log('response:', request)
-            console.log('response code:', request.status)
-            console.log('response status:', request.data.status)
-            console.log('response message:', request.data.message)
-            //console.log('response:', response) // data from server
-            return response;
-
-        //   } catch (error) {
-        //     console.error("Error during login:", error);
-        //   }
+      
+            if (response.status === 200) {
+              const responseData = response.data.data;
+              sessionStorage.setItem('user', JSON.stringify(responseData));
+              return responseData;
+            }
+            
+            // Jika status code selain 200, lempar status code sebagai error
+            throw response.status;
+          } catch (error) {
+            // Jika error adalah respons dari Axios, Anda dapat mengambil status code
+            if (error.response && error.response.status) {
+                throw error.response.status;
+            }
+            
+            // Jika bukan respons dari Axios, lempar error tersebut
+            throw error;
+                }
     }
+    
 )
 
 const userSlice = createSlice({
@@ -52,11 +58,14 @@ const userSlice = createSlice({
             state.error = null;
         })
         .addCase(loginUser.rejected, (state, action)=>{
+            const errorCode = action.error.message
             state.loading = false;
             state.user = null;
-            console.log(action.error.message);
-            if(action.error.message === 'Request failed with status code 401'){
+            console.error("Response status code: ", parseInt(errorCode));
+            if(errorCode === '401'){
                 state.error = "Access Denied! Invalid Credentials"
+            } else if(errorCode === '500'){
+                state.error = "Internal Server Error"
             } else {
                 state.error = action.error.message;
             }
