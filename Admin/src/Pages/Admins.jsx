@@ -10,7 +10,11 @@ import { NavLink } from "react-router-dom";
 // UTILS
 import fetchData from "../utils/API/AsyncFetch";
 import { MuiIcon } from "../utils/RenderIcons";
-import { MyTableEngine } from "../components/Table/MyTableEngine";
+import {
+  MyTableEngine,
+  // SelectFilter,
+  Th,
+} from "../components/Table/MyTableEngine";
 
 export default function Admins(props) {
   const [admins, setAdmins] = useState([]);
@@ -109,7 +113,9 @@ export default function Admins(props) {
                   fetchAdmins();
                   setLoading(true);
                 }}
+                TabHeader={true}
               />
+              {/* </MyTableEngine> */}
             </div>
           )}
         </Content>

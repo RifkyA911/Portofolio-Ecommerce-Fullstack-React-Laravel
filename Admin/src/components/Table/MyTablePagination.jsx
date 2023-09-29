@@ -56,6 +56,27 @@ export const MyTablePagination = (props) => {
               <MuiIcon iconName="ArrowBackIosNewTwoTone" fontSize={18} />
             </button>
 
+            <button className="px-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
+              ...
+            </button>
+            <button className="px-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
+              1
+            </button>
+            <button className="px-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
+              2
+            </button>
+            <button className="px-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
+              3
+            </button>
+            <button className="px-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
+              4
+            </button>
+            <button className="px-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
+              5
+            </button>
+            <button className="px-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
+              ...
+            </button>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
