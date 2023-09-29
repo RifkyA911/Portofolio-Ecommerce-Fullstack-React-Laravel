@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 // Components
 import {
   isChatEnabled,
@@ -16,17 +16,20 @@ import { MyTablePagination } from "./MyTablePagination";
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
 import fetchData from "../../utils/API/AsyncFetch";
 import { HeadRow } from "../Admins/AdminsTableHead.jsx";
+import { TbSwitch2 } from "react-icons/tb";
+
+const TableContext = createContext();
 
 export const MyTableEngine = (props) => {
   const { inputData, refresh } = props;
 
   const [data, setData] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [sortBy, setSortBy] = useState("id");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   // REDUX
   const {
@@ -42,7 +45,12 @@ export const MyTableEngine = (props) => {
   } = useSelector((state) => state.UI);
 
   useEffect(() => {
-    setData(inputData);
+    if (Array.isArray(inputData)) {
+      setData(inputData);
+    } else {
+      console.error("Data input harus berupa array.");
+      return 0;
+    }
   }, []);
 
   useEffect(() => {
@@ -52,25 +60,6 @@ export const MyTableEngine = (props) => {
     );
     setSearchResults(filteredData);
   }, [searchTerm, data]);
-
-  const SelectFilter = (props) => {
-    const { name, currentHead, sortBy, sortOrder } = props;
-    return (
-      <div className="relative">
-        <span className="absolute left-0 text-[14px] bottom-[-10px]">
-          {name}
-        </span>
-        <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
-          {sortBy === currentHead &&
-            (sortOrder === "asc" ? (
-              <IconsHi2 iconName="HiArrowLongUp" className="" />
-            ) : (
-              <IconsHi2 iconName="HiArrowLongDown" className="" />
-            ))}
-        </i>
-      </div>
-    );
-  };
 
   const sortByColumn = (column) => {
     const sortedData = [...data].sort((a, b) => {
@@ -88,130 +77,160 @@ export const MyTableEngine = (props) => {
     setSortBy(column);
   };
 
+  // const updateMyTableState = ({ newData, newSortOrder, newSortBy }) => {
+  //   setData(newData);
+  //   setSortOrder(newSortOrder); // Toggle urutan
+  //   setSortBy(newSortBy);
+  // };
+
+  const updateMyTableState = (action) => {
+    switch (action.type) {
+      case "UPDATE_SORT":
+        setData(action.payload.newData);
+        setSortOrder(action.payload.newSortOrder); // Toggle urutan
+        setSortBy(action.payload.newSortBy);
+        break;
+      // Tambahkan case lainnya jika diperlukan untuk aksi lainnya
+      default:
+        break;
+    }
+  };
+
   return (
     <>
-      {/* HEADER */}
-      <div className="flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-hidden">
-        <TableHeader
-          searchTerm={searchTerm}
-          setSearchTerm={(e) => setSearchTerm(e.target.value)}
-          refresh={refresh}
-        />
-        <Modal />
-      </div>
-      {/* TABLE */}
-      <div
-        className={`${BorderOuterTable} overflow-x-auto rounded-xl bg-white `}
+      <TableContext.Provider
+        value={{
+          data,
+          errorMessage,
+          loading,
+          searchTerm,
+          searchResults,
+          sortBy,
+          sortOrder,
+          updateMyTableState,
+        }}
       >
-        <Table className={`text-sm w-full `}>
-          <Thead className={`${BgOuterTable} ${textColor} `}>
-            <Tr className="">
-              <Th className="px-4" onClick={() => sortByColumn("id")}>
-                {/* {selectFilter("", "id", sortBy, sortOrder)} */}
-                <SelectFilter
-                  name=""
-                  currentHead="id"
-                  sortBy={sortBy}
-                  sortOrder={sortOrder}
-                />
-              </Th>
-              <Th className="px-2 hidden">
-                <label>Select</label>
-              </Th>
-              <Th
-                className="px-6 w-[600px]"
-                onClick={() => sortByColumn("username")}
-              >
-                {/* {selectFilter("Admin Name", "username", sortBy, sortOrder)} */}
-                <SelectFilter
-                  name="Admin Name"
-                  currentHead="username"
-                  sortBy={sortBy}
-                  sortOrder={sortOrder}
-                />
-              </Th>
-              <Th className="w-28" onClick={() => sortByColumn("role")}>
-                {/* {selectFilter("Role", "role", sortBy, sortOrder)} */}
-                <SelectFilter
-                  name="Role"
-                  currentHead="role"
-                  sortBy={sortBy}
-                  sortOrder={sortOrder}
-                />
-              </Th>
-              <Th
-                onClick={() =>
-                  document.getElementById("TipsGrantAccess").showModal()
-                }
-                className="p-2 text-center lg:w-12 mx-auto"
-              >
-                <span className="text-center pr-2">
-                  Grant Features{" "}
-                  <i className="m-0 lg:mx-2 text-gray-400">
-                    <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
-                  </i>
-                </span>
-              </Th>
-              <Th
-                onClick={() =>
-                  document.getElementById("ConfirmDelete").showModal()
-                }
-                className="text-[14px] w-[160px]"
-              >
-                <span>
-                  Action{" "}
-                  <i className="m-0 lg:mx-2 text-gray-400">
-                    <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
-                  </i>
-                </span>
-              </Th>
-            </Tr>
-          </Thead>
-          <Tbody className={`${BgTable} `}>
-            {searchResults.map((row, index) => (
-              <Tr key={row.id} className={`divide-y`}>
-                <Th
-                  className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
-                >
-                  {parseInt(row.id) == 0 ? parseInt(row.id) + 1 : row.id}
-                </Th>
-                <Td className="w-2 hidden">
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
-                </Td>
-                <Td className="px-8 w-[450px] py-2">
-                  <ShowAdminName data={row} />
-                </Td>
-                <Td>
-                  <ShowRole data={row} />
-                </Td>
-                {row.role == 1 ? (
-                  <>
-                    <Td className="flex-1 px-8 lg:px-4 ">
-                      <AuthorityToggle data={row} />
-                    </Td>
-                    <Td className="flex-1 px-8 lg:px-4 ">
-                      <ActionButton data={row} />
-                    </Td>
-                  </>
-                ) : (
-                  <>
-                    <td></td>
-                    <td></td>
-                  </>
-                )}
-              </Tr>
-            ))}
-          </Tbody>
-          {/* foot */}
-          <MyTablePagination
-            items={data}
-            BgOuterTable={BgOuterTable}
-            textColor={textColor}
+        {/* HEADER */}
+        <div className="flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-hidden">
+          <TableHeader
+            searchTerm={searchTerm}
+            setSearchTerm={(e) => setSearchTerm(e.target.value)}
+            refresh={refresh}
           />
-        </Table>
-      </div>
+          <Modal />
+        </div>
+        {/* TABLE */}
+        <h1>{sortBy}</h1>
+        <div
+          className={`${BorderOuterTable} overflow-x-auto rounded-xl bg-white `}
+        >
+          <Table className={`text-sm w-full `}>
+            <Thead className={`${BgOuterTable} ${textColor} `}>
+              <Tr Ukey="TableHead" className="">
+                <Th2
+                  name=""
+                  filter={true}
+                  column="id"
+                  sortBy={sortBy}
+                  sortOrder={sortOrder}
+                  className="px-4 border-r-2 border-slate-300"
+                ></Th2>
+                <Th className="px-2 hidden">
+                  <label>Select</label>
+                </Th>
+                <Th
+                  className="px-6 w-[600px]"
+                  onClick={() => sortByColumn("username")}
+                >
+                  <ShowFilter
+                    name="Admin Name"
+                    currentHead="username"
+                    sortBy={sortBy}
+                    sortOrder={sortOrder}
+                  />
+                </Th>
+                <Th className="w-28" onClick={() => sortByColumn("role")}>
+                  <ShowFilter
+                    name="Role"
+                    currentHead="role"
+                    sortBy={sortBy}
+                    sortOrder={sortOrder}
+                  />
+                </Th>
+                <Th
+                  onClick={() =>
+                    document.getElementById("TipsGrantAccess").showModal()
+                  }
+                  className="p-2 text-center lg:w-12 mx-auto"
+                >
+                  <span className="text-center pr-2">
+                    Grant Features{" "}
+                    <i className="m-0 lg:mx-2 text-gray-400">
+                      <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                    </i>
+                  </span>
+                </Th>
+                <Th
+                  onClick={() =>
+                    document.getElementById("ConfirmDelete").showModal()
+                  }
+                  className="text-[14px] w-[160px]"
+                >
+                  <span>
+                    Action{" "}
+                    <i className="m-0 lg:mx-2 text-gray-400">
+                      <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                    </i>
+                  </span>
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody className={`${BgTable} `}>
+              {searchResults.map((row, index) => (
+                <Tr Ukey={index} className={`divide-y`}>
+                  <Th
+                    className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
+                  >
+                    {parseInt(row.id) == 0 ? parseInt(row.id) + 1 : row.id}
+                  </Th>
+                  <Td className="w-2 hidden">
+                    <label>
+                      <input type="checkbox" className="checkbox" />
+                    </label>
+                  </Td>
+                  <Td className="px-8 w-[450px] py-2">
+                    <ShowAdminName data={row} />
+                  </Td>
+                  <Td>
+                    <ShowRole data={row} />
+                  </Td>
+                  {row.role == 1 ? (
+                    <>
+                      <Td className="flex-1 px-8 lg:px-4 ">
+                        <AuthorityToggle data={row} />
+                      </Td>
+                      <Td className="flex-1 px-8 lg:px-4 ">
+                        <ActionButton data={row} />
+                      </Td>
+                    </>
+                  ) : (
+                    <>
+                      <td></td>
+                      <td></td>
+                    </>
+                  )}
+                </Tr>
+              ))}
+            </Tbody>
+            {/* foot */}
+            <MyTablePagination
+              items={data}
+              BgOuterTable={BgOuterTable}
+              textColor={textColor}
+            />
+          </Table>
+        </div>
+      </TableContext.Provider>
     </>
   );
 };
@@ -308,11 +327,93 @@ export const Thead = (props) => {
     </>
   );
 };
-export const Th = (props) => {
-  const { key, className, onClick, sortBy, sortOrder, hidden, event } = props;
+
+export const ShowFilter = (props) => {
+  const { name, currentHead, sortBy, sortOrder } = props;
+  return (
+    <div className="relative">
+      <span className="absolute left-0 text-[14px] bottom-[-10px]">{name}</span>
+      <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
+        {sortBy === currentHead &&
+          (sortOrder === "asc" ? (
+            <IconsHi2 iconName="HiArrowLongUp" className="" />
+          ) : (
+            <IconsHi2 iconName="HiArrowLongDown" className="" />
+          ))}
+      </i>
+    </div>
+  );
+};
+
+export const Th2 = (props) => {
+  const { data, errorMessage, sortOrder, sortBy, updateMyTableState } =
+    useContext(TableContext);
+
+  const { Ukey, name, filter, column, key, className, onClick, hidden } = props;
+
+  const handleSortClick = (column) => {
+    // Lakukan pengurutan atau manipulasi data sesuai kebutuhan Anda
+    const sortedData = [...data].sort((a, b) => {
+      // console.table("a:", a[column]);
+      // console.table("b:", b[column]);
+      if (a[column] < b[column]) {
+        return sortOrder === "desc" ? -1 : 1;
+      }
+      if (a[column] > b[column]) {
+        return sortOrder === "desc" ? 1 : -1;
+      }
+      return 0;
+    });
+    const newSortedValue = {
+      newData: sortedData,
+      newSortOrder: sortOrder === "asc" ? "desc" : "asc",
+      newSortBy: column,
+    };
+    console.log("state:", sortOrder);
+    console.table("newState:", newSortedValue.newSortOrder);
+
+    // Memanggil updateMyTableState dengan newSortedValue sebagai payload
+    updateMyTableState({
+      type: "UPDATE_SORT",
+      payload: newSortedValue,
+    });
+  };
   return (
     <>
-      <th onClick={onClick} key={key || 1} className={className}>
+      {filter ? (
+        <th
+          key={Ukey}
+          onClick={() => handleSortClick(column)}
+          className={className}
+        >
+          <div className="relative">
+            <span className="absolute left-0 text-[14px] bottom-[-10px]">
+              {name}
+            </span>
+            <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
+              {sortBy === column &&
+                (sortOrder === "asc" ? (
+                  <IconsHi2 iconName="HiArrowLongDown" className="" />
+                ) : (
+                  <IconsHi2 iconName="HiArrowLongUp" className="" />
+                ))}
+            </i>
+          </div>
+          {props.children}
+        </th>
+      ) : (
+        <th onClick={onClick} className={className}>
+          {props.children}
+        </th>
+      )}
+    </>
+  );
+};
+export const Th = (props) => {
+  const { Ukey, className, onClick, sortBy, sortOrder, hidden, event } = props;
+  return (
+    <>
+      <th onClick={onClick} key={Ukey || 1} className={className}>
         {props.children}
       </th>
     </>
@@ -320,7 +421,7 @@ export const Th = (props) => {
 };
 
 export const Tbody = (props) => {
-  const { element, key, className, onClick, event } = props;
+  const { element, Ukey, className, onClick, event } = props;
   return (
     <>
       <tbody className={className}>{props.children}</tbody>
@@ -328,10 +429,10 @@ export const Tbody = (props) => {
   );
 };
 export const Tr = (props) => {
-  const { element, key, className, onClick, event } = props;
+  const { element, Ukey, className, onClick, event } = props;
   return (
     <>
-      <tr key={key} className={`${className} divide-y`}>
+      <tr key={Ukey} className={`${className} divide-y`}>
         {props.children}
       </tr>
     </>

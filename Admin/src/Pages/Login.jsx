@@ -50,7 +50,7 @@ function Login() {
         setPassword("");
         // Arahkan pengguna ke halaman utama setelah login berhasil dan refresh
         navigate("/"); // temporary view dashborad in <LoginRouter />
-        window.location.reload();
+        window.location.reload(); // ganti router
       }
     });
   };
