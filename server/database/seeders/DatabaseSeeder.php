@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
             'role' => 1,
             'pict' => '77845097_p0.jpg'
         ]);
-        Admin::factory(5)->create();
+        Admin::factory(15)->create();
 
 
         User::create([
