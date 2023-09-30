@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
             'role' => 1,
             'pict' => '77845097_p0.jpg'
         ]);
-        Admin::factory(15)->create();
+        Admin::factory(50)->create();
 
 
         User::create([
@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
             'verified' => null,
             'pict' => '78949689_p4.jpg',
         ]);
-        User::factory(10)->create();
+        User::factory(50)->create();
 
         Product::create([
             'name' => 'topi merah',
@@ -99,6 +99,7 @@ class DatabaseSeeder extends Seeder
             'pict' => null,
             'description' => fake()->sentence(9)
         ]);
+        Product::factory(50)->create();
 
 
         Transaction::create([
