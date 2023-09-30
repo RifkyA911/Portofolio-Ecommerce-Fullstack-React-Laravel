@@ -10,16 +10,19 @@ import { NavLink } from "react-router-dom";
 // UTILS
 import fetchData from "../utils/API/AsyncFetch";
 import { MuiIcon } from "../utils/RenderIcons";
-import {
-  MyTableEngine,
-  // SelectFilter,
-  Th,
-} from "../components/Table/MyTableEngine";
+import { MyTableEngine, Th } from "../components/Table/MyTableEngine";
+import { MyTablePagination } from "../components/Table/MyTablePagination";
+
+const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN_PAGINATE;
 
 export default function Admins(props) {
+  const [count, setCount] = useState(0);
   const [admins, setAdmins] = useState([]);
+  const [paginate, setPaginate] = useState(1);
+  const [rows, setRows] = useState(10);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+  // const [URL, setURL] = useState(`${initUrl}/${paginate}/${rows}`);
 
   // REDUX
   const {
@@ -34,27 +37,56 @@ export default function Admins(props) {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  // Custom Const
-  const APIGetAdmin = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
-  const URLadmins = APIGetAdmin + "/" + 10;
+  // Buat URL berdasarkan rows dan paginate
+  const URL = `http://127.0.0.1:8000/api/admins/paginate/${paginate}/${rows}`;
 
-  const fetchAdmins = () => {
-    fetchData(URLadmins)
-      .then((response) => {
-        setAdmins(response.data);
-        setLoading(false);
-        setErrorMessage(null);
-      })
-      .catch((error) => {
-        setLoading(false); // Set loading to false in case of error too
-        console.error("Error fetching data:", error);
-        setErrorMessage("Gagal mengambil data", error);
-      });
+  // const fetchAdmins = (URL) => {
+  //   fetchData(URL)
+  //     .then((response) => {
+  //       setAdmins(response.data);
+  //       setLoading(false);
+  //       setErrorMessage(null);
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false); // Set loading to false in case of error too
+  //       console.error("Error fetching data:", error);
+  //       setErrorMessage("Gagal mengambil data", error);
+  //     });
+  // };
+
+  const fetchAdmins = async (url) => {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      // Lakukan sesuatu dengan data yang diterima
+      setAdmins(data.data);
+      setLoading(false);
+      setErrorMessage(null);
+      setCount(count + 1);
+      console.log("fetching data ke-", count);
+    } catch (error) {
+      console.error("Terjadi kesalahan:", error);
+    }
   };
-  // console.log(URLadmins);
+  // console.table(admins);
+
   useEffect(() => {
-    fetchAdmins();
+    fetchAdmins(URL);
   }, []);
+
+  // Handler ketika nilai rows diubah
+  const handleRowsChange = (newRows) => {
+    setLoading(true);
+    setRows(newRows);
+    // Panggil fetchData dengan URL yang baru
+    // fetchAdmins(URL);
+    // console.log("admin: ", rows);
+  };
+
+  // Panggil fetchData saat komponen pertama kali dimuat atau saat paginate, rows berubah
+  useEffect(() => {
+    fetchAdmins(URL);
+  }, [paginate, rows]);
 
   return (
     <>
@@ -82,6 +114,7 @@ export default function Admins(props) {
                         </h1>
                       }
                     />
+                    {URL}
                     <button
                       onClick={() => {
                         fetchAdmins();
@@ -94,18 +127,11 @@ export default function Admins(props) {
                         fontSize={20}
                       />
                     </button>
-                    <NavLink to={`chat/${admins[0]?.id}`}>kss</NavLink>
+                    {/* <NavLink to={`chat/${admins[0]?.id}`}>kss</NavLink> */}
                   </>
                 )}
               </div>
               {/* Baris 1 */}
-              {/* <WarningAlert
-                message={
-                  "OTW Req SQL SELECT * FROM admins LIMIT dynamic page request"
-                }
-              /> */}
-
-              {/* Baris 2 */}
 
               <MyTableEngine
                 inputData={admins}
@@ -114,6 +140,13 @@ export default function Admins(props) {
                   setLoading(true);
                 }}
                 TabHeader={true}
+              />
+              <MyTablePagination
+                paginate={paginate}
+                rows={rows}
+                onRowsChange={handleRowsChange}
+                BgOuterTable={BgOuterTable}
+                textColor={textColor}
               />
               {/* </MyTableEngine> */}
             </div>

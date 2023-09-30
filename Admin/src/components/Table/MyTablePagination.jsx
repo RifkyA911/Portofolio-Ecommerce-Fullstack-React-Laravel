@@ -2,18 +2,28 @@ import React, { useState, useEffect } from "react";
 import { MuiIcon } from "../../utils/RenderIcons";
 
 export const MyTablePagination = (props) => {
-  const { items, BgOuterTable, textColor } = props;
+  const {
+    paginate,
+    onChangePaginate,
+    rows,
+    onRowsChange,
+    maxPageLimit,
+    minPageLimit,
+    BgOuterTable,
+    textColor,
+  } = props;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [tailPage, setTailPage] = useState(10);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalRows, setTotalRows] = useState(rows);
   const [totalItems, setTotalItems] = useState(0);
-  const totalPages = Math.ceil(100 / itemsPerPage);
+  const totalPages = Math.ceil(100 / rows);
 
   // console.log(URLadmins);
   useEffect(() => {
-    setTotalItems(items.length);
-  }, []);
+    setTotalItems(rows.length);
+    console.log("pagin: ", rows);
+  });
 
   // Custom Pagination Handler
   const handlePageChange = (newPage) => {
@@ -22,10 +32,11 @@ export const MyTablePagination = (props) => {
       setTailPage(newPage);
     }
   };
+
   return (
-    <tfoot className="">
-      <tr>
-        <td
+    <div className="">
+      <div>
+        <div
           align="center"
           colSpan="5"
           className={`${BgOuterTable} ${textColor} h-12`}
@@ -34,8 +45,13 @@ export const MyTablePagination = (props) => {
             <span className="px-4 font-roboto-regular">Rows per page:</span>
             <select
               className="select select-bordered select-sm text-dark"
-              value={itemsPerPage}
-              onChange={(e) => console.log(e.target.value)}
+              autoComplete="off"
+              value={rows}
+              onChange={(e) => {
+                onRowsChange(parseInt(e.target.value));
+              }}
+              // console.log("berubah", e.target.value);
+              // console.table(paginate, rows, onRowsChange);
             >
               <option value={10}>10</option>
               <option value={25}>25</option>
@@ -44,8 +60,8 @@ export const MyTablePagination = (props) => {
             </select>
 
             <span className="px-4">
-              {currentPage * itemsPerPage - itemsPerPage + 1}-
-              {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems}
+              {currentPage * totalRows - totalRows + 1}-
+              {Math.min(currentPage * totalRows, totalItems)} of {totalItems}
             </span>
 
             <button
@@ -85,8 +101,8 @@ export const MyTablePagination = (props) => {
               <MuiIcon iconName="ArrowForwardIosTwoTone" fontSize={18} />
             </button>
           </div>
-        </td>
-      </tr>
-    </tfoot>
+        </div>
+      </div>
+    </div>
   );
 };
