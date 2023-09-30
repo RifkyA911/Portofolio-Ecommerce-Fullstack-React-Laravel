@@ -144,8 +144,6 @@ export default function Admins(props) {
                 rows={rows}
                 onRowsChange={handleRowsChange}
                 length={length}
-                BgOuterTable={BgOuterTable}
-                textColor={textColor}
               />
               {/* </MyTableEngine> */}
             </div>
