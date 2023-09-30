@@ -101,7 +101,7 @@ export const MyTableEngine = (props) => {
           </>
         )}
         {/* TABLE */}
-        <h1>{sortBy}</h1>
+        {/* <h1>{sortBy}</h1> */}
 
         <div
           className={`${BorderOuterTable} overflow-x-auto rounded-xl bg-white `}
