@@ -31,6 +31,8 @@ class AdminsController extends Controller
         $page = (int)$page; // halaman
         $perPage = (int)$perPage; // jumlah data yang akan di kirim
 
+        $length = Admin::count();
+
         // Menghitung offset berdasarkan halaman yang diminta
         $offset = ($page - 1) * $perPage;
 
@@ -38,26 +40,9 @@ class AdminsController extends Controller
         $admins = Admin::skip($offset)->take($perPage)->get();
 
         // Mengembalikan hasil dalam bentuk resource
-        return new PostResource(true, 'List Data Admin', $admins);
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $admins);
     }
 
-    // public function paginate($row)
-    // {
-    //     // Mengonversi halaman yang diterima menjadi integer
-    //     $row = (int)$row;
-
-    //     // Menentukan jumlah item per halaman
-    //     $perrow = 10; // Jumlah item per halaman
-
-    //     // Menghitung offset berdasarkan halaman yang diminta
-    //     $offset = ($row - 1) * $perrow;
-
-    //     // Mengambil data Admin dengan paginasi dan offset
-    //     $admins = Admin::skip($offset)->take($perrow)->get();
-
-    //     // Mengembalikan hasil dalam bentuk resource
-    //     return new PostResource(true, 'List Data Admin', $admins);
-    // }
     public function login(Request $request)
     {
         // inisiasi awal respon

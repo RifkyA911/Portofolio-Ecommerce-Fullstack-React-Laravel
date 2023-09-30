@@ -39,6 +39,8 @@ class ProductController extends Controller
         $page = (int)$page; // halaman
         $perPage = (int)$perPage; // jumlah data yang akan di kirim
 
+        $length = Product::Count();
+
         // Menghitung offset berdasarkan halaman yang diminta
         $offset = ($page - 1) * $perPage;
 
@@ -46,7 +48,7 @@ class ProductController extends Controller
         $products = Product::skip($offset)->take($perPage)->get();
 
         // Mengembalikan hasil dalam bentuk resource
-        return new PostResource(true, 'List Data products', $products);
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $products);
     }
 
 
