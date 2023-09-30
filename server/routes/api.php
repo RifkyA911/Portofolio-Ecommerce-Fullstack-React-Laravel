@@ -31,7 +31,7 @@ use App\Models\Message;
 // Endpoint Admin
 Route::controller(AdminsController::class)->group(function () {
     Route::get('/admins', 'index');
-    Route::get('/admins/{page}', 'showLimit');
+    Route::get('/admins/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/admin/{id}', 'find');     // parameter id
     //  create admin
     Route::post('/admins', 'store');    // parameter role_admin == 0; data => email, username, password, role
@@ -44,7 +44,7 @@ Route::controller(AdminsController::class)->group(function () {
 // Endpoint User
 Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'index');
-    Route::get('/users/{page}', 'showLimit');
+    Route::get('/users/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/user/{id}', 'show');   // parameter id
     // create user
     Route::post('/user', 'store');  // parameter email, username, password(min:6)
@@ -58,6 +58,7 @@ Route::controller(UserController::class)->group(function () {
 // Endpoint Product
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'getAll');
+    Route::get('/products/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/product/{id}', 'getById'); // parameter id
     // create product
     Route::post('/product', 'store');   // parameter name, category, price(numeric), stok(numeric)

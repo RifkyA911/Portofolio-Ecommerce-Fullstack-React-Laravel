@@ -33,6 +33,22 @@ class ProductController extends Controller
         //return collection of posts as a resource
         return new PostResource(true, 'List Data Produk', $produk);
     }
+    public function showLimit($page, $perPage)
+    {
+        // Mengonversi halaman dan perPage yang diterima menjadi integer
+        $page = (int)$page; // halaman
+        $perPage = (int)$perPage; // jumlah data yang akan di kirim
+
+        // Menghitung offset berdasarkan halaman yang diminta
+        $offset = ($page - 1) * $perPage;
+
+        // Mengambil data Admin dengan paginasi dan offset
+        $products = Product::skip($offset)->take($perPage)->get();
+
+        // Mengembalikan hasil dalam bentuk resource
+        return new PostResource(true, 'List Data products', $products);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -51,7 +67,7 @@ class ProductController extends Controller
         //     "password" => 'required|min:6',
         // ]);
         if ($validator->fails()) {
-            return response(new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->all()]), 400);
+            return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
         }
         $addItem = Product::create($validator->validated());
         return response(new PostResource(true, "Produk berhasil ditambahkan.", $addItem), 201);
@@ -76,9 +92,9 @@ class ProductController extends Controller
             "price" => 'required|numeric',
             "stock" => 'required|numeric'
         ]);
-        
+
         if ($validator->fails()) {
-            return response(new PostResource(false, "validasi data error", ['errors'=>$validator->errors(), 'old_input'=>$request->all()]), 400);
+            return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
         }
         $produk = Product::find($request->input('id'));
         $produk->name = $request->input('name');

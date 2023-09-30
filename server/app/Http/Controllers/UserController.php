@@ -24,15 +24,20 @@ class UserController extends Controller
         //return collection of posts as a resource
         return new PostResource(true, 'List Data Admin', $users);
     }
-    public function showLimit($page)
+    public function showLimit($page, $perPage)
     {
-        $page = (int)$page;
+        // Mengonversi halaman dan perPage yang diterima menjadi integer
+        $page = (int)$page; // halaman
+        $perPage = (int)$perPage; // jumlah data yang akan di kirim
 
-        //get all posts
-        $userss = User::limit($page)->get();
+        // Menghitung offset berdasarkan halaman yang diminta
+        $offset = ($page - 1) * $perPage;
 
-        //return collection of posts as a resource
-        return new PostResource(true, 'List Data User', $userss);
+        // Mengambil data Admin dengan paginasi dan offset
+        $users = User::skip($offset)->take($perPage)->get();
+
+        // Mengembalikan hasil dalam bentuk resource
+        return new PostResource(true, 'List Data Users', $users);
     }
     public function login(Request $request)
     {
