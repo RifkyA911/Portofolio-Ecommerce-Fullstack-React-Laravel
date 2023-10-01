@@ -1,8 +1,6 @@
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 // Components
 import {
-  isChatEnabled,
-  handleCheckboxChange,
   AuthorityToggle,
   ActionButton,
   ShowRole,
@@ -68,6 +66,7 @@ export const MyTableEngine = (props) => {
         setData(action.payload.newData);
         setSortOrder(action.payload.newSortOrder); // Toggle urutan
         setSortBy(action.payload.newSortBy);
+        console.log("e");
         break;
       // Tambahkan case lainnya jika diperlukan untuk aksi lainnya
       default:
@@ -161,7 +160,7 @@ export const MyTableEngine = (props) => {
                   {row.role == 1 ? (
                     <>
                       <Td className="flex-1 px-8 lg:px-4 ">
-                        <AuthorityToggle data={row} />
+                        <AuthorityToggle data={row.authority} />
                       </Td>
                       <Td className="flex-1 px-8 lg:px-4 ">
                         <ActionButton data={row} />

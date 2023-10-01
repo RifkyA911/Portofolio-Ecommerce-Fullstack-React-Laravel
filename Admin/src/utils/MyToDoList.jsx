@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MuiIcon } from "./RenderIcons.jsx";
 
@@ -9,6 +9,7 @@ import { navLink } from "../Redux/Slices/NavigationSlice";
 import { logOutUser } from "./Session/Admin";
 
 function MyToDoList() {
+  const [close, setClose] = useState(false);
   // REDUX
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
     (state) => state.UI
@@ -20,22 +21,27 @@ function MyToDoList() {
   return (
     <>
       <div className="relative min-w-screen z-[99999] bg-slate-500">
-        <div className="fixed bottom-[-120px] right-0 hover:bottom-[0px] transition-all duration-300">
-          <div className="w-10 h-8 bg-violet-200 hover:bg-violet-400 mx-auto cursor-pointer rounded-md hover:rotate-180 transition-all duration-300 m-0 p-0">
-            <span className="w-full text-center m-0 px-0 py-2">
-              {<MuiIcon iconName="KeyboardDoubleArrowUp" />}
-            </span>
-          </div>
+        <div className="fixed bottom-[-100px] right-0 hover:bottom-[0px] transition-all duration-300">
           <div className="w-56 text-xs cursor-pointer backdrop-blur-sm bg-opacity-50 bg-white rounded-md shadow-lg hover:bg-white hover:bg-opacity-100 duration-500">
-            <div className="font-bold ">My To Do List Panel</div>
+            <div className="font-bold ">
+              My To Do List Panel
+              <button
+                className="absolute hover:bg-red-500 bg-red-300 px-1 right-0 rounded-sm "
+                onClick={() => setClose(!close)}
+              >
+                <div className="transition-all duration-200 hover:rotate-180">
+                  X
+                </div>
+              </button>
+            </div>
             <hr />
             <div className="p-1">
               <ul className="list-disc  px-6 overflow-hidden truncate">
                 <li>
                   <Link to="/products">Buat API Handler utk PUT Product</Link>
                 </li>
-                <li>???</li>
-                <li>???</li>
+                <li>Search Table limited by pagination</li>
+                <li>Error Filter Th after update Pagination</li>
                 <li>???</li>
                 <li>???</li>
                 <li>???</li>

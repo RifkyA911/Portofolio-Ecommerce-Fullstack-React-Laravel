@@ -1,42 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 // Components
 import { useSelector } from "react-redux";
 import { MuiIcon } from "../../utils/RenderIcons";
-
-export const GrantFeatures = (authorityString, adminId, isChecked) => {
-  return (
-    <>
-      <div></div>
-    </>
-  );
-};
-
-// Function to parse the authority string and return true/false for chat
-export function isChatEnabled(authorityString) {
-  const authorityObj = JSON.parse(authorityString);
-  return authorityObj.chat === "true";
-}
-
-// Function to handle checkbox changes and update state
-export function handleCheckboxChange(data, isChecked) {
-  // Membuat salinan data yang akan diubah
-  const keys = Object.keys(data);
-  console.table(keys);
-  const newData = [...data];
-
-  // // Mencari indeks data dengan id yang sesuai
-  // const dataIndex = newData.findIndex((item) => item.id === key);
-
-  // // Jika indeks ditemukan, kita update authority-nya
-  // if (dataIndex !== -1) {
-  //   const newAuthority = JSON.parse(newData[dataIndex].authority);
-  //   newAuthority.chat = isChecked ? "true" : "false";
-  //   newData[dataIndex].authority = JSON.stringify(newAuthority);
-  // }
-
-  // // Mengembalikan data yang sudah diubah
-  // return newData;
-}
 
 export const ShowAdminName = (props) => {
   const { data } = props;
@@ -90,28 +55,41 @@ export const ShowRole = (props) => {
 
 export const AuthorityToggle = (props) => {
   const { data } = props;
-  return (
-    <>
-      <div className="w-full flex lg:flex-row justify-around items-center">
-        <input
-          type="checkbox"
-          className="toggle toggle-info m-2"
-          onChange={(e) => handleCheckboxChange(data, e.target.checked)}
-          checked={isChatEnabled(data.authority)}
-        />
-        <input
-          type="checkbox"
-          className="toggle toggle-success m-2"
-          value={JSON.parse(data.authority).sort_warehouse ? true : false}
-        />
+  const [authority, setAuthority] = useState({});
 
-        <input
-          type="checkbox"
-          className="toggle toggle-warning m-2"
-          value={JSON.parse(data.authority).alter_price ? true : false}
-        />
-      </div>
-    </>
+  useEffect(() => {
+    const parsedAuthority = JSON.parse(data);
+    setAuthority({
+      chat: parsedAuthority.chat === "true",
+      sort_warehouse: parsedAuthority.sort_warehouse === "true",
+      alter_price: parsedAuthority.alter_price === "true",
+    });
+  }, [data]);
+
+  const handleToggleChange = (toggleType) => {
+    setAuthority((prevAuthority) => ({
+      ...prevAuthority,
+      [toggleType]: !prevAuthority[toggleType],
+    }));
+  };
+
+  const toggleTypes = ["chat", "sort_warehouse", "alter_price"];
+  const toggleColors = ["info", "success", "warning"];
+
+  return (
+    <div className="w-full flex lg:flex-row justify-around items-center">
+      {toggleTypes.map((toggleType, index) => (
+        <div key={toggleType}>
+          <input
+            type="checkbox"
+            className={`toggle toggle-${toggleColors[index]} m-2`}
+            onChange={() => handleToggleChange(toggleType)}
+            checked={authority[toggleType]}
+          />
+          {/* <label>{toggleType}</label> */}
+        </div>
+      ))}
+    </div>
   );
 };
 
