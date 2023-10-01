@@ -13,7 +13,6 @@ import { MyTablePagination } from "./MyTablePagination";
 // UTILS
 import { usePDF } from "react-to-pdf";
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
-import fetchData from "../../utils/API/AsyncFetch";
 import { HeadRow } from "../Admins/AdminsTableHead.jsx";
 import { TbSwitch2 } from "react-icons/tb";
 
@@ -25,6 +24,9 @@ export const MyTableEngine = (props) => {
   const [data, setData] = useState([]);
   const [errorMessage, setErrorMessage] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [toggleSelect, setToggleSelect] = useState(false);
+  const [selectedRows, setSelectedRows] = useState({});
+
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [sortBy, setSortBy] = useState("id");
@@ -50,7 +52,7 @@ export const MyTableEngine = (props) => {
       console.error("Data input harus berupa array.");
       return 0;
     }
-  });
+  }, []); // temp
 
   useEffect(() => {
     // Filter data based on the search term
@@ -66,21 +68,40 @@ export const MyTableEngine = (props) => {
         setData(action.payload.newData);
         setSortOrder(action.payload.newSortOrder); // Toggle urutan
         setSortBy(action.payload.newSortBy);
-        console.log("e");
+        console.log("Update Sort");
         break;
       // Tambahkan case lainnya jika diperlukan untuk aksi lainnya
       default:
         break;
     }
   };
+  // const toggleRowSelection = (id) => {
+  //   setSelectedRows((prevSelectedRows) => ({
+  //     ...prevSelectedRows,
+  //     [id]: !prevSelectedRows[id],
+  //   }));
+  // };
 
+  // const selectAllRows = () => {
+  //   const allSelected = Object.values(selectedRows).every(
+  //     (isSelected) => isSelected
+  //   );
+  //   const newSelectedRows = {};
+
+  //   for (const item of data) {
+  //     newSelectedRows[item.id] = !allSelected;
+  //   }
+
+  //   setSelectedRows(newSelectedRows);
+  // };
   return (
-    <>
+    <div className="relative">
       <TableContext.Provider
         value={{
           data,
           errorMessage,
           loading,
+          selectedRows,
           searchTerm,
           searchResults,
           sortBy,
@@ -91,16 +112,18 @@ export const MyTableEngine = (props) => {
         {/* HEADER */}
         {TabHeader && (
           <>
-            <TableHeader
+            <MyTableHeader
               searchTerm={searchTerm}
               setSearchTerm={(e) => setSearchTerm(e.target.value)}
+              setToggleSelect={() =>
+                setToggleSelect((prevtoggleSelect) => !prevtoggleSelect)
+              }
               refresh={refresh}
             />
             <Modal />
           </>
         )}
         {/* TABLE */}
-        {/* <h1>{sortBy}</h1> */}
 
         <div
           className={`${BorderOuterTable} overflow-x-auto rounded-xl bg-white `}
@@ -127,30 +150,54 @@ export const MyTableEngine = (props) => {
                 <Th
                   name="Grant Features"
                   column="role"
-                  feature="modal"
-                  modalId="TipsGrantAccess"
+                  onClick={() =>
+                    document.getElementById("TipsGrantAccess").showModal()
+                  }
                   className="p-2 text-center lg:w-12 mx-auto"
-                ></Th>
+                >
+                  Grant Features
+                  <i className="m-0 lg:mx-2 text-gray-400">
+                    <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                  </i>
+                </Th>
                 <Th
                   name="Action"
                   column="action"
-                  feature="modal"
                   onClick={() =>
                     document.getElementById("ConfirmDelete").showModal()
                   }
-                  // modalId="ConfirmDelete"
                   className="text-[14px] w-[160px]"
-                ></Th>
+                >
+                  Actions
+                  <i className="m-0 lg:mx-2 text-gray-400">
+                    <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                  </i>
+                </Th>
               </Tr>
             </Thead>
             <Tbody key={0} className={`${BgTable} `}>
               {searchResults.map((row, index) => (
-                <Tr key={index} className={`divide-y`}>
-                  <Th
-                    className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
-                  >
-                    {parseInt(row.id) == 0 ? parseInt(row.id) + 1 : row.id}
-                  </Th>
+                <Tr
+                  key={index}
+                  className={`${
+                    selectedRows[row.id] ? "selected" : ""
+                  } divide-y`}
+                >
+                  {!toggleSelect ? (
+                    <Th
+                      key={index}
+                      feature={null}
+                      className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
+                    >
+                      {parseInt(row.id) == 0 ? parseInt(row.id) + 1 : row.id}
+                    </Th>
+                  ) : (
+                    <Th
+                      key={index}
+                      feature={"select"}
+                      onChange={() => console.log(index)}
+                    ></Th>
+                  )}
                   <Td className="px-8 w-[450px] py-2">
                     <ShowAdminName data={row} />
                   </Td>
@@ -179,7 +226,7 @@ export const MyTableEngine = (props) => {
           </Table>
         </div>
       </TableContext.Provider>
-    </>
+    </div>
   );
 };
 
@@ -201,20 +248,29 @@ export const MyTableEngine = (props) => {
               </MyTableEngine> */
 }
 
-export const TableHeader = (props) => {
-  const { searchTerm, setSearchTerm, refresh } = props;
+export const MyTableHeader = (props) => {
+  const { searchTerm, setSearchTerm, selectedRows, setToggleSelect, refresh } =
+    props;
+  const [isDialogOpen, setDialogOpen] = useState(false);
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
+  const closeDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    closeDialog();
+  };
   return (
     <>
       <div
         ref={targetRef}
-        className="flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-hidden"
+        className=" flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-hidden"
       >
         <div className="flex justify-center lg:justify-start lg:w-7/12 mb-4 lg:mb-0">
           <input
             type="text"
-            placeholder="Cari Nama Admin"
+            placeholder="Find Data"
             value={searchTerm}
             className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none"
             onChange={setSearchTerm}
@@ -236,13 +292,13 @@ export const TableHeader = (props) => {
           >
             <span id="showDelete" className="options">
               <i className="font-xs">
-                <MuiIcon iconName={"FiberManualRecordTwoTone"} fontSize={20} />
+                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
               </i>
             </span>
             <span className="font-base px-2">Delete</span>
             <span id="showCancelDelete " className="options hidden">
               <i className="font-xs ">
-                <MuiIcon iconName={"FiberManualRecordTwoTone"} fontSize={20} />
+                <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
               </i>
               <span className="font-base px-2">Cancel</span>
             </span>
@@ -252,7 +308,11 @@ export const TableHeader = (props) => {
             onClick={() => document.getElementById("AddAdmin").showModal()}
           >
             <i className="font-xs">
-              <MuiIcon iconName={"FiberManualRecordTwoTone"} fontSize={20} />
+              <MuiIcon
+                iconName={"LibraryAddRounded"}
+                className="  --transform-scale-x: -1"
+                fontSize={20}
+              />
             </i>
             <span className="font-base px-2">Add</span>
           </button>
@@ -260,8 +320,43 @@ export const TableHeader = (props) => {
             onClick={refresh}
             className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center "
           >
-            <MuiIcon iconName={"FiberManualRecordTwoTone"} fontSize={20} />
+            <MuiIcon iconName={"RefreshRounded"} fontSize={20} />
           </button>
+          <button
+            className="px-1 bg-white text-black rounded-md"
+            onClick={() => setDialogOpen(!isDialogOpen)}
+          >
+            <MuiIcon iconName={"MoreVertRounded"} fontSize={20} />
+          </button>
+          {isDialogOpen && (
+            <>
+              <div
+                className="absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.91px]"
+                onClick={() => {
+                  setDialogOpen(false);
+                }}
+              ></div>
+              <div className="absolute  bg-white w-[140px] top-11 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium">
+                <button
+                  className="py-2 px-4 w-full hover:bg-slate-200 text-left"
+                  onClick={() => {
+                    setToggleSelect();
+                    setDialogOpen(false);
+                  }}
+                >
+                  {!selectedRows ? "Select Row" : "Cancel "}
+                </button>
+                <button
+                  className="py-2 px-4 w-full hover:bg-slate-200 text-left line-through text-slate-500 cursor-not-allowed"
+                  onClick={() => {
+                    setDialogOpen(false);
+                  }}
+                >
+                  Export CSV
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
@@ -300,8 +395,7 @@ export const Th = (props) => {
     column,
     className,
     onClick,
-    modalId,
-    select = false,
+    onChange,
     hidden,
     children,
   } = props;
@@ -360,28 +454,16 @@ export const Th = (props) => {
           {children}
         </th>
       )}
-      {feature == "modal" && (
-        <th onClick={onClick} className={`${className} min-h-[36px]`}>
-          <span className="text-center pr-2">
-            {name}
-            <i className="m-0 lg:mx-2 text-gray-400">
-              <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
-            </i>
-          </span>
-        </th>
-      )}
       {feature == null && (
-        <th
-          onClick={() => document.getElementById(modalId).showModal()}
-          className={`${className} min-h-[36px]`}
-        >
+        <th onClick={onClick} className={`${className} min-h-[36px]`}>
           {children}
         </th>
       )}
-      {select && (
+      {feature == "select" && (
         <th
-          onClick={() => document.getElementById(modalId).showModal()}
-          className={`${className} min-h-[36px]`}
+          key={key}
+          onChange={onChange}
+          className={`${className} min-h-[36px] w-0 p-0 text-center bg-slate-50 hover:bg-gray-200 transition-colors duration-75 cursor-pointer`}
         >
           <label>
             <input type="checkbox" className="checkbox" />
@@ -396,15 +478,24 @@ export const Tbody = (props) => {
   const { element, key, className, onClick, event } = props;
   return (
     <>
-      <tbody className={className}>{props.children}</tbody>
+      <tbody className={`${className}  `}>{props.children}</tbody>
     </>
   );
 };
 export const Tr = (props) => {
+  const { data, errorMessage, selectedRows, updateMyTableState } =
+    useContext(TableContext);
   const { element, key, className, onClick, event } = props;
   return (
     <>
-      <tr key={key} className={`${className} divide-y`}>
+      <tr
+        key={key}
+        className={`${className} ${
+          selectedRows
+            ? "hover:bg-gray-200 transition-colors duration-75 cursor-pointer"
+            : ""
+        } divide-y`}
+      >
         {props.children}
       </tr>
     </>

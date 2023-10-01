@@ -8,7 +8,6 @@ import { Container, Content } from "../Layout";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 // UTILS
-import fetchData from "../utils/API/AsyncFetch";
 import { MuiIcon } from "../utils/RenderIcons";
 import { MyTableEngine, Th } from "../components/Table/MyTableEngine";
 import { MyTablePagination } from "../components/Table/MyTablePagination";
