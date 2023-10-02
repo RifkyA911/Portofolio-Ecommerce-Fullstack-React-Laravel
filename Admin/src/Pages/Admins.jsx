@@ -1,34 +1,50 @@
 import { useEffect, useState } from "react";
 // Components
 import Skeleton from "@mui/material/Skeleton";
+import { ActionModalForm } from "./../components/Modal";
 import { DangerAlert, WarningAlert } from "../components/Alert";
+import {
+  ShowAdminName,
+  ShowRole,
+  AuthorityToggle,
+  ActionButton,
+} from "./../components/Admins/AdminsTableBody";
+import {
+  MyTableEngine,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  MyTablePagination,
+} from "../components/Table/MyTableEngine";
 // Layout
 import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 // UTILS
+import axios from "axios";
 import { MuiIcon } from "../utils/RenderIcons";
-import {
-  MyTableEngine,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Td,
-} from "../components/Table/MyTableEngine";
-import { MyTablePagination } from "../components/Table/MyTablePagination";
 
 // define fetch data URL by admins
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
 
 export default function Admins(props) {
+  const [admin, setAdmin] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [length, setLengthData] = useState();
   const [paginate, setPaginate] = useState(1);
   const [rows, setRows] = useState(10);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [getId, setGetId] = useState(null);
 
   // REDUX
   const {
@@ -48,16 +64,14 @@ export default function Admins(props) {
 
   const fetchAdmins = async (url, type) => {
     try {
-      const response = await fetch(url);
-      const data = await response.json();
+      // const response = await fetch(url);
+      // const data = await response.json();
+      const response = await axios.get(url);
+      const data = await response.data;
       setLoading(false);
-      if (type == "fetch") {
-        setAdmins(data.data);
-        setErrorMessage(null);
-        setLengthData(data.message.length);
-      } else if (type == "size") {
-        console.log(data.message.length);
-      }
+      setAdmins(data.data);
+      setErrorMessage(null);
+      setLengthData(data.message.length);
       // setCount(count + 1);
       // console.log("fetching data ke-", count);
     } catch (error) {
@@ -68,9 +82,22 @@ export default function Admins(props) {
   // console.table(admins);
 
   // fetch data pertama kali saat masuk ke halaman admins
+  // useEffect(() => {
+  //   fetchAdmins(URL, "fetch");
+  // }, []);
+
+  useEffect(() => {
+    // Filter data based on the search term
+    const filteredData = admins.filter((admins) =>
+      admins.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(filteredData);
+  }, [searchTerm, admins]);
+
+  // Panggil fetchData saat komponen pertama kali dimuat atau saat value paginate, rows berubah
   useEffect(() => {
     fetchAdmins(URL, "fetch");
-  }, []);
+  }, [paginate, rows]);
 
   // Handler ketika nilai rows diubah
   const handleRowsChange = (newRows) => {
@@ -85,13 +112,35 @@ export default function Admins(props) {
     console.log(newPaginate);
   };
 
-  // Panggil fetchData saat komponen pertama kali dimuat atau saat value paginate, rows berubah
-  useEffect(() => {
-    fetchAdmins(URL, "fetch");
-  }, [paginate, rows]);
+  // const fetchProducts = async (url) => {
+  //   try {
+  //     const response = await fetch(url);
+  //     const data = await response.json();
+  //     console.table(data.data);
+  //     return data.data;
+  //   } catch (error) {
+  //     setLoading(false);
+  //     let message = "Gagal Fetching Product";
+  //     setErrorMessage(message);
+  //     console.error(message, error);
+  //   }
+  // };
+  // fetchProducts(import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + id);
+  const handleActionButton = (id) => {
+    console.log("data = ", id);
+    axios
+      .get(import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + id)
+      .then((response) => {
+        setAdmin(response.data.data);
+      })
+      .catch((error) => console.log(error));
+  };
+  // console.table(admin);
 
   return (
     <>
+      {console.log("ASD")}
+      <ActionModalForm inputData={admin} />
       <Container>
         <Content pageName={"Admins"}>
           {loading == true ? (
@@ -142,14 +191,136 @@ export default function Admins(props) {
                   setLoading(true);
                 }}
                 TabHeader={true}
+                searchTerm={searchTerm}
+                setSearchTerm={(e) => setSearchTerm(e.target.value)}
+                sortData={(newSortedData) => setAdmins(newSortedData)}
               >
-                <MyTablePagination
-                  paginate={paginate}
-                  onChangePaginate={handlePaginateChange}
-                  rows={rows}
-                  onRowsChange={handleRowsChange}
-                  length={length}
-                />
+                {/* table="admin" table_id={getId} */}
+                <Table className={`text-sm w-full `}>
+                  <Thead className={`${BgOuterTable} ${textColor} `}>
+                    <Tr key="TableHead" className="">
+                      <Th
+                        name=""
+                        column="id"
+                        feature="filter"
+                        className="px-4"
+                      ></Th>
+                      <Th className="px-2 hidden">
+                        <label>Select</label>
+                      </Th>
+                      <Th
+                        name="Admin Name"
+                        column="username"
+                        feature="filter"
+                        className="px-6 w-[600px]"
+                      ></Th>
+                      <Th
+                        name="Role"
+                        column="role"
+                        feature="filter"
+                        className="px-4 w-28"
+                      ></Th>
+                      <Th
+                        name="Grant Features"
+                        column="role"
+                        onClick={() =>
+                          document.getElementById("TipsGrantAccess").showModal()
+                        }
+                        className="p-2 text-center lg:w-12 mx-auto"
+                      >
+                        Grant Features
+                        <i className="m-0 lg:mx-2 text-gray-400">
+                          <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                        </i>
+                      </Th>
+                      <Th
+                        name="Action"
+                        column="action"
+                        className="text-[14px] w-[160px]"
+                      >
+                        Actions
+                      </Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody className={`${BgTable} `}>
+                    {searchResults.map((row, index) => (
+                      <Tr
+                        key={index}
+                        customKey={index}
+                        className={"divide-y"}
+                        // className={`${
+                        //   selectedRows[row.id] ? "selected" : ""
+                        // } divide-y`}
+                      >
+                        <Th
+                          key={index}
+                          feature={null}
+                          className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
+                        >
+                          {parseInt(row.id) == 0
+                            ? parseInt(row.id) + 1
+                            : row.id}
+                        </Th>
+                        {/* {!toggleSelect ? (
+                        ) : (
+                          <Th
+                            key={index}
+                            feature={"select"}
+                            onChange={() => console.log(index)}
+                          ></Th>
+                        )} */}
+                        <Td className="px-8 w-[450px] py-2">
+                          <ShowAdminName data={row} />
+                        </Td>
+                        <Td>
+                          <ShowRole data={row} />
+                        </Td>
+                        {row.role == 1 ? (
+                          <>
+                            <Td className="flex-1 px-8 lg:px-4 ">
+                              <AuthorityToggle data={row.authority} />
+                            </Td>
+                            <Td className="flex-1 px-8 lg:px-4 ">
+                              <ActionButton
+                                key={index}
+                                data={row}
+                                onClickDelete={() =>
+                                  document
+                                    .getElementById("ConfirmDelete")
+                                    .showModal()
+                                }
+                                // onClickEdit={() =>
+                                //   document
+                                //     .getElementById(`EditAdmin`)
+                                //     .showModal()
+                                // }
+                                onClickEdit={() => {
+                                  document
+                                    .getElementById("EditAdmin")
+                                    .showModal();
+                                  handleActionButton(row.id);
+                                }}
+                              />
+                            </Td>
+                          </>
+                        ) : (
+                          <>
+                            <td></td>
+                            <td></td>
+                          </>
+                        )}
+                      </Tr>
+                    ))}
+                  </Tbody>
+                  {/* foot */}
+                  <MyTablePagination
+                    paginate={paginate}
+                    onChangePaginate={handlePaginateChange}
+                    rows={rows}
+                    onRowsChange={handleRowsChange}
+                    length={length}
+                  />
+                </Table>
               </MyTableEngine>
             </div>
           )}

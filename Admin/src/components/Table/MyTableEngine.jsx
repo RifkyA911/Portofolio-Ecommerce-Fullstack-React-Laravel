@@ -1,47 +1,40 @@
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 // Components
-import {
-  AuthorityToggle,
-  ActionButton,
-  ShowRole,
-  ShowAdminName,
-} from "../Admins/AdminsTableBody.jsx"; //Delete after complate atomic
 import { Modal } from "./../Modal";
 // REDUX
 import { useSelector } from "react-redux";
-import { MyTablePagination } from "./MyTablePagination";
 // UTILS
 import { usePDF } from "react-to-pdf";
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
-import { HeadRow } from "../Admins/AdminsTableHead.jsx";
 import { TbSwitch2 } from "react-icons/tb";
 
 const TableContext = createContext();
 
 export const MyTableEngine = (props) => {
-  const { inputData, refresh, TabHeader = false, children } = props;
+  const {
+    inputData,
+    refresh,
+    TabHeader = false,
+    searchTerm,
+    setSearchTerm,
+    sortData,
+    getSortBy = "id",
+    getSortOrder = "asc",
+    children,
+  } = props;
 
   const [data, setData] = useState([]);
   const [errorMessage, setErrorMessage] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const [sortBy, setSortBy] = useState(getSortBy);
+  const [sortOrder, setSortOrder] = useState(getSortOrder);
+
   const [toggleSelect, setToggleSelect] = useState(false);
   const [selectedRows, setSelectedRows] = useState({});
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [sortBy, setSortBy] = useState("id");
-  const [sortOrder, setSortOrder] = useState("asc");
-
   // REDUX
-  const {
-    BgColor,
-    textTable,
-    textColor,
-    BgTable,
-    BgOuterTable,
-    BorderRowTable,
-    BorderOuterTable,
-  } = useSelector((state) => state.UI);
+  const { BorderOuterTable } = useSelector((state) => state.UI);
 
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
@@ -54,27 +47,22 @@ export const MyTableEngine = (props) => {
     }
   }, []); // temp
 
-  useEffect(() => {
-    // Filter data based on the search term
-    const filteredData = data.filter((data) =>
-      data.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(filteredData);
-  }, [searchTerm, data]);
-
   const updateMyTableState = (action) => {
     switch (action.type) {
       case "UPDATE_SORT":
         setData(action.payload.newData);
         setSortOrder(action.payload.newSortOrder); // Toggle urutan
         setSortBy(action.payload.newSortBy);
-        console.log("Update Sort");
+        sortData(data); // oper props ke parent
         break;
       // Tambahkan case lainnya jika diperlukan untuk aksi lainnya
       default:
         break;
     }
   };
+  // useEffect(() => {
+  // }, [data]); // jalankan setiap state berubah
+
   // const toggleRowSelection = (id) => {
   //   setSelectedRows((prevSelectedRows) => ({
   //     ...prevSelectedRows,
@@ -103,7 +91,6 @@ export const MyTableEngine = (props) => {
           loading,
           selectedRows,
           searchTerm,
-          searchResults,
           sortBy,
           sortOrder,
           updateMyTableState,
@@ -114,7 +101,7 @@ export const MyTableEngine = (props) => {
           <>
             <MyTableHeader
               searchTerm={searchTerm}
-              setSearchTerm={(e) => setSearchTerm(e.target.value)}
+              setSearchTerm={setSearchTerm}
               setToggleSelect={() =>
                 setToggleSelect((prevtoggleSelect) => !prevtoggleSelect)
               }
@@ -128,127 +115,12 @@ export const MyTableEngine = (props) => {
         <div
           className={`${BorderOuterTable} overflow-x-auto rounded-xl bg-white `}
         >
-          <Table className={`text-sm w-full `}>
-            <Thead className={`${BgOuterTable} ${textColor} `}>
-              <Tr key="TableHead" className="">
-                <Th name="" column="id" feature="filter" className="px-4"></Th>
-                <Th className="px-2 hidden">
-                  <label>Select</label>
-                </Th>
-                <Th
-                  name="Admin Name"
-                  column="username"
-                  feature="filter"
-                  className="px-6 w-[600px]"
-                ></Th>
-                <Th
-                  name="Role"
-                  column="role"
-                  feature="filter"
-                  className="px-4 w-28"
-                ></Th>
-                <Th
-                  name="Grant Features"
-                  column="role"
-                  onClick={() =>
-                    document.getElementById("TipsGrantAccess").showModal()
-                  }
-                  className="p-2 text-center lg:w-12 mx-auto"
-                >
-                  Grant Features
-                  <i className="m-0 lg:mx-2 text-gray-400">
-                    <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
-                  </i>
-                </Th>
-                <Th
-                  name="Action"
-                  column="action"
-                  className="text-[14px] w-[160px]"
-                >
-                  Actions
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody className={`${BgTable} `}>
-              {searchResults.map((row, index) => (
-                <Tr
-                  key={index}
-                  customKey={index}
-                  className={`${
-                    selectedRows[row.id] ? "selected" : ""
-                  } divide-y`}
-                >
-                  {!toggleSelect ? (
-                    <Th
-                      key={index}
-                      feature={null}
-                      className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
-                    >
-                      {parseInt(row.id) == 0 ? parseInt(row.id) + 1 : row.id}
-                    </Th>
-                  ) : (
-                    <Th
-                      key={index}
-                      feature={"select"}
-                      onChange={() => console.log(index)}
-                    ></Th>
-                  )}
-                  <Td className="px-8 w-[450px] py-2">
-                    <ShowAdminName data={row} />
-                  </Td>
-                  <Td>
-                    <ShowRole data={row} />
-                  </Td>
-                  {row.role == 1 ? (
-                    <>
-                      <Td className="flex-1 px-8 lg:px-4 ">
-                        <AuthorityToggle data={row.authority} />
-                      </Td>
-                      <Td className="flex-1 px-8 lg:px-4 ">
-                        <ActionButton
-                          key={index}
-                          data={row}
-                          onClickDelete={() =>
-                            document.getElementById("ConfirmDelete").showModal()
-                          }
-                        />
-                      </Td>
-                    </>
-                  ) : (
-                    <>
-                      <td></td>
-                      <td></td>
-                    </>
-                  )}
-                </Tr>
-              ))}
-            </Tbody>
-            {/* foot */}
-            {children}
-          </Table>
+          {children}
         </div>
       </TableContext.Provider>
     </div>
   );
 };
-
-{
-  /* <MyTableEngine>
-                <Table>
-                  <Thead>
-                    <Th>
-                      <Td></Td>
-                    </Th>
-                  </Thead>
-                  <Tbody>
-                    <Tr>
-                      <Td></Td>
-                    </Tr>
-                  </Tbody>
-                  <Pagination />
-                </Table>
-              </MyTableEngine> */
-}
 
 export const MyTableHeader = (props) => {
   const { searchTerm, setSearchTerm, selectedRows, setToggleSelect, refresh } =
@@ -376,7 +248,7 @@ export const MyTableHeader = (props) => {
 };
 
 export const Table = (props) => {
-  const { key, className, onClick, sortBy, sortOrder, hidden, event } = props;
+  const { className, onClick, sortBy, sortOrder, hidden, event } = props;
   return (
     <>
       <table className={className}>{props.children}</table>
@@ -430,7 +302,7 @@ export const Th = (props) => {
       newSortOrder: sortOrder === "asc" ? "desc" : "asc",
       newSortBy: column,
     };
-    // console.log("state:", sortOrder);
+    console.log("Update Sort State:", sortOrder);
     // console.table("newState:", newSortedValue.newSortOrder);
 
     // Memanggil updateMyTableState dengan newSortedValue sebagai payload
@@ -522,6 +394,208 @@ export const Td = (props) => {
   return (
     <>
       <td className={className}>{props.children}</td>
+    </>
+  );
+};
+
+export const MyTablePagination = (props) => {
+  const { paginate, onChangePaginate, rows, onRowsChange, length } = props;
+
+  const [currentPage, setCurrentPage] = useState(paginate);
+  // const [headPage, setHeadPage] = useState(1);
+  const [maxButtons, setMaxButtons] = useState(2);
+  // const [tailPage, setTailPage] = useState(10);
+  const [totalRows, setTotalRows] = useState(rows);
+  const [totalItems, setTotalItems] = useState(length || 100); // temporary
+
+  const totalPages = Math.ceil(totalItems / rows);
+
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  // Batasi jumlah tombol maksimal menjadi 5.
+  useEffect(() => {
+    if (screenWidth < 400) {
+      setMaxButtons(2);
+    } else {
+      setMaxButtons(5);
+    }
+  });
+
+  // Inisialisasi array untuk menyimpan nomor halaman yang akan ditampilkan.
+  const pageNumbers = [];
+
+  // Tentukan awal dan akhir dari rentang tombol.
+  let start = 1;
+  let end = totalPages;
+
+  // Jika totalPages lebih dari maxButtons, kita akan membatasi rentang tombol.
+  if (totalPages > maxButtons) {
+    const half = Math.floor(maxButtons / 2);
+
+    if (currentPage <= half) {
+      end = maxButtons;
+    } else if (currentPage >= totalPages - half) {
+      start = totalPages - maxButtons + 1;
+    } else {
+      start = currentPage - half + 1;
+      end = currentPage + half;
+    }
+  }
+
+  // Custom Pagination Handler
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  // Tambahkan tombol "Prev" jika currentPage bukan di halaman pertama.
+  if (currentPage > 1) {
+    pageNumbers.push(
+      <button
+        key="prev-btn" // Berikan key yang unik
+        onClick={() => {
+          handlePageChange(currentPage - 1);
+          onChangePaginate(parseInt(currentPage - 1));
+        }}
+        disabled={currentPage === 1}
+        className="px-4 py-2 hover:text-violet-500 cursor-pointer"
+      >
+        <MuiIcon iconName="ArrowBackIosNewTwoTone" fontSize={18} />
+      </button>
+    );
+  }
+
+  // Tambahkan tombol "..." jika currentPage bukan di halaman pertama.
+  if (start > 1) {
+    pageNumbers.push(
+      <button
+        key="left-dots-btn"
+        onClick={() => {
+          handlePageChange(1);
+          onChangePaginate(parseInt(1));
+        }}
+        className="px-4 py-2 hover:bg-violet-300 rounded-lg transition-all duration-200"
+      >
+        ...
+      </button>
+    );
+  }
+
+  // Buat tombol halaman dalam rentang yang ditentukan.
+  for (let i = start; i <= end; i++) {
+    pageNumbers.push(
+      <button
+        onClick={() => {
+          if (i !== currentPage) {
+            handlePageChange(i);
+            onChangePaginate(parseInt(i));
+          }
+        }}
+        key={i}
+        className={`px-4 py-2 hover:bg-violet-300 rounded-lg transition-all duration-200 ${
+          i === currentPage ? "bg-gray-300" : ""
+        }`}
+      >
+        {i}
+      </button>
+    );
+  }
+
+  // Tambahkan tombol "..." jika currentPage bukan di halaman terakhir.
+  if (end < totalPages) {
+    pageNumbers.push(
+      <button
+        onClick={() => {
+          handlePageChange(totalPages);
+          onChangePaginate(parseInt(totalPages));
+        }}
+        key="right-dots-btn"
+        className="px-4 py-2 hover:bg-violet-300 rounded-lg transition-all duration-200"
+      >
+        ...
+      </button>
+    );
+  }
+
+  // Tambahkan tombol "Next" jika currentPage bukan di halaman terakhir.
+  if (currentPage < totalPages) {
+    pageNumbers.push(
+      <button
+        key="next-btn"
+        onClick={() => {
+          handlePageChange(currentPage + 1);
+          onChangePaginate(parseInt(currentPage + 1));
+        }}
+        disabled={currentPage === totalPages}
+        className="px-3 py-2 hover:bg-violet-300 hover:text-gray-500 rounded-lg transition-all duration-20"
+      >
+        <MuiIcon iconName="ArrowForwardIosTwoTone" fontSize={18} />
+      </button>
+    );
+  }
+
+  useEffect(() => {
+    setTotalItems(length);
+    // console.log("pagin: ", rows);
+  }, []);
+
+  return (
+    <>
+      <tfoot>
+        <tr>
+          <td
+            key={9999}
+            align="center"
+            colSpan="5"
+            className={`${BgOuterTable} ${textColor} `}
+          >
+            <div
+              className={`${BgOuterTable} flex flex-wrap lg:flex-row h-auto lg:h-12 font-roboto-medium text-base p-0 justify-center items-center`}
+            >
+              <div className="selector w-auto">
+                <span className="px-4 font-roboto-regular text-xs lg:text-base">
+                  Rows per page:
+                </span>
+                <select
+                  className="select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-base"
+                  autoComplete="off"
+                  value={rows}
+                  onChange={(e) => {
+                    onRowsChange(parseInt(e.target.value));
+                    handlePageChange(1);
+                    onChangePaginate(parseInt(1));
+                  }}
+                >
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+
+                <span className="px-4 text-xs lg:text-base">
+                  {currentPage * totalRows - totalRows + 1}-
+                  {Math.min(currentPage * totalRows, totalItems)} of{" "}
+                  {totalItems}
+                </span>
+              </div>
+              <div className="navigate max-w-[420px] overflow-y-scroll text-xs lg:text-base">
+                {pageNumbers}
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
     </>
   );
 };
