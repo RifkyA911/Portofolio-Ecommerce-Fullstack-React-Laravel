@@ -52,7 +52,7 @@ const Dashboard = (props) => {
   return (
     <>
       <Container className="bg-white">
-        <Content pageName="Dashboard">
+        <Content pageName="Dashboard" Bg="bg-white">
           {loading == false ? (
             <>
               <div className="overflow-scroll">

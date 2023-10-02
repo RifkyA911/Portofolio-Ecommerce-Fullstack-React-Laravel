@@ -10,10 +10,21 @@ import { NavLink } from "react-router-dom";
 // UTILS
 import fetchData from "../utils/API/AsyncFetch";
 import { MuiIcon } from "../utils/RenderIcons";
-import { MyTableEngine } from "../components/Table/MyTableEngine";
+import {
+  MyTableEngine,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+} from "../components/Table/MyTableEngine";
 
 export default function Invoices(props) {
-  const [admins, setAdmins] = useState([]);
+  // const [admins, setAdmins] = useState([]);
+  // const [customer, setCustomer] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [length, setLengthData] = useState();
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,25 +42,34 @@ export default function Invoices(props) {
   } = useSelector((state) => state.UI);
 
   // Custom Const
-  const APIGetCustomer = import.meta.env.VITE_API_URL_GET_ALL_CUSTOMER;
-  const URLCustomer = APIGetCustomer + "/" + 10;
+  const APIGetTransaction = import.meta.env.VITE_API_URL_GET_ALL_TRANSACTION;
+  // const URLTransaction = APIGetTransaction + "/paginate/" + 10;
+  const URLTransaction = APIGetTransaction;
 
-  const fetchCustomer = () => {
-    fetchData(URLCustomer)
-      .then((response) => {
-        setAdmins(response.data);
-        setLoading(false);
+  const fetchTransactions = async (url, type) => {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setLoading(false);
+      if (type == "fetch") {
+        setTransactions(data.data);
         setErrorMessage(null);
-      })
-      .catch((error) => {
-        setLoading(false); // Set loading to false in case of error too
-        console.error("Error fetching data:", error);
-        setErrorMessage("Gagal mengambil data", error);
-      });
+        setLengthData(data.message.length);
+        // const parsedProducts_id = JSON.parse(data.data[0].products_id);
+        console.log(JSON.parse(data.data[0].products_id));
+      } else if (type == "size") {
+        console.log(data.message.length);
+      }
+      // setCount(count + 1);
+      // console.log("fetching data ke-", count);
+    } catch (error) {
+      setLoading(false);
+      console.error("Terjadi kesalahan:", error);
+    }
   };
-  // console.log(URLadmins);
+
   useEffect(() => {
-    fetchCustomer();
+    fetchTransactions(URLTransaction, "fetch");
   }, []);
 
   return (
@@ -95,21 +115,28 @@ export default function Invoices(props) {
                 )}
               </div>
               {/* Baris 1 */}
-              {/* <WarningAlert
-                message={
-                  "OTW Req SQL SELECT * FROM admins LIMIT dynamic page request"
-                }
-              /> */}
 
               {/* Baris 2 */}
 
-              <MyTableEngine
+              {/* <MyTableEngine
                 inputData={admins}
                 refresh={() => {
                   fetchAdmins();
                   setLoading(true);
                 }}
-              />
+              /> */}
+              {/* <Table>
+                <Thead>
+                  <Th>
+                    <Td></Td>
+                  </Th>
+                </Thead>
+                <Tbody>
+                  <Tr>
+                    <Td></Td>
+                  </Tr>
+                </Tbody>
+              </Table> */}
             </div>
           )}
         </Content>

@@ -9,14 +9,20 @@ import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 // UTILS
 import { MuiIcon } from "../utils/RenderIcons";
-import { MyTableEngine, Th } from "../components/Table/MyTableEngine";
+import {
+  MyTableEngine,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Td,
+} from "../components/Table/MyTableEngine";
 import { MyTablePagination } from "../components/Table/MyTablePagination";
 
 // define fetch data URL by admins
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
 
 export default function Admins(props) {
-  const [count, setCount] = useState(0);
   const [admins, setAdmins] = useState([]);
   const [length, setLengthData] = useState();
   const [paginate, setPaginate] = useState(1);
@@ -136,15 +142,15 @@ export default function Admins(props) {
                   setLoading(true);
                 }}
                 TabHeader={true}
-              />
-              <MyTablePagination
-                paginate={paginate}
-                onChangePaginate={handlePaginateChange}
-                rows={rows}
-                onRowsChange={handleRowsChange}
-                length={length}
-              />
-              {/* </MyTableEngine> */}
+              >
+                <MyTablePagination
+                  paginate={paginate}
+                  onChangePaginate={handlePaginateChange}
+                  rows={rows}
+                  onRowsChange={handleRowsChange}
+                  length={length}
+                />
+              </MyTableEngine>
             </div>
           )}
         </Content>

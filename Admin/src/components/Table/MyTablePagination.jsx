@@ -21,7 +21,6 @@ export const MyTablePagination = (props) => {
     textColor,
     screenHeigth,
     screenWidth,
-    BgTable,
     BgOuterTable,
     BorderRowTable,
     BorderOuterTable,
@@ -68,6 +67,7 @@ export const MyTablePagination = (props) => {
   if (currentPage > 1) {
     pageNumbers.push(
       <button
+        key="prev-btn" // Berikan key yang unik
         onClick={() => {
           handlePageChange(currentPage - 1);
           onChangePaginate(parseInt(currentPage - 1));
@@ -84,11 +84,11 @@ export const MyTablePagination = (props) => {
   if (start > 1) {
     pageNumbers.push(
       <button
+        key="left-dots-btn"
         onClick={() => {
           handlePageChange(1);
           onChangePaginate(parseInt(1));
         }}
-        key="left-dots"
         className="px-4 py-2 hover:bg-violet-300 rounded-lg transition-all duration-200"
       >
         ...
@@ -124,7 +124,7 @@ export const MyTablePagination = (props) => {
           handlePageChange(totalPages);
           onChangePaginate(parseInt(totalPages));
         }}
-        key="right-dots"
+        key="right-dots-btn"
         className="px-4 py-2 hover:bg-violet-300 rounded-lg transition-all duration-200"
       >
         ...
@@ -136,6 +136,7 @@ export const MyTablePagination = (props) => {
   if (currentPage < totalPages) {
     pageNumbers.push(
       <button
+        key="next-btn"
         onClick={() => {
           handlePageChange(currentPage + 1);
           onChangePaginate(parseInt(currentPage + 1));
@@ -154,47 +155,51 @@ export const MyTablePagination = (props) => {
   }, []);
 
   return (
-    <div className="">
-      <div>
-        <div
-          align="center"
-          colSpan="5"
-          className={`${BgOuterTable} ${textColor} `}
-        >
-          <div
-            className={`${BgOuterTable} flex flex-wrap lg:flex-row h-auto lg:h-12 font-roboto-medium text-base p-0 justify-center items-center`}
+    <>
+      <tfoot>
+        <tr>
+          <td
+            key={9999}
+            align="center"
+            colSpan="5"
+            className={`${BgOuterTable} ${textColor} `}
           >
-            <div className="selector w-auto">
-              <span className="px-4 font-roboto-regular text-xs lg:text-base">
-                Rows per page:
-              </span>
-              <select
-                className="select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-base"
-                autoComplete="off"
-                value={rows}
-                onChange={(e) => {
-                  onRowsChange(parseInt(e.target.value));
-                  handlePageChange(1);
-                  onChangePaginate(parseInt(1));
-                }}
-              >
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-              </select>
+            <div
+              className={`${BgOuterTable} flex flex-wrap lg:flex-row h-auto lg:h-12 font-roboto-medium text-base p-0 justify-center items-center`}
+            >
+              <div className="selector w-auto">
+                <span className="px-4 font-roboto-regular text-xs lg:text-base">
+                  Rows per page:
+                </span>
+                <select
+                  className="select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-base"
+                  autoComplete="off"
+                  value={rows}
+                  onChange={(e) => {
+                    onRowsChange(parseInt(e.target.value));
+                    handlePageChange(1);
+                    onChangePaginate(parseInt(1));
+                  }}
+                >
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
 
-              <span className="px-4 text-xs lg:text-base">
-                {currentPage * totalRows - totalRows + 1}-
-                {Math.min(currentPage * totalRows, totalItems)} of {totalItems}
-              </span>
+                <span className="px-4 text-xs lg:text-base">
+                  {currentPage * totalRows - totalRows + 1}-
+                  {Math.min(currentPage * totalRows, totalItems)} of{" "}
+                  {totalItems}
+                </span>
+              </div>
+              <div className="navigate max-w-[420px] overflow-y-scroll text-xs lg:text-base">
+                {pageNumbers}
+              </div>
             </div>
-            <div className="navigate max-w-[420px] overflow-y-scroll text-xs lg:text-base">
-              {pageNumbers}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </td>
+        </tr>
+      </tfoot>
+    </>
   );
 };

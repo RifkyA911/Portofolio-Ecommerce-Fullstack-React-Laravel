@@ -163,22 +163,17 @@ export const MyTableEngine = (props) => {
                 <Th
                   name="Action"
                   column="action"
-                  onClick={() =>
-                    document.getElementById("ConfirmDelete").showModal()
-                  }
                   className="text-[14px] w-[160px]"
                 >
                   Actions
-                  <i className="m-0 lg:mx-2 text-gray-400">
-                    <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
-                  </i>
                 </Th>
               </Tr>
             </Thead>
-            <Tbody key={0} className={`${BgTable} `}>
+            <Tbody className={`${BgTable} `}>
               {searchResults.map((row, index) => (
                 <Tr
                   key={index}
+                  customKey={index}
                   className={`${
                     selectedRows[row.id] ? "selected" : ""
                   } divide-y`}
@@ -210,7 +205,13 @@ export const MyTableEngine = (props) => {
                         <AuthorityToggle data={row.authority} />
                       </Td>
                       <Td className="flex-1 px-8 lg:px-4 ">
-                        <ActionButton data={row} />
+                        <ActionButton
+                          key={index}
+                          data={row}
+                          onClickDelete={() =>
+                            document.getElementById("ConfirmDelete").showModal()
+                          }
+                        />
                       </Td>
                     </>
                   ) : (
@@ -223,6 +224,7 @@ export const MyTableEngine = (props) => {
               ))}
             </Tbody>
             {/* foot */}
+            {children}
           </Table>
         </div>
       </TableContext.Provider>
@@ -265,7 +267,7 @@ export const MyTableHeader = (props) => {
     <>
       <div
         ref={targetRef}
-        className=" flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-hidden"
+        className=" flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-scroll focus:touch-pan-x"
       >
         <div className="flex justify-center lg:justify-start lg:w-7/12 mb-4 lg:mb-0">
           <input
@@ -287,21 +289,31 @@ export const MyTableHeader = (props) => {
             <span className="font-base px-2">Print</span>
           </button>
           <button
-            className="mx-1 grow-0 shrink-0 focus:outline-none bg-red-500 hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
+            className="mx-1 grow-0 shrink-0 focus:outline-none bg-red-500 hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-500 rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
             onClick={() => document.getElementById("ConfirmDelete").showModal()}
           >
-            <span id="showDelete" className="options">
-              <i className="font-xs">
-                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-              </i>
-            </span>
-            <span className="font-base px-2">Delete</span>
-            <span id="showCancelDelete " className="options hidden">
-              <i className="font-xs ">
-                <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-              </i>
-              <span className="font-base px-2">Cancel</span>
-            </span>
+            {!selectedRows ? (
+              <>
+                <span id="showDelete" className="options  py-[6px] px-[4px]">
+                  <i className="font-xs">
+                    <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
+                  </i>
+                </span>
+                <span className="font-base pr-2">Delete</span>
+              </>
+            ) : (
+              <>
+                <span
+                  id="showCancelDelete "
+                  className="options  py-[6px] px-[4px] hidden "
+                >
+                  <i className="font-xs ">
+                    <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
+                  </i>
+                  <span className="font-base pr-2">Cancel</span>
+                </span>
+              </>
+            )}
           </button>
           <button
             className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
@@ -389,7 +401,7 @@ export const Th = (props) => {
     useContext(TableContext);
 
   const {
-    key,
+    customKey,
     name,
     feature,
     column,
@@ -434,7 +446,7 @@ export const Th = (props) => {
     <>
       {feature == "filter" && (
         <th
-          key={key}
+          key={customKey}
           onClick={() => handleSortClick(column)}
           className={`${className} min-h-[36px]`}
         >
@@ -455,13 +467,17 @@ export const Th = (props) => {
         </th>
       )}
       {feature == null && (
-        <th onClick={onClick} className={`${className} min-h-[36px]`}>
+        <th
+          key={customKey}
+          onClick={onClick}
+          className={`${className} min-h-[36px]`}
+        >
           {children}
         </th>
       )}
       {feature == "select" && (
         <th
-          key={key}
+          key={customKey}
           onChange={onChange}
           className={`${className} min-h-[36px] w-0 p-0 text-center bg-slate-50 hover:bg-gray-200 transition-colors duration-75 cursor-pointer`}
         >
@@ -475,7 +491,7 @@ export const Th = (props) => {
 };
 
 export const Tbody = (props) => {
-  const { element, key, className, onClick, event } = props;
+  const { element, className, onClick, event } = props;
   return (
     <>
       <tbody className={`${className}  `}>{props.children}</tbody>
@@ -485,11 +501,11 @@ export const Tbody = (props) => {
 export const Tr = (props) => {
   const { data, errorMessage, selectedRows, updateMyTableState } =
     useContext(TableContext);
-  const { element, key, className, onClick, event } = props;
+  const { element, customKey, className, onClick, event } = props;
   return (
     <>
       <tr
-        key={key}
+        key={customKey}
         className={`${className} ${
           selectedRows
             ? "hover:bg-gray-200 transition-colors duration-75 cursor-pointer"

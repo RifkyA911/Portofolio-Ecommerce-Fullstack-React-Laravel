@@ -30,7 +30,7 @@ function Notification() {
             <div
               className={`${textColor} flex flex-row mb-2 w-full justify-end`}
             >
-              <div className="flex flex-col text-[14px] font-roboto-medium items-end">
+              <div className="flex flex-col text-[14px] font-roboto-medium items-end text-xs">
                 <label
                   htmlFor="date"
                   className="pb-2 cursor-pointer text-xs font-roboto-regular"
@@ -42,7 +42,8 @@ function Notification() {
                   type="date"
                   name=""
                   placeholder="dd"
-                  className={`bg-slate-200 text-black shadow-md p-2 rounded-md cursor-pointer`}
+                  autoFocus
+                  className={`bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-pointer outline-none`}
                 />
               </div>
             </div>
