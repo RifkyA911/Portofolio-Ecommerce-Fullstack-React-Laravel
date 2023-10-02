@@ -32,7 +32,7 @@ const Dashboard = (props) => {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
   const URLproduct =
-    import.meta.env.VITE_API_URL_GET_ALL_PRODUCT_PAGINATE + "/1/10";
+    import.meta.env.VITE_API_URL_GET_ALL_PRODUCT + "/paginate/1/10";
 
   useEffect(() => {
     fetchData(URLproduct)

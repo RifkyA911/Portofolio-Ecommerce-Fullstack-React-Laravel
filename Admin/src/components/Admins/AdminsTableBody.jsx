@@ -98,19 +98,8 @@ export const AuthorityToggle = (props) => {
 export const ActionButton = (props) => {
   const { data, onClickDelete, onClickEdit } = props;
 
-  // console.table(data.id);
-  // console.log(errors.data);
-  let content = null;
-
-  // Misalnya, Anda ingin menampilkan username hanya jika id adalah 1
-  if (data.id === 3) {
-    content = <p>{data.username}</p>;
-  }
-
   return (
     <>
-      {content}
-      {/* {(data.id = 8 && <p>{data.username}</p>)} */}
       <div className="w-full flex lg:flex-row justify-around items-center">
         <button
           onClick={onClickDelete}

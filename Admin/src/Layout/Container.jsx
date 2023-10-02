@@ -11,7 +11,7 @@ const Container = (props) => {
     <>
       <div className={container}>
         <main
-          className={`${BackBgColor} ${textColor} w-full static transition-all duration-300`}
+          className={`${BackBgColor} ${textColor} w-full static transition-all duration-300 mb-12`}
         >
           <div
             className={`p-4 my-4 ${

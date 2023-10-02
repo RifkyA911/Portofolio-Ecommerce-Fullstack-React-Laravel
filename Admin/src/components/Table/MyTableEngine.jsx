@@ -581,6 +581,7 @@ export const MyTablePagination = (props) => {
                   <option value={25}>25</option>
                   <option value={50}>50</option>
                   <option value={100}>100</option>
+                  <option value={totalItems}>All</option>
                 </select>
 
                 <span className="px-4 text-xs lg:text-base">

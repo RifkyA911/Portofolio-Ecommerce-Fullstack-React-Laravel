@@ -182,7 +182,7 @@ export const ActionModalForm = (props) => {
               <img
                 src={`./src/assets/admin_avatar/${inputData.pict}`}
                 alt="Avatar Tailwind CSS Component"
-                className="w-96 rounded-full max-w-3xl"
+                className="w-96 rounded-full max-w-3xl shadow-lg"
                 loading="lazy"
               />
             </div>
@@ -264,13 +264,15 @@ export const ActionModalForm = (props) => {
               )}
             </form>
           </div>
-          <button
-            type="submit"
-            onSubmit={onSubmit}
-            className="bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-          >
-            <MuiIcon iconName="EditRounded" /> Save Changes
-          </button>
+          <div className="py-2">
+            <button
+              type="submit"
+              onSubmit={onSubmit}
+              className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+            >
+              <MuiIcon iconName="EditRounded" /> Save Changes
+            </button>
+          </div>
         </div>
       </dialog>
     </>
