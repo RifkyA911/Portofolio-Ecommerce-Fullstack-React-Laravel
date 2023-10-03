@@ -18,15 +18,19 @@ import {
   Tr,
   Th,
   Td,
+  MyTablePagination,
 } from "../components/Table/MyTableEngine";
 
 export default function Invoices(props) {
+  const [transactions, setTransactions] = useState([]);
   // const [admins, setAdmins] = useState([]);
   // const [customer, setCustomer] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [length, setLengthData] = useState();
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [length, setLengthData] = useState();
+  const [paginate, setPaginate] = useState(1);
+  const [rows, setRows] = useState(10);
 
   // REDUX
   const {
@@ -56,7 +60,7 @@ export default function Invoices(props) {
         setErrorMessage(null);
         setLengthData(data.message.length);
         // const parsedProducts_id = JSON.parse(data.data[0].products_id);
-        console.log(JSON.parse(data.data[0].products_id));
+        // console.log(JSON.parse(data.data[0].products_id));
       } else if (type == "size") {
         console.log(data.message.length);
       }
@@ -71,7 +75,24 @@ export default function Invoices(props) {
   useEffect(() => {
     fetchTransactions(URLTransaction, "fetch");
   }, []);
+  // Handler ketika nilai rows diubah
+  const handleRowsChange = (newRows) => {
+    setLoading(true);
+    setRows(newRows);
+  };
 
+  // Handler ketika nilai paginate diubah
+  const handlePaginateChange = (newPaginate) => {
+    setLoading(true);
+    setPaginate(newPaginate);
+    console.log(newPaginate);
+  };
+
+  const jsonParser = (input) => {
+    const parsedAuthority = JSON.parse(input);
+    console.log(parsedAuthority);
+    // return parsedAuthority
+  };
   return (
     <>
       <Container>
@@ -83,7 +104,7 @@ export default function Invoices(props) {
               ))}
             </div>
           ) : (
-            <div id="Admins" className="rounded-lg text-sm ">
+            <div id="Invoices" className="rounded-lg text-sm ">
               <div>
                 {errorMessage && (
                   <>
@@ -100,7 +121,7 @@ export default function Invoices(props) {
                     />
                     <button
                       onClick={() => {
-                        fetchAdmins();
+                        fetchTransactions();
                         setLoading(true);
                       }}
                       className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 p-2 rounded-md font-roboto-medium text-white items-center "
@@ -110,7 +131,6 @@ export default function Invoices(props) {
                         fontSize={20}
                       />
                     </button>
-                    <NavLink to={`chat/${admins[0]?.id}`}>kss</NavLink>
                   </>
                 )}
               </div>
@@ -118,25 +138,51 @@ export default function Invoices(props) {
 
               {/* Baris 2 */}
 
-              {/* <MyTableEngine
-                inputData={admins}
+              <MyTableEngine
+                inputData={transactions}
                 refresh={() => {
-                  fetchAdmins();
+                  fetchTransactions();
                   setLoading(true);
                 }}
-              /> */}
-              {/* <Table>
-                <Thead>
-                  <Th>
-                    <Td></Td>
-                  </Th>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    <Td></Td>
-                  </Tr>
-                </Tbody>
-              </Table> */}
+                TabHeader={false}
+              >
+                <Table>
+                  <Thead>
+                    <Tr>
+                      <Th>No</Th>
+                      <Th>Products</Th>
+                      <Th>Quantity</Th>
+                      <Th>Total</Th>
+                      <Th>Check Out</Th>
+                      <Th>Buyer</Th>
+                      <Th>Admin</Th>
+                      <Th>Status</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {transactions.map((transaction, index) => (
+                      <Tr>
+                        <Td>{index + 1}</Td>
+                        <Td>{transaction.products_id}</Td>
+                        <Td>{transaction.products_id}</Td>
+                        <Td>{transaction.total_price}</Td>
+                        <Td>{transaction.checked_out}</Td>
+                        <Td>{transaction.user_id}</Td>
+                        <Td>{transaction.admin_id}</Td>
+                        <Td>{transaction.sent}</Td>
+                        <Td>{transaction.done}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                  {/* <MyTablePagination
+                    paginate={paginate}
+                    onChangePaginate={handlePaginateChange}
+                    rows={rows}
+                    onRowsChange={handleRowsChange}
+                    length={length}
+                  /> */}
+                </Table>
+              </MyTableEngine>
             </div>
           )}
         </Content>

@@ -32,7 +32,7 @@ import { MuiIcon } from "../utils/RenderIcons";
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
 
 export default function Admins(props) {
-  const [admin, setAdmin] = useState([]);
+  const [admin, setAdmin] = useState();
   const [admins, setAdmins] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -128,19 +128,20 @@ export default function Admins(props) {
   // fetchProducts(import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + id);
   const handleActionButton = (id) => {
     console.log("data = ", id);
-    axios
-      .get(import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + id)
-      .then((response) => {
-        setAdmin(response.data.data);
-      })
-      .catch((error) => console.log(error));
+    setAdmin(id);
+    // axios
+    //   .get(import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + id)
+    //   .then((response) => {
+    //     setAdmin(response.data.data);
+    //   })
+    //   .catch((error) => console.log(error));
   };
   // console.table(admin);
 
   return (
     <>
-      {console.log("ASD")}
-      <ActionModalForm inputData={admin} />
+      {/* {console.log("Render")} */}
+
       <Container>
         <Content pageName={"Admins"}>
           {loading == true ? (
@@ -183,7 +184,7 @@ export default function Admins(props) {
                 )}
               </div>
               {/* Baris 1 */}
-
+              <ActionModalForm table="admins" table_id={admin} method="POST" />
               <MyTableEngine
                 inputData={admins}
                 refresh={() => {

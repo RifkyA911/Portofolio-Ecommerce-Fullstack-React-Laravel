@@ -127,29 +127,57 @@ export const Modal = (props) => {
 };
 
 export const ActionModalForm = (props) => {
-  const { inputData, table, table_id = 1, method } = props;
+  const { table, table_id, method } = props;
   const [data, setData] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  console.table(props);
-  // let URL;
-  // if (table == "admin" && table_id) {
-  //   console.log("s");
-  // } else {
-  //   console.info("no data", props);
-  // }
+  let URL;
+  if (table == "admins") {
+    URL = import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + table_id;
+  } else if (table == "invoices") {
+    URL = import.meta.env.VITE_API_URL_GET_BY_ID_TRANSACTION + "/" + table_id;
+  }
 
-  // useEffect(() => {
-  //   axios
-  //     .get(URL)
-  //     .then((response) => setData(response.data))
-  //     .catch((error) => console.log(error));
-  // });
+  useEffect(() => {
+    if (table_id !== undefined) {
+      axios
+        .get(URL)
+        .then((response) => {
+          console.table("fetching:", URL);
+          setData({
+            email: response.data.data.email,
+            username: response.data.data.username,
+            pict: response.data.data.pict,
+            role: response.data.data.role,
+            created_at: response.data.data.created_at,
+            updated_at: response.data.data.updated_at,
+          });
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
+    }
+  }, [table_id]); // Gunakan table_id sebagai dependency untuk useEffect.
+  // console.table(data);
+
+  async function alterTable() {
+    axios
+      .put(import.meta.env.VITE_API_URL_PUT_ADMIN, form)
+      .then((response) => setData(response.data))
+      .catch((error) => console.log(error));
+  }
 
   const {
     register,
     handleSubmit,
+    setValue,
+    setError,
     control,
     formState: { errors },
     watch,
@@ -159,12 +187,29 @@ export const ActionModalForm = (props) => {
       exampleRequired: "",
     },
   });
-  const onSubmit = (editedData) => {
-    console.log(editedData);
-    console.log("sdsd");
-  };
   const password = useRef({});
-  password.current = watch("password", "");
+
+  const onSubmit = async (data) => {
+    console.log("yee");
+    // Lakukan validasi di sini jika diperlukan
+    if (data.password !== data.confirmPassword) {
+      setError("confirmPassword", {
+        type: "manual",
+        message: "Passwords do not match",
+      });
+      return;
+    }
+    // Lanjutkan dengan pengiriman data jika cocok
+    try {
+      const response = await axios.put(
+        import.meta.env.VITE_API_URL_PUT_ADMIN,
+        data
+      );
+      console.log("Data berhasil dikirim:", response.data);
+    } catch (error) {
+      console.error("Terjadi kesalahan:", error);
+    }
+  };
 
   return (
     <>
@@ -172,106 +217,186 @@ export const ActionModalForm = (props) => {
       <dialog id="EditAdmin" className="modal">
         <div className="modal-box h-auto w-12/12 max-w-4xl bg-gray-50 overflow-y-scroll cursor-auto">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            <button
+              onClick={() => {
+                // setLoading(true);
+                // setData([]);
+              }}
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            >
               ✕
             </button>
           </form>
           <h3 className="font-bold text-lg p-0 text-left">Edit Data Admin</h3>
-          <div className="flex flex-row">
-            <div className="flex justify-center items-center w-6/12 p-12">
-              <img
-                src={`./src/assets/admin_avatar/${inputData.pict}`}
-                alt="Avatar Tailwind CSS Component"
-                className="w-96 rounded-full max-w-3xl shadow-lg"
-                loading="lazy"
-              />
-            </div>
-            <form
-              // onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium"
-            >
-              <label className="font-roboto-bold self-start">E-mail</label>
-              <input
-                type="text"
-                placeholder="Email"
-                className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-                // disabled
-                {...register("Email", {
-                  required: true,
-                  pattern: /^\S+@\S+$/i,
-                })}
-                value={inputData.email}
-              />
-              <label className="font-roboto-bold self-start">Username</label>
-              <input
-                type="text"
-                placeholder="Username"
-                className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-                {...register("First name", {
-                  required: true,
-                  maxLength: 80,
-                })}
-                value={inputData.username}
-              />
-              {errors.exampleRequired && <p>This field is required</p>}
-              <label className="font-roboto-bold self-start">Role</label>
-              <Controller
-                name="role"
-                control={control}
-                defaultValue="" // Nilai default jika perlu
-                rules={{ required: "Role is required" }} // Aturan validasi jika diperlukan
-                render={({ field }) => (
-                  <select
-                    className="select select-info select-sm w-full max-w-3xl focus:outline-none self-start font-roboto-medium"
-                    {...field}
-                    // value={inputData.JSON.parse()}
-                  >
-                    <option value="1">Admin</option>
-                    <option value="0">Super Admin</option>
-                  </select>
-                )}
-              />
-              {errors.role && <p>{errors.role.message}</p>}
-              <label className="font-roboto-bold self-start">
-                New Password
-              </label>
-              <input
-                type="password"
-                className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters",
-                  },
-                })}
-              />
-              {errors.password && <p>{errors.password.message}</p>}
-              <label className="font-roboto-bold self-start">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-                {...register("confirmPassword", {
-                  required: "Confirm Password is required",
-                  validate: (value) =>
-                    value === password.current || "Passwords do not match",
-                })}
-              />
-              {errors.confirmPassword && (
-                <p>{errors.confirmPassword.message}</p>
-              )}
-            </form>
-          </div>
-          <div className="py-2">
-            <button
-              type="submit"
-              onSubmit={onSubmit}
-              className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-            >
-              <MuiIcon iconName="EditRounded" /> Save Changes
-            </button>
+          <div className="content">
+            {!loading ? (
+              <>
+                <form onSubmit={(e) => e.preventDefault()}>
+                  <div className="flex flex-row">
+                    <div className="flex justify-center items-center w-6/12 p-12">
+                      <img
+                        src={`./src/assets/admin_avatar/${data.pict}`}
+                        alt="Avatar Tailwind CSS Component"
+                        className="w-96 rounded-full max-w-3xl shadow-lg"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
+                      <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+                        Email
+                        {errors.email && (
+                          <span className="absolute right-0 text-red-500">
+                            {errors.email.message}
+                          </span>
+                        )}
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="Email"
+                        className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+                        // disabled
+                        {...register("email", {
+                          required: true,
+                          pattern: /^\S+@\S+$/i,
+                        })}
+                        onChange={(e) => {
+                          setValue("email", e.target.value);
+                          setData((prevData) => ({
+                            ...prevData,
+                            email: e.target.value,
+                          }));
+                        }}
+                        value={data.email}
+                      />
+                      <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+                        Username
+                        {errors.username && (
+                          <span className="absolute right-0 text-red-500">
+                            {errors.username.message}
+                          </span>
+                        )}
+                      </label>
+                      <input
+                        type="username"
+                        placeholder="Username"
+                        className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+                        {...register("username", {
+                          required: true,
+                          maxLength: 80,
+                        })}
+                        onChange={(e) => {
+                          setValue("username", e.target.value);
+                          setData((prevData) => ({
+                            ...prevData,
+                            username: e.target.value,
+                          }));
+                        }}
+                        value={data.username}
+                      />
+
+                      <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+                        Role
+                        {errors.role && (
+                          <span className="absolute right-0 text-red-500">
+                            {errors.role.message}
+                          </span>
+                        )}
+                      </label>
+                      <Controller
+                        name="role"
+                        control={control}
+                        defaultValue="1" // Nilai default jika perlu
+                        render={({ field }) => (
+                          <select
+                            className="select select-info select-sm w-full max-w-3xl focus:outline-none self-start font-roboto-medium"
+                            {...field}
+                          >
+                            <option value="1">Admin</option>
+                            <option value="0">Super Admin</option>
+                          </select>
+                        )}
+                      />
+
+                      <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+                        Password
+                        {errors.password && (
+                          <span className="absolute right-0 text-red-500">
+                            {errors.password.message}
+                          </span>
+                        )}
+                      </label>
+                      <div className="relative w-full">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+                          {...register("password", {
+                            required: "Password is required",
+                            minLength: {
+                              value: 6,
+                              message: "Password must be at least 6 characters",
+                            },
+                          })}
+                        />
+                        <span
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute bg-transparent w-4 right-[20px] bottom-[8px] cursor-pointer"
+                        >
+                          <MuiIcon
+                            iconName={
+                              showPassword
+                                ? "VisibilityRounded"
+                                : "VisibilityOffRounded"
+                            }
+                          />
+                        </span>
+                      </div>
+                      <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+                        Confirm Password
+                        {errors.confirmPassword && (
+                          <span className="absolute right-0 text-red-500">
+                            {errors.confirmPassword.message}
+                          </span>
+                        )}
+                      </label>
+                      <div className="relative w-full">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+                          {...register("confirmPassword", {
+                            required: "Confirm Password is required",
+                            validate: (value) =>
+                              value === password.current ||
+                              "Passwords do not match",
+                          })}
+                        />
+                        <span
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute bg-transparent w-4 right-[20px] bottom-[8px]  cursor-pointer"
+                        >
+                          <MuiIcon
+                            iconName={
+                              showPassword
+                                ? "VisibilityRounded"
+                                : "VisibilityOffRounded"
+                            }
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="py-2">
+                    <button
+                      type="submit"
+                      className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+                    >
+                      <MuiIcon iconName="EditRounded" /> Save Changes
+                    </button>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
         </div>
       </dialog>
