@@ -46,7 +46,7 @@ function MyAppRoutes() {
       <Sidebar />
       <Navbar />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route exact path="/" element={<Dashboard />} />
         {currentUser.role !== 0 ? (
           <Route path="/admins" element={<Unauthorized />} />
         ) : (

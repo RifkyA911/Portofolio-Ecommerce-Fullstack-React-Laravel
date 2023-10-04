@@ -103,11 +103,11 @@ export const WarningAlert = (props) => {
 };
 
 export const DangerAlert = (props) => {
-  const { message } = props;
+  const { className, message, children } = props;
   // Konten komponen
   return (
     <>
-      <div className="alert alert-error">
+      <div className={`${className} alert alert-error`}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="stroke-current shrink-0 h-6 w-6"
@@ -123,6 +123,7 @@ export const DangerAlert = (props) => {
         </svg>
 
         <span>{message}</span>
+        <span>{children}</span>
       </div>
     </>
   );
