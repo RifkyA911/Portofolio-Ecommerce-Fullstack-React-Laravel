@@ -130,7 +130,8 @@ export const Modal = (props) => {
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const ActionModalForm = (props) => {
-  const { refresh, table, table_id, method } = props;
+  const { refresh, table, table_id, form } = props;
+  const [method, setMethod] = useState(null);
   const [data, setData] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -253,7 +254,7 @@ export const ActionModalForm = (props) => {
 
   return (
     <>
-      <dialog id="EditAdmin" className="modal">
+      <dialog id="UpdateAdmin" className="modal">
         <div className="modal-box h-auto w-12/12 max-w-4xl bg-gray-50 overflow-y-scroll cursor-auto">
           <form method="dialog">
             <button

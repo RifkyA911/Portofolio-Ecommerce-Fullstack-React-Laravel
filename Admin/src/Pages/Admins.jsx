@@ -32,19 +32,23 @@ import { MuiIcon } from "../utils/RenderIcons";
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
 
 export default function Admins(props) {
-  const [admin, setAdmin] = useState("");
+  // This Page
   const [admins, setAdmins] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Action Modal
+  const [admin, setAdmin] = useState("");
+  const [formType, setFormType] = useState(null);
+
+  // Table Pagination
   const [length, setLengthData] = useState();
   const [paginate, setPaginate] = useState(1);
   const [rows, setRows] = useState(10);
 
+  // Table Header
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const [getId, setGetId] = useState(null);
 
   // REDUX
   const {
@@ -126,9 +130,10 @@ export default function Admins(props) {
   //   }
   // };
   // fetchProducts(import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + id);
-  const handleActionButton = (id) => {
+  const handleActionButton = (id, formType) => {
     // console.log("data = ", id);
     setAdmin(id);
+    setForm(formType);
   };
   // console.table(admin);
 
@@ -178,14 +183,6 @@ export default function Admins(props) {
                 )}
               </div>
               {/* Baris 1 */}
-              {/* {admin && (
-                <ActionModalForm
-                  table="admins"
-                  table_id={admin}
-                  method="POST"
-                />
-              )} */}
-
               <ActionModalForm
                 table="admins"
                 table_id={admin}
@@ -193,6 +190,7 @@ export default function Admins(props) {
                   fetchAdmins(URL, "fetch");
                   setLoading(true);
                 }}
+                formType={formType}
               />
               <MyTableEngine
                 inputData={admins}
@@ -294,21 +292,17 @@ export default function Admins(props) {
                               <ActionButton
                                 key={index}
                                 data={row}
-                                onClickDelete={() =>
+                                onClickDelete={() => {
                                   document
-                                    .getElementById("ConfirmDelete")
-                                    .showModal()
-                                }
-                                // onClickEdit={() =>
-                                //   document
-                                //     .getElementById(`EditAdmin`)
-                                //     .showModal()
-                                // }
+                                    .getElementById("DeleteAdmin")
+                                    .showModal();
+                                  handleActionButton(row.id, "Drop");
+                                }}
                                 onClickEdit={() => {
                                   document
-                                    .getElementById("EditAdmin")
+                                    .getElementById("UpdateAdmin")
                                     .showModal();
-                                  handleActionButton(row.id);
+                                  handleActionButton(row.id, "Alter");
                                 }}
                               />
                             </Td>
