@@ -112,13 +112,25 @@ class AdminsController extends Controller
 
     public function update(Request $request)
     {
+        $getAuthority = $request->input('authority');
+
         $updateAdmin = Admin::find($request->input('id'));
+        // return $request;
+
         // initiate rule for validation
-        $rule = [
-            "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
-            "username" => 'required',
-            "password" => 'required|min:6'
-        ];
+        // jika yang mengedit adalah superAdmin 
+        $getAuthority === 'superAdmin'
+            ?
+            ($rule = [
+                "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
+                "username" => 'required',
+            ])
+            : ($rule = [
+                "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
+                "username" => 'required',
+                "password" => 'required|min:6'
+            ]);
+
 
         // if an Admin issuing newPassword then add rule list
         if ($request->input("newPassword") !== null) {
@@ -131,9 +143,14 @@ class AdminsController extends Controller
         }
 
         // cek password lama
-        if (!Hash::check($request->input('password'), $updateAdmin->password)) {
-            return response(new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')]), 401);
+        // jika yang mengedit bukan superAdmin 
+        if ($getAuthority !== 'superAdmin') {
+            if (!Hash::check($request->input('password'), $updateAdmin->password)) {
+                return response(new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')]), 401);
+            };
         }
+
+        // return $request;
 
         // isi data baru
         $updateAdmin->username = $request->input('username');
@@ -143,9 +160,9 @@ class AdminsController extends Controller
         } else {
             $updateAdmin->password = $request->input('password');
         }
-        // if ($updateAdmin->role == 0) {
-        //     $updateAdmin->role = $request->input('role');
-        // }
+        if ($updateAdmin->role == 1) { // jika admin role = admin
+            $updateAdmin->role = $request->input('role');
+        }
         $updateAdmin->pict = $request->input('pict');
         return new PostResource(true, "User ter-update.", $updateAdmin->update());
     }
