@@ -58,9 +58,9 @@ function Login() {
   // Konten komponen
   return (
     <>
-      <main className="bg-gradient-to-b from-violet-400 to-blue-400 w-full h-full min-h-screen static mx-auto ">
-        <div className="flex w-full h-full justify-center min-h-[500px]">
-          <div className="p-4 flex-col h-full duration-300 mt-10">
+      <main className="bg-gradient-to-b from-violet-400 to-blue-400 w-full h-full min-h-screen static m-auto ">
+        <div className="flex w-full h-full justify-center min-h-screen xmin-h-[500px]">
+          <div className="p-4 flex-col h-full duration-300 xmt-10 my-[5%]">
             <WarningAlert message="Progressing JWT AUTH TOKEN" />
             <div className="w-96 bg-gradient-to-b from-white to-white rounded-xl relative shadow-sm text-slate-800 font-semibold">
               <h1 className="p-4 text-2xl font-semibold">Login</h1>

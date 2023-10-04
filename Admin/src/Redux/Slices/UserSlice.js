@@ -19,9 +19,13 @@ export const loginUser = createAsyncThunk(
             // Jika status code selain 200, lempar status code sebagai error
             throw response.status;
           } catch (error) {
+            const errorMessage = error.response.data.message
+            const errorStatus = error.response.status
+            console.info(error)
             // Jika error adalah respons dari Axios, Anda dapat mengambil status code
             if (error.response && error.response.status) {
-                throw error.response.status;
+                // throw errorMessage
+                throw errorMessage
             }
             
             // Jika bukan respons dari Axios, lempar error tersebut
@@ -58,6 +62,7 @@ const userSlice = createSlice({
             state.error = null;
         })
         .addCase(loginUser.rejected, (state, action)=>{
+            console.info('action payload:', action)
             const errorCode = action.error.message
             state.loading = false;
             state.user = null;
