@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { MarketInbox } from "../Config/Temporary";
-// import axios from "axios";
+import axios from "axios";
 
 import {
   MoreVert,
@@ -16,8 +16,10 @@ import { Menu } from "@headlessui/react";
 import { Container, Content } from "../Layout";
 import { useSelector } from "react-redux";
 
+const CUSTOMER_URL = import.meta.env.VITE_API_URL_GET_ALL_CUSTOMER;
+
 export default function Chat() {
-  const [user, setuser] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [customerAvatar, setCustomerAvatar] = useState("");
   // REDUX
   const {
@@ -33,13 +35,22 @@ export default function Chat() {
   } = useSelector((state) => state.UI);
   // useEffect()
 
-  // async function fetchUsers() {
-  //   try{
-  //     const response = await fetch("http://127.0.0.1:8000/api//message/show")
-  //   } catch{
+  let response;
+  const fetchCustomers = async (url) => {
+    response = await axios
+      .get(url)
+      .then((data) => {
+        console.info(data.data);
+        setCustomers(data.data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-  //   }
-  // }
+  useEffect(() => {
+    fetchCustomers(CUSTOMER_URL);
+  }, []);
 
   return (
     <>
@@ -199,6 +210,24 @@ export default function Chat() {
                   </div>
                 </div>
               </div>
+              <table>
+                <tbody>
+                  {customers.map((customer, index) => (
+                    <tr>
+                      <th>{index + 1}</th>
+                      <td>
+                        <img
+                          src={`./src/assets/user_avatar/${customer.pict}`}
+                          className="w-36"
+                        />
+                      </td>
+                      <td>{customer.username}</td>
+                      <td>{customer.email}</td>
+                      <td>{customer.address}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </Content>

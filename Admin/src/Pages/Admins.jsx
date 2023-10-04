@@ -85,11 +85,6 @@ export default function Admins(props) {
   };
   // console.table(admins);
 
-  // fetch data pertama kali saat masuk ke halaman admins
-  // useEffect(() => {
-  //   fetchAdmins(URL, "fetch");
-  // }, []);
-
   useEffect(() => {
     // Filter data based on the search term
     const filteredData = admins.filter((admins) =>
@@ -116,26 +111,11 @@ export default function Admins(props) {
     console.log(newPaginate);
   };
 
-  // const fetchProducts = async (url) => {
-  //   try {
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-  //     console.table(data.data);
-  //     return data.data;
-  //   } catch (error) {
-  //     setLoading(false);
-  //     let message = "Gagal Fetching Product";
-  //     setErrorMessage(message);
-  //     console.error(message, error);
-  //   }
-  // };
-  // fetchProducts(import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + id);
   const handleActionButton = (id, formType) => {
     // console.log("data = ", id);
     setAdmin(id);
-    setForm(formType);
+    setFormType(formType);
   };
-  // console.table(admin);
 
   return (
     <>
@@ -193,15 +173,25 @@ export default function Admins(props) {
                 formType={formType}
               />
               <MyTableEngine
+                // Main Logic Data
                 inputData={admins}
                 refresh={() => {
                   fetchAdmins(URL, "fetch");
                   setLoading(true);
                 }}
+                // Table Header Menu
                 TabHeader={true}
                 searchTerm={searchTerm}
                 setSearchTerm={(e) => setSearchTerm(e.target.value)}
                 sortData={(newSortedData) => setAdmins(newSortedData)}
+                setAddModal={() => {
+                  document.getElementById("AdminForm").showModal();
+                  handleActionButton(null, "INSERT");
+                }}
+                setDeleteModal={() => {
+                  document.getElementById("AdminForm").showModal();
+                  handleActionButton(99, "DROP_BY_SELECTED");
+                }}
               >
                 {/* table="admin" table_id={getId} */}
                 <Table className={`text-sm w-full `}>
@@ -294,15 +284,15 @@ export default function Admins(props) {
                                 data={row}
                                 onClickDelete={() => {
                                   document
-                                    .getElementById("DeleteAdmin")
+                                    .getElementById("AdminForm")
                                     .showModal();
-                                  handleActionButton(row.id, "Drop");
+                                  handleActionButton(row.id, "DROP_BY_ID");
                                 }}
                                 onClickEdit={() => {
                                   document
-                                    .getElementById("UpdateAdmin")
+                                    .getElementById("AdminForm")
                                     .showModal();
-                                  handleActionButton(row.id, "Alter");
+                                  handleActionButton(row.id, "ALTER_BY_ID");
                                 }}
                               />
                             </Td>

@@ -12,11 +12,16 @@ const TableContext = createContext();
 
 export const MyTableEngine = (props) => {
   const {
+    // Main Logic Table Component
     inputData,
     refresh,
+    // Tab Header Table Component
     TabHeader = false,
     searchTerm,
     setSearchTerm,
+    setAddModal,
+    setDeleteModal,
+    // Main Table Component
     sortData,
     getSortBy = "id",
     getSortOrder = "asc",
@@ -102,6 +107,8 @@ export const MyTableEngine = (props) => {
             <MyTableHeader
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
+              setAddModal={setAddModal}
+              setDeleteModal={setDeleteModal}
               setToggleSelect={() =>
                 setToggleSelect((prevtoggleSelect) => !prevtoggleSelect)
               }
@@ -123,8 +130,15 @@ export const MyTableEngine = (props) => {
 };
 
 export const MyTableHeader = (props) => {
-  const { searchTerm, setSearchTerm, selectedRows, setToggleSelect, refresh } =
-    props;
+  const {
+    searchTerm,
+    setSearchTerm,
+    setAddModal,
+    setDeleteModal,
+    selectedRows,
+    setToggleSelect,
+    refresh,
+  } = props;
   const [isDialogOpen, setDialogOpen] = useState(false);
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
@@ -162,7 +176,7 @@ export const MyTableHeader = (props) => {
           </button>
           <button
             className="mx-1 grow-0 shrink-0 focus:outline-none bg-red-500 hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-500 rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
-            onClick={() => document.getElementById("ConfirmDelete").showModal()}
+            onClick={setDeleteModal}
           >
             {!selectedRows ? (
               <>
@@ -189,7 +203,7 @@ export const MyTableHeader = (props) => {
           </button>
           <button
             className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
-            onClick={() => document.getElementById("AddAdmin").showModal()}
+            onClick={setAddModal}
           >
             <i className="font-xs">
               <MuiIcon
