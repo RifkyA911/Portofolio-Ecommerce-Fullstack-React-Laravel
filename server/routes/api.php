@@ -37,6 +37,8 @@ Route::controller(AdminsController::class)->group(function () {
     Route::post('/admins', 'store');    // parameter role_admin == 0; data => email, username, password, role
     // update admin
     Route::put('/admins', 'update');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    // delete admin
+    Route::delete('/admins', 'drop');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     // login for admin
     Route::post('/admins/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
 });
