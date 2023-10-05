@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 // Components
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { MuiIcon } from "../../utils/RenderIcons";
+
+const URL_PUT = import.meta.env.VITE_API_URL_PUT_ADMIN;
 
 export const ShowAdminName = (props) => {
   const { data } = props;
@@ -56,15 +59,37 @@ export const ShowRole = (props) => {
 
 export const AuthorityToggle = (props) => {
   const { data } = props;
-  const [authority, setAuthority] = useState({});
+  const [thisAdmin, setThisAdmin] = useState([]);
+  const [authority, setAuthority] = useState({
+    chat: false,
+    sort_warehouse: false,
+    alter_price: false,
+  });
 
+  const toggleTypes = ["chat", "sort_warehouse", "alter_price"];
+  const toggleColors = ["toggle-info", "toggle-success", "toggle-warning"];
+
+  let parsedAuthority;
   useEffect(() => {
-    const parsedAuthority = JSON.parse(data);
-    setAuthority({
-      chat: parsedAuthority.chat === "true",
-      sort_warehouse: parsedAuthority.sort_warehouse === "true",
-      alter_price: parsedAuthority.alter_price === "true",
-    });
+    parsedAuthority = JSON.parse(data.authority);
+    if (data.authority) {
+      const parsedAuthority = JSON.parse(data.authority);
+      setAuthority({
+        chat: parsedAuthority.chat === "true",
+        sort_warehouse: parsedAuthority.sort_warehouse === "true",
+        alter_price: parsedAuthority.alter_price === "true",
+      });
+      setThisAdmin({
+        id: data.id,
+        username: data.username,
+        password: data.password,
+        authority: {
+          chat: false,
+          sort_warehouse: false,
+          alter_price: false,
+        },
+      });
+    }
   }, [data]);
 
   const handleToggleChange = (toggleType) => {
@@ -72,10 +97,24 @@ export const AuthorityToggle = (props) => {
       ...prevAuthority,
       [toggleType]: !prevAuthority[toggleType],
     }));
+    updateAdminsAuthority(authority);
   };
 
-  const toggleTypes = ["chat", "sort_warehouse", "alter_price"];
-  const toggleColors = ["info", "success", "warning"];
+  const updateAdminsAuthority = async (data) => {
+    response = await axios
+      .put(URL_PUT, data)
+      .then((data) => {
+        console.info(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  // useEffect(() => {
+  //   // console.info(
+  //   //   "toggle by id-" + thisAdmin + " : " + JSON.stringify(authority)
+  //   // );
+  // }, [authority]);
 
   return (
     <div className="w-full flex lg:flex-row justify-around items-center">
@@ -83,12 +122,10 @@ export const AuthorityToggle = (props) => {
         <div key={toggleType}>
           <input
             type="checkbox"
-            className={`toggle toggle-${toggleColors[index]} m-2`}
+            className={`toggle ${toggleColors[index]} m-2`}
             onChange={() => handleToggleChange(toggleType)}
-            // checked={authority[toggleType]}
-            checked
+            checked={authority[toggleType]}
           />
-          {/* <label>{toggleType}</label> */}
         </div>
       ))}
     </div>

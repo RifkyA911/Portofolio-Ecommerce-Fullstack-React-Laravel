@@ -91,7 +91,8 @@ class AdminsController extends Controller
 
     public function store(Request $request)
     {
-        if ($request->input('role_admin') === "0") {
+        // return response(new PostResource(false, "yoi", $request->input()), 200);
+        if ($request->input('superAuthorizationPassword') === "superAdmin") {
             $validator = Validator::make($request->all(), [
                 "email" => 'required|email|unique:admins,email',
                 "username" => 'required',
@@ -103,25 +104,25 @@ class AdminsController extends Controller
                 return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
             }
 
-            if (Admin::create($request->except(['role_admin'])) !== false) {
+            if (Admin::create($request->except(['superAuthorizationPassword'])) !== false) {
                 return new PostResource(true, "Admin berhasil ditambahkan.", $request->only(['email', 'username']));
             } else {
                 return response(new PostResource(false, "validasi data error", "Something went wrong with the DB :("), 403);
             }
         }
-        return response(new PostResource(false, "Akun admin gagal ditambahkan", "Akun anda tidak punya akses dalam pembuatan akun admin."), 403);
+        return response(new PostResource(false, "Akun admin gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan akun admin.", $request->input()), 403);
     }
 
     public function update(Request $request)
     {
-        $getAuthority = $request->input('authority');
+        $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
 
         $updateAdmin = Admin::find($request->input('adminsId'));
         // return $request;
 
         // initiate rule for validation
         // jika yang mengedit adalah superAdmin 
-        $getAuthority === 'superAdmin'
+        $getSuperAuthorizationPassword === 'superAdmin'
             ?
             ($rule = [
                 "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('adminsId'))],
@@ -146,7 +147,7 @@ class AdminsController extends Controller
 
         // cek password lama
         // jika yang mengedit bukan superAdmin 
-        if ($getAuthority !== 'superAdmin') {
+        if ($getSuperAuthorizationPassword !== 'superAdmin') {
             if (!Hash::check($request->input('password'), $updateAdmin->password)) {
                 return response(new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')]), 401);
             };
@@ -172,13 +173,13 @@ class AdminsController extends Controller
     public function drop(Request $request)
     {
         // return response(new PostResource(false, 'coba', $request->input(), 201));
+        $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
         $selectedAdmin = strval($request->input('adminsId'));
-        $getAuthority = $request->input('authority');
         $dropAdmin = Admin::find($selectedAdmin);
-        if (!$dropAdmin) {
-            return response(new PostResource(false, "admin tidak ditemukan.", ['old_input' => $request->except('adminsId')]), 401);
-        }
-        if ($getAuthority !== "superAdmin") {
+        if ($getSuperAuthorizationPassword !== "superAdmin") {
+            if (!$dropAdmin) {
+                return response(new PostResource(false, "admin tidak ditemukan.", ['old_input' => $request->except('adminsId')]), 401);
+            }
             return response(new PostResource(false, "authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('adminsId')]), 401);
         }
 

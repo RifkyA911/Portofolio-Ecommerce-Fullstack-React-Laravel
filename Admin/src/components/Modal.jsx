@@ -30,7 +30,7 @@ export const Modal = (props) => {
               <div className="flex flex-col justify-center items-center">
                 <h3 className="font-bold text-lg ">This Admin Name</h3>
                 <img
-                  src="./src/assets/user_avatar/78949689_p3.jpg"
+                  src={`./src/assets/admin_avatar/{}`}
                   alt="Admin\src\assets\user_avatar\78949689_p6.jpg"
                   className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden"
                 />
@@ -44,7 +44,12 @@ export const Modal = (props) => {
             <div
               className={`modal-box ${BgColor} max-w-[350px] max-h-[600px] overflow-hidden`}
             >
-              <p className="font-roboto-bold pb-8">Toggle's Colors Guide</p>
+              <p className="font-roboto-bold pb-8">
+                Toggle's Colors Guide{" "}
+                <i className="m-0 lg:mx-2 text-gray-400">
+                  <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                </i>
+              </p>
               <div className="admins-tooltips text-black lg:flex-row flex flex-col justify-center lg:border-0 border-t-2 border-slate-500 bg-slate-50 rounded-xl">
                 <span className="lg:border-r-2 lg:border-slate-500 lg:pr-2 text-xs font-roboto-bold">
                   <i className="text-info text-xs ">
@@ -122,26 +127,41 @@ export const ActionModalForm = (props) => {
     register,
     handleSubmit,
     setValue,
+    getValues,
     setError,
     control,
-    formState: { errors },
+    formState: { errors, isValid, dirtyFields },
     watch,
-  } = useForm();
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      superAuthorizationPassword: "superAdmin",
+      email: "",
+      username: "",
+      role: 1,
+      pict: "default.png",
+      password: "123456",
+      password_confirmation: "123456",
+    },
+  });
 
   useEffect(() => {
-    if (
+    if (formType === "INSERT") {
+      setData({
+        pict: "default.png",
+      });
+    } else if (
       formType === "ALTER_BY_ID" ||
       formType === "DROP_BY_ID" ||
       formType === "DROP_BY_SELECTED"
     ) {
       if (table_id !== "" || table_id !== null) {
-        // if (finished) {
         axios
           .get(URL)
           .then((response) => {
             console.table("fetching:", URL);
             setData({
-              authority: "superAdmin",
+              superAuthorizationPassword: "superAdmin",
               id: response.data.data.id,
               email: response.data.data.email,
               username: response.data.data.username,
@@ -160,50 +180,37 @@ export const ActionModalForm = (props) => {
             setLoading(false);
             setErrorMessage(error);
           });
-        // } else {
-        //   console.error("this querry is finished");
-        // }
       } else {
         setOnWorking(false);
         setLoading(false);
         setErrorMessage("invalid formType");
       }
-    } else if (formType === "INSERT") {
-      setData({
-        authority: "superAdmin",
-        email: "",
-        username: "",
-        role: "1",
-        pict: "default.png",
-        password: "",
-        password_confirmation: "",
-      });
     } else {
       setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
     }
   }, [table_id]); // Gunakan table_id sebagai dependency untuk useEffect.
 
   let initialFormValue;
-  let password = useRef({});
+  let passwordRef = useRef({});
+  let newPassword = useRef({});
   useEffect(() => {
     if (formType === "INSERT") {
-      password.current = watch("password", "");
+      passwordRef.current = watch("password", "");
 
       initialFormValue = {
-        authority: "superAdmin",
-        adminsId: "",
+        superAuthorizationPassword: "superAdmin",
         email: "",
         username: "",
-        role: "1",
+        role: 1,
         pict: "default.png",
-        password: "",
-        password_confirmation: "",
+        password: "123456",
+        password_confirmation: "123456",
       };
     } else if (formType === "ALTER_BY_ID") {
-      password.current = watch("newPassword", "");
+      newPassword.current = watch("newPassword", "");
 
       initialFormValue = {
-        authority: "superAdmin",
+        superAuthorizationPassword: "superAdmin",
         adminsId: data.id,
         email: data.email,
         username: data.username,
@@ -214,26 +221,22 @@ export const ActionModalForm = (props) => {
       };
     } else if (formType === "DROP_BY_ID") {
       initialFormValue = {
-        authority: "superAdmin",
+        superAuthorizationPassword: "superAdmin",
         adminsId: data.id,
         email: data.email,
         username: data.username,
         role: data.role,
         pict: data.pict,
-        newPassword: "123456",
-        newPassword_confirmation: "123456",
       };
     }
     for (const key in initialFormValue) {
       setValue(key, initialFormValue[key]);
     }
   }, [data]);
-  // console.table(data);
 
+  let axiosResponse;
   async function sendFormDataByMethod(form) {
-    let axiosResponse;
     setSending(!sending);
-    // Lanjutkan dengan pengiriman data jika cocok
     try {
       if (formType === "INSERT") {
         axiosResponse = await axios.post(URL_METHODS, form);
@@ -243,17 +246,17 @@ export const ActionModalForm = (props) => {
         axiosResponse = await axios.delete(URL_METHODS, {
           data: {
             adminsId: form.adminsId,
-            authority: form.authority,
+            superAuthorizationPassword: form.superAuthorizationPassword,
           },
         });
-      } else if (formType === "DROP_BY_SELECTED") {
-        axiosResponse = await axios.delete(URL_METHODS, {
-          adminsId: form.adminsId,
-          data: { adminsId: form.adminsId },
-        });
-      }
+      } // else if (formType === "DROP_BY_SELECTED") {
+      //   axiosResponse = await axios.delete(URL_METHODS, {
+      //     adminsId: form.adminsId,
+      //     data: { adminsId: form.adminsId },
+      //   });
+      // }
       // setData({
-      //   authority: "superAdmin",
+      //   superAuthorizationPassword: "superAdmin",
       //   id: null,
       //   email: null,
       //   username: null,
@@ -267,7 +270,6 @@ export const ActionModalForm = (props) => {
       setErrorMessage(null);
       setLoading(false);
       setOnWorking(false);
-      // setFetch(false);
       clearData();
       refresh();
     } catch (error) {
@@ -279,8 +281,6 @@ export const ActionModalForm = (props) => {
   }
 
   const onSubmit = async (form) => {
-    // alert("otw-sent form");
-    // Lakukan validasi di sini jika diperlukan
     // console.table("data:", data);
     // console.table("form:", form);
     if (!form) {
@@ -290,7 +290,7 @@ export const ActionModalForm = (props) => {
       if (form.password !== form.password_confirmation) {
         setError("password", {
           type: "manual",
-          message: "Passwords do not match",
+          message: "Passwords is not match with password_confirmation",
         });
         return;
       }
@@ -298,7 +298,7 @@ export const ActionModalForm = (props) => {
       if (form.newPassword !== form.newPassword_confirmation) {
         setError("newPassword", {
           type: "manual",
-          message: "Passwords do not match",
+          message: "Passwords is not match with new_password_confirmation",
         });
         return;
       }
@@ -320,7 +320,18 @@ export const ActionModalForm = (props) => {
           <form method="dialog">
             <button
               // onClick={refresh}
-              // onClick={() => setData([])}
+              // onClick={() =>
+              //   setData({
+              //     superAuthorizationPassword: "superAdmin",
+              //     id: null,
+              //     email: null,
+              //     username: null,
+              //     pict: null,
+              //     role: null,
+              //     created_at: null,
+              //     updated_at: null,
+              //   })
+              // }
               className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
             >
               ✕
@@ -359,25 +370,27 @@ export const ActionModalForm = (props) => {
               <>
                 {onWorking ? (
                   <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+                    <input
+                      type="hidden"
+                      {...register("superAuthorizationPassword", {
+                        required:
+                          "Your Credentials superAuthorizationPassword are required",
+                        value: "superAdmin",
+                      })}
+                    />
                     {(formType === "ALTER_BY_ID" || formType === "INSERT") && (
                       <>
                         <div className="flex flex-row">
                           <div>
-                            <input
-                              type="hidden"
-                              {...register("authority", {
-                                required:
-                                  "Your Credentials Authority are required",
-                                value: "superAdmin",
-                              })}
-                            />
-                            <input
-                              type="hidden"
-                              {...register("adminsId", {
-                                required:
-                                  "This Admin Credentials ID are required",
-                              })}
-                            />
+                            {formType === "ALTER_BY_ID" && (
+                              <input
+                                type="hidden"
+                                {...register("adminsId", {
+                                  required:
+                                    "This Admin Credentials ID are required",
+                                })}
+                              />
+                            )}
                           </div>
 
                           {/* Images */}
@@ -385,9 +398,11 @@ export const ActionModalForm = (props) => {
                             <div className="relative w-96 rounded-full">
                               <img
                                 src={
-                                  data.pict
-                                    ? `./src/assets/admin_avatar/${data.pict}`
-                                    : `./src/assets/admin_avatar/blank.jpg`
+                                  formType !== "INSERT"
+                                    ? data.pict
+                                      ? `./src/assets/admin_avatar/${data.pict}`
+                                      : `./src/assets/admin_avatar/blank.jpg`
+                                    : `./src/assets/admin_avatar/default.png`
                                 }
                                 alt="Avatar Tailwind CSS Component"
                                 className=" w-96 rounded-full max-w-3xl shadow-lg"
@@ -419,7 +434,6 @@ export const ActionModalForm = (props) => {
                                   placeholder="Email"
                                   autoComplete={data.email}
                                   className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-                                  // disabled
                                   {...register("email", {
                                     required: true,
                                     pattern: /^\S+@\S+$/i,
@@ -427,12 +441,59 @@ export const ActionModalForm = (props) => {
                                   })}
                                   onChange={(e) => {
                                     setValue("email", e.target.value);
-                                    setData((prevData) => ({
-                                      ...prevData,
-                                      email: e.target.value,
-                                    }));
                                   }}
-                                  // value={data.email} <- error
+                                />
+                                {/* Username */}
+                                <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+                                  Username
+                                  {errors.username && (
+                                    <span className="absolute right-0 text-red-500">
+                                      {errors.username.message}
+                                    </span>
+                                  )}
+                                </label>
+                                <input
+                                  type="username"
+                                  placeholder="Username"
+                                  autoComplete={data.username}
+                                  className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+                                  {...register("username", {
+                                    required: true,
+                                    maxLength: 80,
+                                  })}
+                                  onChange={(e) => {
+                                    setValue("username", e.target.value);
+                                  }}
+                                />
+                                {/* Role */}
+                                <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+                                  Role
+                                  {errors.role && (
+                                    <span className="absolute right-0 text-red-500">
+                                      {errors.role.message}
+                                    </span>
+                                  )}
+                                </label>
+                                <Controller
+                                  name="role"
+                                  control={control}
+                                  defaultValue="1" // Nilai default jika perlu
+                                  render={({ field }) => (
+                                    <select
+                                      onChange={(e) => {
+                                        field.onChange(e); // Menggunakan field.onChange untuk mengatur nilai di dalam Controller
+                                        alert(
+                                          "be carefull changing role grant access",
+                                          e.target.value
+                                        ); // Menggunakan e.target.value karena field.value mungkin belum diperbarui
+                                      }}
+                                      className="select select-info select-sm w-full max-w-3xl focus:outline-none self-start font-roboto-medium"
+                                      value={field.value} // Menggunakan field.value untuk nilai saat ini
+                                    >
+                                      <option value="1">Admin</option>
+                                      <option value="0">Super Admin</option>
+                                    </select>
+                                  )}
                                 />
                                 {/* Password */}
                                 <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
@@ -447,6 +508,10 @@ export const ActionModalForm = (props) => {
                                   <input
                                     type={showPassword ? "text" : "password"}
                                     className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+                                    ref={(e) => {
+                                      field.ref(e);
+                                      passwordRef.current = e;
+                                    }}
                                     {...register("password", {
                                       required: "New Password is required",
                                       minLength: {
@@ -484,10 +549,11 @@ export const ActionModalForm = (props) => {
                                   <input
                                     type={showPassword ? "text" : "password"}
                                     className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+                                    ref={passwordRef} // Referensi input password
                                     {...register("password_confirmation", {
                                       required: "Confirm Password is required",
                                       validate: (value) =>
-                                        value === password.current ||
+                                        value === passwordRef.current ||
                                         "Passwords do not match",
                                     })}
                                   />
@@ -539,7 +605,7 @@ export const ActionModalForm = (props) => {
                                       email: e.target.value,
                                     }));
                                   }}
-                                  // value={data.email} <- error
+                                  // value={data.email}
                                 />
                                 {/* Username */}
                                 <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
@@ -655,8 +721,8 @@ export const ActionModalForm = (props) => {
                                     {...register("newPassword_confirmation", {
                                       required: "Confirm Password is required",
                                       validate: (value) =>
-                                        value === password.current ||
-                                        "Passwords do not match",
+                                        value === newPassword.current ||
+                                        "Passwords do not match (2)",
                                     })}
                                   />
                                   <span

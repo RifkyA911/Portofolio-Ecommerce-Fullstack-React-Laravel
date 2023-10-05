@@ -281,7 +281,7 @@ export default function Admins(props) {
                         {row.role == 1 ? (
                           <>
                             <Td className="flex-1 px-8 lg:px-4 ">
-                              <AuthorityToggle data={row.authority} />
+                              <AuthorityToggle data={row} />
                             </Td>
                             <Td className="flex-1 px-8 lg:px-4 ">
                               <ActionButton
