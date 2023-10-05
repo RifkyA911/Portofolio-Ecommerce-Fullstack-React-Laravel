@@ -14,6 +14,8 @@ use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+use function Laravel\Prompts\select;
+
 class AdminsController extends Controller
 {
     public function index()
@@ -114,7 +116,7 @@ class AdminsController extends Controller
     {
         $getAuthority = $request->input('authority');
 
-        $updateAdmin = Admin::find($request->input('id'));
+        $updateAdmin = Admin::find($request->input('adminsId'));
         // return $request;
 
         // initiate rule for validation
@@ -122,11 +124,11 @@ class AdminsController extends Controller
         $getAuthority === 'superAdmin'
             ?
             ($rule = [
-                "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
+                "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('adminsId'))],
                 "username" => 'required',
             ])
             : ($rule = [
-                "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
+                "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('adminsId'))],
                 "username" => 'required',
                 "password" => 'required|min:6'
             ]);
@@ -165,5 +167,21 @@ class AdminsController extends Controller
         }
         $updateAdmin->pict = $request->input('pict');
         return new PostResource(true, "User ter-update.", $updateAdmin->update());
+    }
+
+    public function drop(Request $request)
+    {
+        // return response(new PostResource(false, 'coba', $request->input(), 201));
+        $selectedAdmin = strval($request->input('adminsId'));
+        $getAuthority = $request->input('authority');
+        $dropAdmin = Admin::find($selectedAdmin);
+        if (!$dropAdmin) {
+            return response(new PostResource(false, "admin tidak ditemukan.", ['old_input' => $request->except('adminsId')]), 401);
+        }
+        if ($getAuthority !== "superAdmin") {
+            return response(new PostResource(false, "authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('adminsId')]), 401);
+        }
+
+        return new PostResource(true, "berhasil menghapus admin" . $dropAdmin->username, $dropAdmin->delete());
     }
 }
