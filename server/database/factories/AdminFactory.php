@@ -27,7 +27,8 @@ class AdminFactory extends Factory
             'username' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('123456'),
-            'role' => mt_rand(0, 1),
+            'role' => 1,
+            // 'role' => mt_rand(0, 1),
             'pict' => 'default.png',
             // 'pict' =>  $randomImage->getFilename() // Menggunakan nama file acak
         ];
