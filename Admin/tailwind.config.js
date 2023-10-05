@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const plugin = require('tailwindcss/plugin')
+const colors = require('tailwindcss/colors')
 
 export default {
   content: [
@@ -10,6 +11,12 @@ export default {
     extend: {
       textColor: {
         'black': '#000000', // You can customize the HEX color code here
+      },      backgroundSize: {
+        'size-200': '200% 200%',
+      },
+      backgroundPosition: {
+        'pos-0': '0% 0%',
+        'pos-100': '100% 100%',
       },
     },
     fontFamily: {

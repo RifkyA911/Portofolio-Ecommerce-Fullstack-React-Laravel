@@ -108,7 +108,7 @@ export default function Admins(props) {
   const handlePaginateChange = (newPaginate) => {
     setLoading(true);
     setPaginate(newPaginate);
-    console.log(newPaginate);
+    console.log("paginate-", newPaginate);
   };
 
   const handleActionButton = (id, formType) => {
@@ -163,6 +163,7 @@ export default function Admins(props) {
                 )}
               </div>
               {/* Baris 1 */}
+
               <ActionModalForm
                 table="admins"
                 table_id={admin}
@@ -171,6 +172,10 @@ export default function Admins(props) {
                   setLoading(true);
                 }}
                 formType={formType}
+                clearData={() => {
+                  setAdmin(null);
+                  setFormType(null);
+                }}
               />
               <MyTableEngine
                 // Main Logic Data

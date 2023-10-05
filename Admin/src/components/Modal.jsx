@@ -95,13 +95,14 @@ export const Modal = (props) => {
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const ActionModalForm = (props) => {
-  const { refresh, table, table_id, formType } = props;
+  const { refresh, table, table_id, formType, clearData } = props;
   const [method, setMethod] = useState(null);
   const [data, setData] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
 
   const [onWorking, setOnWorking] = useState(true);
   const [sending, setSending] = useState(false);
+  // const [fetch, setFetch] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -112,9 +113,10 @@ export const ActionModalForm = (props) => {
   if (table == "admins") {
     URL = import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + table_id;
     URL_METHODS = import.meta.env.VITE_API_URL_PUT_ADMIN;
-  } else if (table == "invoices") {
-    URL = import.meta.env.VITE_API_URL_GET_BY_ID_TRANSACTION + "/" + table_id;
   }
+  // else if (table == "invoices") {
+  //   URL = import.meta.env.VITE_API_URL_GET_BY_ID_TRANSACTION + "/" + table_id;
+  // }
 
   const {
     register,
@@ -132,11 +134,12 @@ export const ActionModalForm = (props) => {
       formType === "DROP_BY_ID" ||
       formType === "DROP_BY_SELECTED"
     ) {
-      if (table_id !== "") {
+      if (table_id !== "" || table_id !== null) {
+        // if (finished) {
         axios
           .get(URL)
           .then((response) => {
-            // console.table("fetching:", URL);
+            console.table("fetching:", URL);
             setData({
               authority: "superAdmin",
               id: response.data.data.id,
@@ -157,6 +160,9 @@ export const ActionModalForm = (props) => {
             setLoading(false);
             setErrorMessage(error);
           });
+        // } else {
+        //   console.error("this querry is finished");
+        // }
       } else {
         setOnWorking(false);
         setLoading(false);
@@ -177,7 +183,6 @@ export const ActionModalForm = (props) => {
     }
   }, [table_id]); // Gunakan table_id sebagai dependency untuk useEffect.
 
-  let modalWith;
   let initialFormValue;
   let password = useRef({});
   useEffect(() => {
@@ -207,6 +212,17 @@ export const ActionModalForm = (props) => {
         newPassword: "123456",
         newPassword_confirmation: "123456",
       };
+    } else if (formType === "DROP_BY_ID") {
+      initialFormValue = {
+        authority: "superAdmin",
+        adminsId: data.id,
+        email: data.email,
+        username: data.username,
+        role: data.role,
+        pict: data.pict,
+        newPassword: "123456",
+        newPassword_confirmation: "123456",
+      };
     }
     for (const key in initialFormValue) {
       setValue(key, initialFormValue[key]);
@@ -214,43 +230,64 @@ export const ActionModalForm = (props) => {
   }, [data]);
   // console.table(data);
 
-  async function sendDataByMethod(form) {
+  async function sendFormDataByMethod(form) {
+    let axiosResponse;
     setSending(!sending);
-    let response;
     // Lanjutkan dengan pengiriman data jika cocok
     try {
       if (formType === "INSERT") {
-        response = await axios.post(URL_METHODS, data);
+        axiosResponse = await axios.post(URL_METHODS, form);
       } else if (formType === "ALTER_BY_ID") {
-        response = await axios.put(URL_METHODS, data);
-      } else if (formType === "DROP_BY_BY_ID") {
-        response = await axios.delete(URL_METHODS, data);
+        axiosResponse = await axios.put(URL_METHODS, form);
+      } else if (formType === "DROP_BY_ID") {
+        axiosResponse = await axios.delete(URL_METHODS, {
+          data: {
+            adminsId: form.adminsId,
+            authority: form.authority,
+          },
+        });
       } else if (formType === "DROP_BY_SELECTED") {
-        response = await axios.delete(URL_METHODS, data);
+        axiosResponse = await axios.delete(URL_METHODS, {
+          adminsId: form.adminsId,
+          data: { adminsId: form.adminsId },
+        });
       }
-      console.log("Data berhasil dikirim:", response.data);
+      // setData({
+      //   authority: "superAdmin",
+      //   id: null,
+      //   email: null,
+      //   username: null,
+      //   pict: null,
+      //   role: null,
+      //   created_at: null,
+      //   updated_at: null,
+      // });
+      console.log("Data berhasil dikirim:", axiosResponse);
       setSending(false);
       setErrorMessage(null);
       setLoading(false);
       setOnWorking(false);
-      setData([]);
+      // setFetch(false);
+      clearData();
       refresh();
     } catch (error) {
       setSending(false);
       setErrorMessage(error.message);
-      alert(JSON.stringify(error.response.data.data));
+      console.info(error);
       console.error("Terjadi kesalahan:", error);
     }
   }
 
-  const onSubmit = async (data) => {
-    // alert("otw-sent data");
+  const onSubmit = async (form) => {
+    // alert("otw-sent form");
     // Lakukan validasi di sini jika diperlukan
-    if (!data) {
-      alert("there is no data to send");
+    // console.table("data:", data);
+    // console.table("form:", form);
+    if (!form) {
+      alert("there is no form to send");
     }
     if (formType === "INSERT") {
-      if (data.password !== data.password_confirmation) {
+      if (form.password !== form.password_confirmation) {
         setError("password", {
           type: "manual",
           message: "Passwords do not match",
@@ -258,7 +295,7 @@ export const ActionModalForm = (props) => {
         return;
       }
     } else if (formType === "ALTER_BY_ID") {
-      if (data.newPassword !== data.newPassword_confirmation) {
+      if (form.newPassword !== form.newPassword_confirmation) {
         setError("newPassword", {
           type: "manual",
           message: "Passwords do not match",
@@ -267,7 +304,7 @@ export const ActionModalForm = (props) => {
       }
     }
 
-    await sendDataByMethod(data);
+    await sendFormDataByMethod(form);
   };
 
   return (
@@ -283,7 +320,7 @@ export const ActionModalForm = (props) => {
           <form method="dialog">
             <button
               // onClick={refresh}
-              onClick={() => setData([])}
+              // onClick={() => setData([])}
               className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
             >
               ✕
@@ -345,16 +382,22 @@ export const ActionModalForm = (props) => {
 
                           {/* Images */}
                           <div className="flex justify-center items-center w-6/12 p-12">
-                            <img
-                              src={
-                                data.pict
-                                  ? `./src/assets/admin_avatar/${data.pict}`
-                                  : `./src/assets/admin_avatar/blank.jpg`
-                              }
-                              alt="Avatar Tailwind CSS Component"
-                              className="w-96 rounded-full max-w-3xl shadow-lg"
-                              loading="lazy"
-                            />
+                            <div className="relative w-96 rounded-full">
+                              <img
+                                src={
+                                  data.pict
+                                    ? `./src/assets/admin_avatar/${data.pict}`
+                                    : `./src/assets/admin_avatar/blank.jpg`
+                                }
+                                alt="Avatar Tailwind CSS Component"
+                                className=" w-96 rounded-full max-w-3xl shadow-lg"
+                                loading="lazy"
+                              />
+                              <input
+                                type="file"
+                                className="absolute w-full h-full hover:block hover:bg-gray-600 hover:bg-opacity-10 m-auto top-0 left-0 rounded-full transition-all duration-300 cursor-pointer"
+                              />
+                            </div>
                           </div>
                           {/* Form */}
                           <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
@@ -648,31 +691,48 @@ export const ActionModalForm = (props) => {
                     )}
                     {(formType === "DROP_BY_ID" ||
                       formType === "DROP_BY_SELECTED") && (
-                      <div>
-                        <span className="loading loading-spinner text-primary"></span>
-                        <span className="loading loading-spinner text-secondary"></span>
-                        <span className="loading loading-spinner text-accent"></span>
-                        <span className="loading loading-spinner text-neutral"></span>
-                        <span className="loading loading-spinner text-info"></span>
-                        <span className="loading loading-spinner text-success"></span>
-                        <span className="loading loading-spinner text-warning"></span>
-                        <span className="loading loading-spinner text-error"></span>
-                        <h1 className="text-lg">
-                          Are you sure to delete{" "}
-                          <span className="font-bold">"Focalors"</span> ?{" "}
-                        </h1>
+                      <div className="flex flex-col justify-center items-center">
+                        {/* <div className="flex-row">
+                          <span className="loading loading-spinner text-primary"></span>
+                          <span className="loading loading-spinner text-secondary"></span>
+                          <span className="loading loading-spinner text-accent"></span>
+                          <span className="loading loading-spinner text-neutral"></span>
+                          <span className="loading loading-spinner text-info"></span>
+                          <span className="loading loading-spinner text-success"></span>
+                          <span className="loading loading-spinner text-warning"></span>
+                          <span className="loading loading-spinner text-error"></span>
+                        </div> */}
+                        {/* Images */}
+                        <div className=" w-12/12 p-6">
+                          <img
+                            src={
+                              data.pict
+                                ? `./src/assets/admin_avatar/${data.pict}`
+                                : `./src/assets/admin_avatar/blank.jpg`
+                            }
+                            alt="Avatar Tailwind CSS Component"
+                            className="w-72 rounded-full max-w-3xl shadow-lg m-auto"
+                            loading="lazy"
+                          />
+                          <h1 className="text-xl text-center pt-8 pb-4 line-clamp-2">
+                            Are you sure to delete{" "}
+                            <span className="font-bold">"{data.username}"</span>{" "}
+                            ?
+                          </h1>
+                        </div>
                         <div className="flex gap-12 py-2 justify-center shadow-inner shadow-slate-50 bg-slate-100">
                           <button
                             type="submit"
                             // onClick={handleSubmit(onSubmit)}
-                            className="btn bg-gradient-to-tr hover:from-red-500 hover:to-pink-500 transition-all duration-500 from-red-300 to-rose-400 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+                            className="btn transition-all duration-500 bg-gradient-to-tl from-pink-500 via-red-500 to-red-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
                           >
                             <MuiIcon iconName="DeleteForeverRounded" /> Delete
                           </button>
                           <button
-                            type="submit"
+                            type="button"
+                            onClick={refresh}
                             // onClick={handleSubmit(onSubmit)}
-                            className="btn bg-gradient-to-tr hover:from-amber-500 hover:to-orange-400 transition-all duration-500 from-amber-400 to-orange-300 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+                            className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-orange-500 to-amber-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
                           >
                             <MuiIcon iconName="ClearRounded" /> Cancel
                           </button>
