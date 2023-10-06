@@ -30,6 +30,7 @@ class AdminFactory extends Factory
             'role' => 1,
             // 'role' => mt_rand(0, 1),
             'pict' => 'default.png',
+            'phone' => fake()->unique()->phoneNumber(),
             // 'pict' =>  $randomImage->getFilename() // Menggunakan nama file acak
         ];
     }

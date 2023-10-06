@@ -170,9 +170,34 @@ class AdminsController extends Controller
         return new PostResource(true, "User ter-update.", $updateAdmin->update());
     }
 
+    public function patch(Request $request)
+    {
+        $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
+        $adminsId = $request->input('adminsId');
+
+        $updateAdmin = Admin::find($adminsId);
+
+        // Jika yang mengedit adalah superAdmin 
+        if ($getSuperAuthorizationPassword === 'superAdmin') {
+            // Ambil nilai 'authority' dari request, jika tidak ada, gunakan nilai default
+            $authorityValue = $request->input('authority') ?? [
+                "chat" => false,
+                "sort_warehouse" => false,
+                "alter_price" => false
+            ];
+
+            // Menggunakan metode update untuk mengupdate data dengan nilai authority yang dinamis
+            $updateAdmin->update(['authority' => $authorityValue]);
+
+            return new PostResource(true, "User ter-update.", $updateAdmin);
+        } else {
+            return new PostResource(false, "SuperAuthorizationPassword salah.", null);
+        }
+    }
+
+
     public function drop(Request $request)
     {
-        // return response(new PostResource(false, 'coba', $request->input(), 201));
         $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
         $selectedAdmin = strval($request->input('adminsId'));
         $dropAdmin = Admin::find($selectedAdmin);
@@ -185,4 +210,5 @@ class AdminsController extends Controller
 
         return new PostResource(true, "berhasil menghapus admin" . $dropAdmin->username, $dropAdmin->delete());
     }
+    // return response(new PostResource(false, 'Masuk coy :v', $request->input(), 302));
 }

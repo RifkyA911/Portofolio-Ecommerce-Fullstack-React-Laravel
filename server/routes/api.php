@@ -37,6 +37,8 @@ Route::controller(AdminsController::class)->group(function () {
     Route::post('/admins', 'store');    // parameter role_admin == 0; data => email, username, password, role
     // update admin
     Route::put('/admins', 'update');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    // patch admin
+    Route::patch('/admins', 'patch');    // parameter spasial
     // delete admin
     Route::delete('/admins', 'drop');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     // login for admin
@@ -53,6 +55,8 @@ Route::controller(UserController::class)->group(function () {
     // update user
     Route::put('/user', 'update');  // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     // optional : address, pict;
+    // patch user
+    Route::patch('/users', 'patch');    // parameter spasial
     // login user
     Route::post('/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
 });
@@ -68,6 +72,8 @@ Route::controller(ProductController::class)->group(function () {
     // update product
     Route::put('/product', 'update');   // parameter id, name, category, price(numeric), stok(numeric)
     // optional : discount, pict, description
+    // patch products
+    Route::patch('/products', 'patch');    // parameter spasial
 });
 
 // Endpoint Cart/keranjang (user-only feature)
@@ -77,6 +83,8 @@ Route::controller(CartController::class)->group(function () {
     Route::post('/cart', 'store');     // parameter user_id, product_id, count(optional)
     Route::post('/cart/delete', 'destroy');    // parameter id
     Route::post('/cart/update', 'update');     // parameter id, count
+    // patch cart
+    Route::patch('/cart', 'patch');    // parameter spasial
 });
 
 // Endpoint Wishlist (user-only feature)
