@@ -46,11 +46,11 @@ export const UISlice = createSlice({
             state.BgColor = "bg-gray-800",
             state.textColor = "text-white",
             state.BackBgColor = "bg-gray-800",
-            state.ContainerBgColor = "bg-slate-700",
+            state.ContainerBgColor = "bg-gray-700",
             state.ContentBgColor = "bg-gray-800",
             state.BgTable = "bg-white",
             state.BgOuterTable = "bg-gray-700",
-            state.BorderOuterTable = "border-[1px] border-gray-600",
+            state.BorderOuterTable = "border-[1px] border-gray-800",
             state.BorderRowTable = "border-b-2 border-gray-600",
             toggleDark = !toggleDark
           } else {

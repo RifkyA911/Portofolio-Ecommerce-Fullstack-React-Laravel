@@ -55,6 +55,7 @@ export const MyTableEngine = (props) => {
   const updateMyTableState = (action) => {
     switch (action.type) {
       case "UPDATE_SORT":
+        // setSearchTerm(action.payload.newData);
         setData(action.payload.newData);
         setSortOrder(action.payload.newSortOrder); // Toggle urutan
         setSortBy(action.payload.newSortBy);
@@ -66,6 +67,7 @@ export const MyTableEngine = (props) => {
     }
   };
   // useEffect(() => {
+  //   console.table(data);
   // }, [data]); // jalankan setiap state berubah
 
   // const toggleRowSelection = (id) => {
@@ -283,8 +285,13 @@ export const Thead = (props) => {
 };
 
 export const Th = (props) => {
-  const { data, errorMessage, sortOrder, sortBy, updateMyTableState } =
-    useContext(TableContext);
+  const {
+    data,
+    errorMessage,
+    sortOrder = "asc",
+    sortBy,
+    updateMyTableState,
+  } = useContext(TableContext);
 
   const {
     customKey,
@@ -304,18 +311,22 @@ export const Th = (props) => {
       // console.table("a:", a[column]);
       // console.table("b:", b[column]);
       if (a[column] < b[column]) {
+        console.log("masok a");
         return sortOrder === "desc" ? -1 : 1;
       }
       if (a[column] > b[column]) {
+        console.log("masok b");
         return sortOrder === "desc" ? 1 : -1;
       }
       return 0;
     });
+    // console.table(sortedData);
     const newSortedValue = {
       newData: sortedData,
       newSortOrder: sortOrder === "asc" ? "desc" : "asc",
       newSortBy: column,
     };
+    // console.table(newSortedValue);
     console.log("Update Sort State:", sortOrder);
     // console.table("newState:", newSortedValue.newSortOrder);
 
@@ -396,7 +407,7 @@ export const Tr = (props) => {
           selectedRows
             ? "hover:bg-gray-200 transition-colors duration-75 cursor-pointer"
             : ""
-        } divide-y`}
+        }`}
       >
         {props.children}
       </tr>
@@ -518,7 +529,7 @@ export const MyTablePagination = (props) => {
         }}
         key={i}
         className={`px-4 py-2 hover:bg-violet-300 rounded-lg transition-all duration-200 ${
-          i === currentPage ? "bg-gray-300" : ""
+          i === currentPage ? "bg-gray-300 text-black" : ""
         }`}
       >
         {i}
@@ -582,7 +593,7 @@ export const MyTablePagination = (props) => {
                   Rows per page:
                 </span>
                 <select
-                  className="select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-base"
+                  className="text-black select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-base"
                   autoComplete="off"
                   value={rows}
                   onChange={(e) => {

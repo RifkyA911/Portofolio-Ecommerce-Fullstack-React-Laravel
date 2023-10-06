@@ -102,7 +102,7 @@ function Login() {
                 <a className="px-4 mb-8 link link-info text-xs">
                   Forgot Password?
                 </a>
-                <button className="flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-sky-400 hover:bg-blue-400 transition-colors duration-200 rounded-md">
+                <button className="btn flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-sky-400 hover:bg-blue-400 transition-colors duration-200 rounded-md">
                   {loading ? "Loading..." : "Login"}
                 </button>
               </form>

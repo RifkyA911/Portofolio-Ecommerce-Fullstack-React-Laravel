@@ -58,22 +58,22 @@ function Notification() {
 
           <div className="notifications-list px-8">
             <div className="flex-row ">
-              <div className="flex flex-col w-full line-clamp-4 overflow-hidden bg-slate-50 shadow-sm h-14 rounded-sm border-l-8 border-sky-500 my-2">
+              <div className="flex flex-col w-full line-clamp-4 overflow-hidden bg-slate-100 shadow-sm h-14 rounded-sm border-l-8 border-sky-500 my-2">
                 .box
               </div>
             </div>
             <div className="flex-row">
-              <div className="flex flex-col w-full line-clamp-4 overflow-hidden bg-slate-50 shadow-sm h-14 rounded-sm border-l-8 border-red-400 my-2">
+              <div className="flex flex-col w-full line-clamp-4 overflow-hidden bg-slate-100 shadow-sm h-14 rounded-sm border-l-8 border-red-400 my-2">
                 .box
               </div>
             </div>
             <div className="flex-row">
-              <div className="flex flex-col w-full line-clamp-4 overflow-hidden bg-slate-50 shadow-sm h-14 rounded-sm border-l-8 border-green-500 my-2">
+              <div className="flex flex-col w-full line-clamp-4 overflow-hidden bg-slate-100 shadow-sm h-14 rounded-sm border-l-8 border-green-500 my-2">
                 .box
               </div>
             </div>
             <div className="flex-row">
-              <div className="flex flex-col w-full line-clamp-4 overflow-hidden bg-slate-50 shadow-sm h-14 rounded-sm border-l-8 border-yellow-400 my-2">
+              <div className="flex flex-col w-full line-clamp-4 overflow-hidden bg-slate-100 shadow-sm h-14 rounded-sm border-l-8 border-yellow-400 my-2">
                 .box
               </div>
             </div>

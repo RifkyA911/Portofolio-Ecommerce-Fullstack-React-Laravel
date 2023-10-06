@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import axios from "axios";
 // Components
 import { useSelector } from "react-redux";
@@ -59,75 +59,106 @@ export const ShowRole = (props) => {
 
 export const AuthorityToggle = (props) => {
   const { data } = props;
-  const [thisAdmin, setThisAdmin] = useState([]);
-  const [authority, setAuthority] = useState({
-    chat: false,
-    sort_warehouse: false,
-    alter_price: false,
-  });
 
-  const toggleTypes = ["chat", "sort_warehouse", "alter_price"];
+  const [thisAdmin, setThisAdmin] = useState({
+    superAuthorizationPassword: null,
+    adminsId: null,
+    authority: {
+      chat: false,
+      sort_warehouse: false,
+      alter_price: false,
+    },
+  });
+  const [toggleTypes, setToggleTypes] = useState([]);
+  const [toggle, setToggle] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
+
+  // const toggleTypes = ["chat", "sort_warehouse", "alter_price"];
   const toggleColors = ["toggle-info", "toggle-success", "toggle-warning"];
 
-  let parsedAuthority;
+  const isComponentMounted = useRef(true);
+
   useEffect(() => {
-    parsedAuthority = JSON.parse(data.authority);
+    // Hanya jalankan jika komponen sudah dimuat
     if (data.authority) {
-      const parsedAuthority = JSON.parse(data.authority);
-      setAuthority({
-        chat: parsedAuthority.chat === "true",
-        sort_warehouse: parsedAuthority.sort_warehouse === "true",
-        alter_price: parsedAuthority.alter_price === "true",
-      });
-      setThisAdmin({
-        id: data.id,
-        username: data.username,
-        password: data.password,
-        authority: {
-          chat: false,
-          sort_warehouse: false,
-          alter_price: false,
-        },
-      });
+      if (!isComponentMounted.current) {
+        // console.log(Object.keys(thisAdmin.authority));
+        setToggleTypes(Object.keys(thisAdmin.authority));
+        const parsedAuthority = JSON.parse(data.authority);
+        setThisAdmin((prevAdmin) => ({
+          ...prevAdmin,
+          superAuthorizationPassword: "superAdmin",
+          adminsId: data.id,
+          authority: {
+            chat: parsedAuthority.chat,
+            sort_warehouse: parsedAuthority.sort_warehouse,
+            alter_price: parsedAuthority.alter_price,
+          },
+        }));
+      }
     }
   }, [data]);
 
   const handleToggleChange = (toggleType) => {
-    setAuthority((prevAuthority) => ({
-      ...prevAuthority,
-      [toggleType]: !prevAuthority[toggleType],
+    setThisAdmin((prevAdmin) => ({
+      ...prevAdmin,
+      authority: {
+        ...prevAdmin.authority, // Tetapkan properti authority sebelumnya
+        [toggleType]: !prevAdmin.authority[toggleType], // Perbarui properti sesuai dengan toggleType
+      },
     }));
-    updateAdminsAuthority(authority);
+    setToggle(!toggle);
+    setIsUpdated(true);
   };
 
   const updateAdminsAuthority = async (data) => {
-    response = await axios
-      .put(URL_PUT, data)
+    await axios
+      .patch(URL_PUT, data)
       .then((data) => {
         console.info(data.data);
       })
       .catch((error) => {
+        setToggle(!toggle);
         console.error(error);
       });
   };
-  // useEffect(() => {
-  //   // console.info(
-  //   //   "toggle by id-" + thisAdmin + " : " + JSON.stringify(authority)
-  //   // );
-  // }, [authority]);
+
+  useEffect(() => {
+    // Ketika komponen selesai dimuat, set ref ke false
+    isComponentMounted.current = false;
+
+    if (
+      thisAdmin.superAuthorizationPassword &&
+      thisAdmin.adminsId &&
+      isUpdated // Hanya jalankan jika belum diupdate
+    ) {
+      console.info(data.username + " => " + data.authority);
+      setToggle(!toggle);
+      setIsUpdated(false); // Set state isUpdated ke true agar tidak dijalankan lagi
+      updateAdminsAuthority(thisAdmin);
+    }
+  }, [thisAdmin]);
 
   return (
     <div className="w-full flex lg:flex-row justify-around items-center">
-      {toggleTypes.map((toggleType, index) => (
-        <div key={toggleType}>
-          <input
-            type="checkbox"
-            className={`toggle ${toggleColors[index]} m-2`}
-            onChange={() => handleToggleChange(toggleType)}
-            checked={authority[toggleType]}
-          />
-        </div>
-      ))}
+      {thisAdmin && (
+        <>
+          {toggleTypes.map((toggleType, index) => (
+            <div key={toggleType}>
+              <input
+                // name="authority"
+                type="checkbox"
+                className={`toggle ${toggleColors[index]} m-2`}
+                onChange={() => handleToggleChange(toggleType)}
+                checked={thisAdmin?.authority?.[toggleType] || false}
+              />
+              <label htmlFor={toggleType}>
+                {/* {console.info(thisAdmin.authority)} */}
+              </label>
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 };

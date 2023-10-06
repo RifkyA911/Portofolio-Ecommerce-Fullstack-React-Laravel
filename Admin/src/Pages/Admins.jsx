@@ -32,6 +32,7 @@ import { MuiIcon } from "../utils/RenderIcons";
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
 
 export default function Admins(props) {
+  const [dummy, setDummy] = useState([]);
   // This Page
   const [admins, setAdmins] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -80,12 +81,15 @@ export default function Admins(props) {
       // console.log("fetching data ke-", count);
     } catch (error) {
       setLoading(false);
+      setErrorMessage(error.response.data);
+      console.error("pesan Terjadi kesalahan:", error.response.data);
       console.error("Terjadi kesalahan:", error);
     }
   };
   // console.table(admins);
 
   useEffect(() => {
+    // console.log(searchTerm);
     // Filter data based on the search term
     const filteredData = admins.filter((admins) =>
       admins.username.toLowerCase().includes(searchTerm.toLowerCase())
@@ -96,7 +100,11 @@ export default function Admins(props) {
   // Panggil fetchData saat komponen pertama kali dimuat atau saat value paginate, rows berubah
   useEffect(() => {
     fetchAdmins(URL, "fetch");
+    // axios.get(import.meta.env.VITE_API_URL_PUT_PRODUCT).then((data) => {
+    //   setDummy(data.data.data);
+    // });
   }, [paginate, rows]);
+  // console.table(dummy);
 
   // Handler ketika nilai rows diubah
   const handleRowsChange = (newRows) => {
@@ -131,6 +139,7 @@ export default function Admins(props) {
             </div>
           ) : (
             <div id="Admins" className="rounded-lg text-sm ">
+              {/* Error */}
               <div>
                 {errorMessage && (
                   <>
@@ -162,7 +171,7 @@ export default function Admins(props) {
                   </>
                 )}
               </div>
-              {/* Baris 1 */}
+              {/* Main 1 */}
 
               <ActionModalForm
                 table="admins"
@@ -206,6 +215,7 @@ export default function Admins(props) {
                         name=""
                         column="id"
                         feature="filter"
+                        sortOrder="asc"
                         className="px-4"
                       ></Th>
                       <Th className="px-2 hidden">
