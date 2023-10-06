@@ -81,7 +81,7 @@ export default function Admins(props) {
       // console.log("fetching data ke-", count);
     } catch (error) {
       setLoading(false);
-      setErrorMessage(error.response.data);
+      setErrorMessage(error.response.data.message);
       console.error("pesan Terjadi kesalahan:", error.response.data);
       console.error("Terjadi kesalahan:", error);
     }
@@ -100,11 +100,7 @@ export default function Admins(props) {
   // Panggil fetchData saat komponen pertama kali dimuat atau saat value paginate, rows berubah
   useEffect(() => {
     fetchAdmins(URL, "fetch");
-    // axios.get(import.meta.env.VITE_API_URL_PUT_PRODUCT).then((data) => {
-    //   setDummy(data.data.data);
-    // });
   }, [paginate, rows]);
-  // console.table(dummy);
 
   // Handler ketika nilai rows diubah
   const handleRowsChange = (newRows) => {
@@ -146,28 +142,24 @@ export default function Admins(props) {
                     <DangerAlert
                       message={
                         <h1>
-                          <MuiIcon
-                            iconName={"FiberManualRecordTwoTone"}
-                            fontSize={20}
-                          />
+                          <MuiIcon iconName={"WarningRounded"} fontSize={20} />
                           {errorMessage}
                         </h1>
                       }
                     />
-                    {URL}
-                    <button
-                      onClick={() => {
-                        fetchAdmins(URL, "fetch");
-                        setLoading(true);
-                      }}
-                      className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 p-2 rounded-md font-roboto-medium text-white items-center "
-                    >
-                      <MuiIcon
-                        iconName={"FiberManualRecordTwoTone"}
-                        fontSize={20}
-                      />
-                    </button>
-                    {/* <NavLink to={`chat/${admins[0]?.id}`}>kss</NavLink> */}
+                    <div className="flex flex-col justify-center">
+                      <span className="text-md font-medium my-2">{URL}</span>
+                      <button
+                        onClick={() => {
+                          fetchAdmins(URL, "fetch");
+                          setLoading(true);
+                        }}
+                        className="m-2 w-auto focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 p-2 rounded-md font-roboto-medium text-white items-center "
+                      >
+                        <MuiIcon iconName={"RefreshRounded"} fontSize={20} />
+                      </button>
+                      {/* <NavLink to={`chat/${admins[0]?.id}`}>kss</NavLink> */}
+                    </div>
                   </>
                 )}
               </div>
@@ -197,7 +189,10 @@ export default function Admins(props) {
                 TabHeader={true}
                 searchTerm={searchTerm}
                 setSearchTerm={(e) => setSearchTerm(e.target.value)}
-                sortData={(newSortedData) => setAdmins(newSortedData)}
+                sortData={(newSortedData) => {
+                  setAdmins(newSortedData);
+                  console.table("ADMINS:", newSortedData);
+                }}
                 setAddModal={() => {
                   document.getElementById("AdminForm").showModal();
                   handleActionButton(null, "INSERT");

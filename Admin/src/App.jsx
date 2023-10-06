@@ -18,9 +18,9 @@ import { navLink } from "./Redux/Slices/NavigationSlice";
 import MyAppRoutes from "./Config/MyAppRoutes";
 import { getUser } from "./utils/Session/Admin";
 import LoginRouter from "./Config/LoginRouter";
-
+import MyJump from "./utils/MyJump";
 import MyDebuggerPanel from "./utils/MyDebuggerPanel";
-import MyToDoList from "./utils/MyToDoList.jsx";
+import MyToDoList from "./utils/MyToDoList";
 // import Summary from "./utils/Summary";
 
 function App() {
@@ -67,6 +67,7 @@ function App() {
         <>
           <MyDebuggerPanel />
           <MyToDoList />
+          <MyJump />
         </>
       ) : (
         <></>

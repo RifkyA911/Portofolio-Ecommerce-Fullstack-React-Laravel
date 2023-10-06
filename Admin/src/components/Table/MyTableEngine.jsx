@@ -55,11 +55,14 @@ export const MyTableEngine = (props) => {
   const updateMyTableState = (action) => {
     switch (action.type) {
       case "UPDATE_SORT":
-        // setSearchTerm(action.payload.newData);
         setData(action.payload.newData);
         setSortOrder(action.payload.newSortOrder); // Toggle urutan
         setSortBy(action.payload.newSortBy);
-        sortData(data); // oper props ke parent
+        sortData(action.payload.newData); // oper props ke parent
+        console.table("MYENGINETABLE:", action.payload.newData);
+        break;
+      case "UPDATE_SEARCH":
+        setSearchTerm(action.payload.newData);
         break;
       // Tambahkan case lainnya jika diperlukan untuk aksi lainnya
       default:
@@ -396,7 +399,7 @@ export const Tbody = (props) => {
   );
 };
 export const Tr = (props) => {
-  const { data, errorMessage, selectedRows, updateMyTableState } =
+  const { errorMessage, selectedRows, updateMyTableState } =
     useContext(TableContext);
   const { element, customKey, className, onClick, event } = props;
   return (
