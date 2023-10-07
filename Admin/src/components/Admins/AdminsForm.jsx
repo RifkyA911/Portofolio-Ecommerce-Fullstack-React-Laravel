@@ -14,6 +14,7 @@ import ModalContext from "../Modal";
 import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../../utils/RenderIcons";
+import { convertISODateToJSDate } from "../../utils/DateFormatter";
 
 // export const BackupForm = (props) => {
 //   return (
@@ -671,6 +672,9 @@ export const InsertForm = (props) => {
                   value: 6,
                   message: "New Password must be at least 6 characters",
                 },
+                validate: (value) => {
+                  value <= 6 || "Passwords kurnag";
+                },
               })}
             />
             <span
@@ -737,6 +741,7 @@ export const InsertForm = (props) => {
 export const AlterForm = (props) => {
   const {
     data,
+    setData,
     formType,
     showPassword,
     setShowPassword,
@@ -751,6 +756,7 @@ export const AlterForm = (props) => {
     dirtyFields,
     watch,
   } = useContext(ModalContext);
+
   return (
     <>
       <div className="flex flex-row">
@@ -768,7 +774,6 @@ export const AlterForm = (props) => {
         {/* Images */}
         <div className="flex justify-center items-center w-6/12 p-12">
           <div className="relative w-96 rounded-full">
-            {console.log(data)}
             <img
               src={
                 data.pict
@@ -900,7 +905,6 @@ export const AlterForm = (props) => {
                 },
               })}
             />
-
             <span
               onClick={() => setShowPassword(!showPassword)}
               className="absolute bg-transparent w-4 right-[20px] bottom-[8px] cursor-pointer"
@@ -926,9 +930,15 @@ export const AlterForm = (props) => {
               className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
               {...register("newPassword_confirmation", {
                 required: "Confirm Password is required",
-                validate: (value) =>
-                  value === newPasswordRef.current ||
-                  "Passwords do not match (2)",
+                validate: (value) => {
+                  if (watch("newPassword") != value) {
+                    setError("newPassword_confirmation", {
+                      type: "manual",
+                      message: "New Passwords is not match",
+                    });
+                    return "The New passwords do no match";
+                  }
+                },
               })}
             />
             <span
@@ -946,12 +956,12 @@ export const AlterForm = (props) => {
           <small className="flex flex-row gap-2">
             <div className="p">
               <span className="font-bold mr-2">Created at:</span>
-              {data.created_at}
+              {convertISODateToJSDate(data.created_at).toLocaleString()}
             </div>
             |
             <div className="p">
               <span className="font-bold mr-2">Updated at:</span>
-              {data.updated_at}
+              {convertISODateToJSDate(data.updated_at).toLocaleString()}
             </div>
           </small>
         </div>

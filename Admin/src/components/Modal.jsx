@@ -202,8 +202,8 @@ export const ActionModalForm = (props) => {
       username: "",
       role: 1,
       pict: "default.png",
-      password: "123456",
-      password_confirmation: "123456",
+      // password: "123456",
+      // password_confirmation: "123456",
     },
   });
 
@@ -300,8 +300,8 @@ export const ActionModalForm = (props) => {
         username: data.username,
         role: data.role,
         pict: data.pict,
-        newPassword: "123456",
-        newPassword_confirmation: "123456",
+        newPassword: "123456FF",
+        newPassword_confirmation: "123456FF",
       };
     } else if (formType === "DROP_BY_ID") {
       initialFormValue = {
@@ -383,26 +383,8 @@ export const ActionModalForm = (props) => {
   // submit form handler
   const onSubmit = async (form) => {
     // console.table("data:", data);
-    console.table("form:", form);
     if (!form) {
       alert("there is no form to send");
-    }
-    if (formType === "INSERT") {
-      if (form.password !== form.password_confirmation) {
-        setError("password", {
-          type: "manual",
-          message: "Passwords is not match with password_confirmation",
-        });
-        return;
-      }
-    } else if (formType === "ALTER_BY_ID") {
-      if (form.newPasswordRef !== form.newPassword_confirmation) {
-        setError("newPassword", {
-          type: "manual",
-          message: "Passwords is not match with new_password_confirmation",
-        });
-        return;
-      }
     }
 
     await sendFormDataByMethod(form);
@@ -414,6 +396,7 @@ export const ActionModalForm = (props) => {
     clearData,
     // Modal
     data,
+    setData,
     formType,
     showPassword,
     setShowPassword: () => setShowPassword(!showPassword),
@@ -485,7 +468,7 @@ export const ActionModalForm = (props) => {
                 <span className="loading loading-dots loading-md"></span>
               )}
             </div>
-            {data !== undefined && data !== null && (
+            {data !== undefined && data !== null ? (
               <div className="content">
                 {!loading ? (
                   <>
@@ -518,7 +501,9 @@ export const ActionModalForm = (props) => {
                         {/* =================== DROP ====================== */}
                         {(formType === "DROP_BY_ID" ||
                           formType === "DROP_BY_SELECTED") && (
-                          <DropForm formType={formType} data={data} />
+                          <>
+                            <DropForm />
+                          </>
                         )}
                       </form>
                     ) : (
@@ -535,7 +520,10 @@ export const ActionModalForm = (props) => {
                 )}
                 {/* end of loading */}
               </div>
+            ) : (
+              <h1>Data not ready :(</h1>
             )}
+            {/* end of data */}
           </div>
         </dialog>
       </ModalContext.Provider>
