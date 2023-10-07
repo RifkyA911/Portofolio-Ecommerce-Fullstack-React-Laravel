@@ -46,20 +46,22 @@ function MyJump() {
   return (
     <>
       <div className="relative min-w-screen z-[999999] bg-slate-500">
-        {isVisible && (
-          <div
-            onClick={scrollToTop}
-            className="fixed bottom-[100px] right-0 transition-all duration-300"
-          >
-            <div className="w-auto p-4 text-xs cursor-pointer backdrop-blur-sm bg-opacity-50 bg-amber-400 rounded-md shadow-lg hover:bg-white hover:bg-opacity-100 duration-500">
-              <div className="font-bold ">
-                <button className="back-to-top">
-                  <MuiIcon iconName="NorthRounded" />
-                </button>
-              </div>
+        {/* {isVisible && ( */}
+        <div
+          onClick={scrollToTop}
+          className={`fixed bottom-[50px] ${
+            isVisible ? `right-0` : "right-[-40px]"
+          } hover:right-0 transition-all duration-300`}
+        >
+          <div className="w-auto  p-4 hover:p-3 text-xs cursor-pointer backdrop-blur-sm bg-opacity-50 bg-gradient-to-t from-indigo-400 to-violet-400 rounded-md shadow-lg hover:bg-white hover:bg-opacity-100 duration-500">
+            <div className="font-bold ">
+              <button className="back-to-top">
+                <MuiIcon iconName="NorthRounded" />
+              </button>
             </div>
           </div>
-        )}
+        </div>
+        {/* )} */}
       </div>
     </>
   );

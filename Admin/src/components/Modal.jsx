@@ -273,11 +273,6 @@ export const ActionModalForm = (props) => {
   let newPasswordRef = useRef({});
 
   useEffect(() => {
-    // if (data !== null) {
-    //   const dataArray = Object.values(data).filter(
-    //     (item) => typeof item === "object"
-    //   );
-    // }
     if (formType === "INSERT") {
       passwordRef.current = watch("password", "");
 
@@ -291,8 +286,6 @@ export const ActionModalForm = (props) => {
         password_confirmation: "123456f",
       };
     } else if (formType === "ALTER_BY_ID") {
-      newPasswordRef.current = watch("newPassword", "");
-
       initialFormValue = {
         superAuthorizationPassword: "superAdmin",
         adminsId: data.id,

@@ -313,6 +313,7 @@ export const Th = (props) => {
   } = useContext(TableContext);
 
   const {
+    rowId,
     customKey,
     name,
     feature = null,
@@ -322,6 +323,7 @@ export const Th = (props) => {
     onChange,
     hidden,
     children,
+    selectedRows = false,
   } = props;
 
   const handleSortClick = (column) => {
@@ -392,7 +394,11 @@ export const Th = (props) => {
           className={` ${className} min-h-[36px] w-0 p-0 text-center bg-slate-50 hover:bg-gray-200 transition-colors duration-75 cursor-pointer`}
         >
           <label>
-            <input type="checkbox" className="checkbox" />
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={selectedRows.some((item) => item.id === rowId)}
+            />
           </label>
         </th>
       )}

@@ -1010,7 +1010,10 @@ export const DropForm = (props) => {
             )}
             {formType === "DROP_BY_SELECTED" && (
               <div key={id}>
-                <div key={id} className="relative flex flex-row items-end">
+                <div
+                  key={id}
+                  className="relative flex flex-row items-center justify-center"
+                >
                   {data.map((selected, index) => (
                     <>
                       <span

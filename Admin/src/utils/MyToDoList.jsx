@@ -21,7 +21,7 @@ function MyToDoList() {
   return (
     <>
       <div className="relative min-w-screen z-[99999] bg-slate-500">
-        <div className="fixed bottom-[-100px] right-0 hover:bottom-[0px] transition-all duration-300">
+        <div className="fixed bottom-[-110px] right-0 hover:bottom-[0px] transition-all duration-300">
           <div className="w-56 text-xs cursor-pointer backdrop-blur-sm bg-opacity-50 bg-white rounded-md shadow-lg hover:bg-white hover:bg-opacity-100 duration-500">
             <div className="font-bold ">
               My To Do List Panel

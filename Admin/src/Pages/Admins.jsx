@@ -150,10 +150,10 @@ export default function Admins(props) {
     }
   };
 
-  // useEffect(() => {
-  //   console.info(selectedRows);
-  //   // console.info(admins);
-  // }, [selectedRows]);
+  useEffect(() => {
+    console.info(selectedRows);
+    // console.info(admins);
+  }, [selectedRows]);
   // useEffect(() => {
   //   console.info("toggle select:", toggleSelect);
   // }, [toggleSelect]);
@@ -322,6 +322,8 @@ export default function Admins(props) {
                                       row.pict
                                     )
                                   }
+                                  selectedRows={selectedRows}
+                                  rowId={row.id}
                                   className=""
                                 ></Th>
                               </>
