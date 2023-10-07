@@ -1,4 +1,10 @@
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 // Components
@@ -6,7 +12,10 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { MuiIcon } from "../utils/RenderIcons";
 import { DangerAlert } from "./Alert";
-export const Modal = (props) => {
+export const InfoModal = (props) => {
+  const { thisAdmin, formType } = props;
+  const [showModal, setShowModal] = useState(false);
+  console.table(thisAdmin);
   // REDUX
   const {
     BgColor,
@@ -19,27 +28,47 @@ export const Modal = (props) => {
     BorderRowTable,
     BorderOuterTable,
   } = useSelector((state) => state.UI);
+
+  useLayoutEffect(() => {
+    setShowModal(true);
+  }, [thisAdmin, formType]);
   return (
     <>
-      <div>
+      {/* {thisAdmin !== null && (
+        <>
+          {showModal && ( */}
+      <div className="modal-list">
         <div className="list-modal">
+          {/* {formType === "SHOW_PROFILE_PICTURE" && ( */}
           <dialog id="ShowPict" className={`${textColor} modal `}>
             <div
-              className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden`}
+              className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden p-0`}
             >
               <div className="flex flex-col justify-center items-center">
-                <h3 className="font-bold text-lg ">This Admin Name</h3>
+                <h3 className="font-bold text-xl py-4 line-clamp-2">
+                  {thisAdmin?.username || "username?"}
+                </h3>
                 <img
-                  src={`./src/assets/admin_avatar/{}`}
-                  alt="Admin\src\assets\user_avatar\78949689_p6.jpg"
-                  className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden"
+                  src={`./src/assets/admin_avatar/${
+                    thisAdmin?.pict || "default.png"
+                  }`}
+                  alt={`Profile Picture ${thisAdmin?.username || "username?"}`}
+                  className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
                 />
+              </div>
+              <div className="py-4">
+                <small className="">
+                  <span className="font-bold ">Updated At : </span>
+                  {thisAdmin?.updated_at || "NaN"}
+                </small>
               </div>
             </div>
             <form method="dialog" className="modal-backdrop">
               <button>close</button>
             </form>
           </dialog>
+          {/* )} */}
+          {/* {formType === "SHOW_GRANT_ACCESS_INFO" && ( */}
           <dialog id="TipsGrantAccess" className={`${textColor} modal `}>
             <div
               className={`modal-box ${BgColor} max-w-[350px] max-h-[600px] overflow-hidden`}
@@ -91,8 +120,12 @@ export const Modal = (props) => {
               <button>close</button>
             </form>
           </dialog>
+          {/* )} */}
         </div>
       </div>
+      {/* )}
+        </>
+      )} */}
     </>
   );
 };
@@ -115,6 +148,7 @@ export const ActionModalForm = (props) => {
 
   let URL;
   let URL_METHODS;
+
   if (table == "admins") {
     URL = import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + table_id;
     URL_METHODS = import.meta.env.VITE_API_URL_PUT_ADMIN;
@@ -123,6 +157,7 @@ export const ActionModalForm = (props) => {
   //   URL = import.meta.env.VITE_API_URL_GET_BY_ID_TRANSACTION + "/" + table_id;
   // }
 
+  // Untuk Display data pada Form
   const {
     register,
     handleSubmit,
@@ -150,11 +185,7 @@ export const ActionModalForm = (props) => {
       setData({
         pict: "default.png",
       });
-    } else if (
-      formType === "ALTER_BY_ID" ||
-      formType === "DROP_BY_ID" ||
-      formType === "DROP_BY_SELECTED"
-    ) {
+    } else if (formType === "ALTER_BY_ID" || formType === "DROP_BY_ID") {
       if (table_id !== "" || table_id !== null) {
         axios
           .get(URL)
@@ -185,14 +216,29 @@ export const ActionModalForm = (props) => {
         setLoading(false);
         setErrorMessage("invalid formType");
       }
+    } else if (formType === "DROP_BY_SELECTED") {
+      setData({
+        superAuthorizationPassword: "superAdmin",
+        id: table_id,
+        email: "email",
+        username: "username",
+        pict: "pict",
+        role: "role",
+      });
+      // throw new Error(data);
+      setLoading(false);
+      setErrorMessage(null);
+      setMethod(formType);
     } else {
       setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
     }
   }, [table_id]); // Gunakan table_id sebagai dependency untuk useEffect.
 
+  // Config value for react-hook-form
   let initialFormValue;
   let passwordRef = useRef({});
   let newPassword = useRef({});
+
   useEffect(() => {
     if (formType === "INSERT") {
       passwordRef.current = watch("password", "");
@@ -234,14 +280,18 @@ export const ActionModalForm = (props) => {
     }
   }, [data]);
 
+  // jika submit, lakukan req ke server
   let axiosResponse;
+
   async function sendFormDataByMethod(form) {
     setSending(!sending);
     try {
       if (formType === "INSERT") {
         axiosResponse = await axios.post(URL_METHODS, form);
+        console.log("Input data baru berhasil :", axiosResponse);
       } else if (formType === "ALTER_BY_ID") {
         axiosResponse = await axios.put(URL_METHODS, form);
+        console.log("Update data berhasil :", axiosResponse);
       } else if (formType === "DROP_BY_ID") {
         axiosResponse = await axios.delete(URL_METHODS, {
           data: {
@@ -249,12 +299,35 @@ export const ActionModalForm = (props) => {
             superAuthorizationPassword: form.superAuthorizationPassword,
           },
         });
-      } // else if (formType === "DROP_BY_SELECTED") {
-      //   axiosResponse = await axios.delete(URL_METHODS, {
-      //     adminsId: form.adminsId,
-      //     data: { adminsId: form.adminsId },
-      //   });
-      // }
+        console.log("Data berhasil di drop:", axiosResponse);
+      } else if (formType === "DROP_BY_SELECTED") {
+        const deleteRequests = [];
+
+        // Loop melalui table_id dan buat permintaan DELETE untuk setiap indeks
+        for (const index in table_id) {
+          if (table_id.hasOwnProperty(index)) {
+            const adminsId = table_id[index];
+
+            // Buat permintaan DELETE dengan axios
+            const deleteRequest = axios.delete(URL_METHODS, {
+              data: {
+                superAuthorizationPassword: data.superAuthorizationPassword,
+                adminsId,
+              },
+            });
+
+            deleteRequests.push(deleteRequest);
+          }
+        }
+
+        try {
+          // Kirim semua permintaan DELETE secara bersamaan
+          const responses = await axios.all(deleteRequests);
+          console.log("Batch data berhasil dihapus:", responses);
+        } catch (error) {
+          console.error("Terjadi kesalahan saat menghapus batch data:", error);
+        }
+      }
       // setData({
       //   superAuthorizationPassword: "superAdmin",
       //   id: null,
@@ -265,7 +338,7 @@ export const ActionModalForm = (props) => {
       //   created_at: null,
       //   updated_at: null,
       // });
-      console.log("Data berhasil dikirim:", axiosResponse);
+
       setSending(false);
       setErrorMessage(null);
       setLoading(false);
@@ -280,6 +353,7 @@ export const ActionModalForm = (props) => {
     }
   }
 
+  // submit form handler
   const onSubmit = async (form) => {
     // console.table("data:", data);
     // console.table("form:", form);
@@ -344,7 +418,7 @@ export const ActionModalForm = (props) => {
               {formType === "DROP_BY_ID" && `Delete This Admin`}
               {formType === "DROP_BY_SELECTED" && `Delete Multiple Admin`}
             </h3>
-            {errorMessage && (
+            {errorMessage ? (
               <>
                 <h4
                   key={id}
@@ -360,6 +434,10 @@ export const ActionModalForm = (props) => {
                   {errorMessage}
                 </h4>
               </>
+            ) : (
+              <small>
+                <span className="font-bold"></span>
+              </small>
             )}
             {sending && (
               <span className="loading loading-dots loading-md"></span>
@@ -740,6 +818,22 @@ export const ActionModalForm = (props) => {
                                     />
                                   </span>
                                 </div>
+
+                                <small className="flex flex-row gap-2">
+                                  <div className="p">
+                                    <span className="font-bold mr-2">
+                                      Created at:
+                                    </span>
+                                    {data.created_at}
+                                  </div>
+                                  |
+                                  <div className="p">
+                                    <span className="font-bold mr-2">
+                                      Updated at:
+                                    </span>
+                                    {data.updated_at}
+                                  </div>
+                                </small>
                               </>
                             )}
                           </div>

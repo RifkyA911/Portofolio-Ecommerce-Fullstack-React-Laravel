@@ -199,16 +199,28 @@ class AdminsController extends Controller
     public function drop(Request $request)
     {
         $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
-        $selectedAdmin = strval($request->input('adminsId'));
-        $dropAdmin = Admin::find($selectedAdmin);
+        $adminsId = $request->input('adminsId');
+
         if ($getSuperAuthorizationPassword !== "superAdmin") {
-            if (!$dropAdmin) {
-                return response(new PostResource(false, "admin tidak ditemukan.", ['old_input' => $request->except('adminsId')]), 401);
-            }
-            return response(new PostResource(false, "authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('adminsId')]), 401);
+            return response(new PostResource(false, "Authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('adminsId')]), 401);
         }
 
-        return new PostResource(true, "berhasil menghapus admin" . $dropAdmin->username, $dropAdmin->delete());
+        if (is_array($adminsId)) {
+            // Batch delete
+            $deletedCount = Admin::whereIn('id', $adminsId)->delete();
+            return new PostResource(true, "Berhasil menghapus " . $deletedCount . " admin dengan IDs: " . implode(', ', $adminsId), null);
+        } elseif (is_numeric($adminsId)) {
+            // Single delete
+            $dropAdmin = Admin::find($adminsId);
+            if (!$dropAdmin) {
+                return response(new PostResource(false, "Admin tidak ditemukan.", ['old_input' => $request->except('adminsId')]), 401);
+            }
+            $deleted = $dropAdmin->delete();
+            return new PostResource(true, "Berhasil menghapus admin " . $dropAdmin->username, $deleted);
+        } else {
+            // Invalid input
+            return response(new PostResource(false, "Input adminsId tidak valid.", ['old_input' => $request->except('adminsId')]), 400);
+        }
     }
     // return response(new PostResource(false, 'Masuk coy :v', $request->input(), 302));
 }

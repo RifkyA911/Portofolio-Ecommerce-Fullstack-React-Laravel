@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 // Components
-import { Modal } from "./../Modal";
+
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
@@ -21,7 +21,9 @@ export const MyTableEngine = (props) => {
     setSearchTerm,
     setAddModal,
     setDeleteModal,
-    // Main Table Component
+    toggleSelect,
+    setToggleSelect,
+    // Sorting Table Component
     sortData,
     getSortBy = "id",
     getSortOrder = "asc",
@@ -34,9 +36,6 @@ export const MyTableEngine = (props) => {
 
   const [sortBy, setSortBy] = useState(getSortBy);
   const [sortOrder, setSortOrder] = useState(getSortOrder);
-
-  const [toggleSelect, setToggleSelect] = useState(false);
-  const [selectedRows, setSelectedRows] = useState({});
 
   // REDUX
   const { BorderOuterTable } = useSelector((state) => state.UI);
@@ -64,34 +63,15 @@ export const MyTableEngine = (props) => {
       case "UPDATE_SEARCH":
         setSearchTerm(action.payload.newData);
         break;
+      case "DELETE_MULTIPLE":
+        setSearchTerm(action.payload.newData);
+        break;
       // Tambahkan case lainnya jika diperlukan untuk aksi lainnya
       default:
         break;
     }
   };
-  // useEffect(() => {
-  //   console.table(data);
-  // }, [data]); // jalankan setiap state berubah
 
-  // const toggleRowSelection = (id) => {
-  //   setSelectedRows((prevSelectedRows) => ({
-  //     ...prevSelectedRows,
-  //     [id]: !prevSelectedRows[id],
-  //   }));
-  // };
-
-  // const selectAllRows = () => {
-  //   const allSelected = Object.values(selectedRows).every(
-  //     (isSelected) => isSelected
-  //   );
-  //   const newSelectedRows = {};
-
-  //   for (const item of data) {
-  //     newSelectedRows[item.id] = !allSelected;
-  //   }
-
-  //   setSelectedRows(newSelectedRows);
-  // };
   return (
     <div className="relative">
       <TableContext.Provider
@@ -99,7 +79,7 @@ export const MyTableEngine = (props) => {
           data,
           errorMessage,
           loading,
-          selectedRows,
+
           searchTerm,
           sortBy,
           sortOrder,
@@ -114,12 +94,10 @@ export const MyTableEngine = (props) => {
               setSearchTerm={setSearchTerm}
               setAddModal={setAddModal}
               setDeleteModal={setDeleteModal}
-              setToggleSelect={() =>
-                setToggleSelect((prevtoggleSelect) => !prevtoggleSelect)
-              }
+              toggleSelect={toggleSelect}
+              setToggleSelect={setToggleSelect}
               refresh={refresh}
             />
-            <Modal />
           </>
         )}
         {/* TABLE */}
@@ -140,27 +118,27 @@ export const MyTableHeader = (props) => {
     setSearchTerm,
     setAddModal,
     setDeleteModal,
-    selectedRows,
+    toggleSelect,
     setToggleSelect,
     refresh,
   } = props;
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isSelectedActive, setSelectedActive] = useState(false);
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
-  const closeDialog = () => {
-    setDialogOpen(false);
-  };
-
-  const handleConfirm = () => {
-    closeDialog();
-  };
   return (
     <>
       <div
         ref={targetRef}
         className=" flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-scroll focus:touch-pan-x"
       >
-        <div className="flex justify-center lg:justify-start lg:w-7/12 mb-4 lg:mb-0">
+        <div className="flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
+          <button
+            className="px-2 mr-2 bg-gray-200 text-black rounded-md"
+            onClick={() => setDialogOpen(!isDialogOpen)}
+          >
+            <MuiIcon iconName={"RemoveRedEyeRounded"} fontSize={20} />
+          </button>
           <input
             type="text"
             placeholder="Find Data"
@@ -169,7 +147,7 @@ export const MyTableHeader = (props) => {
             onChange={setSearchTerm}
           />
         </div>
-        <div className="flex justify-center lg:justify-end lg:w-5/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
+        <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
           <button
             onClick={() => toPDF()}
             className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
@@ -179,11 +157,46 @@ export const MyTableHeader = (props) => {
             </i>
             <span className="font-base px-2">Print</span>
           </button>
+          {toggleSelect && (
+            <div className="fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
+              <button
+                onClick={setDeleteModal}
+                className="btn hover:bg-gradient-to-r bg-red-500 hover:from-rose-500 hover:to-pink-500 text-white px-2 "
+              >
+                <span id="showDelete" className="options px-[4px]">
+                  <i className="font-xs">
+                    <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
+                  </i>
+                </span>
+                <span className="font-bold pr-2">Delete</span>
+              </button>
+              <button
+                onClick={() => setToggleSelect(false)}
+                className="btn hover:bg-gradient-to-r bg-amber-500 hover:from-yellow-500 hover:to-orange-500 text-white px-2"
+              >
+                <span id="showCancelDelete" className="options px-[4px]">
+                  <i className="font-xs ">
+                    <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
+                  </i>
+                  <span className="font-bold pr-2">Cancel</span>
+                </span>
+              </button>
+            </div>
+          )}
+
           <button
-            className="mx-1 grow-0 shrink-0 focus:outline-none bg-red-500 hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-500 rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
-            onClick={setDeleteModal}
+            className={`mx-1 grow-0 shrink-0 focus:outline-none ${
+              !toggleSelect
+                ? "bg-red-500 hover:from-rose-500 hover:to-pink-500"
+                : "bg-amber-500 hover:from-yellow-500 hover:to-orange-400"
+            } hover:bg-gradient-to-r  rounded-md font-roboto-medium text-white items-center transition-all duration-200`}
+            onClick={
+              !toggleSelect
+                ? () => setToggleSelect(true)
+                : () => setToggleSelect(false)
+            }
           >
-            {!selectedRows ? (
+            {!toggleSelect ? (
               <>
                 <span id="showDelete" className="options  py-[6px] px-[4px]">
                   <i className="font-xs">
@@ -195,13 +208,13 @@ export const MyTableHeader = (props) => {
             ) : (
               <>
                 <span
-                  id="showCancelDelete "
-                  className="options  py-[6px] px-[4px] hidden "
+                  id="showCancelDelete"
+                  className="options py-[6px] px-[4px]"
                 >
                   <i className="font-xs ">
                     <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
                   </i>
-                  <span className="font-base pr-2">Cancel</span>
+                  <span className="font-medium pr-2">Cancel</span>
                 </span>
               </>
             )}
@@ -243,11 +256,11 @@ export const MyTableHeader = (props) => {
                 <button
                   className="py-2 px-4 w-full hover:bg-slate-200 text-left"
                   onClick={() => {
-                    setToggleSelect();
+                    setToggleSelect(true);
                     setDialogOpen(false);
                   }}
                 >
-                  {!selectedRows ? "Select Row" : "Cancel "}
+                  {!toggleSelect ? "Select Row" : "Cancel Select"}
                 </button>
                 <button
                   className="py-2 px-4 w-full hover:bg-slate-200 text-left line-through text-slate-500 cursor-not-allowed"
@@ -299,7 +312,7 @@ export const Th = (props) => {
   const {
     customKey,
     name,
-    feature,
+    feature = null,
     column,
     className,
     onClick,
@@ -379,7 +392,7 @@ export const Th = (props) => {
         <th
           key={customKey}
           onChange={onChange}
-          className={`${className} min-h-[36px] w-0 p-0 text-center bg-slate-50 hover:bg-gray-200 transition-colors duration-75 cursor-pointer`}
+          className={` ${className} min-h-[36px] w-0 p-0 text-center bg-slate-50 hover:bg-gray-200 transition-colors duration-75 cursor-pointer`}
         >
           <label>
             <input type="checkbox" className="checkbox" />
@@ -399,15 +412,15 @@ export const Tbody = (props) => {
   );
 };
 export const Tr = (props) => {
-  const { errorMessage, selectedRows, updateMyTableState } =
+  const { errorMessage, toggleSelect, updateMyTableState } =
     useContext(TableContext);
   const { element, customKey, className, onClick, event } = props;
   return (
     <>
       <tr
         key={customKey}
-        className={`${className} ${
-          selectedRows
+        className={`relative ${className} ${
+          toggleSelect
             ? "hover:bg-gray-200 transition-colors duration-75 cursor-pointer"
             : ""
         }`}

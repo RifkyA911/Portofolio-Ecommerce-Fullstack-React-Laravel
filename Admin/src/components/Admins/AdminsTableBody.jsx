@@ -8,7 +8,9 @@ import { MuiIcon } from "../../utils/RenderIcons";
 const URL_PUT = import.meta.env.VITE_API_URL_PUT_ADMIN;
 
 export const ShowAdminName = (props) => {
-  const { data } = props;
+  const { data, onProfilePictureClick } = props;
+
+  // console.log(data.id);
   // REDUX
   const {
     BgColor,
@@ -24,10 +26,7 @@ export const ShowAdminName = (props) => {
   return (
     <>
       <div className="flex items-center space-x-3">
-        <div
-          className="avatar "
-          onClick={() => document.getElementById("ShowPict").showModal()}
-        >
+        <div className="avatar " onClick={onProfilePictureClick}>
           <div className="mask mask-squircle w-16 h-16 cursor-pointer ">
             <img
               src={`./src/assets/admin_avatar/${data.pict}`}
@@ -59,6 +58,7 @@ export const ShowRole = (props) => {
 
 export const AuthorityToggle = (props) => {
   const { data } = props;
+  // console.log(data.id);
 
   const [thisAdmin, setThisAdmin] = useState({
     superAuthorizationPassword: null,
@@ -72,6 +72,7 @@ export const AuthorityToggle = (props) => {
   const [toggleTypes, setToggleTypes] = useState([]);
   const [toggle, setToggle] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // const toggleTypes = ["chat", "sort_warehouse", "alter_price"];
   const toggleColors = ["toggle-info", "toggle-success", "toggle-warning"];
@@ -119,6 +120,7 @@ export const AuthorityToggle = (props) => {
       })
       .catch((error) => {
         setToggle(!toggle);
+        setErrorMessage(error.response.data.message);
         console.error(error);
       });
   };
@@ -141,6 +143,9 @@ export const AuthorityToggle = (props) => {
 
   return (
     <div className="w-full flex lg:flex-row justify-around items-center">
+      <div className="bg-red-400 rounded-lg line-clamp-6 font-semibold text-red-900">
+        {errorMessage}
+      </div>
       {thisAdmin && (
         <>
           {toggleTypes.map((toggleType, index) => (

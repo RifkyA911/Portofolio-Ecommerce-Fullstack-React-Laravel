@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // Layout
 import { Container, Content } from "../Layout";
 // REDUX
@@ -6,26 +6,41 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utils
 import { getCurrentEndpoint } from "./../utils/Navigation";
-
+import { MarketInbox } from "./../Config/Temporary.js";
 function Notification() {
+  // Table Body
+  const [toggleSelect, setToggleSelect] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
+
   // REDUX
   const { BgColor, textColor, ContentBgColor } = useSelector(
     (state) => state.UI
   );
   const dispatch = useDispatch();
-  // dispatch(setCurrentSidebar(getCurrentEndpoint()));
-  // const allowedPaths = sideNavigation.reduce((accumulator, group) => {
-  //   const groupLinks = group.Links.filter((link) => link.href);
-  //   return accumulator.concat(groupLinks.map((link) => link.href));
-  // }, []);
-  // // Menampilkan hasilnya
-  // console.log(allowedPaths);
-  // useEffect(() => {}, []);
-  // Konten komponen
+
+  // Fungsi handler saat checkbox di klik
+  const handleCheckboxChange = (index) => {
+    // Cek apakah indeks sudah ada dalam selectedRows
+    const isSelected = selectedRows.includes(index);
+
+    // Jika checkbox dicentang dan indeks belum ada dalam selectedRows, tambahkan indeks
+    if (!isSelected) {
+      setSelectedRows([...selectedRows, index]);
+    } else {
+      // Jika checkbox dicentang dan indeks sudah ada dalam selectedRows, hapus indeks
+      setSelectedRows(selectedRows.filter((item) => item !== index));
+    }
+  };
+
+  useEffect(() => {
+    console.info(selectedRows);
+  }, [selectedRows]);
+
   return (
     <>
       <Container>
         <Content pageName={"Notifications"}>
+          {/* <div className="notifications">
           <div className={`notifications-header flex flex-col`}>
             <div
               className={`${textColor} flex flex-row mb-2 w-full justify-end`}
@@ -79,6 +94,36 @@ function Notification() {
             </div>
             <div className="divider my-0"></div>
           </div>
+          </div> */}
+          <table>
+            <thead>
+              <tr>
+                <th>Select</th>
+                <th>id</th>
+                <th>name</th>
+                {/* Tambahkan kolom lain sesuai kebutuhan */}
+              </tr>
+            </thead>
+            <tbody>
+              {MarketInbox.map((row, index) => (
+                <tr
+                  key={index + 1}
+                  className="divide-y border-b-2 border-gray-400"
+                >
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.includes(index + 1)} // Tandai checkbox sesuai dengan status seleksi
+                      onChange={() => handleCheckboxChange(index + 1)} // Panggil fungsi handler saat checkbox diklik
+                    />
+                  </td>
+                  <td>{row.id}</td>
+                  <td>{row.name}</td>
+                  {/* Tambahkan kolom lain sesuai kebutuhan */}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Content>
       </Container>
     </>

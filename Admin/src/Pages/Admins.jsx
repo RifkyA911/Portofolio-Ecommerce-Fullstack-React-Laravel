@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 // Components
 import Skeleton from "@mui/material/Skeleton";
-import { ActionModalForm } from "./../components/Modal";
+import { ActionModalForm, InfoModal } from "./../components/Modal";
 import { DangerAlert, WarningAlert } from "../components/Alert";
 import {
   ShowAdminName,
@@ -50,6 +50,10 @@ export default function Admins(props) {
   // Table Header
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Table Body
+  const [toggleSelect, setToggleSelect] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   // REDUX
   const {
@@ -115,11 +119,40 @@ export default function Admins(props) {
     console.log("paginate-", newPaginate);
   };
 
+  // Handler Ketika mengklik info button
+  const handleInfoButton = (id, formType) => {
+    // console.log("data = ", id);
+    setAdmin(id);
+    setFormType(formType);
+  };
+
+  // Handler Ketika mengklik actions button
   const handleActionButton = (id, formType) => {
     // console.log("data = ", id);
     setAdmin(id);
     setFormType(formType);
   };
+
+  // Fungsi handler saat checkbox di klik
+  const handleCheckboxChange = (index) => {
+    // Cek apakah indeks sudah ada dalam selectedRows
+    const isSelected = selectedRows.includes(index);
+
+    // Jika checkbox dicentang dan indeks belum ada dalam selectedRows, tambahkan indeks
+    if (!isSelected) {
+      setSelectedRows([...selectedRows, index]);
+    } else {
+      // Jika checkbox dicentang dan indeks sudah ada dalam selectedRows, hapus indeks
+      setSelectedRows(selectedRows.filter((item) => item !== index));
+    }
+  };
+
+  // useEffect(() => {
+  //   console.info(selectedRows);
+  // }, [selectedRows]);
+  // useEffect(() => {
+  //   console.info("toggle select:", toggleSelect);
+  // }, [toggleSelect]);
 
   return (
     <>
@@ -164,7 +197,8 @@ export default function Admins(props) {
                 )}
               </div>
               {/* Main 1 */}
-
+              {/* Modal */}
+              <InfoModal thisAdmin={admin} formType={formType} />
               <ActionModalForm
                 table="admins"
                 table_id={admin}
@@ -178,6 +212,7 @@ export default function Admins(props) {
                   setFormType(null);
                 }}
               />
+              {/* Table */}
               <MyTableEngine
                 // Main Logic Data
                 inputData={admins}
@@ -189,20 +224,28 @@ export default function Admins(props) {
                 TabHeader={true}
                 searchTerm={searchTerm}
                 setSearchTerm={(e) => setSearchTerm(e.target.value)}
-                sortData={(newSortedData) => {
-                  setAdmins(newSortedData);
-                  console.table("ADMINS:", newSortedData);
-                }}
                 setAddModal={() => {
                   document.getElementById("AdminForm").showModal();
                   handleActionButton(null, "INSERT");
                 }}
                 setDeleteModal={() => {
+                  // console.table(Object.assign({}, selectedRows));
                   document.getElementById("AdminForm").showModal();
-                  handleActionButton(99, "DROP_BY_SELECTED");
+                  handleActionButton(
+                    Object.assign({}, selectedRows),
+                    "DROP_BY_SELECTED"
+                  );
+                }}
+                toggleSelect={toggleSelect}
+                setToggleSelect={() => {
+                  setToggleSelect((toggleSelectProps) => !toggleSelectProps);
+                }}
+                // Sorting Filter
+                sortData={(newSortedData) => {
+                  setAdmins(newSortedData);
+                  console.table("ADMINS:", newSortedData);
                 }}
               >
-                {/* table="admin" table_id={getId} */}
                 <Table className={`text-sm w-full `}>
                   <Thead className={`${BgOuterTable} ${textColor} `}>
                     <Tr key="TableHead" className="">
@@ -231,9 +274,12 @@ export default function Admins(props) {
                       <Th
                         name="Grant Features"
                         column="role"
-                        onClick={() =>
-                          document.getElementById("TipsGrantAccess").showModal()
-                        }
+                        onClick={() => {
+                          handleInfoButton(null, "SHOW_GRANT_ACCESS_INFO");
+                          document
+                            .getElementById("TipsGrantAccess")
+                            .showModal();
+                        }}
                         className="p-2 text-center lg:w-12 mx-auto"
                       >
                         Grant Features
@@ -260,25 +306,44 @@ export default function Admins(props) {
                         //   selectedRows[row.id] ? "selected" : ""
                         // } divide-y`}
                       >
-                        <Th
-                          key={index}
-                          feature={null}
-                          className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
-                        >
-                          {parseInt(row.id) == 0
-                            ? parseInt(row.id) + 1
-                            : row.id}
-                        </Th>
-                        {/* {!toggleSelect ? (
+                        {toggleSelect ? (
+                          <>
+                            {row.role != 0 ? (
+                              <>
+                                <Th
+                                  key={index}
+                                  feature={"select"}
+                                  onChange={() => handleCheckboxChange(row.id)}
+                                  className=""
+                                ></Th>
+                              </>
+                            ) : (
+                              <th className="cursor-not-allowed">
+                                <MuiIcon iconName="BlockRounded" />
+                              </th>
+                            )}
+                          </>
                         ) : (
-                          <Th
-                            key={index}
-                            feature={"select"}
-                            onChange={() => console.log(index)}
-                          ></Th>
-                        )} */}
+                          <>
+                            <Th
+                              key={index}
+                              className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
+                            >
+                              {parseInt(row.id) == 0
+                                ? parseInt(row.id) + 1
+                                : row.id}
+                            </Th>
+                          </>
+                        )}
                         <Td className="px-8 w-[450px] py-2">
-                          <ShowAdminName data={row} />
+                          <ShowAdminName
+                            key={index}
+                            data={row}
+                            onProfilePictureClick={() => {
+                              handleInfoButton(row, "SHOW_PROFILE_PICTURE");
+                              document.getElementById("ShowPict").showModal();
+                            }}
+                          />
                         </Td>
                         <Td>
                           <ShowRole data={row} />
