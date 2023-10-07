@@ -20,6 +20,7 @@ export default {
       },
     },
     fontFamily: {
+      // Roboto
       'roboto': ['Roboto', 'sans-serif'],
       'roboto-black': ['Roboto-Black', 'sans-serif'], //@RifkyA911 custom
       'roboto-bold': ['Roboto-Bold', 'sans-serif'],
@@ -33,6 +34,24 @@ export default {
       'roboto-bold-italic': ['Roboto-BoldItalic', 'sans-serif'],
       'roboto-light-italic': ['Roboto-LightItalic', 'sans-serif'],
       'roboto-thin-italic': ['Roboto-ThinItalic', 'sans-serif'],
+      // Poppins
+      'poppins': ['Poppins', 'sans-serif'],
+      'poppins-black': ['Poppins-Black', 'sans-serif'], //@RifkyA911 custom
+      'poppins-bold': ['Poppins-Bold', 'sans-serif'],
+      'poppins-extra-bold': ['Poppins-ExtraBold', 'sans-serif'],
+      'poppins-extra-light': ['Poppins-ExtraLight', 'sans-serif'],
+      'poppins-italic': ['Poppins-Italic', 'sans-serif'],
+      'poppins-light': ['Poppins-Light', 'sans-serif'],
+      'poppins-medium': ['Poppins-Medium', 'sans-serif'],
+      'poppins-medium-italic': ['Poppins-MediumItalic', 'sans-serif'],
+      'poppins-regular': ['Poppins-Regular', 'sans-serif'],
+      'poppins-semi-bold': ['Poppins-SemiBold', 'sans-serif'],
+      'poppins-semi-italic': ['Poppins-SemiItalic', 'sans-serif'],
+      'poppins-thin': ['Poppins-Thin', 'sans-serif'],
+      'poppins-black-italic': ['Poppins-BlackItalic', 'sans-serif'],
+      'poppins-bold-italic': ['Poppins-BoldItalic', 'sans-serif'],
+      'poppins-light-italic': ['Poppins-LightItalic', 'sans-serif'],
+      'poppins-thin-italic': ['Poppins-ThinItalic', 'sans-serif'],
     }
   },
   plugins: [

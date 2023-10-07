@@ -5,7 +5,8 @@ import store from "./Redux/store"; // Import store dari file store.js
 import App from "./App.jsx";
 //UI
 import "./index.css";
-import "./assets/font/font-roboto.css"; //Roboto Font
+import "./assets/font/roboto/font-roboto.css"; //Roboto Font
+import "./assets/font/poppins/font-poppins.css"; //poppins Font
 
 import { BrowserRouter } from "react-router-dom";
 
