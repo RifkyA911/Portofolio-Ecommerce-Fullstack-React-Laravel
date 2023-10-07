@@ -134,21 +134,25 @@ export default function Admins(props) {
   };
 
   // Fungsi handler saat checkbox di klik
-  const handleCheckboxChange = (index) => {
+  const handleCheckboxChange = (id, username, pict) => {
     // Cek apakah indeks sudah ada dalam selectedRows
-    const isSelected = selectedRows.includes(index);
+    const isSelected = selectedRows.some((item) => item.id === id);
 
-    // Jika checkbox dicentang dan indeks belum ada dalam selectedRows, tambahkan indeks
+    // Buat objek yang berisi indeks, username, dan pict
+    const newRow = { id, username, pict };
+
     if (!isSelected) {
-      setSelectedRows([...selectedRows, index]);
+      // Jika checkbox dicentang dan indeks belum ada dalam selectedRows, tambahkan objek baru
+      setSelectedRows([...selectedRows, newRow]);
     } else {
-      // Jika checkbox dicentang dan indeks sudah ada dalam selectedRows, hapus indeks
-      setSelectedRows(selectedRows.filter((item) => item !== index));
+      // Jika checkbox dicentang dan indeks sudah ada dalam selectedRows, hapus objek dengan indeks yang cocok
+      setSelectedRows(selectedRows.filter((item) => item.id !== id));
     }
   };
 
   // useEffect(() => {
   //   console.info(selectedRows);
+  //   // console.info(admins);
   // }, [selectedRows]);
   // useEffect(() => {
   //   console.info("toggle select:", toggleSelect);
@@ -191,7 +195,6 @@ export default function Admins(props) {
                       >
                         <MuiIcon iconName={"RefreshRounded"} fontSize={20} />
                       </button>
-                      {/* <NavLink to={`chat/${admins[0]?.id}`}>kss</NavLink> */}
                     </div>
                   </>
                 )}
@@ -209,6 +212,8 @@ export default function Admins(props) {
                 formType={formType}
                 clearData={() => {
                   setAdmin(null);
+                  setToggleSelect(false);
+                  setSelectedRows([]);
                   setFormType(null);
                 }}
               />
@@ -231,10 +236,7 @@ export default function Admins(props) {
                 setDeleteModal={() => {
                   // console.table(Object.assign({}, selectedRows));
                   document.getElementById("AdminForm").showModal();
-                  handleActionButton(
-                    Object.assign({}, selectedRows),
-                    "DROP_BY_SELECTED"
-                  );
+                  handleActionButton(selectedRows, "DROP_BY_SELECTED");
                 }}
                 toggleSelect={toggleSelect}
                 setToggleSelect={() => {
@@ -313,7 +315,13 @@ export default function Admins(props) {
                                 <Th
                                   key={index}
                                   feature={"select"}
-                                  onChange={() => handleCheckboxChange(row.id)}
+                                  onChange={() =>
+                                    handleCheckboxChange(
+                                      row.id,
+                                      row.username,
+                                      row.pict
+                                    )
+                                  }
                                   className=""
                                 ></Th>
                               </>

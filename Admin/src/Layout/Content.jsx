@@ -17,7 +17,7 @@ export const Content = (props) => {
     (state) => state.UI
   );
   const dispatch = useDispatch();
-  dispatch(setCurrentSidebar(getCurrentEndpoint()));
+  // dispatch(setCurrentSidebar(getCurrentEndpoint()));
   return (
     <>
       <div className="w-full h-full p-4 max-w-[1920px] mx-auto">

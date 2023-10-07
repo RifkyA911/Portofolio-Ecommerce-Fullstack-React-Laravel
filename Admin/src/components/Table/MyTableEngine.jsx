@@ -120,6 +120,7 @@ export const MyTableHeader = (props) => {
     setDeleteModal,
     toggleSelect,
     setToggleSelect,
+    hide = null,
     refresh,
   } = props;
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -141,27 +142,29 @@ export const MyTableHeader = (props) => {
           </button>
           <input
             type="text"
-            placeholder="Find Data"
+            placeholder="Find data in this pagination"
             value={searchTerm}
             className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none"
             onChange={setSearchTerm}
           />
         </div>
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
-          <button
-            onClick={() => toPDF()}
-            className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
-          >
-            <i className="font-xs">
-              <MuiIcon iconName={"PrintSharp"} fontSize={20} />
-            </i>
-            <span className="font-base px-2">Print</span>
-          </button>
+          {hide !== "printBtn" && (
+            <button
+              onClick={() => toPDF()}
+              className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
+            >
+              <i className="font-xs">
+                <MuiIcon iconName={"PrintSharp"} fontSize={20} />
+              </i>
+              <span className="font-base px-2">Print</span>
+            </button>
+          )}
           {toggleSelect && (
             <div className="fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
               <button
                 onClick={setDeleteModal}
-                className="btn hover:bg-gradient-to-r bg-red-500 hover:from-rose-500 hover:to-pink-500 text-white px-2 "
+                className="btn transition-all duration-500 bg-gradient-to-tl from-pink-500 via-red-500 to-red-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
               >
                 <span id="showDelete" className="options px-[4px]">
                   <i className="font-xs">
@@ -172,7 +175,7 @@ export const MyTableHeader = (props) => {
               </button>
               <button
                 onClick={() => setToggleSelect(false)}
-                className="btn hover:bg-gradient-to-r bg-amber-500 hover:from-yellow-500 hover:to-orange-500 text-white px-2"
+                className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-orange-500 to-amber-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
               >
                 <span id="showCancelDelete" className="options px-[4px]">
                   <i className="font-xs ">
@@ -327,11 +330,9 @@ export const Th = (props) => {
       // console.table("a:", a[column]);
       // console.table("b:", b[column]);
       if (a[column] < b[column]) {
-        console.log("masok a");
         return sortOrder === "desc" ? -1 : 1;
       }
       if (a[column] > b[column]) {
-        console.log("masok b");
         return sortOrder === "desc" ? 1 : -1;
       }
       return 0;
@@ -342,9 +343,7 @@ export const Th = (props) => {
       newSortOrder: sortOrder === "asc" ? "desc" : "asc",
       newSortBy: column,
     };
-    // console.table(newSortedValue);
-    console.log("Update Sort State:", sortOrder);
-    // console.table("newState:", newSortedValue.newSortOrder);
+    // console.log("Update Sort State:", sortOrder);
 
     // Memanggil updateMyTableState dengan newSortedValue sebagai payload
     updateMyTableState({
@@ -352,8 +351,6 @@ export const Th = (props) => {
       payload: newSortedValue,
     });
   };
-
-  // console.log(modalId);
 
   return (
     <>
