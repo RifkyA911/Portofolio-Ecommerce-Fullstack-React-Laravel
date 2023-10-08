@@ -242,6 +242,7 @@ export default function Admins(props) {
                 setToggleSelect={() => {
                   setToggleSelect((toggleSelectProps) => !toggleSelectProps);
                 }}
+                setSelectedRows={(propsValue) => setSelectedRows(propsValue)}
                 // Sorting Filter
                 sortData={(newSortedData) => {
                   setAdmins(newSortedData);
@@ -325,7 +326,33 @@ export default function Admins(props) {
                                   selectedRows={selectedRows}
                                   rowId={row.id}
                                   className=""
-                                ></Th>
+                                >
+                                  {selectedRows.some(
+                                    (item) => item.id === row.id
+                                  ) ? (
+                                    <button
+                                      onClick={() =>
+                                        handleCheckboxChange(
+                                          row.id,
+                                          row.username,
+                                          row.pict
+                                        )
+                                      }
+                                      className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-25 cursor-pointer"
+                                    ></button>
+                                  ) : (
+                                    <button
+                                      onClick={() =>
+                                        handleCheckboxChange(
+                                          row.id,
+                                          row.username,
+                                          row.pict
+                                        )
+                                      }
+                                      className="absolute top-0 left-0 w-full h-full bg-amber-500 opacity-25 cursor-pointer"
+                                    ></button>
+                                  )}
+                                </Th>
                               </>
                             ) : (
                               <th className="cursor-not-allowed">

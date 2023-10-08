@@ -509,12 +509,24 @@ export const ActionModalForm = (props) => {
                     {/* end of onWorking */}
                   </>
                 ) : (
-                  <p>Loading...</p>
+                  <>
+                    <p>Loading...</p>
+                  </>
                 )}
                 {/* end of loading */}
               </div>
             ) : (
-              <h1>Data not ready :(</h1>
+              <h1>
+                Data not ready :({" "}
+                <span className="loading loading-spinner text-primary"></span>
+                <span className="loading loading-spinner text-secondary"></span>
+                <span className="loading loading-spinner text-accent"></span>
+                <span className="loading loading-spinner text-neutral"></span>
+                <span className="loading loading-spinner text-info"></span>
+                <span className="loading loading-spinner text-success"></span>
+                <span className="loading loading-spinner text-warning"></span>
+                <span className="loading loading-spinner text-error"></span>
+              </h1>
             )}
             {/* end of data */}
           </div>

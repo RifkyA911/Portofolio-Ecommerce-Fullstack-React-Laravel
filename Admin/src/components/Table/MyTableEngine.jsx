@@ -23,6 +23,7 @@ export const MyTableEngine = (props) => {
     setDeleteModal,
     toggleSelect,
     setToggleSelect,
+    setSelectedRows,
     // Sorting Table Component
     sortData,
     getSortBy = "id",
@@ -96,6 +97,7 @@ export const MyTableEngine = (props) => {
               setDeleteModal={setDeleteModal}
               toggleSelect={toggleSelect}
               setToggleSelect={setToggleSelect}
+              setSelectedRows={setSelectedRows}
               refresh={refresh}
             />
           </>
@@ -120,6 +122,7 @@ export const MyTableHeader = (props) => {
     setDeleteModal,
     toggleSelect,
     setToggleSelect,
+    setSelectedRows,
     hide = null,
     refresh,
   } = props;
@@ -174,7 +177,10 @@ export const MyTableHeader = (props) => {
                 <span className="font-bold pr-2">Delete</span>
               </button>
               <button
-                onClick={() => setToggleSelect(false)}
+                onClick={() => {
+                  setToggleSelect(false);
+                  setSelectedRows([]);
+                }}
                 className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-orange-500 to-amber-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
               >
                 <span id="showCancelDelete" className="options px-[4px]">
@@ -196,7 +202,10 @@ export const MyTableHeader = (props) => {
             onClick={
               !toggleSelect
                 ? () => setToggleSelect(true)
-                : () => setToggleSelect(false)
+                : () => {
+                    setToggleSelect(false);
+                    setSelectedRows([]);
+                  }
             }
           >
             {!toggleSelect ? (
@@ -393,11 +402,15 @@ export const Th = (props) => {
           onChange={onChange}
           className={` ${className} min-h-[36px] w-0 p-0 text-center bg-slate-50 hover:bg-gray-200 transition-colors duration-75 cursor-pointer`}
         >
+          {children}
           <label>
             <input
               type="checkbox"
               className="checkbox"
               checked={selectedRows.some((item) => item.id === rowId)}
+              onChange={() => {
+                // console.log(selectedRows);
+              }}
             />
           </label>
         </th>
@@ -415,7 +428,7 @@ export const Tbody = (props) => {
   );
 };
 export const Tr = (props) => {
-  const { errorMessage, toggleSelect, updateMyTableState } =
+  const { errorMessage, toggleSelect, selectedRows, updateMyTableState } =
     useContext(TableContext);
   const { element, customKey, className, onClick, event } = props;
   return (
