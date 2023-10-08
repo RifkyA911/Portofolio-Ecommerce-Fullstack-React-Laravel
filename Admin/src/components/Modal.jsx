@@ -23,7 +23,7 @@ export const useModalContext = () => {
 };
 
 export const InfoModal = (props) => {
-  const { thisAdmin, formType } = props;
+  const { table_id, formType } = props;
   const [showModal, setShowModal] = useState(false);
 
   // REDUX
@@ -41,10 +41,10 @@ export const InfoModal = (props) => {
 
   useLayoutEffect(() => {
     setShowModal(true);
-  }, [thisAdmin, formType]);
+  }, [table_id, formType]);
   return (
     <>
-      {/* {thisAdmin !== null && (
+      {/* {table_id !== null && (
         <>
           {showModal && ( */}
       <div className="modal-list">
@@ -56,20 +56,20 @@ export const InfoModal = (props) => {
             >
               <div className="flex flex-col justify-center items-center">
                 <h3 className="font-bold text-xl py-4 line-clamp-2">
-                  {thisAdmin?.username || "username?"}
+                  {table_id?.username || "username?"}
                 </h3>
                 <img
                   src={`./src/assets/admin_avatar/${
-                    thisAdmin?.pict || "default.png"
+                    table_id?.pict || "default.png"
                   }`}
-                  alt={`Profile Picture ${thisAdmin?.username || "username?"}`}
+                  alt={`Profile Picture ${table_id?.username || "username?"}`}
                   className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
                 />
               </div>
               <div className="py-4">
                 <small className="">
                   <span className="font-bold ">Updated At : </span>
-                  {thisAdmin?.updated_at || "NaN"}
+                  {table_id?.updated_at || "NaN"}
                 </small>
               </div>
             </div>

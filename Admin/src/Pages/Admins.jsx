@@ -1,8 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 // Components
-import Skeleton from "@mui/material/Skeleton";
 import { ActionModalForm, InfoModal } from "./../components/Modal";
-import { DangerAlert, WarningAlert } from "../components/Alert";
 import {
   ShowAdminName,
   ShowRole,
@@ -11,57 +9,56 @@ import {
 } from "./../components/Admins/AdminsTableBody";
 import {
   MyTableEngine,
-  Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  MyTablePagination,
 } from "../components/Table/MyTableEngine";
 // Layout
 import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
 // UTILS
 import axios from "axios";
 import { MuiIcon } from "../utils/RenderIcons";
+import { SkeltonTable } from "../components/Skelton/SkeltonTable";
+import { SetErrorMessage } from "../components/Error/ErrorMessage";
 
 // define fetch data URL by admins
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
 
-const AdminsContext = createContext();
+export const AdminsContext = createContext();
 
 export const useAdminsContext = () => {
   return useContext(AdminsContext);
 };
 
 export default function Admins(props) {
-  const [dummy, setDummy] = useState([]);
-  // This Page
+  const [dataFromChild, setDataFromChild] = useState([]);
+  // ---- Admins Basic States ----
   const [admins, setAdmins] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Action Modal
-  const [admin, setAdmin] = useState("");
-  const [formType, setFormType] = useState(null);
-
-  // Table Pagination
+  // ---- MyTableEngine Pagination ----
   const [length, setLengthData] = useState();
   const [paginate, setPaginate] = useState(1);
   const [rows, setRows] = useState(10);
 
-  // Table Header
+  // ---- MyTableEngine Header ----
   const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Table Body
+  // ---- MyTableEngine Body ----
   const [toggleSelect, setToggleSelect] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
 
-  // REDUX
+  // ---- Modal States ----
+  const [admin, setAdmin] = useState("");
+  const [formType, setFormType] = useState(null);
+
+  // REDUX States
   const {
     BgColor,
     textTable,
@@ -96,34 +93,11 @@ export default function Admins(props) {
       console.error("Terjadi kesalahan:", error);
     }
   };
-  // console.table(admins);
-
-  useEffect(() => {
-    // console.log(searchTerm);
-    // Filter data based on the search term
-    const filteredData = admins.filter((admins) =>
-      admins.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(filteredData);
-  }, [searchTerm, admins]);
 
   // Panggil fetchData saat komponen pertama kali dimuat atau saat value paginate, rows berubah
   useEffect(() => {
     fetchAdmins(URL, "fetch");
   }, [paginate, rows]);
-
-  // Handler ketika nilai rows diubah
-  const handleRowsChange = (newRows) => {
-    setLoading(true);
-    setRows(newRows);
-  };
-
-  // Handler ketika nilai paginate diubah
-  const handlePaginateChange = (newPaginate) => {
-    setLoading(true);
-    setPaginate(newPaginate);
-    console.log("paginate-", newPaginate);
-  };
 
   // Handler Ketika mengklik info button
   const handleInfoButton = (id, formType) => {
@@ -156,288 +130,282 @@ export default function Admins(props) {
     }
   };
 
-  useEffect(() => {
-    console.info(selectedRows);
-    // console.info(admins);
-  }, [selectedRows]);
   // useEffect(() => {
-  //   console.info("toggle select:", toggleSelect);
-  // }, [toggleSelect]);
+  //   console.info(selectedRows);
+  // }, [selectedRows]);
 
+  // ===================== MyTableEngine =====================
+  // ---- MyTableEngine Search Filter ----
+  useEffect(() => {
+    // Filter data based on the search term
+    const filteredData = admins.filter((admins) =>
+      admins.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(filteredData);
+  }, [searchTerm, admins]);
+
+  const MyTableEngineProps = {
+    inputData: admins,
+    refresh: () => {
+      fetchAdmins(URL, "fetch");
+      setLoading(true);
+    },
+    // ------------- Table Header Menu -------------
+    TabHeader: true,
+    searchTerm: searchTerm,
+    setSearchTerm: (e) => setSearchTerm(e.target.value),
+    setAddModal: () => {
+      document.getElementById("AdminForm").showModal();
+      handleActionButton(null, "INSERT");
+    },
+    setDeleteModal: () => {
+      // console.table(Object.assign({}, selectedRows));
+      document.getElementById("AdminForm").showModal();
+      handleActionButton(selectedRows, "DROP_BY_SELECTED");
+    },
+    // ------------- Table Body -------------
+    toggleSelect: toggleSelect,
+    setToggleSelect: () => {
+      setToggleSelect((toggleSelectProps) => !toggleSelectProps);
+    },
+    setSelectedRows: (propsValue) => setSelectedRows(propsValue),
+    // Sorting Filter
+    sortData: (newSortedData) => {
+      setAdmins(newSortedData);
+    },
+    // ------------ Table Pagination-------------
+    TabPagination: true,
+    paginate: paginate,
+    onChangePaginate: (newPaginate) => {
+      setLoading(true);
+      setPaginate(newPaginate);
+      console.log("paginate-", newPaginate);
+    },
+    rows: rows,
+    onRowsChange: (newRows) => {
+      setLoading(true);
+      setRows(newRows);
+    },
+    length: length,
+    sendDataToParent: (data) => {
+      setDataFromChild([...dataFromChild, data]);
+    },
+  };
+
+  // ===================== Modal =====================
+  const ModalProps = {
+    table: "admins",
+    table_id: admin,
+    refresh: () => {
+      fetchAdmins(URL, "fetch");
+      setLoading(true);
+    },
+    formType: formType,
+    clearData: () => {
+      setAdmin(null);
+      setToggleSelect(false);
+      setSelectedRows([]);
+      setFormType(null);
+    },
+  };
   return (
     <>
-      {/* {console.log("Render")} */}
-
+      {/* <AdminsContext.Provider value={AdminsContextValue}> */}
       <Container>
         <Content pageName={"Admins"}>
           {loading == true ? (
-            <div className="p-0 bg-white">
-              {Array.from({ length: 16 }).map((_, index) => (
-                <Skeleton key={index} className="p-4" />
-              ))}
-            </div>
+            <SkeltonTable />
           ) : (
             <div id="Admins" className="rounded-lg text-sm ">
-              {/* Error */}
+              {/* ================ Error ================ */}
               <div>
                 {errorMessage && (
-                  <>
-                    <DangerAlert
-                      message={
-                        <h1>
-                          <MuiIcon iconName={"WarningRounded"} fontSize={20} />
-                          {errorMessage}
-                        </h1>
-                      }
-                    />
-                    <div className="flex flex-col justify-center">
-                      <span className="text-md font-medium my-2">{URL}</span>
-                      <button
-                        onClick={() => {
-                          fetchAdmins(URL, "fetch");
-                          setLoading(true);
-                        }}
-                        className="m-2 w-auto focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 p-2 rounded-md font-roboto-medium text-white items-center "
-                      >
-                        <MuiIcon iconName={"RefreshRounded"} fontSize={20} />
-                      </button>
-                    </div>
-                  </>
+                  <SetErrorMessage
+                    errorMessage={errorMessage}
+                    refresh={() => {
+                      fetchAdmins(URL, "fetch");
+                      setLoading(true);
+                    }}
+                  >
+                    <span className="text-md font-medium my-2">{URL}</span>
+                  </SetErrorMessage>
                 )}
               </div>
-              {/* Main 1 */}
-              {/* Modal */}
-              <InfoModal thisAdmin={admin} formType={formType} />
-              <ActionModalForm
-                table="admins"
-                table_id={admin}
-                refresh={() => {
-                  fetchAdmins(URL, "fetch");
-                  setLoading(true);
-                }}
-                formType={formType}
-                clearData={() => {
-                  setAdmin(null);
-                  setToggleSelect(false);
-                  setSelectedRows([]);
-                  setFormType(null);
-                }}
-              />
-              {/* Table */}
-              <MyTableEngine
-                // Main Logic Data
-                inputData={admins}
-                refresh={() => {
-                  fetchAdmins(URL, "fetch");
-                  setLoading(true);
-                }}
-                // Table Header Menu
-                TabHeader={true}
-                searchTerm={searchTerm}
-                setSearchTerm={(e) => setSearchTerm(e.target.value)}
-                setAddModal={() => {
-                  document.getElementById("AdminForm").showModal();
-                  handleActionButton(null, "INSERT");
-                }}
-                setDeleteModal={() => {
-                  // console.table(Object.assign({}, selectedRows));
-                  document.getElementById("AdminForm").showModal();
-                  handleActionButton(selectedRows, "DROP_BY_SELECTED");
-                }}
-                toggleSelect={toggleSelect}
-                setToggleSelect={() => {
-                  setToggleSelect((toggleSelectProps) => !toggleSelectProps);
-                }}
-                setSelectedRows={(propsValue) => setSelectedRows(propsValue)}
-                // Sorting Filter
-                sortData={(newSortedData) => {
-                  setAdmins(newSortedData);
-                  console.table("ADMINS:", newSortedData);
-                }}
-              >
-                <Table className={`text-sm w-full `}>
-                  <Thead className={`${BgOuterTable} ${textColor} `}>
-                    <Tr key="TableHead" className="">
-                      <Th
-                        name=""
-                        column="id"
-                        feature="filter"
-                        sortOrder="asc"
-                        className="px-4"
-                      ></Th>
-                      <Th className="px-2 hidden">
-                        <label>Select</label>
-                      </Th>
-                      <Th
-                        name="Admin Name"
-                        column="username"
-                        feature="filter"
-                        className="px-6 w-[600px]"
-                      ></Th>
-                      <Th
-                        name="Role"
-                        column="role"
-                        feature="filter"
-                        className="px-4 w-28"
-                      ></Th>
-                      <Th
-                        name="Grant Features"
-                        column="role"
-                        onClick={() => {
-                          handleInfoButton(null, "SHOW_GRANT_ACCESS_INFO");
-                          document
-                            .getElementById("TipsGrantAccess")
-                            .showModal();
-                        }}
-                        className="p-2 text-center lg:w-12 mx-auto"
-                      >
-                        Grant Features
-                        <i className="m-0 lg:mx-2 text-gray-400">
-                          <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
-                        </i>
-                      </Th>
-                      <Th
-                        name="Action"
-                        column="action"
-                        className="text-[14px] w-[160px]"
-                      >
-                        Actions
-                      </Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody className={`${BgTable} `}>
-                    {searchResults.map((row, index) => (
-                      <Tr
-                        key={index}
-                        customKey={index}
-                        className={"divide-y"}
-                        // className={`${
-                        //   selectedRows[row.id] ? "selected" : ""
-                        // } divide-y`}
-                      >
-                        {toggleSelect ? (
-                          <>
-                            {row.role != 0 ? (
-                              <>
-                                <Th
-                                  key={index}
-                                  feature={"select"}
-                                  onChange={() =>
-                                    handleCheckboxChange(
-                                      row.id,
-                                      row.username,
-                                      row.pict
-                                    )
-                                  }
-                                  selectedRows={selectedRows}
-                                  rowId={row.id}
-                                  className=""
-                                >
-                                  {selectedRows.some(
-                                    (item) => item.id === row.id
-                                  ) ? (
-                                    <button
-                                      onClick={() =>
-                                        handleCheckboxChange(
-                                          row.id,
-                                          row.username,
-                                          row.pict
-                                        )
-                                      }
-                                      className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
-                                    ></button>
-                                  ) : (
-                                    <button
-                                      onClick={() =>
-                                        handleCheckboxChange(
-                                          row.id,
-                                          row.username,
-                                          row.pict
-                                        )
-                                      }
-                                      className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
-                                    ></button>
-                                  )}
-                                </Th>
-                              </>
-                            ) : (
-                              <th className="cursor-not-allowed">
-                                <MuiIcon iconName="BlockRounded" />
-                              </th>
-                            )}
-                          </>
-                        ) : (
-                          <>
-                            <Th
-                              key={index}
-                              className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
-                            >
-                              {parseInt(row.id) == 0
-                                ? parseInt(row.id) + 1
-                                : row.id}
-                            </Th>
-                          </>
-                        )}
-                        <Td className="px-8 w-[450px] py-2">
-                          <ShowAdminName
-                            key={index}
-                            data={row}
-                            onProfilePictureClick={() => {
-                              handleInfoButton(row, "SHOW_PROFILE_PICTURE");
-                              document.getElementById("ShowPict").showModal();
-                            }}
-                          />
-                        </Td>
-                        <Td>
-                          <ShowRole data={row} />
-                        </Td>
-                        {row.role == 1 ? (
-                          <>
-                            <Td className="flex-1 px-8 lg:px-4 ">
-                              <AuthorityToggle data={row} />
-                            </Td>
-                            <Td className="flex-1 px-8 lg:px-4 ">
-                              <ActionButton
+              {/* ================ Modal ================= */}
+              <InfoModal {...ModalProps} />
+              <ActionModalForm {...ModalProps} />
+              {/* ================ Table ================ */}
+              <MyTableEngine {...MyTableEngineProps}>
+                <Thead className={`${BgOuterTable} ${textColor} `}>
+                  <Tr key="TableHead" className="">
+                    <Th
+                      name=""
+                      column="id"
+                      feature="filter"
+                      sortOrder="asc"
+                      className="px-4"
+                    ></Th>
+                    <Th className="px-2 hidden">
+                      <label>Select</label>
+                    </Th>
+                    <Th
+                      name="Admin Name"
+                      column="username"
+                      feature="filter"
+                      className="px-6 w-[600px]"
+                    ></Th>
+                    <Th
+                      name="Role"
+                      column="role"
+                      feature="filter"
+                      className="px-4 w-28"
+                    ></Th>
+                    <Th
+                      name="Grant Features"
+                      column="role"
+                      onClick={() => {
+                        handleInfoButton(null, "SHOW_GRANT_ACCESS_INFO");
+                        document.getElementById("TipsGrantAccess").showModal();
+                      }}
+                      className="p-2 text-center lg:w-12 mx-auto"
+                    >
+                      Grant Features
+                      <i className="m-0 lg:mx-2 text-gray-400">
+                        <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                      </i>
+                    </Th>
+                    <Th
+                      name="Action"
+                      column="action"
+                      className="text-[14px] w-[160px]"
+                    >
+                      Actions
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody className={`${BgTable} `}>
+                  {searchResults.map((row, index) => (
+                    <Tr key={index} customKey={index} className={"divide-y"}>
+                      {toggleSelect ? (
+                        <>
+                          {row.role != 0 ? (
+                            <>
+                              <Th
                                 key={index}
-                                data={row}
-                                onClickDelete={() => {
-                                  document
-                                    .getElementById("AdminForm")
-                                    .showModal();
-                                  handleActionButton(row.id, "DROP_BY_ID");
-                                }}
-                                onClickEdit={() => {
-                                  document
-                                    .getElementById("AdminForm")
-                                    .showModal();
-                                  handleActionButton(row.id, "ALTER_BY_ID");
-                                }}
-                              />
-                            </Td>
-                          </>
-                        ) : (
-                          <>
-                            <td></td>
-                            <td></td>
-                          </>
-                        )}
-                      </Tr>
-                    ))}
-                  </Tbody>
-                  {/* foot */}
-                  <MyTablePagination
-                    paginate={paginate}
-                    onChangePaginate={handlePaginateChange}
-                    rows={rows}
-                    onRowsChange={handleRowsChange}
-                    length={length}
-                  />
-                </Table>
+                                feature={"select"}
+                                onChange={() =>
+                                  handleCheckboxChange(
+                                    row.id,
+                                    row.username,
+                                    row.pict
+                                  )
+                                }
+                                selectedRows={selectedRows}
+                                rowId={row.id}
+                                className=""
+                              >
+                                {selectedRows.some(
+                                  (item) => item.id === row.id
+                                ) ? (
+                                  <button
+                                    onClick={() =>
+                                      handleCheckboxChange(
+                                        row.id,
+                                        row.username,
+                                        row.pict
+                                      )
+                                    }
+                                    className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
+                                  ></button>
+                                ) : (
+                                  <button
+                                    onClick={() =>
+                                      handleCheckboxChange(
+                                        row.id,
+                                        row.username,
+                                        row.pict
+                                      )
+                                    }
+                                    className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
+                                  ></button>
+                                )}
+                              </Th>
+                            </>
+                          ) : (
+                            <th className="cursor-not-allowed">
+                              <MuiIcon iconName="BlockRounded" />
+                            </th>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <Th
+                            key={index}
+                            className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
+                          >
+                            {parseInt(row.id) == 0
+                              ? parseInt(row.id) + 1
+                              : row.id}
+                          </Th>
+                        </>
+                      )}
+                      <Td className="px-8 w-[450px] py-2">
+                        <ShowAdminName
+                          key={index}
+                          data={row}
+                          onProfilePictureClick={() => {
+                            handleInfoButton(row, "SHOW_PROFILE_PICTURE");
+                            document.getElementById("ShowPict").showModal();
+                          }}
+                        />
+                      </Td>
+                      <Td>
+                        <ShowRole data={row} />
+                      </Td>
+                      {row.role == 1 ? (
+                        <>
+                          <Td className="flex-1 px-8 lg:px-4 ">
+                            <AuthorityToggle data={row} />
+                          </Td>
+                          <Td className="flex-1 px-8 lg:px-4 ">
+                            <ActionButton
+                              key={index}
+                              data={row}
+                              onClickDelete={() => {
+                                document
+                                  .getElementById("AdminForm")
+                                  .showModal();
+                                handleActionButton(row.id, "DROP_BY_ID");
+                              }}
+                              onClickEdit={() => {
+                                document
+                                  .getElementById("AdminForm")
+                                  .showModal();
+                                handleActionButton(row.id, "ALTER_BY_ID");
+                              }}
+                            />
+                          </Td>
+                        </>
+                      ) : (
+                        <>
+                          <td></td>
+                          <td></td>
+                        </>
+                      )}
+                    </Tr>
+                  ))}
+                </Tbody>
               </MyTableEngine>
+              <div>
+                {dataFromChild.map((item, index) => (
+                  <p key={index}>{item}</p>
+                ))}
+              </div>
             </div>
           )}
         </Content>
       </Container>
+      {/* </AdminsContext.Provider> */}
     </>
   );
 }

@@ -1,12 +1,11 @@
-import { createContext, useContext, useEffect, useState, useRef } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 // Components
-
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
 import { usePDF } from "react-to-pdf";
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
-import { TbSwitch2 } from "react-icons/tb";
+import { useAdminsContext } from "../../Pages/Admins";
 
 const TableContext = createContext();
 
@@ -21,14 +20,25 @@ export const MyTableEngine = (props) => {
     setSearchTerm,
     setAddModal,
     setDeleteModal,
-    toggleSelect,
-    setToggleSelect,
-    setSelectedRows,
     // Sorting Table Component
     sortData,
     getSortBy = "id",
     getSortOrder = "asc",
+    // Table Body
+    toggleSelect,
+    setToggleSelect,
+    setSelectedRows,
+    // Table Pagination
+    TabPagination = false,
+    paginate,
+    onChangePaginate,
+    rows,
+    onRowsChange,
+    length,
+    // Children Tags
     children,
+    // testing
+    sendDataToParent,
   } = props;
 
   const [data, setData] = useState([]);
@@ -50,6 +60,12 @@ export const MyTableEngine = (props) => {
       console.error("Data input harus berupa array.");
       return 0;
     }
+    const dataArray = ["Data 1", "Data 2", "Data 3"];
+
+    // Looping untuk mengirim data ke komponen induk
+    dataArray.forEach((data) => {
+      sendDataToParent(data);
+    });
   }, []); // temp
 
   const updateMyTableState = (action) => {
@@ -59,7 +75,7 @@ export const MyTableEngine = (props) => {
         setSortOrder(action.payload.newSortOrder); // Toggle urutan
         setSortBy(action.payload.newSortBy);
         sortData(action.payload.newData); // oper props ke parent
-        console.table("MYENGINETABLE:", action.payload.newData);
+        // console.table("MYENGINETABLE:", action.payload.newData);
         break;
       case "UPDATE_SEARCH":
         setSearchTerm(action.payload.newData);
@@ -67,12 +83,10 @@ export const MyTableEngine = (props) => {
       case "DELETE_MULTIPLE":
         setSearchTerm(action.payload.newData);
         break;
-      // Tambahkan case lainnya jika diperlukan untuk aksi lainnya
       default:
         break;
     }
   };
-
   return (
     <div className="relative">
       <TableContext.Provider
@@ -80,14 +94,13 @@ export const MyTableEngine = (props) => {
           data,
           errorMessage,
           loading,
-
           searchTerm,
           sortBy,
           sortOrder,
           updateMyTableState,
         }}
       >
-        {/* HEADER */}
+        {/* ------------- HEADER ------------- */}
         {TabHeader && (
           <>
             <MyTableHeader
@@ -102,12 +115,23 @@ export const MyTableEngine = (props) => {
             />
           </>
         )}
-        {/* TABLE */}
+        {/* ------------- TABLE -------------*/}
 
         <div
           className={`${BorderOuterTable} overflow-x-auto rounded-xl bg-white `}
         >
-          {children}
+          <Table className={`text-sm w-full `}>
+            {children}
+            {TabPagination && (
+              <MyTablePagination
+                paginate={paginate}
+                onChangePaginate={onChangePaginate}
+                rows={rows}
+                onRowsChange={onRowsChange}
+                length={length}
+              />
+            )}
+          </Table>
         </div>
       </TableContext.Provider>
     </div>
