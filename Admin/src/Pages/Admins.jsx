@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 // Components
 import Skeleton from "@mui/material/Skeleton";
 import { ActionModalForm, InfoModal } from "./../components/Modal";
@@ -30,6 +30,12 @@ import { MuiIcon } from "../utils/RenderIcons";
 
 // define fetch data URL by admins
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
+
+const AdminsContext = createContext();
+
+export const useAdminsContext = () => {
+  return useContext(AdminsContext);
+};
 
 export default function Admins(props) {
   const [dummy, setDummy] = useState([]);
@@ -338,7 +344,7 @@ export default function Admins(props) {
                                           row.pict
                                         )
                                       }
-                                      className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-25 cursor-pointer"
+                                      className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
                                     ></button>
                                   ) : (
                                     <button
@@ -349,7 +355,7 @@ export default function Admins(props) {
                                           row.pict
                                         )
                                       }
-                                      className="absolute top-0 left-0 w-full h-full bg-amber-500 opacity-25 cursor-pointer"
+                                      className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
                                     ></button>
                                   )}
                                 </Th>

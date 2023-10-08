@@ -164,30 +164,26 @@ export const MyTableHeader = (props) => {
             </button>
           )}
           {toggleSelect && (
-            <div className="fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
+            <div className="drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
               <button
                 onClick={setDeleteModal}
-                className="btn transition-all duration-500 bg-gradient-to-tl from-pink-500 via-red-500 to-red-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+                className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 border-none"
               >
+                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
                 <span id="showDelete" className="options px-[4px]">
-                  <i className="font-xs">
-                    <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-                  </i>
+                  Delete
                 </span>
-                <span className="font-bold pr-2">Delete</span>
               </button>
               <button
                 onClick={() => {
                   setToggleSelect(false);
                   setSelectedRows([]);
                 }}
-                className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-orange-500 to-amber-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+                className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
               >
+                <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
                 <span id="showCancelDelete" className="options px-[4px]">
-                  <i className="font-xs ">
-                    <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-                  </i>
-                  <span className="font-bold pr-2">Cancel</span>
+                  Cancel
                 </span>
               </button>
             </div>
@@ -197,13 +193,13 @@ export const MyTableHeader = (props) => {
             className={`mx-1 grow-0 shrink-0 focus:outline-none ${
               !toggleSelect
                 ? "bg-red-500 hover:from-rose-500 hover:to-pink-500"
-                : "bg-amber-500 hover:from-yellow-500 hover:to-orange-400"
+                : "bg-gray-500 hover:from-yellow-500 hover:to-orange-400"
             } hover:bg-gradient-to-r  rounded-md font-roboto-medium text-white items-center transition-all duration-200`}
             onClick={
               !toggleSelect
                 ? () => setToggleSelect(true)
                 : () => {
-                    setToggleSelect(false);
+                    // setToggleSelect(false);
                     setSelectedRows([]);
                   }
             }
@@ -223,10 +219,10 @@ export const MyTableHeader = (props) => {
                   id="showCancelDelete"
                   className="options py-[6px] px-[4px]"
                 >
-                  <i className="font-xs ">
-                    <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
+                  <i className="font-xs px-[4px]">
+                    <MuiIcon iconName={"DeselectRounded"} fontSize={20} />
                   </i>
-                  <span className="font-medium pr-2">Cancel</span>
+                  <span className="font-medium pr-2">Select None</span>
                 </span>
               </>
             )}

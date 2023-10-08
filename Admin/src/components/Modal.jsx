@@ -265,7 +265,7 @@ export const ActionModalForm = (props) => {
     } else {
       setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
     }
-  }, [table_id]); // Gunakan table_id sebagai dependency untuk useEffect.
+  }, [table_id, formType]); // Gunakan table_id sebagai dependency untuk useEffect.
 
   // Config value for react-hook-form
   let initialFormValue;
@@ -273,6 +273,7 @@ export const ActionModalForm = (props) => {
   let newPasswordRef = useRef({});
 
   useEffect(() => {
+    // console.table(data);
     if (formType === "INSERT") {
       passwordRef.current = watch("password", "");
 
@@ -516,17 +517,14 @@ export const ActionModalForm = (props) => {
                 {/* end of loading */}
               </div>
             ) : (
-              <h1>
-                Data not ready :({" "}
-                <span className="loading loading-spinner text-primary"></span>
-                <span className="loading loading-spinner text-secondary"></span>
-                <span className="loading loading-spinner text-accent"></span>
-                <span className="loading loading-spinner text-neutral"></span>
-                <span className="loading loading-spinner text-info"></span>
-                <span className="loading loading-spinner text-success"></span>
-                <span className="loading loading-spinner text-warning"></span>
-                <span className="loading loading-spinner text-error"></span>
-              </h1>
+              <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
+                <h1 className="font-poppins-medium text-xl">
+                  Loading Render Form...
+                </h1>
+                <div className="flex-row">
+                  <span className="loading loading-bars loading-lg"></span>
+                </div>
+              </div>
             )}
             {/* end of data */}
           </div>
