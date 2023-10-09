@@ -14,7 +14,16 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { MuiIcon } from "../utils/RenderIcons";
 import { DangerAlert } from "./Alert";
-import { AlterForm, DropForm, InsertForm } from "./Admins/AdminsForm";
+import {
+  AdminsAlterForm,
+  AdminsDropForm,
+  AdminsInsertForm,
+} from "./Admins/AdminsForm";
+import {
+  ProductsAlterForm,
+  ProductsDropForm,
+  ProductsInsertForm,
+} from "./Products/ProductsForm";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -138,9 +147,9 @@ export const InfoModal = (props) => {
     }
   }, [table_id, formType]);
 
-  useEffect(() => {
-    console.table(props);
-  }, [table_id, formType, showModal]);
+  // useEffect(() => {
+  //   console.table(props);
+  // }, [table_id, formType, showModal]);
 
   return (
     <>
@@ -262,9 +271,15 @@ export const ActionModalForm = (props) => {
   let URL;
   let URL_METHODS;
 
-  if (table == "admins") {
+  if (table === "admins") {
     URL = import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + table_id;
     URL_METHODS = import.meta.env.VITE_API_URL_PUT_ADMIN;
+  } else if (table === "products") {
+    URL = import.meta.env.VITE_API_URL_GET_BY_ID_PRODUCT + "/" + table_id;
+    URL_METHODS = import.meta.env.VITE_API_URL_PUT_PRODUCT;
+  } else if (table === "orders") {
+    URL = import.meta.env.VITE_API_URL_GET_BY_ID_TRANSACTION + "/" + table_id;
+    URL_METHODS = import.meta.env.VITE_API_URL_PUT_TRANSACTION;
   }
 
   // Define comp and defaultvalues data pada react-hook-Form
@@ -285,8 +300,6 @@ export const ActionModalForm = (props) => {
       username: "",
       role: 1,
       pict: "default.png",
-      // password: "123456",
-      // password_confirmation: "123456",
     },
   });
 
@@ -297,38 +310,69 @@ export const ActionModalForm = (props) => {
         email: "",
       });
     } else if (formType === "ALTER_BY_ID" || formType === "DROP_BY_ID") {
-      if (table_id !== "" || table_id !== null) {
+      // temp method: ini perlu dilakukan untuk menampilkan update setiap ada data baru
+      if (table_id !== "" && table_id !== null) {
         axios
           .get(URL)
           .then((response) => {
             console.table("fetching:", URL);
-            setData({
-              superAuthorizationPassword: "superAdmin",
-              id: response.data.data.id,
-              email: response.data.data.email,
-              username: response.data.data.username,
-              pict: response.data.data.pict,
-              role: response.data.data.role,
-              created_at: response.data.data.created_at,
-              updated_at: response.data.data.updated_at,
-            });
+            switch (table) {
+              case `admins`:
+                setData({
+                  superAuthorizationPassword: "superAdmin",
+                  id: response.data.data.id,
+                  email: response.data.data.email,
+                  username: response.data.data.username,
+                  pict: response.data.data.pict,
+                  role: response.data.data.role,
+                  created_at: response.data.data.created_at,
+                  updated_at: response.data.data.updated_at,
+                });
+                break;
+              case `products`:
+                setData({
+                  superAuthorizationPassword: "superAdmin",
+                  id: response.data.data.id,
+                  name: response.data.data.name,
+                  category: response.data.data.category,
+                  stock: response.data.data.stock,
+                  discount: response.data.data.discount,
+                  pict: response.data.data.pict,
+                  description: response.data.data.description,
+                  created_at: response.data.data.created_at,
+                  updated_at: response.data.data.updated_at,
+                });
+                break;
+              default:
+                break;
+            }
             setLoading(false);
             setErrorMessage(null);
             setMethod(formType);
           })
-
           .catch((error) => {
-            console.log(error);
+            if (error.response) {
+              // Tangani kesalahan respons dari server
+              console.log("Response error:", error.response.data);
+            } else if (error.request) {
+              // Tangani kesalahan permintaan (misalnya tidak ada koneksi)
+              console.log("Request error:", error.request);
+            } else {
+              // Kesalahan lainnya
+              console.log("Error:", error.message);
+            }
             setLoading(false);
-            setErrorMessage(error);
+            setErrorMessage(error.message || "An error occurred.");
           });
       } else {
         setOnWorking(false);
         setLoading(false);
-        setErrorMessage("invalid formType");
+        setErrorMessage(
+          "Invalid table_id. It should not be an empty string or null."
+        );
       }
     } else if (formType === "DROP_BY_SELECTED") {
-      if (table_id !== null) {
+      if (table_id !== null && table !== null) {
         // Mengonversi objek "table_id" menjadi array dari objek-objek
         const dataArray = Object.values(table_id);
 
@@ -358,37 +402,83 @@ export const ActionModalForm = (props) => {
   useEffect(() => {
     // console.table(data);
     if (formType === "INSERT") {
-      passwordRef.current = watch("password", "");
+      switch (table) {
+        case `admins`:
+          passwordRef.current = watch("password", "");
 
-      initialFormValue = {
-        superAuthorizationPassword: "superAdmin",
-        email: "",
-        username: "",
-        role: 1,
-        pict: "default.png",
-        password: "123456f",
-        password_confirmation: "123456f",
-      };
+          initialFormValue = {
+            superAuthorizationPassword: "superAdmin",
+            email: "",
+            username: "",
+            role: 1,
+            pict: "default.png",
+            password: "123456f",
+            password_confirmation: "123456f",
+          };
+          break;
+        default:
+          break;
+      }
     } else if (formType === "ALTER_BY_ID") {
-      initialFormValue = {
-        superAuthorizationPassword: "superAdmin",
-        adminsId: data.id,
-        email: data.email,
-        username: data.username,
-        role: data.role,
-        pict: data.pict,
-        newPassword: "123456FF",
-        newPassword_confirmation: "123456FF",
-      };
+      switch (table) {
+        case `admins`:
+          initialFormValue = {
+            superAuthorizationPassword: "superAdmin",
+            adminsId: data.id,
+            email: data.email,
+            username: data.username,
+            role: data.role,
+            pict: data.pict,
+            newPassword: "123456FF",
+            newPassword_confirmation: "123456FF",
+          };
+          break;
+        case `products`:
+          initialFormValue = {
+            superAuthorizationPassword: "superAdmin",
+            id: data.id,
+            name: data.name,
+            category: data.category,
+            stock: data.stock,
+            discount: data.discount,
+            pict: data.pict,
+            description: data.description,
+            created_at: data.created_at,
+            updated_at: data.updated_at,
+          };
+          break;
+        default:
+          break;
+      }
     } else if (formType === "DROP_BY_ID") {
-      initialFormValue = {
-        superAuthorizationPassword: "superAdmin",
-        adminsId: data.id,
-        email: data.email,
-        username: data.username,
-        role: data.role,
-        pict: data.pict,
-      };
+      switch (table) {
+        case `admins`:
+          initialFormValue = {
+            superAuthorizationPassword: "superAdmin",
+            adminsId: data.id,
+            email: data.email,
+            username: data.username,
+            role: data.role,
+            pict: data.pict,
+          };
+          break;
+        case `products`:
+          initialFormValue = {
+            superAuthorizationPassword: "superAdmin",
+            id: data.id,
+            name: data.name,
+            category: data.category,
+            stock: data.stock,
+            discount: data.discount,
+            pict: data.pict,
+            description: data.description,
+            created_at: data.created_at,
+            updated_at: data.updated_at,
+          };
+          break;
+        default:
+          break;
+      }
     }
     for (const key in initialFormValue) {
       setValue(key, initialFormValue[key]);
@@ -416,21 +506,34 @@ export const ActionModalForm = (props) => {
         });
         console.log("Data berhasil di drop:", axiosResponse);
       } else if (formType === "DROP_BY_SELECTED") {
-        const deleteRequests = [];
-
         // Loop melalui data dan buat permintaan DELETE untuk setiap elemen
+        const deleteRequests = []; // Deklarasikan sebagai array
         for (const item of data) {
           // Buat permintaan DELETE dengan axios
-          const deleteRequest = axios.delete(URL_METHODS, {
-            data: {
-              superAuthorizationPassword: item.superAuthorizationPassword,
-              adminsId: item.id, // Sesuaikan dengan atribut yang sesuai
-            },
-          });
+          let deleteRequest; // Deklarasikan sebagai let
+          switch (table) {
+            case `admins`:
+              deleteRequest = axios.delete(URL_METHODS, {
+                data: {
+                  superAuthorizationPassword: item.superAuthorizationPassword,
+                  adminsId: item.id, // Sesuaikan dengan atribut yang sesuai
+                },
+              });
+              break;
+            case `products`:
+              deleteRequest = axios.delete(URL_METHODS, {
+                data: {
+                  superAuthorizationPassword: item.superAuthorizationPassword,
+                  productsId: item.id, // Sesuaikan dengan atribut yang sesuai
+                },
+              });
+              break;
+            default:
+              break;
+          }
 
           deleteRequests.push(deleteRequest);
         }
-
         try {
           // Kirim semua permintaan DELETE secara bersamaan
           const responses = await axios.all(deleteRequests);
@@ -494,7 +597,7 @@ export const ActionModalForm = (props) => {
   return (
     <>
       <ModalContext.Provider value={ModalContextValue}>
-        <dialog id="AdminForm" className="modal">
+        <dialog id="ModalForms" className="modal">
           <div
             className={`modal-box h-auto w-12/12 ${
               formType === "ALTER_BY_ID" || formType === "INSERT"
@@ -514,11 +617,11 @@ export const ActionModalForm = (props) => {
               </button>
             </form>
             <div className="flex flex-row justify-between items-center gap-2 pr-8">
-              <h3 className="font-bold text-lg p-0 text-left w-4/12">
-                {formType === "INSERT" && `Add New Admin`}
-                {formType === "ALTER_BY_ID" && `Edit Data Admin`}
-                {formType === "DROP_BY_ID" && `Delete This Admin`}
-                {formType === "DROP_BY_SELECTED" && `Delete Multiple Admin`}
+              <h3 className="font-bold text-lg p-0 text-left w-4/12 capitalize">
+                {formType === "INSERT" && `Add New ${table}`}
+                {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
+                {formType === "DROP_BY_ID" && `Delete This ${table}`}
+                {formType === "DROP_BY_SELECTED" && `Delete Multiple ${table}`}
               </h3>
               {errorMessage ? (
                 <>
@@ -560,26 +663,48 @@ export const ActionModalForm = (props) => {
                           {...register("superAuthorizationPassword", {
                             required:
                               "Your Credentials superAuthorizationPassword are required",
-                            value: "superAdmin",
                           })}
                         />
-                        {/* =================== INSERT====================== */}
-                        {formType === "INSERT" && (
+                        {setValue("superAuthorizationPassword", "superAdmin")}{" "}
+                        {/* Panggilan setValue diluar input */}
+                        {table === "admins" && (
                           <>
-                            <InsertForm />
+                            {formType === "INSERT" && (
+                              <>
+                                <AdminsInsertForm />
+                              </>
+                            )}
+                            {formType === "ALTER_BY_ID" && (
+                              <>
+                                <AdminsAlterForm />
+                              </>
+                            )}
+                            {(formType === "DROP_BY_ID" ||
+                              formType === "DROP_BY_SELECTED") && (
+                              <>
+                                <AdminsDropForm />
+                              </>
+                            )}
                           </>
                         )}
-                        {/* =================== ALTER ====================== */}
-                        {formType === "ALTER_BY_ID" && (
+                        {table === "products" && (
                           <>
-                            <AlterForm />
-                          </>
-                        )}
-                        {/* =================== DROP ====================== */}
-                        {(formType === "DROP_BY_ID" ||
-                          formType === "DROP_BY_SELECTED") && (
-                          <>
-                            <DropForm />
+                            {formType === "INSERT" && (
+                              <>
+                                <ProductsInsertForm />
+                              </>
+                            )}
+                            {formType === "ALTER_BY_ID" && (
+                              <>
+                                <ProductsAlterForm />
+                              </>
+                            )}
+                            {(formType === "DROP_BY_ID" ||
+                              formType === "DROP_BY_SELECTED") && (
+                              <>
+                                <ProductsDropForm />
+                              </>
+                            )}
                           </>
                         )}
                       </form>
