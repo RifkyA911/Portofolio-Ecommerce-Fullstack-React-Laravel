@@ -42,6 +42,7 @@ export default function Admins(props) {
   const [loading, setLoading] = useState(true);
 
   // ---- MyTableEngine Pagination ----
+  const [colspan, setColspan] = useState();
   const [length, setLengthData] = useState();
   const [paginate, setPaginate] = useState(1);
   const [rows, setRows] = useState(10);
@@ -94,11 +95,6 @@ export default function Admins(props) {
     }
   };
 
-  // Panggil fetchData saat komponen pertama kali dimuat atau saat value paginate, rows berubah
-  useEffect(() => {
-    fetchAdmins(URL, "fetch");
-  }, [paginate, rows]);
-
   // Handler Ketika mengklik info button
   const handleInfoButton = (id, formType) => {
     // console.log("data = ", id);
@@ -130,6 +126,10 @@ export default function Admins(props) {
     }
   };
 
+  // Panggil fetchData saat komponen pertama kali dimuat atau saat value paginate, rows berubah
+  useEffect(() => {
+    fetchAdmins(URL, "fetch");
+  }, [paginate, rows]);
   // useEffect(() => {
   //   console.info(selectedRows);
   // }, [selectedRows]);
@@ -175,6 +175,7 @@ export default function Admins(props) {
     },
     // ------------ Table Pagination-------------
     TabPagination: true,
+    colSpan: 5,
     paginate: paginate,
     onChangePaginate: (newPaginate) => {
       setLoading(true);
@@ -187,9 +188,9 @@ export default function Admins(props) {
       setRows(newRows);
     },
     length: length,
-    sendDataToParent: (data) => {
-      setDataFromChild([...dataFromChild, data]);
-    },
+    // sendDataToParent: (data) => {
+    //   setDataFromChild([...dataFromChild, data]);
+    // },
   };
 
   // ===================== Modal =====================
@@ -269,7 +270,6 @@ export default function Admins(props) {
                       }}
                       className="p-2 text-center lg:w-12 mx-auto"
                     >
-                      Grant Features
                       <i className="m-0 lg:mx-2 text-gray-400">
                         <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
                       </i>
@@ -278,9 +278,7 @@ export default function Admins(props) {
                       name="Action"
                       column="action"
                       className="text-[14px] w-[160px]"
-                    >
-                      Actions
-                    </Th>
+                    ></Th>
                   </Tr>
                 </Thead>
                 <Tbody className={`${BgTable} `}>
@@ -396,11 +394,11 @@ export default function Admins(props) {
                   ))}
                 </Tbody>
               </MyTableEngine>
-              <div>
+              {/* <div>
                 {dataFromChild.map((item, index) => (
                   <p key={index}>{item}</p>
                 ))}
-              </div>
+              </div> */}
             </div>
           )}
         </Content>

@@ -6,9 +6,7 @@ import { DangerAlert, WarningAlert } from "../components/Alert";
 import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
 // UTILS
-import fetchData from "../utils/API/AsyncFetch";
 import { MuiIcon } from "../utils/RenderIcons";
 import {
   MyTableEngine,
@@ -18,19 +16,35 @@ import {
   Tr,
   Th,
   Td,
-  MyTablePagination,
 } from "../components/Table/MyTableEngine";
+import { SkeltonTable } from "../components/Skelton/SkeltonTable";
+import { ActionModalForm, InfoModal } from "../components/Modal";
+
+// Custom Const
+const APIGetTransaction = import.meta.env.VITE_API_URL_GET_ALL_TRANSACTION;
 
 export default function Invoices(props) {
+  // ---- Admins Basic States ----
   const [transactions, setTransactions] = useState([]);
-  // const [admins, setAdmins] = useState([]);
-  // const [customer, setCustomer] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ---- MyTableEngine Pagination ----
   const [length, setLengthData] = useState();
   const [paginate, setPaginate] = useState(1);
   const [rows, setRows] = useState(10);
+
+  // ---- MyTableEngine Header ----
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // ---- MyTableEngine Body ----
+  const [toggleSelect, setToggleSelect] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  // ---- Modal States ----
+  const [transaction, setTransaction] = useState("");
+  const [formType, setFormType] = useState(null);
 
   // REDUX
   const {
@@ -45,10 +59,7 @@ export default function Invoices(props) {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  // Custom Const
-  const APIGetTransaction = import.meta.env.VITE_API_URL_GET_ALL_TRANSACTION;
-  // const URLTransaction = APIGetTransaction + "/paginate/" + 10;
-  const URLTransaction = APIGetTransaction;
+  const URL = `${APIGetTransaction}/paginate/${paginate}/${rows}`;
 
   const fetchTransactions = async (url, type) => {
     try {
@@ -64,8 +75,6 @@ export default function Invoices(props) {
       } else if (type == "size") {
         console.log(data.message.length);
       }
-      // setCount(count + 1);
-      // console.log("fetching data ke-", count);
     } catch (error) {
       setLoading(false);
       console.error("Terjadi kesalahan:", error);
@@ -73,120 +82,208 @@ export default function Invoices(props) {
   };
 
   useEffect(() => {
-    fetchTransactions(URLTransaction, "fetch");
+    fetchTransactions(URL, "fetch");
   }, []);
-  // Handler ketika nilai rows diubah
-  const handleRowsChange = (newRows) => {
-    setLoading(true);
-    setRows(newRows);
-  };
 
-  // Handler ketika nilai paginate diubah
-  const handlePaginateChange = (newPaginate) => {
-    setLoading(true);
-    setPaginate(newPaginate);
-    console.log(newPaginate);
-  };
-
-  const jsonParser = (input) => {
+  const JSONParser = (input) => {
     const parsedAuthority = JSON.parse(input);
     console.log(parsedAuthority);
     // return parsedAuthority
   };
+
+  // ===================== MyTableEngine =====================
+  // ---- MyTableEngine Search Filter ----
+  useEffect(() => {
+    const filteredData = transactions.filter((transactions) =>
+      transactions.products_id.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setSearchResults(filteredData);
+  }, [searchTerm, transactions]);
+
+  const MyTableEngineProps = {
+    inputData: transactions,
+    refresh: () => {
+      fetchTransactions(URL, "fetch");
+      setLoading(true);
+    },
+    // ------------- Table Header Menu -------------
+    TabHeader: true,
+    hideHeaderBtn: "deleteBtn",
+    searchTerm: searchTerm,
+    setSearchTerm: (e) => setSearchTerm(e.target.value),
+    setAddModal: () => {
+      document.getElementById("AdminForm").showModal();
+      handleActionButton(null, "INSERT");
+    },
+    setDeleteModal: () => {
+      // console.table(Object.assign({}, selectedRows));
+      document.getElementById("AdminForm").showModal();
+      handleActionButton(selectedRows, "DROP_BY_SELECTED");
+    },
+    // ------------- Table Body -------------
+    toggleSelect: toggleSelect,
+    setToggleSelect: () => {
+      setToggleSelect((toggleSelectProps) => !toggleSelectProps);
+    },
+    setSelectedRows: (propsValue) => setSelectedRows(propsValue),
+    // Sorting Filter
+    sortData: (newSortedData) => {
+      setTransactions(newSortedData);
+    },
+    // ------------ Table Pagination-------------
+    TabPagination: true,
+    colSpan: 7,
+    paginate: paginate,
+    onChangePaginate: (newPaginate) => {
+      setLoading(true);
+      setPaginate(newPaginate);
+      console.log("paginate-", newPaginate);
+    },
+    rows: rows,
+    onRowsChange: (newRows) => {
+      setLoading(true);
+      setRows(newRows);
+    },
+    length: length,
+  };
+
+  // ===================== Modal =====================
+  const ModalProps = {
+    table: "transactions",
+    table_id: transaction,
+    refresh: () => {
+      fetchTransactions(URL, "fetch");
+      setLoading(true);
+    },
+    formType: formType,
+    clearData: () => {
+      setTransaction(null);
+      setToggleSelect(false);
+      setSelectedRows([]);
+      setFormType(null);
+    },
+  };
+
   return (
     <>
+      {/* <AdminsContext.Provider value={AdminsContextValue}> */}
       <Container>
         <Content pageName={"Invoices"}>
           {loading == true ? (
-            <div className="p-0 bg-white">
-              {Array.from({ length: 8 }).map((_, index) => (
-                <Skeleton key={index} className="p-4" />
-              ))}
-            </div>
+            <SkeltonTable />
           ) : (
             <div id="Invoices" className="rounded-lg text-sm ">
+              {/* ================ Error ================ */}
               <div>
                 {errorMessage && (
-                  <>
-                    <DangerAlert
-                      message={
-                        <h1>
-                          <MuiIcon
-                            iconName={"FiberManualRecordTwoTone"}
-                            fontSize={20}
-                          />
-                          {errorMessage}
-                        </h1>
-                      }
-                    />
-                    <button
-                      onClick={() => {
-                        fetchTransactions();
-                        setLoading(true);
-                      }}
-                      className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 p-2 rounded-md font-roboto-medium text-white items-center "
-                    >
-                      <MuiIcon
-                        iconName={"FiberManualRecordTwoTone"}
-                        fontSize={20}
-                      />
-                    </button>
-                  </>
+                  <SetErrorMessage
+                    errorMessage={errorMessage}
+                    refresh={() => {
+                      fetchTransactions(URL, "fetch");
+                      setLoading(true);
+                    }}
+                  >
+                    <span className="text-md font-medium my-2">{URL}</span>
+                  </SetErrorMessage>
                 )}
               </div>
-              {/* Baris 1 */}
+              {/* ================ Modal ================= */}
+              <InfoModal {...ModalProps} />
+              <ActionModalForm {...ModalProps} />
+              {/* ================ Table ================ */}
+              <MyTableEngine {...MyTableEngineProps}>
+                <Thead className={`${BgOuterTable} ${textColor} `}>
+                  <Tr key="TableHead" className="h-8 text-center">
+                    <Th
+                      column="id"
+                      feature="filter"
+                      sortOrder="asc"
+                      className="px-4"
+                    ></Th>
+                    <Th name="Checked Out" column="checked_out">
+                      Checked Out
+                    </Th>
+                    <Th
+                      name="Products"
+                      column="products_id"
+                      feature="filter"
+                    ></Th>
+                    <Th
+                      name="Total Price"
+                      column="total_price"
+                      className="text-center"
+                    >
+                      Total Price
+                    </Th>
 
-              {/* Baris 2 */}
-
-              <MyTableEngine
-                inputData={transactions}
-                refresh={() => {
-                  fetchTransactions();
-                  setLoading(true);
-                }}
-                TabHeader={false}
-              >
-                <Table>
-                  <Thead>
-                    <Tr>
-                      <Th>No</Th>
-                      <Th>Products</Th>
-                      <Th>Quantity</Th>
-                      <Th>Total</Th>
-                      <Th>Check Out</Th>
-                      <Th>Buyer</Th>
-                      <Th>Admin</Th>
-                      <Th>Status</Th>
+                    <Th name="Quantity" column="qty" feature="filter"></Th>
+                    <Th name="User" column="user_id" feature="filter"></Th>
+                    <Th name="Admin" column="admin_id" feature="filter"></Th>
+                  </Tr>
+                </Thead>
+                <Tbody className={`${BgTable} `}>
+                  {searchResults.map((row, index) => (
+                    <Tr
+                      key={index}
+                      customKey={index}
+                      className={"divide-y min-h-[40px]:"}
+                    >
+                      {toggleSelect ? (
+                        <Th
+                          key={index}
+                          feature={"select"}
+                          onChange={() => handleCheckboxChange(row.id)}
+                          selectedRows={selectedRows}
+                          rowId={row.id}
+                          className=""
+                        >
+                          {selectedRows.some((item) => item.id === row.id) ? (
+                            <button
+                              onClick={() => handleCheckboxChange(row.id)}
+                              className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
+                            ></button>
+                          ) : (
+                            <button
+                              onClick={() => handleCheckboxChange(row.id)}
+                              className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
+                            ></button>
+                          )}
+                        </Th>
+                      ) : (
+                        <Th
+                          key={index}
+                          className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
+                        >
+                          {parseInt(row.id) == 0
+                            ? parseInt(row.id) + 1
+                            : row.id}
+                        </Th>
+                      )}
+                      <Td className="flex-1 w-2/12 border-2 ">
+                        {row.checked_out}
+                      </Td>
+                      <Td className="flex-1 w-2/12 border-2 ">
+                        {row.products_id}
+                      </Td>
+                      <Td className="flex-1 w-2/12 border-2 ">
+                        {row.total_price}
+                      </Td>
+                      <Td className="flex-1 w-2/12 border-2">{row.user_id}</Td>
+                      <Td className="flex-1 w-2/12 border-2 ">
+                        {row.admin_id}
+                      </Td>
+                      <Td className="flex-1 w-2/12 border-2 ">
+                        {row.admin_id}
+                      </Td>
                     </Tr>
-                  </Thead>
-                  <Tbody>
-                    {transactions.map((transaction, index) => (
-                      <Tr>
-                        <Td>{index + 1}</Td>
-                        <Td>{transaction.products_id}</Td>
-                        <Td>{transaction.products_id}</Td>
-                        <Td>{transaction.total_price}</Td>
-                        <Td>{transaction.checked_out}</Td>
-                        <Td>{transaction.user_id}</Td>
-                        <Td>{transaction.admin_id}</Td>
-                        <Td>{transaction.sent}</Td>
-                        <Td>{transaction.done}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                  {/* <MyTablePagination
-                    paginate={paginate}
-                    onChangePaginate={handlePaginateChange}
-                    rows={rows}
-                    onRowsChange={handleRowsChange}
-                    length={length}
-                  /> */}
-                </Table>
+                  ))}
+                </Tbody>
               </MyTableEngine>
             </div>
           )}
         </Content>
       </Container>
+      {/* </AdminsContext.Provider> */}
     </>
   );
 }

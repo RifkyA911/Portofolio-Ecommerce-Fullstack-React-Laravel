@@ -16,6 +16,7 @@ export const MyTableEngine = (props) => {
     refresh,
     // Tab Header Table Component
     TabHeader = false,
+    hideHeaderBtn = null,
     searchTerm,
     setSearchTerm,
     setAddModal,
@@ -30,6 +31,7 @@ export const MyTableEngine = (props) => {
     setSelectedRows,
     // Table Pagination
     TabPagination = false,
+    colSpan = 2,
     paginate,
     onChangePaginate,
     rows,
@@ -38,7 +40,7 @@ export const MyTableEngine = (props) => {
     // Children Tags
     children,
     // testing
-    sendDataToParent,
+    // sendDataToParent,
   } = props;
 
   const [data, setData] = useState([]);
@@ -63,9 +65,9 @@ export const MyTableEngine = (props) => {
     const dataArray = ["Data 1", "Data 2", "Data 3"];
 
     // Looping untuk mengirim data ke komponen induk
-    dataArray.forEach((data) => {
-      sendDataToParent(data);
-    });
+    // dataArray.forEach((data) => {
+    //   sendDataToParent(data);
+    // });
   }, []); // temp
 
   const updateMyTableState = (action) => {
@@ -104,6 +106,7 @@ export const MyTableEngine = (props) => {
         {TabHeader && (
           <>
             <MyTableHeader
+              hideHeaderBtn={hideHeaderBtn}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
               setAddModal={setAddModal}
@@ -124,6 +127,7 @@ export const MyTableEngine = (props) => {
             {children}
             {TabPagination && (
               <MyTablePagination
+                colSpan={colSpan}
                 paginate={paginate}
                 onChangePaginate={onChangePaginate}
                 rows={rows}
@@ -140,6 +144,7 @@ export const MyTableEngine = (props) => {
 
 export const MyTableHeader = (props) => {
   const {
+    hideHeaderBtn,
     searchTerm,
     setSearchTerm,
     setAddModal,
@@ -147,7 +152,6 @@ export const MyTableHeader = (props) => {
     toggleSelect,
     setToggleSelect,
     setSelectedRows,
-    hide = null,
     refresh,
   } = props;
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -176,7 +180,7 @@ export const MyTableHeader = (props) => {
           />
         </div>
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
-          {hide !== "printBtn" && (
+          {hideHeaderBtn !== "printBtn" && (
             <button
               onClick={() => toPDF()}
               className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
@@ -187,122 +191,146 @@ export const MyTableHeader = (props) => {
               <span className="font-base px-2">Print</span>
             </button>
           )}
-          {toggleSelect && (
-            <div className="drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
-              <button
-                onClick={setDeleteModal}
-                className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 border-none"
-              >
-                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-                <span id="showDelete" className="options px-[4px]">
-                  Delete
-                </span>
-              </button>
-              <button
-                onClick={() => {
-                  setToggleSelect(false);
-                  setSelectedRows([]);
-                }}
-                className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
-              >
-                <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-                <span id="showCancelDelete" className="options px-[4px]">
-                  Cancel
-                </span>
-              </button>
-            </div>
-          )}
 
-          <button
-            className={`mx-1 grow-0 shrink-0 focus:outline-none ${
-              !toggleSelect
-                ? "bg-red-500 hover:from-rose-500 hover:to-pink-500"
-                : "bg-gray-500 hover:from-yellow-500 hover:to-orange-400"
-            } hover:bg-gradient-to-r  rounded-md font-roboto-medium text-white items-center transition-all duration-200`}
-            onClick={
-              !toggleSelect
-                ? () => setToggleSelect(true)
-                : () => {
-                    // setToggleSelect(false);
-                    setSelectedRows([]);
-                  }
-            }
-          >
-            {!toggleSelect ? (
-              <>
-                <span id="showDelete" className="options  py-[6px] px-[4px]">
-                  <i className="font-xs">
-                    <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-                  </i>
-                </span>
-                <span className="font-base pr-2">Delete</span>
-              </>
-            ) : (
-              <>
-                <span
-                  id="showCancelDelete"
-                  className="options py-[6px] px-[4px]"
-                >
-                  <i className="font-xs px-[4px]">
-                    <MuiIcon iconName={"DeselectRounded"} fontSize={20} />
-                  </i>
-                  <span className="font-medium pr-2">Select None</span>
-                </span>
-              </>
-            )}
-          </button>
-          <button
-            className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
-            onClick={setAddModal}
-          >
-            <i className="font-xs">
-              <MuiIcon
-                iconName={"LibraryAddRounded"}
-                className="  --transform-scale-x: -1"
-                fontSize={20}
-              />
-            </i>
-            <span className="font-base px-2">Add</span>
-          </button>
-          <button
-            onClick={refresh}
-            className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center "
-          >
-            <MuiIcon iconName={"RefreshRounded"} fontSize={20} />
-          </button>
-          <button
-            className="px-1 bg-white text-black rounded-md"
-            onClick={() => setDialogOpen(!isDialogOpen)}
-          >
-            <MuiIcon iconName={"MoreVertRounded"} fontSize={20} />
-          </button>
-          {isDialogOpen && (
+          {hideHeaderBtn !== "deleteBtn" && (
             <>
-              <div
-                className="absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.91px]"
-                onClick={() => {
-                  setDialogOpen(false);
-                }}
-              ></div>
-              <div className="absolute  bg-white w-[140px] top-11 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium">
-                <button
-                  className="py-2 px-4 w-full hover:bg-slate-200 text-left"
-                  onClick={() => {
-                    setToggleSelect(true);
-                    setDialogOpen(false);
-                  }}
-                >
-                  {!toggleSelect ? "Select Row" : "Cancel Select"}
-                </button>
-                <button
-                  className="py-2 px-4 w-full hover:bg-slate-200 text-left line-through text-slate-500 cursor-not-allowed"
-                  onClick={() => {
-                    setDialogOpen(false);
-                  }}
-                >
-                  Export CSV
-                </button>
-              </div>
+              {/*  FIXED AREA */}
+              {toggleSelect && (
+                <div className="drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
+                  <button
+                    onClick={setDeleteModal}
+                    className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 border-none"
+                  >
+                    <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
+                    <span id="showDelete" className="options px-[4px]">
+                      Delete
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setToggleSelect(false);
+                      setSelectedRows([]);
+                    }}
+                    className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
+                  >
+                    <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
+                    <span id="showCancelDelete" className="options px-[4px]">
+                      Cancel
+                    </span>
+                  </button>
+                </div>
+              )}
+              {/* BTN HEADER */}
+              <button
+                className={`mx-1 grow-0 shrink-0 focus:outline-none ${
+                  !toggleSelect
+                    ? "bg-red-500 hover:from-rose-500 hover:to-pink-500"
+                    : "bg-gray-500 hover:from-yellow-500 hover:to-orange-400"
+                } hover:bg-gradient-to-r  rounded-md font-roboto-medium text-white items-center transition-all duration-200`}
+                onClick={
+                  !toggleSelect
+                    ? () => setToggleSelect(true)
+                    : () => {
+                        // setToggleSelect(false);
+                        setSelectedRows([]);
+                      }
+                }
+              >
+                {!toggleSelect ? (
+                  <>
+                    <span
+                      id="showDelete"
+                      className="options  py-[6px] px-[4px]"
+                    >
+                      <i className="font-xs">
+                        <MuiIcon
+                          iconName={"DeleteForeverSharp"}
+                          fontSize={20}
+                        />
+                      </i>
+                    </span>
+                    <span className="font-base pr-2">Delete</span>
+                  </>
+                ) : (
+                  <>
+                    <span
+                      id="showCancelDelete"
+                      className="options py-[6px] px-[4px]"
+                    >
+                      <i className="font-xs px-[4px]">
+                        <MuiIcon iconName={"DeselectRounded"} fontSize={20} />
+                      </i>
+                      <span className="font-medium pr-2">Select None</span>
+                    </span>
+                  </>
+                )}
+              </button>
+            </>
+          )}
+          {hideHeaderBtn !== "addBtn" && (
+            <>
+              <button
+                className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
+                onClick={setAddModal}
+              >
+                <i className="font-xs">
+                  <MuiIcon
+                    iconName={"LibraryAddRounded"}
+                    className="  --transform-scale-x: -1"
+                    fontSize={20}
+                  />
+                </i>
+                <span className="font-base px-2">Add</span>
+              </button>
+            </>
+          )}
+          {hideHeaderBtn !== "refreshBtn" && (
+            <>
+              <button
+                onClick={refresh}
+                className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center "
+              >
+                <MuiIcon iconName={"RefreshRounded"} fontSize={20} />
+              </button>
+            </>
+          )}
+          {hideHeaderBtn !== "menuBtn" && (
+            <>
+              <button
+                className="px-1 bg-white text-black rounded-md"
+                onClick={() => setDialogOpen(!isDialogOpen)}
+              >
+                <MuiIcon iconName={"MoreVertRounded"} fontSize={20} />
+              </button>
+              {isDialogOpen && (
+                <>
+                  <div
+                    className="absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.91px]"
+                    onClick={() => {
+                      setDialogOpen(false);
+                    }}
+                  ></div>
+                  <div className="absolute  bg-white w-[140px] top-11 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium">
+                    <button
+                      className="py-2 px-4 w-full hover:bg-slate-200 text-left"
+                      onClick={() => {
+                        setToggleSelect(true);
+                        setDialogOpen(false);
+                      }}
+                    >
+                      {!toggleSelect ? "Select Row" : "Cancel Select"}
+                    </button>
+                    <button
+                      className="py-2 px-4 w-full hover:bg-slate-200 text-left line-through text-slate-500 cursor-not-allowed"
+                      onClick={() => {
+                        setDialogOpen(false);
+                      }}
+                    >
+                      Export CSV
+                    </button>
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>
@@ -407,15 +435,6 @@ export const Th = (props) => {
           {children}
         </th>
       )}
-      {feature == null && (
-        <th
-          key={customKey}
-          onClick={onClick}
-          className={`${className} min-h-[36px]`}
-        >
-          {children}
-        </th>
-      )}
       {feature == "select" && (
         <th
           key={customKey}
@@ -433,6 +452,16 @@ export const Th = (props) => {
               }}
             />
           </label>
+        </th>
+      )}
+      {feature == null && (
+        <th
+          key={customKey}
+          onClick={onClick}
+          className={`${className} min-h-[36px]`}
+        >
+          {name}
+          {children}
         </th>
       )}
     </>
@@ -476,7 +505,8 @@ export const Td = (props) => {
 };
 
 export const MyTablePagination = (props) => {
-  const { paginate, onChangePaginate, rows, onRowsChange, length } = props;
+  const { colSpan, paginate, onChangePaginate, rows, onRowsChange, length } =
+    props;
 
   const [currentPage, setCurrentPage] = useState(paginate);
   // const [headPage, setHeadPage] = useState(1);
@@ -486,7 +516,6 @@ export const MyTablePagination = (props) => {
   const [totalItems, setTotalItems] = useState(length || 100); // temporary
 
   const totalPages = Math.ceil(totalItems / rows);
-
   // REDUX
   const {
     BgColor,
@@ -634,7 +663,7 @@ export const MyTablePagination = (props) => {
           <td
             key={9999}
             align="center"
-            colSpan="5"
+            colSpan={colSpan}
             className={`${BgOuterTable} ${textColor} `}
           >
             <div

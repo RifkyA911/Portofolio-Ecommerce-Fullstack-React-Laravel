@@ -15,7 +15,7 @@
 
 /* width */
 ::-webkit-scrollbar {
-  width: 0px;
+  width: 4px;
   height: 4px;
 }
 
@@ -30,7 +30,7 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #595959;
+  background: #d6d6d6;
   border-radius: 1px;
 }
 
@@ -40,6 +40,25 @@
   cursor: pointer;
 } 
  
+/* Scroll bar untuk class 'custom-scroll' */
+.custom-scroll::-webkit-scrollbar {
+  width: 10px; /* Lebar scroll bar */
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Warna latar belakang track */
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #888; /* Warna thumb scroll */
+  border-radius: 5px; /* Bentuk sudut thumb scroll */
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Warna thumb scroll saat hover */
+}
+
+
 g&:focus,
 path&:focus {
   outline: none !important;
