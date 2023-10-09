@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 // Components
-import { ActionModalForm, InfoModal } from "./../components/Modal";
+import { ActionModalForm, InfoModal, TipsModal } from "./../components/Modal";
 import {
   ShowAdminName,
   ShowRole,
@@ -234,6 +234,7 @@ export default function Admins(props) {
               </div>
               {/* ================ Modal ================= */}
               <InfoModal {...ModalProps} />
+              <TipsModal {...ModalProps} />
               <ActionModalForm {...ModalProps} />
               {/* ================ Table ================ */}
               <MyTableEngine {...MyTableEngineProps}>
@@ -265,8 +266,7 @@ export default function Admins(props) {
                       name="Grant Features"
                       column="role"
                       onClick={() => {
-                        handleInfoButton(null, "SHOW_GRANT_ACCESS_INFO");
-                        document.getElementById("TipsGrantAccess").showModal();
+                        handleInfoButton(null, "SHOW_GRANT_ACCESS_TIPS");
                       }}
                       className="p-2 text-center lg:w-12 mx-auto"
                     >
@@ -352,8 +352,7 @@ export default function Admins(props) {
                           key={index}
                           data={row}
                           onProfilePictureClick={() => {
-                            handleInfoButton(row, "SHOW_PROFILE_PICTURE");
-                            document.getElementById("ShowPict").showModal();
+                            handleInfoButton(row, "SHOW_ADMIN_PROFILE_PICTURE");
                           }}
                         />
                       </Td>

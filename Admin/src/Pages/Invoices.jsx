@@ -164,6 +164,30 @@ export default function Invoices(props) {
     },
   };
 
+  let table_styling = {};
+  if (transactions !== null && transactions.length > 0) {
+    table_styling = {
+      tbody: `${BgTable}`,
+      th: Object.keys(transactions[0]).map((key) => ({
+        key,
+        feature: [
+          "id",
+          "name",
+          "category",
+          "price",
+          "stock",
+          "discount",
+        ].includes(key)
+          ? "filter"
+          : null,
+        style: `capitalize px-4`,
+      })),
+      tr: `h-8 text-center`,
+      td: `flex-1 w-2/12 border-2 py-2 px-2 `,
+    };
+    console.table(table_styling);
+  }
+
   return (
     <>
       {/* <AdminsContext.Provider value={AdminsContextValue}> */}
@@ -200,9 +224,7 @@ export default function Invoices(props) {
                       sortOrder="asc"
                       className="px-4"
                     ></Th>
-                    <Th name="Checked Out" column="checked_out">
-                      Checked Out
-                    </Th>
+                    <Th name="Checked Out" column="checked_out"></Th>
                     <Th
                       name="Products"
                       column="products_id"
@@ -212,9 +234,7 @@ export default function Invoices(props) {
                       name="Total Price"
                       column="total_price"
                       className="text-center"
-                    >
-                      Total Price
-                    </Th>
+                    ></Th>
 
                     <Th name="Quantity" column="qty" feature="filter"></Th>
                     <Th name="User" column="user_id" feature="filter"></Th>

@@ -16,15 +16,105 @@ import { MuiIcon } from "../utils/RenderIcons";
 import { DangerAlert } from "./Alert";
 import { AlterForm, DropForm, InsertForm } from "./Admins/AdminsForm";
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const ModalContext = createContext();
 
 export const useModalContext = () => {
   return useContext(ModalContext);
 };
 
-export const InfoModal = (props) => {
+export const TipsModal = (props) => {
   const { table_id, formType } = props;
-  const [showModal, setShowModal] = useState(false);
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  useLayoutEffect(() => {
+    if (table_id !== null && formType) {
+      const dialogElement = document.getElementById("TipsGrantAccess");
+      if (dialogElement) {
+        dialogElement.showModal();
+      }
+    }
+  }, [table_id, formType]);
+
+  return (
+    <>
+      {table_id !== null && (
+        <div className="modal-list">
+          <div className="list-modal">
+            {formType === "SHOW_GRANT_ACCESS_TIPS" && (
+              <dialog id="TipsGrantAccess" className={`${textColor} modal `}>
+                <div
+                  className={`modal-box ${BgColor} max-w-[350px] max-h-[600px] overflow-hidden`}
+                >
+                  <p className="font-roboto-bold pb-8">
+                    Toggle's Colors Guide{" "}
+                    <i className="m-0 lg:mx-2 text-gray-400">
+                      <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
+                    </i>
+                  </p>
+                  <div className="admins-tooltips text-black lg:flex-row flex flex-col justify-center lg:border-0 border-t-2 border-slate-500 bg-slate-50 rounded-xl">
+                    <span className="lg:border-r-2 lg:border-slate-500 lg:pr-2 text-xs font-roboto-bold">
+                      <i className="text-info text-xs ">
+                        {
+                          <MuiIcon
+                            iconName={"FiberManualRecordTwoTone"}
+                            fontSize={20}
+                          />
+                        }
+                      </i>{" "}
+                      Chat
+                    </span>
+                    <span className="lg:border-r-2 lg:border-slate-500 lg:px-2 text-xs font-roboto-bold">
+                      <i className="text-success text-xs ">
+                        {
+                          <MuiIcon
+                            iconName={"FiberManualRecordTwoTone"}
+                            fontSize={20}
+                          />
+                        }
+                      </i>{" "}
+                      Sort Warehouse
+                    </span>
+                    <span className="lg:pl-2 text-xs font-roboto-bold">
+                      {" "}
+                      <i className="text-warning text-xs ">
+                        {
+                          <MuiIcon
+                            iconName={"FiberManualRecordTwoTone"}
+                            fontSize={20}
+                          />
+                        }
+                      </i>{" "}
+                      Alter Price
+                    </span>
+                  </div>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                  <button>close</button>
+                </form>
+              </dialog>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export const InfoModal = (props) => {
+  const { showModal, setShowModal, table_id, formType } = props;
 
   // REDUX
   const {
@@ -40,107 +130,100 @@ export const InfoModal = (props) => {
   } = useSelector((state) => state.UI);
 
   useLayoutEffect(() => {
-    setShowModal(true);
+    if (table_id !== null && formType) {
+      const dialogElement = document.getElementById("ShowPict");
+      if (dialogElement) {
+        dialogElement.showModal();
+      }
+    }
   }, [table_id, formType]);
+
+  useEffect(() => {
+    console.table(props);
+  }, [table_id, formType, showModal]);
+
   return (
     <>
-      {/* {table_id !== null && (
+      {table_id !== null && (
         <>
-          {showModal && ( */}
-      <div className="modal-list">
-        <div className="list-modal">
-          {/* {formType === "SHOW_PROFILE_PICTURE" && ( */}
-          <dialog id="ShowPict" className={`${textColor} modal `}>
-            <div
-              className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden p-0`}
-            >
-              <div className="flex flex-col justify-center items-center">
-                <h3 className="font-bold text-xl py-4 line-clamp-2">
-                  {table_id?.username || "username?"}
-                </h3>
-                <img
-                  src={`./src/assets/admin_avatar/${
-                    table_id?.pict || "default.png"
-                  }`}
-                  alt={`Profile Picture ${table_id?.username || "username?"}`}
-                  className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
-                />
-              </div>
-              <div className="py-4">
-                <small className="">
-                  <span className="font-bold ">Updated At : </span>
-                  {table_id?.updated_at || "NaN"}
-                </small>
-              </div>
-            </div>
-            <form method="dialog" className="modal-backdrop">
-              <button>close</button>
-            </form>
-          </dialog>
-          {/* )} */}
-          {/* {formType === "SHOW_GRANT_ACCESS_INFO" && ( */}
-          <dialog id="TipsGrantAccess" className={`${textColor} modal `}>
-            <div
-              className={`modal-box ${BgColor} max-w-[350px] max-h-[600px] overflow-hidden`}
-            >
-              <p className="font-roboto-bold pb-8">
-                Toggle's Colors Guide{" "}
-                <i className="m-0 lg:mx-2 text-gray-400">
-                  <MuiIcon iconName={"HelpTwoTone"} fontSize={18} />
-                </i>
-              </p>
-              <div className="admins-tooltips text-black lg:flex-row flex flex-col justify-center lg:border-0 border-t-2 border-slate-500 bg-slate-50 rounded-xl">
-                <span className="lg:border-r-2 lg:border-slate-500 lg:pr-2 text-xs font-roboto-bold">
-                  <i className="text-info text-xs ">
-                    {
-                      <MuiIcon
-                        iconName={"FiberManualRecordTwoTone"}
-                        fontSize={20}
-                      />
-                    }
-                  </i>{" "}
-                  Chat
-                </span>
-                <span className="lg:border-r-2 lg:border-slate-500 lg:px-2 text-xs font-roboto-bold">
-                  <i className="text-success text-xs ">
-                    {
-                      <MuiIcon
-                        iconName={"FiberManualRecordTwoTone"}
-                        fontSize={20}
-                      />
-                    }
-                  </i>{" "}
-                  Sort Warehouse
-                </span>
-                <span className="lg:pl-2 text-xs font-roboto-bold">
-                  {" "}
-                  <i className="text-warning text-xs ">
-                    {
-                      <MuiIcon
-                        iconName={"FiberManualRecordTwoTone"}
-                        fontSize={20}
-                      />
-                    }
-                  </i>{" "}
-                  Alter Price
-                </span>
+          {showModal && (
+            <div className="modal-list">
+              <div className="list-modal">
+                {formType === "SHOW_ADMIN_PROFILE_PICTURE" && (
+                  <dialog id="ShowPict" className={`${textColor} modal `}>
+                    <div
+                      className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden p-0`}
+                    >
+                      <div className="flex flex-col justify-center items-center">
+                        <h3 className="font-bold text-xl py-4 line-clamp-2">
+                          {table_id?.username || "username?"}
+                        </h3>
+                        <img
+                          src={`./src/assets/admin_avatar/${
+                            table_id?.pict || "default.png"
+                          }`}
+                          alt={`Profile Picture ${
+                            table_id?.username || "username?"
+                          }`}
+                          className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
+                        />
+                      </div>
+                      <div className="py-4">
+                        <small className="">
+                          <span className="font-bold ">Updated At : </span>
+                          {table_id?.updated_at || "NaN"}
+                        </small>
+                      </div>
+                    </div>
+                    <form method="dialog" className="modal-backdrop">
+                      <button>close</button>
+                    </form>
+                  </dialog>
+                )}
+                {formType === "SHOW_PRODUCT_PICTURE" && (
+                  <dialog id="ShowPict" className={`${textColor} modal `}>
+                    <div
+                      className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden p-0`}
+                    >
+                      <div className="flex flex-col justify-center items-center">
+                        <h3 className="font-bold text-xl py-4 line-clamp-2">
+                          {table_id?.name || "This Product"}
+                        </h3>
+                        <img
+                          src={`./src/assets/products/${
+                            table_id?.pict || "default.png"
+                          }`}
+                          alt={`Profile Picture ${
+                            table_id?.name || "username?"
+                          }`}
+                          className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
+                        />
+                      </div>
+                      <div className="py-4">
+                        <small className="">
+                          <span className="font-bold ">Updated At : </span>
+                          {table_id?.updated_at || "NaN"}
+                        </small>
+                      </div>
+                    </div>
+                    <form
+                      method="dialog"
+                      className="modal-backdrop"
+                      onClick={setShowModal}
+                    >
+                      <button>close</button>
+                    </form>
+                  </dialog>
+                )}
               </div>
             </div>
-            <form method="dialog" className="modal-backdrop">
-              <button>close</button>
-            </form>
-          </dialog>
-          {/* )} */}
-        </div>
-      </div>
-      {/* )}
+          )}
         </>
-      )} */}
+      )}
     </>
   );
 };
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // setData({
 //   superAuthorizationPassword: "superAdmin",
 //   id: null,

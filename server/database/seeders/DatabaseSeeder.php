@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
             'price' => 20000,
             'stock' => 9,
             'discount' => null,
-            'pict' => null,
+            'pict' => 'red_hat.jpg',
             'description' => null
         ]);
         Product::create([
@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
             'price' => 40000,
             'stock' => 5,
             'discount' => null,
-            'pict' => null,
+            'pict' => 'kerudung_hijau.jpg',
             'description' => fake()->sentence(16)
         ]);
         Product::create([
@@ -96,7 +96,7 @@ class DatabaseSeeder extends Seeder
             'price' => 20000,
             'stock' => 7,
             'discount' => null,
-            'pict' => null,
+            'pict' => 'topi_biru.jpg',
             'description' => fake()->sentence(9)
         ]);
         Product::factory(100)->create();

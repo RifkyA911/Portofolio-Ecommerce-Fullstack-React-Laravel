@@ -14,6 +14,7 @@ export const MyTableEngine = (props) => {
     // Main Logic Table Component
     inputData,
     refresh,
+    className,
     // Tab Header Table Component
     TabHeader = false,
     hideHeaderBtn = null,
@@ -120,9 +121,7 @@ export const MyTableEngine = (props) => {
         )}
         {/* ------------- TABLE -------------*/}
 
-        <div
-          className={`${BorderOuterTable} overflow-x-auto rounded-xl bg-white `}
-        >
+        <div className={`${BorderOuterTable} ${className} overflow-x-auto`}>
           <Table className={`text-sm w-full `}>
             {children}
             {TabPagination && (
@@ -413,56 +412,60 @@ export const Th = (props) => {
 
   return (
     <>
-      {feature == "filter" && (
-        <th
-          key={customKey}
-          onClick={() => handleSortClick(column)}
-          className={`${className} min-h-[36px]`}
-        >
-          <div className="relative">
-            <span className="absolute left-0 text-[14px] bottom-[-10px]">
+      {!hidden && (
+        <>
+          {feature == "filter" && (
+            <th
+              key={customKey}
+              onClick={() => handleSortClick(column)}
+              className={`${className} min-h-[36px]`}
+            >
+              <div className="relative">
+                <span className="absolute left-0 text-[14px] bottom-[-10px]">
+                  {name}
+                </span>
+                <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
+                  {sortBy === column &&
+                    (sortOrder === "asc" ? (
+                      <IconsHi2 iconName="HiArrowLongDown" className="" />
+                    ) : (
+                      <IconsHi2 iconName="HiArrowLongUp" className="" />
+                    ))}
+                </i>
+              </div>
+              {children}
+            </th>
+          )}
+          {feature == "select" && (
+            <th
+              key={customKey}
+              onChange={onChange}
+              className={` ${className} min-h-[36px] w-0 p-0 text-center bg-slate-50 hover:bg-gray-200 transition-colors duration-75 cursor-pointer`}
+            >
+              {children}
+              <label>
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  checked={selectedRows.some((item) => item.id === rowId)}
+                  onChange={() => {
+                    // console.log(selectedRows);
+                  }}
+                />
+              </label>
+            </th>
+          )}
+          {feature == null && (
+            <th
+              key={customKey}
+              onClick={onClick}
+              className={`${className} min-h-[36px]`}
+            >
               {name}
-            </span>
-            <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
-              {sortBy === column &&
-                (sortOrder === "asc" ? (
-                  <IconsHi2 iconName="HiArrowLongDown" className="" />
-                ) : (
-                  <IconsHi2 iconName="HiArrowLongUp" className="" />
-                ))}
-            </i>
-          </div>
-          {children}
-        </th>
-      )}
-      {feature == "select" && (
-        <th
-          key={customKey}
-          onChange={onChange}
-          className={` ${className} min-h-[36px] w-0 p-0 text-center bg-slate-50 hover:bg-gray-200 transition-colors duration-75 cursor-pointer`}
-        >
-          {children}
-          <label>
-            <input
-              type="checkbox"
-              className="checkbox"
-              checked={selectedRows.some((item) => item.id === rowId)}
-              onChange={() => {
-                // console.log(selectedRows);
-              }}
-            />
-          </label>
-        </th>
-      )}
-      {feature == null && (
-        <th
-          key={customKey}
-          onClick={onClick}
-          className={`${className} min-h-[36px]`}
-        >
-          {name}
-          {children}
-        </th>
+              {children}
+            </th>
+          )}
+        </>
       )}
     </>
   );

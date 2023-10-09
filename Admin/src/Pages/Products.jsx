@@ -17,6 +17,7 @@ import { MuiIcon } from "../utils/RenderIcons";
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { ActionModalForm, InfoModal } from "../components/Modal";
+import { ProductImage } from "../components/Products/ProductsTableBody";
 
 // define fetch data URL by products
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_PRODUCT;
@@ -43,6 +44,7 @@ export default function Products() {
 
   // ---- Modal States ----
   const [product, setProduct] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const [formType, setFormType] = useState(null);
 
   // REDUX
@@ -80,6 +82,21 @@ export default function Products() {
   useEffect(() => {
     fetchProducts(URL);
   }, [paginate, rows]);
+
+  // Handler Ketika mengklik info button
+  const handleInfoButton = (id, formType) => {
+    // console.log("data = ", id);
+    setShowModal(true);
+    setProduct(id);
+    setFormType(formType);
+  };
+
+  // Handler Ketika mengklik actions button
+  const handleActionButton = (id, formType) => {
+    // console.log("data = ", id);
+    setProduct(id);
+    setFormType(formType);
+  };
 
   // ===================== MyTableEngine =====================
   // ---- MyTableEngine Search Filter ----
@@ -144,7 +161,11 @@ export default function Products() {
   // ===================== Modal =====================
   const ModalProps = {
     table: "products",
-    table_id: products,
+    table_id: product,
+    showModal: showModal,
+    setShowModal: () => {
+      setShowModal(false);
+    },
     refresh: () => {
       fetchProducts(URL, "fetch");
       setLoading(true);
@@ -158,11 +179,26 @@ export default function Products() {
     },
   };
 
+  // Urutan kolom yang diinginkan
+  const columnOrder = [
+    "id",
+    "pict",
+    "name",
+    "category",
+    "stock",
+    "price",
+    "discount",
+    "description",
+    "created_at",
+    "updated_at",
+  ];
+
   let table_styling = {};
   if (products !== null && products.length > 0) {
     table_styling = {
       tbody: `${BgTable}`,
-      th: Object.keys(products[0]).map((key) => ({
+      tr: `h-8 text-left`,
+      th: columnOrder.map((key, index) => ({
         key,
         feature: [
           "id",
@@ -176,11 +212,14 @@ export default function Products() {
           : null,
         style: `capitalize px-4`,
       })),
-      tr: `h-8 text-center`,
-      td: `flex-1 w-2/12 border-2 py-2 px-2 `,
+
+      td: `border-2 py-2 px-2 `,
     };
-    console.table(table_styling);
   }
+
+  // useEffect(() => {
+  //   console.info(table_styling);
+  // }, [table_styling]);
 
   return (
     <>
@@ -211,7 +250,7 @@ export default function Products() {
                   <InfoModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
-                  <MyTableEngine {...MyTableEngineProps}>
+                  <MyTableEngine {...MyTableEngineProps} className="rounded-xl">
                     <Thead className={`${BgOuterTable} ${textColor} `}>
                       <Tr key="TableHead" className={table_styling.tr}>
                         {table_styling.th.map((th, index) => (
@@ -222,6 +261,11 @@ export default function Products() {
                             feature={th.feature}
                             sortOrder="asc"
                             className={th.style}
+                            hidden={
+                              th.key === "created_at" || th.key === "updated_at"
+                                ? true
+                                : false
+                            }
                           ></Th>
                         ))}
                       </Tr>
@@ -259,28 +303,40 @@ export default function Products() {
                           ) : (
                             <Th
                               key={index}
-                              className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
+                              className={`w-0 {BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
                             >
                               {parseInt(row.id) == 0
                                 ? parseInt(row.id) + 1
                                 : row.id}
                             </Th>
                           )}
-                          <Td className={table_styling.td}>{row.name}</Td>
-                          <Td className="flex-1 w-2/12 border-2 ">
+                          <Td className={`${table_styling.td} 2/12`}>
+                            <ProductImage
+                              data={row}
+                              onProductPictureClick={() => {
+                                handleInfoButton(row, "SHOW_PRODUCT_PICTURE");
+                              }}
+                            />
+                          </Td>
+                          <Td className={`${table_styling.td} w-2/12`}>
+                            {row.name}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
                             {row.category}
                           </Td>
-                          <Td className="flex-1 w-2/12 border-2 ">
-                            {row.price}
-                          </Td>
-                          <Td className="flex-1 w-2/12 border-2">
+                          <Td className={`${table_styling.td} w-1/12`}>
                             {row.stock}
                           </Td>
-                          <Td className="flex-1 w-2/12 border-2 ">
+                          <Td className={`${table_styling.td} w-2/12`}>
+                            {row.price}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
                             {row.discount}
                           </Td>
-                          <Td className="flex-1 w-2/12 border-2 max-h-[40px]">
-                            {row.description}
+                          <Td className={`${table_styling.td} w-3/12`}>
+                            <div className="line-clamp-5">
+                              {row.description}
+                            </div>
                           </Td>
                         </Tr>
                       ))}
