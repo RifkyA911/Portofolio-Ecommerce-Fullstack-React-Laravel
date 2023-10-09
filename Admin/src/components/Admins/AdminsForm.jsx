@@ -531,7 +531,7 @@ import { convertISODateToJSDate } from "../../utils/DateFormatter";
 //   );
 // };
 
-export const InsertForm = (props) => {
+export const AdminsInsertForm = (props) => {
   const {
     data,
     formType,
@@ -738,7 +738,7 @@ export const InsertForm = (props) => {
   );
 };
 
-export const AlterForm = (props) => {
+export const AdminsAlterForm = (props) => {
   const {
     data,
     setData,
@@ -978,7 +978,7 @@ export const AlterForm = (props) => {
   );
 };
 
-export const DropForm = (props) => {
+export const AdminsDropForm = (props) => {
   // const { data, formType } = props;
   const { refresh, data, formType, clearData } = useContext(ModalContext);
 

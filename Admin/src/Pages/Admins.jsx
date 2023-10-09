@@ -5,7 +5,6 @@ import {
   ShowAdminName,
   ShowRole,
   AuthorityToggle,
-  ActionButton,
 } from "./../components/Admins/AdminsTableBody";
 import {
   MyTableEngine,
@@ -24,6 +23,7 @@ import axios from "axios";
 import { MuiIcon } from "../utils/RenderIcons";
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
+import { ActionButton } from "../components/Button";
 
 // define fetch data URL by admins
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
@@ -155,12 +155,12 @@ export default function Admins(props) {
     searchTerm: searchTerm,
     setSearchTerm: (e) => setSearchTerm(e.target.value),
     setAddModal: () => {
-      document.getElementById("AdminForm").showModal();
+      document.getElementById("ModalForms").showModal();
       handleActionButton(null, "INSERT");
     },
     setDeleteModal: () => {
       // console.table(Object.assign({}, selectedRows));
-      document.getElementById("AdminForm").showModal();
+      document.getElementById("ModalForms").showModal();
       handleActionButton(selectedRows, "DROP_BY_SELECTED");
     },
     // ------------- Table Body -------------
@@ -370,13 +370,13 @@ export default function Admins(props) {
                               data={row}
                               onClickDelete={() => {
                                 document
-                                  .getElementById("AdminForm")
+                                  .getElementById("ModalForms")
                                   .showModal();
                                 handleActionButton(row.id, "DROP_BY_ID");
                               }}
                               onClickEdit={() => {
                                 document
-                                  .getElementById("AdminForm")
+                                  .getElementById("ModalForms")
                                   .showModal();
                                 handleActionButton(row.id, "ALTER_BY_ID");
                               }}

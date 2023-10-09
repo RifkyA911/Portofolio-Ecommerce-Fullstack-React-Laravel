@@ -18,6 +18,7 @@ import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { ActionModalForm, InfoModal } from "../components/Modal";
 import { ProductImage } from "../components/Products/ProductsTableBody";
+import { ActionButton } from "../components/Button";
 
 // define fetch data URL by products
 const initUrl = import.meta.env.VITE_API_URL_GET_ALL_PRODUCT;
@@ -123,12 +124,12 @@ export default function Products() {
     searchTerm: searchTerm,
     setSearchTerm: (e) => setSearchTerm(e.target.value),
     setAddModal: () => {
-      document.getElementById("AdminForm").showModal();
+      document.getElementById("ModalForms").showModal();
       handleActionButton(null, "INSERT");
     },
     setDeleteModal: () => {
       // console.table(Object.assign({}, selectedRows));
-      document.getElementById("AdminForm").showModal();
+      document.getElementById("ModalForms").showModal();
       handleActionButton(selectedRows, "DROP_BY_SELECTED");
     },
     // ------------- Table Body -------------
@@ -268,6 +269,13 @@ export default function Products() {
                             }
                           ></Th>
                         ))}
+                        <Th
+                          key={55}
+                          name="Action"
+                          column="Action"
+                          feature={null}
+                          className="capitalize px-4"
+                        ></Th>
                       </Tr>
                     </Thead>
                     <Tbody className={table_styling.tbody}>
@@ -327,16 +335,34 @@ export default function Products() {
                           <Td className={`${table_styling.td} w-1/12`}>
                             {row.stock}
                           </Td>
-                          <Td className={`${table_styling.td} w-2/12`}>
+                          <Td className={`${table_styling.td} w-1/12`}>
                             {row.price}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
                             {row.discount}
                           </Td>
-                          <Td className={`${table_styling.td} w-3/12`}>
+                          <Td className={`${table_styling.td} w-2/12`}>
                             <div className="line-clamp-5">
                               {row.description}
                             </div>
+                          </Td>
+                          <Td>
+                            <ActionButton
+                              key={index}
+                              data={row}
+                              onClickDelete={() => {
+                                document
+                                  .getElementById("ModalForms")
+                                  .showModal();
+                                handleActionButton(row.id, "DROP_BY_ID");
+                              }}
+                              onClickEdit={() => {
+                                document
+                                  .getElementById("ModalForms")
+                                  .showModal();
+                                handleActionButton(row.id, "ALTER_BY_ID");
+                              }}
+                            />
                           </Td>
                         </Tr>
                       ))}
