@@ -39,7 +39,7 @@ class ProductController extends Controller
         $page = (int)$page; // halaman
         $perPage = (int)$perPage; // jumlah data yang akan di kirim
 
-        $length = Product::Count();
+        $length = Product::count();
 
         // Menghitung offset berdasarkan halaman yang diminta
         $offset = ($page - 1) * $perPage;

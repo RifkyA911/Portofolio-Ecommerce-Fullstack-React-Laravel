@@ -97,6 +97,7 @@ Route::controller(WishlistController::class)->group(function () {
 // Endpoint Transaction
 Route::controller(TransactionController::class)->group(function () {
     Route::get('/transactions', 'index');
+    Route::get('/transactions/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/transaction/{id}', 'show');    // parameter id
     Route::post('/transaction/buy', 'store');   // parameter user_id, products_id(in array/json form), total_price. all required
     Route::post('/transaction/checkout', 'checkout');   // parameter id, user_id(same as trans' user)
@@ -135,6 +136,7 @@ Route::post('/dialog/new', [DialogController::class, 'store']);
 // product_id (can be null if sending direct message to admin)
 Route::controller(MessageController::class)->group(function () {
     Route::get('/messages', 'index');
+    Route::get('/messages/paginate/{page}/{perPage}', 'showLimit');
     Route::post('/message/add', 'store');
     Route::post('/messages/getByUser', 'getByUser'); // return dialog and first message where user is involved
     // parameter : user_id

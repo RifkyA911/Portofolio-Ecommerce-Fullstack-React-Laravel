@@ -24,7 +24,8 @@ class ProductFactory extends Factory
             'price' => $this->faker->randomNumber(4), // Angka 2 adalah jumlah digit desimal
             'stock' => $this->faker->randomNumber(3),
             'discount' => null,
-            'pict' => Str::random(6) . '.jpg',
+            // 'pict' => Str::random(6) . '.jpg',
+            'pict' => 'default.jpg',
             'description' => null,
         ];
     }
