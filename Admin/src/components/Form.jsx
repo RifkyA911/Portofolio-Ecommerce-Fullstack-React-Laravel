@@ -90,16 +90,6 @@ export const NumberInput = (props) => {
     watch,
   } = useModalContext();
 
-  const handleInputChange = (e) => {
-    const inputValue = e.target.value;
-    // Menghapus karakter selain angka dari input
-    const numericValue = inputValue.replace(/[^0-9]/g, "");
-
-    // Memformat nilai ke dalam format IDR
-    const formatted = `Rp. ${numericValue}`;
-    setValue(name, formatted);
-  };
-
   const validationRules = {
     required: true,
     pattern: {
@@ -318,5 +308,73 @@ export const TextArea = (props) => {
         {/* {console.log(name, ":", getValues(name))} */}
       </textarea>
     </div>
+  );
+};
+
+export const FileInput = (props) => {
+  const {
+    className,
+    label,
+    name,
+    placeholder,
+    type = name,
+    decimalOptions = 0,
+    limitDigits,
+    prefix,
+    style,
+  } = props;
+  const [formattedValue, setFormattedValue] = useState("");
+
+  const {
+    table,
+    data,
+    formType,
+    // react-hook-form
+    getValues,
+    register,
+    setValue,
+    setError,
+    control,
+    errors,
+    isValid,
+    dirtyFields,
+    watch,
+  } = useModalContext();
+
+  const validationRules = {
+    required: true,
+    pattern: {
+      value: /\d+/,
+      message: label + " input is number only.",
+    },
+    maxLength: {
+      value: 11,
+      message: label + " input must exceed 16 digits",
+    },
+    minLength: {
+      value: 3,
+      message: label + " input min 3 digits",
+    },
+  };
+
+  return (
+    <>
+      <div className="relative w-96 rounded-full">
+        <img
+          src={
+            data.pict
+              ? `./src/assets/${table}/${getValues("pict")}`
+              : `./src/assets/${table}/default.jpg`
+          }
+          alt="Avatar Tailwind CSS Component"
+          className=" w-96 rounded-full max-w-3xl shadow-lg"
+          loading="lazy"
+        />
+        <input
+          type="file"
+          className="absolute w-full h-full hover:block hover:bg-gray-600 hover:bg-opacity-10 m-auto top-0 left-0 rounded-full transition-all duration-300 cursor-pointer"
+        />
+      </div>
+    </>
   );
 };

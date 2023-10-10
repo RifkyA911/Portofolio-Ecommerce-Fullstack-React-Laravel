@@ -587,6 +587,7 @@ export const ActionModalForm = (props) => {
 
   const ModalContextValue = {
     // MyTable
+    table,
     refresh,
     clearData,
     // Modal

@@ -15,7 +15,13 @@ import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../../utils/RenderIcons";
 import { convertISODateToJSDate } from "../../utils/DateFormatter";
-import { TextInput, SelectInput, NumberInput, TextArea } from "../Form";
+import {
+  TextInput,
+  SelectInput,
+  NumberInput,
+  TextArea,
+  FileInput,
+} from "../Form";
 import { ConfirmButton } from "../Button";
 
 export const ProductsInsertForm = (props) => {
@@ -41,39 +47,16 @@ export const ProductsInsertForm = (props) => {
       <div className="flex flex-row">
         {/* Images */}
         <div className="flex justify-center items-center w-6/12 p-12">
-          <div className="relative w-96 rounded-full">
-            <img
-              src={
-                data.pict
-                  ? `./src/assets/products/${getValues("pict")}`
-                  : `./src/assets/products/default.jpg`
-              }
-              alt="Avatar Tailwind CSS Component"
-              className=" w-96 rounded-full max-w-3xl shadow-lg"
-              loading="lazy"
-            />
-            <input
-              type="file"
-              className="absolute w-full h-full hover:block hover:bg-gray-600 hover:bg-opacity-10 m-auto top-0 left-0 rounded-full transition-all duration-300 cursor-pointer"
-            />
-          </div>
+          <FileInput
+            type="picture"
+            // className={`flex gap-4 flex-col w-full`}
+            label="Product Picture"
+            name="pict"
+          />
         </div>
         {/* Form */}
         <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
-          {/* {console.log(name, ":", getValues(name))} */}
-          {/* <input
-            type="text"
-            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-            {...register("text", {
-              required: true,
-              maxLength: 4,
-            })}
-            onChange={(e) => {
-              console.log(e.target.value);
-              setValue("text", e.target.value);
-            }}
-          /> */}
-          {/* {setValue("barcode", "HJAHAHA")} */}
+          {/* {console.log(name, ":", getValues(name))}  {setValue("barcode", "HJAHAHA")} */}
           <TextInput
             className={`flex gap-4 flex-col w-full`}
             label="Barcode/No. Product"
@@ -88,7 +71,7 @@ export const ProductsInsertForm = (props) => {
           />
           <div className="w-full flex flex-row gap-4 justify-between items-center">
             <SelectInput
-              className={`flex gap-4 flex-col `}
+              className={`w-full flex gap-4 flex-col `}
               label="Category"
               name="category"
               options={["Topi", "Baju"]}
