@@ -34,7 +34,7 @@ Route::controller(AdminsController::class)->group(function () {
     Route::get('/admins/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/admin/{id}', 'find');     // parameter id
     //  create admin
-    Route::post('/admins', 'store');    // parameter role_admin == 0; data => email, username, password, role
+    Route::post('/admin', 'store');    // parameter role_admin == 0; data => email, username, password, role
     // update admin
     Route::put('/admins', 'update');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     // patch admin

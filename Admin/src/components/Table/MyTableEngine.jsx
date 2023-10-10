@@ -168,7 +168,7 @@ export const MyTableHeader = (props) => {
             className="px-2 mr-2 bg-gray-200 text-black rounded-md"
             onClick={() => setDialogOpen(!isDialogOpen)}
           >
-            <MuiIcon iconName={"RemoveRedEyeRounded"} fontSize={20} />
+            <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
           </button>
           <input
             type="text"

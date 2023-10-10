@@ -15,7 +15,8 @@ import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../../utils/RenderIcons";
 import { convertISODateToJSDate } from "../../utils/DateFormatter";
-import { TextInput, SelectInput, NumberInput } from "../Form";
+import { TextInput, SelectInput, NumberInput, TextArea } from "../Form";
+import { ConfirmButton } from "../Button";
 
 export const ProductsInsertForm = (props) => {
   const {
@@ -44,7 +45,7 @@ export const ProductsInsertForm = (props) => {
             <img
               src={
                 data.pict
-                  ? `./src/assets/products/${data.pict}`
+                  ? `./src/assets/products/${getValues("pict")}`
                   : `./src/assets/products/default.jpg`
               }
               alt="Avatar Tailwind CSS Component"
@@ -59,37 +60,80 @@ export const ProductsInsertForm = (props) => {
         </div>
         {/* Form */}
         <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
+          {/* {console.log(name, ":", getValues(name))} */}
+          {/* <input
+            type="text"
+            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+            {...register("text", {
+              required: true,
+              maxLength: 4,
+            })}
+            onChange={(e) => {
+              console.log(e.target.value);
+              setValue("text", e.target.value);
+            }}
+          /> */}
+          {/* {setValue("barcode", "HJAHAHA")} */}
           <TextInput
+            className={`flex gap-4 flex-col w-full`}
             label="Barcode/No. Product"
             name="barcode"
             placeholder="Masukkan Kode Barcode/No. Product"
           />
-          {/* {setValue("barcode", "HJAHAHA")} */}
           <TextInput
+            className={`flex gap-4 flex-col w-full`}
             label="Product Name"
-            name="product"
+            name="name"
             placeholder="Masukkan Nama Product"
           />
-          <SelectInput
-            label="Category"
-            name="category"
-            options={["Topi", "Baju"]}
-          />
-          <NumberInput
-            label="Price"
-            name="price"
-            placeholder="Masukkan Harga"
+          <div className="w-full flex flex-row gap-4 justify-between items-center">
+            <SelectInput
+              className={`flex gap-4 flex-col `}
+              label="Category"
+              name="category"
+              options={["Topi", "Baju"]}
+              style="w-full h-[38px]"
+            />
+            <NumberInput
+              className={`flex gap-4 flex-col `}
+              prefix=""
+              label="Stock"
+              name="stock"
+              limitDigits={1000}
+              placeholder="Masukkan Harga"
+            />
+          </div>
+          <div className="w-full flex flex-row justify-between">
+            <NumberInput
+              className={`flex gap-4 flex-col `}
+              prefix="Rp. "
+              label="Price (IDR)"
+              name="price"
+              limitDigits={10000000000}
+              placeholder="Masukkan Harga"
+              style="w-full"
+            />
+
+            <NumberInput
+              className={`flex gap-4 flex-col `}
+              prefix="% "
+              label="Discount %"
+              name="discount"
+              limitDigits={1000}
+              decimalOptions={3}
+              placeholder="Masukkan Harga"
+              style="w-full"
+            />
+          </div>
+          <TextArea
+            className={`flex gap-4 flex-col w-full`}
+            label="Description"
+            name="description"
+            placeholder="tamnbahkan deskripsi"
           />
         </div>
       </div>
-      <div className="py-2 shadow-inner shadow-slate-50 bg-slate-100">
-        <button
-          type="submit"
-          className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-        >
-          <MuiIcon iconName="EditRounded" /> Save Changes
-        </button>
-      </div>
+      <ConfirmButton onClick={() => console.log(register)} confirmType="add" />
     </>
   );
 };
@@ -322,14 +366,7 @@ export const ProductsAlterForm = (props) => {
           </small>
         </div>
       </div>
-      <div className="py-2 shadow-inner shadow-slate-50 bg-slate-100">
-        <button
-          type="submit"
-          className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-        >
-          <MuiIcon iconName="EditRounded" /> Save Changes
-        </button>
-      </div>
+      <ConfirmButton confirmType="alter" />
     </>
   );
 };
@@ -424,34 +461,14 @@ export const ProductsDropForm = (props) => {
         )}
         {/* Confirm Button */}
         <div className="flex gap-12 py-2 justify-center shadow-inner shadow-slate-50 bg-slate-100">
-          <button
-            type="submit"
-            // onClick={handleSubmit(onSubmit)}
-            className="btn transition-all duration-500 bg-gradient-to-tl from-pink-500 via-red-500 to-red-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-          >
-            <span id="showDelete" className="options px-[4px]">
-              <i className="font-xs">
-                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-              </i>
-            </span>
-            <span className="font-bold pr-2">Delete</span>
-          </button>
-          <button
-            type="button"
-            // onClick={refresh}
+          <ConfirmButton confirmType="drop" />
+          <ConfirmButton
+            confirmType="cancel"
             onClick={() => {
               refresh();
               clearData();
             }}
-            className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-orange-500 to-amber-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-          >
-            <span className="options px-[4px]">
-              <i className="font-xs ">
-                <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-              </i>
-              <span className="font-bold pr-2">Cancel</span>
-            </span>
-          </button>
+          />
         </div>
       </div>
     </>

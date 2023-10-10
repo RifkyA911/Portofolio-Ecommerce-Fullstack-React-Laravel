@@ -346,10 +346,17 @@ export default function Products() {
                               {row.description}
                             </div>
                           </Td>
-                          <Td>
+                          <Td className="px-4">
                             <ActionButton
                               key={index}
                               data={row}
+                              hide={["view, print"]}
+                              onClickView={() => {
+                                document
+                                  .getElementById("ModalForms")
+                                  .showModal();
+                                handleActionButton(row.id, "DROP_BY_ID");
+                              }}
                               onClickDelete={() => {
                                 document
                                   .getElementById("ModalForms")

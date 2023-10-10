@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../../utils/RenderIcons";
 import { convertISODateToJSDate } from "../../utils/DateFormatter";
+import { ConfirmButton } from "../Button";
 
 // export const BackupForm = (props) => {
 //   return (
@@ -966,14 +967,15 @@ export const AdminsAlterForm = (props) => {
           </small>
         </div>
       </div>
-      <div className="py-2 shadow-inner shadow-slate-50 bg-slate-100">
+      {/* <div className="py-2 shadow-inner shadow-slate-50 bg-slate-100">
         <button
           type="submit"
           className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
         >
           <MuiIcon iconName="EditRounded" /> Save Changes
         </button>
-      </div>
+      </div> */}
+      <ConfirmButton confirmType="alter" />
     </>
   );
 };

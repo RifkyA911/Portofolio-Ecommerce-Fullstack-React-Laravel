@@ -263,6 +263,19 @@ export const ActionModalForm = (props) => {
   const startIndex = page * pageSize;
   const endIndex = startIndex + pageSize;
 
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
   // Fungsi untuk mengganti halaman
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -296,10 +309,6 @@ export const ActionModalForm = (props) => {
     mode: "onChange",
     defaultValues: {
       superAuthorizationPassword: "superAdmin",
-      email: "",
-      username: "",
-      role: 1,
-      pict: "default.png",
     },
   });
 
@@ -414,6 +423,12 @@ export const ActionModalForm = (props) => {
             pict: "default.png",
             password: "123456f",
             password_confirmation: "123456f",
+          };
+          break;
+        case `products`:
+          initialFormValue = {
+            superAuthorizationPassword: "superAdmin",
+            pict: "default.jpg",
           };
           break;
         default:
@@ -562,7 +577,7 @@ export const ActionModalForm = (props) => {
 
   // submit form handler
   const onSubmit = async (form) => {
-    // console.table("data:", data);
+    console.table("data:", data);
     if (!form) {
       alert("there is no form to send");
     }
@@ -603,21 +618,23 @@ export const ActionModalForm = (props) => {
               formType === "ALTER_BY_ID" || formType === "INSERT"
                 ? "max-w-6xl"
                 : "max-w-3xl"
-            } bg-gray-50 overflow-y-scroll cursor-auto`}
+            } bg-gray-50 overflow-y-scroll cursor-auto p-0`}
           >
-            <form method="dialog">
+            <form method="dialog" className={` sticky top-0 z-10`}>
               <button
                 onClick={() => {
                   refresh();
                   clearData();
                 }}
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 hover:bg-red-200"
+                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-3 hover:bg-red-300"
               >
                 <MuiIcon iconName="CloseRounded" />
               </button>
             </form>
-            <div className="flex flex-row justify-between items-center gap-2 pr-8">
-              <h3 className="font-bold text-lg p-0 text-left w-4/12 capitalize">
+            <div
+              className={`bg-slate-50 sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
+            >
+              <h3 className="p-4 w-4/12 font-bold text-lg text-left capitalize">
                 {formType === "INSERT" && `Add New ${table}`}
                 {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
                 {formType === "DROP_BY_ID" && `Delete This ${table}`}
@@ -627,25 +644,24 @@ export const ActionModalForm = (props) => {
                 <>
                   <h4
                     key={id}
-                    className={`p-1 font-roboto-bold w-8/12 text-red-800 bg-red-300 rounded-md max-h-[28px] overflow-scroll`}
+                    className={`p-1 font-roboto-bold w-8/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
                   >
-                    {Object.keys(errors).map((fieldName) => (
-                      <DangerAlert
-                        key={fieldName}
-                        message={errors[fieldName].message}
-                        className={`p-2 font-roboto-bold`}
-                      ></DangerAlert>
-                    ))}
+                    {/* {Object.keys(errors).map((fieldName) => (
+                      <>
+                        <span key={fieldName}>{errors[fieldName].message}</span>
+                      </>
+                    ))} */}
+                    {console.log(errors)}
                     {errorMessage}
                   </h4>
                 </>
               ) : (
-                <small>
-                  <span className="font-bold"></span>
-                </small>
+                <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
               )}
               {sending && (
-                <span className="loading loading-dots loading-md"></span>
+                <>
+                  <span className="loading loading-dots loading-md"></span>
+                </>
               )}
             </div>
             {data !== undefined && data !== null ? (
