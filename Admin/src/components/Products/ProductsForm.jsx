@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../../utils/RenderIcons";
 import { convertISODateToJSDate } from "../../utils/DateFormatter";
-import { InputField, SelectInput } from "../Form";
+import { TextInput, SelectInput, NumberInput } from "../Form";
 
 export const ProductsInsertForm = (props) => {
   const {
@@ -59,13 +59,13 @@ export const ProductsInsertForm = (props) => {
         </div>
         {/* Form */}
         <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
-          <InputField
+          <TextInput
             label="Barcode/No. Product"
             name="barcode"
             placeholder="Masukkan Kode Barcode/No. Product"
           />
           {/* {setValue("barcode", "HJAHAHA")} */}
-          <InputField
+          <TextInput
             label="Product Name"
             name="product"
             placeholder="Masukkan Nama Product"
@@ -74,6 +74,11 @@ export const ProductsInsertForm = (props) => {
             label="Category"
             name="category"
             options={["Topi", "Baju"]}
+          />
+          <NumberInput
+            label="Price"
+            name="price"
+            placeholder="Masukkan Harga"
           />
         </div>
       </div>
