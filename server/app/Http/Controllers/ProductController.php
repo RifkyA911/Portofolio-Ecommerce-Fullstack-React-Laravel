@@ -55,24 +55,48 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // public function store(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         "name" => 'required',
+    //         "category" => 'required',
+    //         "price" => 'required|numeric',
+    //         "stock" => 'required|numeric'
+    //     ]);
+    //     // $validated = $request->validate([
+    //     //     "email" => 'required|email|unique:users,email',
+    //     //     "username" => 'required',
+    //     //     "password" => 'required|min:6',
+    //     // ]);
+    //     if ($validator->fails()) {
+    //         return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
+    //     }
+    //     $addItem = Product::create($validator->validated());
+    //     return response(new PostResource(true, "Produk berhasil ditambahkan.", $addItem), 201);
+    // }
+
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            "name" => 'required',
-            "category" => 'required',
-            "price" => 'required|numeric',
-            "stock" => 'required|numeric'
-        ]);
-        // $validated = $request->validate([
-        //     "email" => 'required|email|unique:users,email',
-        //     "username" => 'required',
-        //     "password" => 'required|min:6',
-        // ]);
-        if ($validator->fails()) {
-            return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
+        // return response(new PostResource(false, "yoi", $request->input()), 200);
+        if ($request->input('superAuthorizationPassword') === "superAdmin") {
+            $validator = Validator::make($request->all(), [
+                "name" => 'required',
+                "category" => 'required',
+                "price" => 'required|numeric',
+                "stock" => 'required|numeric'
+            ]);
+
+            if ($validator->fails()) {
+                return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
+            }
+
+            if (Product::create($request->except(['superAuthorizationPassword'])) !== false) {
+                return new PostResource(true, ['message' => "Product berhasil ditambahkan.", 'status' => 201], $request->only(['name', 'category']));
+            } else {
+                return response(new PostResource(false, "validasi data error", "Something went wrong with the DB :("), 403);
+            }
         }
-        $addItem = Product::create($validator->validated());
-        return response(new PostResource(true, "Produk berhasil ditambahkan.", $addItem), 201);
+        return response(new PostResource(false, "Data Product gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan akun Product.", $request->input()), 403);
     }
 
     /**
