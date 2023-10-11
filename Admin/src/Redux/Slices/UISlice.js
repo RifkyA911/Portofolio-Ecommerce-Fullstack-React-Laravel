@@ -17,6 +17,7 @@ export const UISlice = createSlice({
         DarkMode: false,
         BgColor: "bg-white",
         BackBgColor: "bg-white",
+        container: "app flex pt-14 min-h-screen max-w-full",
         ContainerBgColor: "bg-slate-100",
         ContentBgColor: "bg-white",
         ComponentColor: "bg-violet-200",
@@ -26,7 +27,6 @@ export const UISlice = createSlice({
         wideScreen: true,
         sidebarOpen: checkScreenWidth(),
         showNav: "",
-        container: "app flex pt-14 min-h-screen max-w-full",
         textTable: "text-gray-600",
         BgTable: "bg-white",
         BgOuterTable: "bg-slate-200",
@@ -45,12 +45,12 @@ export const UISlice = createSlice({
             state.DarkMode = true
             state.BgColor = "bg-gray-800",
             state.textColor = "text-white",
-            state.BackBgColor = "bg-gray-700",
-            state.ContainerBgColor = "bg-slate-800",
-            state.ContentBgColor = "bg-gray-700",
+            state.BackBgColor = "bg-gray-800",
+            state.ContainerBgColor = "bg-gray-700",
+            state.ContentBgColor = "bg-gray-800",
             state.BgTable = "bg-white",
             state.BgOuterTable = "bg-gray-700",
-            state.BorderOuterTable = "border-[1px] border-gray-600",
+            state.BorderOuterTable = "border-[1px] border-gray-800",
             state.BorderRowTable = "border-b-2 border-gray-600",
             toggleDark = !toggleDark
           } else {

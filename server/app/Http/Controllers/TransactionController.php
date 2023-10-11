@@ -27,6 +27,24 @@ class TransactionController extends Controller
         //
     }
 
+    public function showLimit($page, $perPage)
+    {
+        // Mengonversi halaman dan perPage yang diterima menjadi integer
+        $page = (int)$page; // halaman
+        $perPage = (int)$perPage; // jumlah data yang akan di kirim
+
+        $length = Transaction::count();
+
+        // Menghitung offset berdasarkan halaman yang diminta
+        $offset = ($page - 1) * $perPage;
+
+        // Mengambil data Admin dengan paginasi dan offset
+        $transactions = Transaction::skip($offset)->take($perPage)->get();
+
+        // Mengembalikan hasil dalam bentuk resource
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $transactions);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -58,33 +76,33 @@ class TransactionController extends Controller
 
     public function showByUser($uid, $tahap = null)
     {
-        $pesan = "data Transaksi berdasarkan user tahap ".$tahap." :";
+        $pesan = "data Transaksi berdasarkan user tahap " . $tahap . " :";
         // parameter tahap berisi null, checkedout, sent, atau done
         if ($tahap == "checkedout") {
             $trans = Transaction::where([
                 ['user_id', '=', $uid],
                 ['checked_out', '!=', null]
-                ])->get();
-            } elseif ($tahap == "sent") {
-                $trans = Transaction::where([
+            ])->get();
+        } elseif ($tahap == "sent") {
+            $trans = Transaction::where([
                 ['user_id', '=', $uid],
                 ['sent', '!=', null]
-                ])->get();
-            } elseif ($tahap == "done") {
+            ])->get();
+        } elseif ($tahap == "done") {
             $trans = Transaction::where([
                 ['user_id', '=', $uid],
                 ['done', '!=', null]
-                ])->get();
-            } else {
-                $trans = Transaction::where('user_id', '=', $uid)->get();
-                $pesan = "data Transaksi berdasarkan user :";
-            }
+            ])->get();
+        } else {
+            $trans = Transaction::where('user_id', '=', $uid)->get();
+            $pesan = "data Transaksi berdasarkan user :";
+        }
         return new PostResource(true, $pesan, $trans);
     }
-    
+
     public function showByAdmin($admin_id, $tahap = null)
     {
-        $pesan = "data Transaksi berdasarkan admin tahap ".$tahap." :";
+        $pesan = "data Transaksi berdasarkan admin tahap " . $tahap . " :";
         // parameter tahap berisi null, checkedout, sent, atau done
         if ($tahap == "checkedout") {
             $trans = Transaction::where([
@@ -125,7 +143,8 @@ class TransactionController extends Controller
     }
 
     // update status checkout
-    public function checkout(Request $request) {
+    public function checkout(Request $request)
+    {
         $transaksi = Transaction::find($request->input('id'));
         if ($transaksi->user_id == $request->input('user_id')) {
             $transaksi->checked_out = now();
@@ -135,7 +154,8 @@ class TransactionController extends Controller
         }
     }
     // update status sent
-    public function sent(Request $request) {
+    public function sent(Request $request)
+    {
         $transaksi = Transaction::find($request->input('id'));
         if ($request->has('role_admin') && $request->has('admin_id') && ($transaksi->sent == null)) {
             $transaksi->sent = now();
@@ -146,7 +166,8 @@ class TransactionController extends Controller
         }
     }
     // update status done
-    public function done(Request $request) {
+    public function done(Request $request)
+    {
         $transaksi = Transaction::find($request->input('id'));
         // check if admin is same as transaction's admin_id, or th user is same as transaction's user_id
         if (($request->has('role_admin') && ($request->input('admin_id') == $transaksi->admin_id)) || ($transaksi->user_id == $request->input('user_id'))) {

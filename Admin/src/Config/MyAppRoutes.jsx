@@ -32,7 +32,7 @@ function MyAppRoutes() {
   const navigate = useNavigate();
 
   const currentUser = getUser();
-  console.log(currentUser.role);
+  // console.log(currentUser.role);
   // useEffect(() => {
   //   if (userSession == null) {
   //     // tambahkan semua kategori
@@ -46,7 +46,7 @@ function MyAppRoutes() {
       <Sidebar />
       <Navbar />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route exact path="/" element={<Dashboard />} />
         {currentUser.role !== 0 ? (
           <Route path="/admins" element={<Unauthorized />} />
         ) : (

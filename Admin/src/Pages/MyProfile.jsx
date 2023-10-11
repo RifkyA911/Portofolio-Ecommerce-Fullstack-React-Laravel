@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 
 // Utils
-import { getMuiIcon } from "./../utils/RenderIcons";
+import { MuiIcon } from "./../utils/RenderIcons";
 import { getUser } from "../utils/Session/Admin";
 import { getCurrentEndpoint } from "./../utils/Navigation";
 import { updateSession } from "../Redux/Slices/UserSlice";
@@ -201,7 +201,7 @@ export default function MyProfile() {
                                   className="btn btn-warning font-bold outline-none border-none w-full"
                                   type="submit"
                                 >
-                                  {getMuiIcon("SettingsSuggest")}
+                                  {<MuiIcon iconName="SettingsSuggest" />}
                                   Update Profile
                                 </button>
                               </div>

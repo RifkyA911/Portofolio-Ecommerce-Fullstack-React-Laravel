@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('admin_id')->nullable()->default(null);
             $table->foreignId('dialog_id');
             $table->text('message');
+            $table->boolean('seen')->default(false);;
             $table->string('pict')->nullable()->default(null);
             $table->timestamps();
         });

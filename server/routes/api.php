@@ -32,25 +32,33 @@ use App\Models\Message;
 // Endpoint Admin
 Route::controller(AdminsController::class)->group(function () {
     Route::get('/admins', 'index');
+    Route::get('/admins/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/admin/{id}', 'find');     // parameter id
     //  create admin
-    Route::post('/admins', 'store');    // parameter role_admin == 0; data => email, username, password, role
+    Route::post('/admin', 'store');    // parameter role_admin == 0; data => email, username, password, role
     // update admin
     Route::put('/admins', 'update');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
-    Route::post('admin/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
+    Route::post('admin/login', 'login'); // parameter email, password
     Route::post('admin/logout', 'logout');
     Route::post('admin/cek', 'me');     // uji coba, DELETE when deployed
+    // patch admin
+    Route::patch('/admins', 'patch');    // parameter spasial
+    // delete admin
+    Route::delete('/admins', 'drop');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
 });
 
 // Endpoint User
 Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'index');
+    Route::get('/users/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/user/{id}', 'show');   // parameter id
     // create user
     Route::post('/user', 'store');  // parameter email, username, password(min:6)
     // update user
     Route::put('/user', 'update');  // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     // optional : address, pict;
+    // patch user
+    Route::patch('/users', 'patch');    // parameter spasial
     // login user
     Route::post('/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
     Route::post('/logout', 'logout');
@@ -60,6 +68,7 @@ Route::controller(UserController::class)->group(function () {
 // Endpoint Product
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'getAll');
+    Route::get('/products/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/product/{id}', 'getById'); // parameter id
     // create product
     Route::post('/product', 'store');   // parameter name, category, price(numeric), stok(numeric)
@@ -67,6 +76,8 @@ Route::controller(ProductController::class)->group(function () {
     // update product
     Route::put('/product', 'update');   // parameter id, name, category, price(numeric), stok(numeric)
     // optional : discount, pict, description
+    // patch products
+    Route::patch('/products', 'patch');    // parameter spasial
 });
 
 // Endpoint Cart/keranjang (user-only feature)
@@ -76,6 +87,8 @@ Route::controller(CartController::class)->group(function () {
     Route::post('/cart', 'store');     // parameter user_id, product_id, count(optional)
     Route::post('/cart/delete', 'destroy');    // parameter id
     Route::post('/cart/update', 'update');     // parameter id, count
+    // patch cart
+    Route::patch('/cart', 'patch');    // parameter spasial
 });
 
 // Endpoint Wishlist (user-only feature)
@@ -88,6 +101,7 @@ Route::controller(WishlistController::class)->group(function () {
 // Endpoint Transaction
 Route::controller(TransactionController::class)->group(function () {
     Route::get('/transactions', 'index');
+    Route::get('/transactions/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/transaction/{id}', 'show');    // parameter id
     Route::post('/transaction/buy', 'store');   // parameter user_id, products_id(in array/json form), total_price. all required
     Route::post('/transaction/checkout', 'checkout');   // parameter id, user_id(same as trans' user)
@@ -126,6 +140,7 @@ Route::post('/dialog/new', [DialogController::class, 'store']);
 // product_id (can be null if sending direct message to admin)
 Route::controller(MessageController::class)->group(function () {
     Route::get('/messages', 'index');
+    Route::get('/messages/paginate/{page}/{perPage}', 'showLimit');
     Route::post('/message/add', 'store');
     Route::post('/messages/getByUser', 'getByUser'); // return dialog and first message where user is involved
     // parameter : user_id

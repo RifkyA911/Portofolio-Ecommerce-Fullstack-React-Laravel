@@ -1,60 +1,125 @@
 import React from "react";
 import { Container, Content } from "../Layout";
-import ReactEcharts from "echarts-for-react";
+import {
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { useSelector } from "react-redux";
+import { RenderAreaChart } from "../components/Recharts";
+
+const data = [
+  {
+    name: "Page A",
+    product: 4000,
+    order: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Page B",
+    product: 3000,
+    order: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Page C",
+    product: 2000,
+    order: 9800,
+    amt: 2290,
+  },
+  {
+    name: "Page D",
+    product: 2780,
+    order: 3908,
+    amt: 2000,
+  },
+  {
+    name: "Page E",
+    product: 1890,
+    order: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Page F",
+    product: 2390,
+    order: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Page G",
+    product: 3490,
+    order: 4300,
+    amt: 2100,
+  },
+];
+
 export default function Statistic() {
-  const option = {
-    title: {
-      text: "Stacked Area Chart",
-    },
-    tooltip: {
-      trigger: "axis",
-      axisPointer: {
-        type: "cross",
-        label: {
-          backgroundColor: "#6a7985",
-        },
-      },
-    },
-    xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    },
-    yAxis: {
-      type: "value",
-    },
-    series: [
-      {
-        data: [120, 200, 150, 80, 70, 110, 130],
-        type: "line",
-        areaStyle: {},
-        backgroundColor: "rgba(0, 0, 255, 0.2)", // Gunakan warna yang sesuai
-        borderColor: "rgba(0, 0, 255, 1)", // Contoh warna garis
-        borderWidth: 1, // Lebar garis
-        smooth: true,
-      },
-      // Menambahkan data lain di bawah ini
-      {
-        data: [90, 150, 100, 60, 50, 80, 100], // Data baru
-        type: "line", // Tipe grafik (dalam contoh ini, "line")
-        areaStyle: {}, // Opsi tambahan jika diperlukan
-        smooth: true, // Opsi tambahan jika diperlukan
-      },
-      {
-        data: [290, 550, 200, 160, 550, 280, 200], // Data baru
-        type: "line", // Tipe grafik (dalam contoh ini, "line")
-        areaStyle: {}, // Opsi tambahan jika diperlukan
-        smooth: true, // Opsi tambahan jika diperlukan
-      },
-    ],
-  };
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
   // Konten komponen
   return (
     <>
       <Container>
         <Content pageName={"Statistic"}>
           <p>Statistic</p>
-          <ReactEcharts option={option} />
+          <ResponsiveContainer
+            width="100%"
+            height={350}
+            className={`${BgColor} py-4 font-roboto-regular font-bold text-xs`}
+          >
+            <LineChart
+              width={500}
+              height={350}
+              data={data}
+              margin={{
+                top: 15,
+                right: 35,
+                left: 0,
+                bottom: 15,
+              }}
+            >
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="order"
+                stroke="#8884d8"
+                activeDot={{ r: 8 }}
+                strokeWidth={1}
+                fill="#8884d8"
+              />
+              <Line type="monotone" dataKey="product" stroke="#82ca9d" />
+            </LineChart>
+          </ResponsiveContainer>
+          <div className="flex bg-gray-400 font-bold lg:max-h-[900px]">
+            <div className="flex flex-col lg:flex-row w-full py-2">
+              <div
+                className={`${BgColor} ${textColor} rounded-xl h-20 lg:h-96 w-full lg:w-7/12 mr-4`}
+              >
+                <h4>Line Chart Product & Order</h4>
+              </div>
+              <div className="rounded-xl h-20 lg:h-96 w-full lg:w-5/12 bg-white">
+                <RenderAreaChart />
+              </div>
+            </div>
+          </div>
         </Content>
       </Container>
     </>

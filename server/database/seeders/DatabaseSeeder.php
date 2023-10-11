@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
             'role' => 1,
             'pict' => '77845097_p0.jpg'
         ]);
-        Admin::factory(5)->create();
+        Admin::factory(100)->create();
 
 
         User::create([
@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
             'verified' => null,
             'pict' => '78949689_p4.jpg',
         ]);
-        User::factory(10)->create();
+        User::factory(100)->create();
 
         Product::create([
             'name' => 'topi merah',
@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
             'price' => 20000,
             'stock' => 9,
             'discount' => null,
-            'pict' => null,
+            'pict' => 'red_hat.jpg',
             'description' => null
         ]);
         Product::create([
@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
             'price' => 40000,
             'stock' => 5,
             'discount' => null,
-            'pict' => null,
+            'pict' => 'kerudung_hijau.jpg',
             'description' => fake()->sentence(16)
         ]);
         Product::create([
@@ -96,15 +96,16 @@ class DatabaseSeeder extends Seeder
             'price' => 20000,
             'stock' => 7,
             'discount' => null,
-            'pict' => null,
+            'pict' => 'topi_biru.jpg',
             'description' => fake()->sentence(9)
         ]);
+        Product::factory(100)->create();
 
 
         Transaction::create([
             'user_id' => '1',
             'admin_id' => '2',
-            'products_id' => "['1'=>'3']",
+            'products_id' => "{'product_id': '1', 'quantity':'3'}",
             'total_price' => 60000,
             'checked_out' => now(),
             'sent' => null,
@@ -113,7 +114,25 @@ class DatabaseSeeder extends Seeder
         Transaction::create([
             'user_id' => '2',
             'admin_id' => '1',
-            'products_id' => "['2'=>'1']",
+            'products_id' => "{'product_id': '2', 'quantity':'15'}",
+            'total_price' => 40000,
+            'checked_out' => null,
+            'sent' => null,
+            'done' => null
+        ]);
+        Transaction::create([
+            'user_id' => '1',
+            'admin_id' => '2',
+            'products_id' => "{'product_id': '6', 'quantity':'32'}",
+            'total_price' => 60000,
+            'checked_out' => now(),
+            'sent' => null,
+            'done' => null
+        ]);
+        Transaction::create([
+            'user_id' => '2',
+            'admin_id' => '1',
+            'products_id' => "{'product_id': '7', 'quantity':'135'}",
             'total_price' => 40000,
             'checked_out' => null,
             'sent' => null,

@@ -14,7 +14,34 @@ class MessageController extends Controller
      */
     public function index()
     {
-        return new PostResource(true, 'Daftar pesan', Message::all());
+        $messages = Message::select('messages.*', 'users.username as customer_name', 'users.pict as user_pict', 'admins.pict as admin_pict', 'admins.username as admin_name')
+            ->leftJoin('users', 'messages.user_id', '=', 'users.id')
+            ->leftJoin('admins', 'messages.admin_id', '=', 'admins.id')
+            ->get();
+        // return new PostResource(true, 'Daftar pesan', Message::all());
+        return new PostResource(true, 'Daftar pesan', $messages);
+    }
+
+    public function showLimit($page, $perPage)
+    {
+        // Mengonversi halaman dan perPage yang diterima menjadi integer
+        $page = (int)$page; // halaman
+        $perPage = (int)$perPage; // jumlah data yang akan di kirim
+
+        $length = Message::count();
+
+        // Menghitung offset berdasarkan halaman yang diminta
+        $offset = ($page - 1) * $perPage;
+
+        // Mengambil data Message dengan paginasi dan offset
+        $messages = Message::select('messages.*', 'users.username as customer_name', 'users.pict as user_pict', 'admins.pict as admin_pict', 'admins.username as admin_name')
+            ->leftJoin('users', 'messages.user_id', '=', 'users.id')
+            ->leftJoin('admins', 'messages.admin_id', '=', 'admins.id')
+            ->skip($offset)->take($perPage)->get();
+        // $message = Message::skip($offset)->take($perPage)->get();
+
+        // Mengembalikan hasil dalam bentuk resource
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $messages);
     }
 
     /**
@@ -38,7 +65,7 @@ class MessageController extends Controller
             $dialog_id = $dialog->resource->id;
             // $dialog_id = 5;
             $data = array_merge($request->except('product_id'), ['dialog_id' => $dialog_id]);
-        } else{
+        } else {
             $data = $request->except('product_id');
         }
 

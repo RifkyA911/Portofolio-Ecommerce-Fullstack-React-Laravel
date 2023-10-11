@@ -1,7 +1,108 @@
 import React from "react";
+import { MuiIcon } from "../utils/RenderIcons";
 
-export const SuccessButton = (props) => {
-  const { message } = props;
+export const ActionButton = (props) => {
+  const { onClickDelete, onClickEdit, onClickView, hide = "view" } = props;
+
+  return (
+    <>
+      <div className="w-full gap-4 xflex-wrap flex lg:flex-row justify-around items-center">
+        {/* {hide !== "view" && (
+          <button
+            onClick={onClickView}
+            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-lime-600 hover:to-lime-500 hover:outline-none outline outline-2 outline-amber-400 transition-all duration-200"
+          >
+            <MuiIcon iconName={"RemoveRedEyeRounded"} fontSize={26} />
+          </button>
+        )} */}
+        {hide !== "delete" && (
+          <button
+            onClick={onClickDelete}
+            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-red-600 hover:to-red-500 hover:outline-none outline outline-2 outline-red-400 transition-all duration-200"
+          >
+            <MuiIcon iconName={"DeleteForeverOutlined"} fontSize={26} />
+          </button>
+        )}
+        {hide !== "edit" && (
+          <button
+            onClick={onClickEdit}
+            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200"
+          >
+            <MuiIcon iconName={"AutoFixHighOutlined"} fontSize={26} />
+          </button>
+        )}
+        {/* {hide !== "print" && (
+          <button
+            onClick={onClickEdit}
+            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200"
+          >
+            <MuiIcon iconName={"LocalPrintshopRounded"} fontSize={26} />
+          </button>
+        )} */}
+      </div>
+    </>
+  );
+};
+
+export const ConfirmButton = (props) => {
+  const { confirmType, onClick } = props;
+  return (
+    <>
+      <div
+        className={`sticky bottom-0 z-10 py-2 shadow-inner shadow-slate-50 bg-slate-100`}
+      >
+        {confirmType === "add" && (
+          <button
+            type="submit"
+            className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+          >
+            <MuiIcon iconName="AddBoxRounded" /> Add New Data
+          </button>
+        )}
+        {confirmType === "alter" && (
+          <button
+            type="submit"
+            className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-violet-500 transition-all duration-500 from-blue-500 to-violet-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+          >
+            <MuiIcon iconName="EditRounded" /> Save Changes
+          </button>
+        )}
+        {confirmType === "drop" && (
+          <button
+            type="submit"
+            // onClick={handleSubmit(onSubmit)}
+            className="btn transition-all duration-500 bg-gradient-to-tl from-pink-500 via-red-500 to-red-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+          >
+            <span id="showDelete" className="options px-[4px]">
+              <i className="font-xs">
+                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
+              </i>
+            </span>
+            <span className="font-bold pr-2">Delete</span>
+          </button>
+        )}
+        {confirmType === "cancel" && (
+          <button
+            type="button"
+            // onClick={refresh}
+            onClick={onClick}
+            className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-orange-500 to-amber-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+          >
+            <span className="options px-[4px]">
+              <i className="font-xs ">
+                <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
+              </i>
+              <span className="font-bold pr-2">Cancel</span>
+            </span>
+          </button>
+        )}
+      </div>
+    </>
+  );
+};
+
+export const MyButton = (props) => {
+  const { className, color, outline } = props;
   // Konten komponen
   return (
     <>
