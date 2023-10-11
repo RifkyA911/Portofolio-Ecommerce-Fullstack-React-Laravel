@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminsController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DialogController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
@@ -36,8 +37,9 @@ Route::controller(AdminsController::class)->group(function () {
     Route::post('/admins', 'store');    // parameter role_admin == 0; data => email, username, password, role
     // update admin
     Route::put('/admins', 'update');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
-    // login for admin
-    Route::post('/admins/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
+    Route::post('admin/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
+    Route::post('admin/logout', 'logout');
+    Route::post('admin/cek', 'me');     // uji coba, DELETE when deployed
 });
 
 // Endpoint User
@@ -51,6 +53,8 @@ Route::controller(UserController::class)->group(function () {
     // optional : address, pict;
     // login user
     Route::post('/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
+    Route::post('/logout', 'logout');
+    Route::post('user/cek', 'me');  // uji coba, DELETE when deployed
 });
 
 // Endpoint Product
@@ -130,3 +134,12 @@ Route::controller(MessageController::class)->group(function () {
     Route::post('/messages/getByDialog', 'getByDialog');    // return messages based on dialog_id
     // parameter : dialog_id
 });
+
+// JWT
+// Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
+//     Route::post('register', [AuthController::class,'register']);
+//     Route::post('login', [AuthController::class,'login']);
+//     Route::post('logout', [AuthController::class,'logout']);
+//     Route::post('refresh', [AuthController::class,'refresh']);
+//     Route::post('me', [AuthController::class,'me']);
+// });

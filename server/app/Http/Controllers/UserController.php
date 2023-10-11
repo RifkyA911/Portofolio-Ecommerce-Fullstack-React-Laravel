@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
-// use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-// use Validator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -27,25 +25,25 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        // inisiasi awal respon
-        $respon = PostResource::make(false, 'login gagal', $request->except('auth_key'));
         // validasi
-        $validator = Validator::make($request->all(), [
-            "email" => "required|email",
-            "password" => "required",
-            "auth_key" => "required",
-        ]);
-        if ($validator->fails()) {
-            $respon->message = "validasi data error";
-            $respon->resource = ['errors' => $validator->errors(), 'old_input' => $request->except('auth_key')];
-            return response($respon, 400);
-        }
+        // $validator = Validator::make($request->all(), [
+        //     "email" => "required|email",
+        //     "password" => "required",
+        //     "auth_key" => "required",
+        // ]);
+        // if ($validator->fails()) {
+        //     $respon->message = "validasi data error";
+        //     $respon->resource = ['errors' => $validator->errors(), 'old_input' => $request->except('auth_key')];
+        //     return response($respon, 400);
+        // }
 
-        // auth_key = cikidaw
-        if (!Hash::check($request->input('auth_key'), '$2y$10$eESkk5EgGHwBqUtGujWmkevQphwrPmkY3LH88Kpxw20p6VZ4kA9bi')) {
-            return response($respon, 403);
-        }
+        // // auth_key = cikidaw
+        // if (!Hash::check($request->input('auth_key'), '$2y$10$eESkk5EgGHwBqUtGujWmkevQphwrPmkY3LH88Kpxw20p6VZ4kA9bi')) {
+        //     return response($respon, 403);
+        // }
 
+        // inisiasi awal respon
+        $respon = PostResource::make(false, 'login gagal', $request->except('password'));
         // cek email
         if ($user = User::firstWhere('email', $request->input('email'))) {
             // cek password
@@ -53,15 +51,40 @@ class UserController extends Controller
                 $respon->message = "Password salah";
                 return response($respon, 401);
             } else {
-                $respon->status = true;
-                $respon->message = 'login berhasil';
-                $respon->resource = $user->makeHidden(['password', 'created_at', 'updated_at']);
-                return $respon;
+                $credentials = request(['email', 'password']);
+                $token = auth()->attempt($credentials);
+                return $this->respondWithToken($token);
             }
         } else {
             $respon->message = 'Email salah';
             return response($respon, 401);
         }
+    }
+
+    public function me()
+    {
+        return response()->json(auth()->user());
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function refresh()
+    {
+        return $this->respondWithToken(auth()->refresh());
+    }
+
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
     }
 
     /**
