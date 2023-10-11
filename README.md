@@ -12,7 +12,9 @@ build with https://readme.so/editor
 
 ## Tech Stack
 
-**Client:** React, Redux, TailwindCSS ...
+**Client:** React, ...
+
+**Admin:** React, Redux, TailwindCSS, react-hook-form, axios, ,,,
 
 **Server:** Node, Laravel 10
 
