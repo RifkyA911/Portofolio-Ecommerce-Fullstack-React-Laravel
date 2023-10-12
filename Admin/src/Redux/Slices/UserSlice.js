@@ -6,7 +6,7 @@ export const loginUser = createAsyncThunk(
     async(userCredentials)=>{
         try {
             const response = await axios.post(
-              'http://127.0.0.1:8000/api/admins/login',
+              'http://127.0.0.1:8000/api/admin/login',
               userCredentials
             );
       
