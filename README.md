@@ -16,7 +16,7 @@ build with https://readme.so/editor
 
 **Admin:** React, Redux, TailwindCSS, react-hook-form, axios, ,,,
 
-**Server:** Node, Laravel 10
+**Server:** JWT, Laravel 10
 
 **CI Deployment:** Docker
 
