@@ -74,7 +74,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::post('/product', 'store');   // parameter name, category, price(numeric), stok(numeric)
     // optional : discount, pict, description
     // update product
-    Route::put('/product', 'update');   // parameter id, name, category, price(numeric), stok(numeric)
+    Route::put('/products', 'update');   // parameter id, name, category, price(numeric), stok(numeric)
     // optional : discount, pict, description
     // patch products
     Route::patch('/products', 'patch');    // parameter spasial
