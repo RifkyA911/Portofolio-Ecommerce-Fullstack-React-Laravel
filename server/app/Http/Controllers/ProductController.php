@@ -138,8 +138,31 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $id)
+    public function drop(Request $request)
     {
-        //
+        $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
+        $productsId = $request->input('productsId');
+
+        if ($getSuperAuthorizationPassword !== "superAdmin") {
+            return response(new PostResource(false, "Authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('productsId')]), 401);
+        }
+
+        if (is_array($productsId)) {
+            // Batch delete
+            $deletedCount = Product::whereIn('id', $productsId)->delete();
+            return new PostResource(true, "Berhasil menghapus " . $deletedCount . " admin dengan IDs: " . implode(', ', $productsId), null);
+        } elseif (is_numeric($productsId)) {
+            // Single delete
+            $dropProduct = Product::find($productsId);
+            if (!$dropProduct) {
+                return response(new PostResource(false, "Product tidak ditemukan.", ['old_input' => $request->except('productsId')]), 401);
+            }
+            $deleted = $dropProduct->delete();
+            return new PostResource(true, "Berhasil menghapus Product " . $dropProduct->name, $deleted);
+        } else {
+            // Invalid input
+            return response(new PostResource(false, "Input productsId tidak valid.", ['old_input' => $request->except('productsId')]), 400);
+        }
     }
+    // return response(new PostResource(false, 'Masuk coy :v', $request->input(), 302));
 }

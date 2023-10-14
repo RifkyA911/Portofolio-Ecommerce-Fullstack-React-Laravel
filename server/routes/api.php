@@ -78,6 +78,8 @@ Route::controller(ProductController::class)->group(function () {
     // optional : discount, pict, description
     // patch products
     Route::patch('/products', 'patch');    // parameter spasial
+    // delete products
+    Route::delete('/products', 'drop');    // parameter superAdmin, id)
 });
 
 // Endpoint Cart/keranjang (user-only feature)
