@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('dialog_id');
             $table->text('message');
             $table->boolean('seen')->default(false);;
+            $table->boolean('block')->default(false);;
             $table->string('pict')->nullable()->default(null);
             $table->timestamps();
         });

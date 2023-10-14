@@ -29,9 +29,9 @@ class AdminFactory extends Factory
             'password' => Hash::make('123456'),
             'role' => 1,
             // 'role' => mt_rand(0, 1),
-            'pict' => 'default.png',
             'phone' => fake()->unique()->phoneNumber(),
-            // 'pict' =>  $randomImage->getFilename() // Menggunakan nama file acak
+            'pict' => 'default.png',
+            // 'pict' =>  $randomImage->getFilename(), // Menggunakan nama file acak
         ];
     }
 }
