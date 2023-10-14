@@ -9,10 +9,13 @@ export const loginUser = createAsyncThunk(
               'http://127.0.0.1:8000/api/admin/login',
               userCredentials
             );
+            // console.log(response)
       
             if (response.status === 200) {
-              const responseData = response.data.data;
-              sessionStorage.setItem('user', JSON.stringify(responseData));
+            //   const responseData = response.data.data;
+              const responseData = response.data;
+              sessionStorage.setItem('token', JSON.stringify(responseData));
+            //   decodeJWT(responseData.access_token)
               return responseData;
             }
             

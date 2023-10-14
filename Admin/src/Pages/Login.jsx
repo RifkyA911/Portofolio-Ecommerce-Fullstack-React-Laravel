@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../Redux/Slices/UserSlice";
 import { useNavigate } from "react-router-dom";
-import { WarningAlert } from "../components/Alert";
+import { DangerAlert, WarningAlert } from "../components/Alert";
 
 function Login() {
   //states
@@ -24,26 +24,6 @@ function Login() {
     };
     const requestBody = JSON.stringify(userCredentials);
 
-    // fetch("http://127.0.0.1:8000/api/admins/login", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json", // Mengatur header Content-Type
-    //   },
-    //   body: requestBody, // Mengatur body dengan data JSON yang telah diubah
-    // })
-    //   .then((response) => {
-    //     console.table(response);
-
-    //     return response.json();
-    //   })
-    //   .then((data) => {
-    //     // Menangani data yang diterima dari respons (jika ada)
-    //   })
-    //   .catch((error) => {
-    //     // Menangani kesalahan jika permintaan gagal
-    //     console.error("Error:", error);
-    //   });
-
     dispatch(loginUser(userCredentials)).then((result) => {
       if (result.payload) {
         setEmail("");
@@ -60,10 +40,23 @@ function Login() {
     <>
       <main className="bg-gradient-to-b from-violet-400 to-blue-400 w-full h-full min-h-screen static m-auto ">
         <div className="flex w-full h-full justify-center min-h-screen xmin-h-[500px]">
-          <div className="p-4 flex-col h-full duration-300 xmt-10 my-[5%]">
-            <WarningAlert message="Progressing JWT AUTH TOKEN" />
-            <div className="w-96 bg-gradient-to-b from-white to-white rounded-xl relative shadow-sm text-slate-800 font-semibold">
-              <h1 className="p-4 text-2xl font-semibold">Login</h1>
+          <div className="p-4 flex-col h-full duration-300 xmt-10 my-[4%]">
+            {/* <WarningAlert message="Progressing JWT AUTH TOKEN" /> */}
+            {error ? (
+              <DangerAlert className="my-2 p-2" message={`${error}`} />
+            ) : (
+              // <DangerAlert className="my-2" />
+              <div className="p-[30px]"></div>
+            )}
+            <div className="m-auto w-96 bg-gradient-to-b from-white to-white rounded-xl relative shadow-sm text-slate-800 font-semibold">
+              <div className="header relative">
+                <h1 className="p-4 text-2xl font-semibold">Login</h1>
+                {loading ? (
+                  <span className="absolute right-6 top-6 loading loading-dots loading-md"></span>
+                ) : (
+                  ""
+                )}
+              </div>
               <form
                 action="http://127.0.0.1:8000/api/admins/login"
                 method="post"
@@ -103,16 +96,23 @@ function Login() {
                   Forgot Password?
                 </a>
                 <button className="btn flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-sky-400 hover:bg-blue-400 transition-colors duration-200 rounded-md">
-                  {loading ? "Loading..." : "Login"}
+                  {loading ? (
+                    <>
+                      Loading
+                      <span className="loading loading-dots loading-sm"></span>
+                    </>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
               </form>
-              {error ? (
+              {/* {error ? (
                 <div className="p-1 bg-red-400 text-center font-semibold rounded-b-xl">
-                  <span>{error}</span>
+                  <DangerAlert message={`${error}`} />
                 </div>
               ) : (
                 ""
-              )}
+              )} */}
             </div>
           </div>
         </div>

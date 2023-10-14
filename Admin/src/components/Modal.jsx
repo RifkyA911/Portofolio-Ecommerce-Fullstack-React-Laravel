@@ -244,7 +244,7 @@ export const InfoModal = (props) => {
 //   updated_at: null,
 // });
 export const ActionModalForm = (props) => {
-  const { refresh, table, table_id, formType, clearData } = props;
+  const { refresh, table, table_id, select, formType, clearData } = props;
   const [method, setMethod] = useState(null);
   const [data, setData] = useState();
   const [showPassword, setShowPassword] = useState(false);
@@ -343,6 +343,7 @@ export const ActionModalForm = (props) => {
                   superAuthorizationPassword: "superAdmin",
                   id: response.data.data.id,
                   name: response.data.data.name,
+                  price: response.data.data.price,
                   category: response.data.data.category,
                   stock: response.data.data.stock,
                   discount: response.data.data.discount,
@@ -406,10 +407,9 @@ export const ActionModalForm = (props) => {
   // Config value for react-hook-form
   let initialFormValue;
   let passwordRef = useRef({});
-  let newPasswordRef = useRef({});
 
   useEffect(() => {
-    // console.table(data);
+    console.table(table);
     if (formType === "INSERT") {
       switch (table) {
         case `admins`:
@@ -446,21 +446,24 @@ export const ActionModalForm = (props) => {
             pict: data.pict,
             newPassword: "123456FF",
             newPassword_confirmation: "123456FF",
+            p: "p",
           };
           break;
         case `products`:
           initialFormValue = {
             superAuthorizationPassword: "superAdmin",
-            id: data.id,
+            productId: data.id,
             name: data.name,
+            price: parseInt(data.price),
             category: data.category,
-            stock: data.stock,
-            discount: data.discount,
+            stock: parseInt(data.stock),
+            discount: parseFloat(data.discount),
             pict: data.pict,
             description: data.description,
             created_at: data.created_at,
             updated_at: data.updated_at,
           };
+
           break;
         default:
           break;
@@ -483,8 +486,8 @@ export const ActionModalForm = (props) => {
             id: data.id,
             name: data.name,
             category: data.category,
-            stock: data.stock,
-            discount: data.discount,
+            stock: parseInt(data.stock),
+            discount: parseFloat(data.discount),
             pict: data.pict,
             description: data.description,
             created_at: data.created_at,
@@ -498,6 +501,7 @@ export const ActionModalForm = (props) => {
     for (const key in initialFormValue) {
       setValue(key, initialFormValue[key]);
     }
+    initialFormValue = null;
   }, [data]);
 
   // jika submit, lakukan req ke server
@@ -593,6 +597,7 @@ export const ActionModalForm = (props) => {
     // Modal
     data,
     setData,
+    select,
     formType,
     showPassword,
     setShowPassword: () => setShowPassword(!showPassword),

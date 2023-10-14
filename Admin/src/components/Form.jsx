@@ -52,7 +52,7 @@ export const TextInput = (props) => {
         className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
         {...register(name, validationRules)}
         onChange={(e) => {
-          console.log(e.target.value);
+          console.log(name, ":", e.target.value);
           setValue(name, e.target.value);
         }}
         // onClick={console.log(name, ":", getValues(name))}
@@ -71,6 +71,7 @@ export const NumberInput = (props) => {
     decimalOptions = 0,
     limitDigits,
     prefix,
+    suffix,
     style,
   } = props;
   const [formattedValue, setFormattedValue] = useState("");
@@ -143,6 +144,7 @@ export const NumberInput = (props) => {
             displayType={"input"}
             thousandSeparator
             prefix={prefix}
+            suffix={suffix}
             allowNegative={false} // Untuk menghindari nilai negatif
             decimalScale={decimalOptions} // Untuk menghindari desimal
             isAllowed={(values) => {
@@ -172,6 +174,7 @@ export const SelectInput = (props) => {
 
   const {
     data,
+    select,
     formType,
     // react-hook-form
     getValues,
@@ -207,9 +210,15 @@ export const SelectInput = (props) => {
       <select
         className={`${style} select select-info select-sm max-w-3xl focus:outline-none self-start font-roboto-medium`}
         {...register(name, { required: "select one" })}
+        defaultValue={getValues(name)}
       >
-        {options.map((option, index) => (
-          <option key={index} value={option}>
+        {select.map((option, index) => (
+          <option
+            className="capitalize indent-5 text-lg cursor-pointer"
+            key={index}
+            value={option}
+            // selected={getValues(name) !== null && true}
+          >
             {option}
           </option>
         ))}

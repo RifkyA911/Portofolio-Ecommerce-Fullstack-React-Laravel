@@ -23,10 +23,10 @@ class ProductFactory extends Factory
             'category' => $this->faker->word,
             'price' => $this->faker->randomNumber(4), // Angka 2 adalah jumlah digit desimal
             'stock' => $this->faker->randomNumber(3),
-            'discount' => null,
+            'discount' => $this->faker->randomNumber(3),
             // 'pict' => Str::random(6) . '.jpg',
             'pict' => 'default.jpg',
-            'description' => null,
+            'description' => $this->faker->paragraphs(3, true),
         ];
     }
 }

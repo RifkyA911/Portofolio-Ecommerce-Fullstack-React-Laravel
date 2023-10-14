@@ -1,11 +1,13 @@
+
+
 export function getUser() {
-    let user = sessionStorage.getItem("user");
-    if (user) {
-      user = JSON.parse(user);
+    let getToken = sessionStorage.getItem("token");
+    if (getToken) {
+      getToken = JSON.parse(getToken);
     } else {
-      user = null;
+      getToken = null;
     }
-    return user;
+    return getToken;
   }
 
   

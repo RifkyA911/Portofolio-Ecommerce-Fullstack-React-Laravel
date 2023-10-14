@@ -45,6 +45,7 @@ export default function Products() {
 
   // ---- Modal States ----
   const [product, setProduct] = useState("");
+  const [select, setSelect] = useState();
   const [showModal, setShowModal] = useState(false);
   const [formType, setFormType] = useState(null);
 
@@ -110,6 +111,11 @@ export default function Products() {
       const newColspan = Object.keys(products[0]).length;
       setColspan(newColspan);
     }
+    if (products) {
+      // Mengambil semua kategori unik dari data
+      setSelect([...new Set(products.map((item) => item.category))]);
+      // console.log(select);
+    }
   }, [searchTerm, products]);
 
   const MyTableEngineProps = {
@@ -163,6 +169,7 @@ export default function Products() {
   const ModalProps = {
     table: "products",
     table_id: product,
+    select: select,
     showModal: showModal,
     setShowModal: () => {
       setShowModal(false);

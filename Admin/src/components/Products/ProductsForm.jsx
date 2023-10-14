@@ -23,6 +23,7 @@ import {
   FileInput,
 } from "../Form";
 import { ConfirmButton } from "../Button";
+import { DateRecord } from "../Span";
 
 export const ProductsInsertForm = (props) => {
   const {
@@ -74,7 +75,7 @@ export const ProductsInsertForm = (props) => {
               className={`w-full flex gap-4 flex-col `}
               label="Category"
               name="category"
-              options={["Topi", "Baju"]}
+              // options={["Topi", "Baju"]}
               style="w-full h-[38px]"
             />
             <NumberInput
@@ -99,7 +100,7 @@ export const ProductsInsertForm = (props) => {
 
             <NumberInput
               className={`flex gap-4 flex-col `}
-              prefix="% "
+              suffix=" %"
               label="Discount %"
               name="discount"
               limitDigits={1000}
@@ -131,6 +132,7 @@ export const ProductsAlterForm = (props) => {
     // react-hook-form
     newPasswordRef,
     register,
+    getValues,
     setValue,
     setError,
     control,
@@ -148,205 +150,246 @@ export const ProductsAlterForm = (props) => {
           {formType === "ALTER_BY_ID" && (
             <input
               type="hidden"
-              {...register("adminsId", {
-                required: "This Admin Credentials ID are required",
+              {...register("productId", {
+                required: "This productId Credentials ID are required",
               })}
             />
           )}
         </div>
         {/* Images */}
         <div className="flex justify-center items-center w-6/12 p-12">
-          <div className="relative w-96 rounded-full">
-            <img
-              src={
-                data.pict
-                  ? `./src/assets/admin_avatar/${data.pict}`
-                  : `./src/assets/admin_avatar/default.jpg`
-              }
-              alt="Avatar Tailwind CSS Component"
-              className=" w-96 rounded-full max-w-3xl shadow-lg"
-              loading="lazy"
-            />
-            <input
-              type="file"
-              className="absolute w-full h-full hover:block hover:bg-gray-600 hover:bg-opacity-10 m-auto top-0 left-0 rounded-full transition-all duration-300 cursor-pointer"
-            />
-          </div>
+          <FileInput
+            type="picture"
+            // className={`flex gap-4 flex-col w-full`}
+            label="Product Picture"
+            name="pict"
+          />
         </div>
         {/* Form */}
         <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
-          <label
-            htmlFor="email"
-            className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500"
-          >
-            Email
-            {errors.email && (
-              <span className="absolute right-0 text-red-500">
-                {errors.email.message}
-              </span>
-            )}
-          </label>
-          <input
-            type="email"
-            placeholder="Email"
-            autoComplete={data.email}
-            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-            // disabled
-            {...register("email", {
-              required: true,
-              pattern: /^\S+@\S+$/i,
-              message: "Invalid email",
-            })}
-            onChange={(e) => {
-              setValue("email", e.target.value);
-              setData((prevData) => ({
-                ...prevData,
-                email: e.target.value,
-              }));
-            }}
-            // value={data.email}
+          {/* {console.log(name, ":", getValues(name))}  {setValue("barcode", "HJAHAHA")} */}
+          {console.log("form_values", ":", getValues())}
+          {console.log("data", ":", data)}
+          <TextInput
+            className={`flex gap-4 flex-col w-full`}
+            label="Barcode/No. Product"
+            name="barcode"
+            placeholder="Masukkan Kode Barcode/No. Product"
           />
-          {/* Username */}
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
-            Username
-            {errors.username && (
-              <span className="absolute right-0 text-red-500">
-                {errors.username.message}
-              </span>
-            )}
-          </label>
-          <input
-            type="username"
-            placeholder="Username"
-            autoComplete={data.username}
-            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-            {...register("username", {
-              required: true,
-              maxLength: 80,
-            })}
-            onChange={(e) => {
-              setValue("username", e.target.value);
-              setData((prevData) => ({
-                ...prevData,
-                username: e.target.value,
-              }));
-            }}
-            //value={data.username} <- error
+          <TextInput
+            className={`flex gap-4 flex-col w-full`}
+            label="Product Name"
+            name="name"
+            placeholder="Masukkan Nama Product"
           />
-          {/* Role */}
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
-            Role
-            {errors.role && (
-              <span className="absolute right-0 text-red-500">
-                {errors.role.message}
-              </span>
-            )}
-          </label>
-          <Controller
-            name="role"
-            control={control}
-            defaultValue="1" // Nilai default jika perlu
-            render={({ field }) => (
-              <select
-                onChange={(e) => {
-                  field.onChange(e); // Menggunakan field.onChange untuk mengatur nilai di dalam Controller
-                  setData((prevData) => ({
-                    ...prevData,
-                    role: e.target.value,
-                  }));
-                  alert(
-                    "be carefull changing role grant access",
-                    e.target.value
-                  ); // Menggunakan e.target.value karena field.value mungkin belum diperbarui
-                }}
-                className="select select-info select-sm w-full max-w-3xl focus:outline-none self-start font-roboto-medium"
-                value={field.value} // Menggunakan field.value untuk nilai saat ini
-              >
-                <option value="1">Admin</option>
-                <option value="0">Super Admin</option>
-              </select>
-            )}
-          />
-          {/* Password */}
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
-            New Password
-            {errors.newPasswordRef && (
-              <span className="absolute right-0 text-red-500">
-                {errors.newPasswordRef.message}
-              </span>
-            )}
-          </label>
-          <div className="relative w-full">
-            <input
-              type={showPassword ? "text" : "password"}
-              className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-              {...register("newPassword", {
-                required: "New Password is required",
-                minLength: {
-                  value: 6,
-                  message: "New Password must be at least 6 characters",
-                },
-              })}
+          <div className="w-full flex flex-row gap-4 justify-between items-center">
+            <SelectInput
+              className={`w-full flex gap-4 flex-col `}
+              label="Category"
+              name="category"
+              // options={["topi", "baju", "kerudung"]}
+              style="w-full h-[38px]"
             />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute bg-transparent w-4 right-[20px] bottom-[8px] cursor-pointer"
-            >
-              <MuiIcon
-                iconName={
-                  showPassword ? "VisibilityRounded" : "VisibilityOffRounded"
-                }
-              />
-            </span>
-          </div>
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
-            Confirm New Password
-            {errors.newPassword_confirmation && (
-              <span className="absolute right-0 text-red-500">
-                {errors.newPassword_confirmation.message}
-              </span>
-            )}
-          </label>
-          <div className="relative w-full">
-            <input
-              type={showPassword ? "text" : "password"}
-              className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-              {...register("newPassword_confirmation", {
-                required: "Confirm Password is required",
-                validate: (value) => {
-                  if (watch("newPassword") != value) {
-                    setError("newPassword_confirmation", {
-                      type: "manual",
-                      message: "New Passwords is not match",
-                    });
-                    return "The New passwords do no match";
-                  }
-                },
-              })}
+            <NumberInput
+              className={`flex gap-4 flex-col `}
+              prefix=""
+              label="Stock"
+              name="stock"
+              limitDigits={1000}
+              placeholder="Masukkan Harga"
             />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute bg-transparent w-4 right-[20px] bottom-[8px]  cursor-pointer"
-            >
-              <MuiIcon
-                iconName={
-                  showPassword ? "VisibilityRounded" : "VisibilityOffRounded"
-                }
-              />
-            </span>
           </div>
+          <div className="w-full flex flex-row justify-between">
+            <NumberInput
+              className={`flex gap-4 flex-col `}
+              prefix="Rp. "
+              label="Price (IDR)"
+              name="price"
+              limitDigits={10000000000}
+              placeholder="Masukkan Harga"
+              style="w-full"
+            />
+            <NumberInput
+              className={`flex gap-4 flex-col `}
+              suffix=" %"
+              label="Discount %"
+              name="discount"
+              limitDigits={1000}
+              decimalOptions={3}
+              placeholder="Masukkan Harga"
+              style="w-full"
+            />
+          </div>
+          <TextArea
+            className={`flex gap-4 flex-col w-full`}
+            label="Description"
+            name="description"
+            placeholder="tamnbahkan deskripsi"
+          />
+          <DateRecord data={data} />
 
-          <small className="flex flex-row gap-2">
-            <div className="p">
-              <span className="font-bold mr-2">Created at:</span>
-              {convertISODateToJSDate(data.created_at).toLocaleString()}
+          <div className="hidden">
+            <label
+              htmlFor="email"
+              className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500"
+            >
+              Email
+              {errors.email && (
+                <span className="absolute right-0 text-red-500">
+                  {errors.email.message}
+                </span>
+              )}
+            </label>
+            <input
+              type="email"
+              placeholder="Email"
+              autoComplete={data.email}
+              className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+              // disabled
+              {...register("email", {
+                required: true,
+                pattern: /^\S+@\S+$/i,
+                message: "Invalid email",
+              })}
+              onChange={(e) => {
+                setValue("email", e.target.value);
+                setData((prevData) => ({
+                  ...prevData,
+                  email: e.target.value,
+                }));
+              }}
+              // value={data.email}
+            />
+            {/* Username */}
+            <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+              Username
+              {errors.username && (
+                <span className="absolute right-0 text-red-500">
+                  {errors.username.message}
+                </span>
+              )}
+            </label>
+            <input
+              type="username"
+              placeholder="Username"
+              autoComplete={data.username}
+              className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+              {...register("username", {
+                required: true,
+                maxLength: 80,
+              })}
+              onChange={(e) => {
+                setValue("username", e.target.value);
+                setData((prevData) => ({
+                  ...prevData,
+                  username: e.target.value,
+                }));
+              }}
+              //value={data.username} <- error
+            />
+            {/* Role */}
+            <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+              Role
+              {errors.role && (
+                <span className="absolute right-0 text-red-500">
+                  {errors.role.message}
+                </span>
+              )}
+            </label>
+            <Controller
+              name="role"
+              control={control}
+              defaultValue="1" // Nilai default jika perlu
+              render={({ field }) => (
+                <select
+                  onChange={(e) => {
+                    field.onChange(e); // Menggunakan field.onChange untuk mengatur nilai di dalam Controller
+                    setData((prevData) => ({
+                      ...prevData,
+                      role: e.target.value,
+                    }));
+                    alert(
+                      "be carefull changing role grant access",
+                      e.target.value
+                    ); // Menggunakan e.target.value karena field.value mungkin belum diperbarui
+                  }}
+                  className="select select-info select-sm w-full max-w-3xl focus:outline-none self-start font-roboto-medium"
+                  value={field.value} // Menggunakan field.value untuk nilai saat ini
+                >
+                  <option value="1">Admin</option>
+                  <option value="0">Super Admin</option>
+                </select>
+              )}
+            />
+            {/* Password */}
+            <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+              New Password
+              {errors.newPasswordRef && (
+                <span className="absolute right-0 text-red-500">
+                  {errors.newPasswordRef.message}
+                </span>
+              )}
+            </label>
+            <div className="relative w-full">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+                {...register("newPassword", {
+                  required: "New Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "New Password must be at least 6 characters",
+                  },
+                })}
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute bg-transparent w-4 right-[20px] bottom-[8px] cursor-pointer"
+              >
+                <MuiIcon
+                  iconName={
+                    showPassword ? "VisibilityRounded" : "VisibilityOffRounded"
+                  }
+                />
+              </span>
             </div>
-            |
-            <div className="p">
-              <span className="font-bold mr-2">Updated at:</span>
-              {convertISODateToJSDate(data.updated_at).toLocaleString()}
+            <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
+              Confirm New Password
+              {errors.newPassword_confirmation && (
+                <span className="absolute right-0 text-red-500">
+                  {errors.newPassword_confirmation.message}
+                </span>
+              )}
+            </label>
+            <div className="relative w-full">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+                {...register("newPassword_confirmation", {
+                  required: "Confirm Password is required",
+                  validate: (value) => {
+                    if (watch("newPassword") != value) {
+                      setError("newPassword_confirmation", {
+                        type: "manual",
+                        message: "New Passwords is not match",
+                      });
+                      return "The New passwords do no match";
+                    }
+                  },
+                })}
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute bg-transparent w-4 right-[20px] bottom-[8px]  cursor-pointer"
+              >
+                <MuiIcon
+                  iconName={
+                    showPassword ? "VisibilityRounded" : "VisibilityOffRounded"
+                  }
+                />
+              </span>
             </div>
-          </small>
+          </div>
         </div>
       </div>
       <ConfirmButton confirmType="alter" />

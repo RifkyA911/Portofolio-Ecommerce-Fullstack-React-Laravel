@@ -36,8 +36,12 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const appMode = import.meta.env.VITE_MODE;
-  // console.info("Mode:", appMode);
+  const appMode = import.meta.env.MODE;
+  // console.info("Mode:", import.meta.env);
+  // console.log(location);
+  const token =
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2FkbWluL2xvZ2luIiwiaWF0IjoxNjk3MTg4MzU5LCJleHAiOjE2OTcxOTE5NTksIm5iZiI6MTY5NzE4ODM1OSwianRpIjoiWEE3eTR5N1FhM0E5WVRLRSIsInN1YiI6IjEiLCJwcnYiOiJkZjg4M2RiOTdiZDA1ZWY4ZmY4NTA4MmQ2ODZjNDVlODMyZTU5M2E5In0.WjAHEtv1iKMfET3NUbaVYzSFDzRCOEFC8SiKFRmS0uE";
+  // console.log(jwt.verify(token, import.meta.env.VITE_JWT_SECRET));
 
   useEffect(() => {
     if (userSession == null) {
@@ -63,7 +67,7 @@ function App() {
         </>
       )}
       {/* Developer Panel */}
-      {appMode == "DEVELOPMENT" ? (
+      {appMode == "development" ? (
         <>
           <MyDebuggerPanel />
           <MyToDoList />
