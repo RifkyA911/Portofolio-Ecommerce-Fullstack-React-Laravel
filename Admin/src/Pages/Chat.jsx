@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { ChatBoard } from "../components/Chat/ChatBoard";
 import { ChatList } from "../components/Chat/ChatList";
 
-const initURL = import.meta.env.VITE_API_URL_GET_ALL_MESSAGES;
+const initURL = import.meta.env.VITE_API_ALL_MESSAGES;
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);

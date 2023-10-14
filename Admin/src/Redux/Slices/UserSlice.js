@@ -1,14 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
+const URL_LOGIN_ADMIN = import.meta.env.VITE_API_LOGIN_ADMIN;
 export const loginUser = createAsyncThunk(
     'user/loginUser',
     async(userCredentials)=>{
         try {
-            const response = await axios.post(
-              'http://127.0.0.1:8000/api/admin/login',
-              userCredentials
-            );
+            const response = await axios.post(URL_LOGIN_ADMIN, userCredentials);
             // console.log(response)
       
             if (response.status === 200) {

@@ -26,7 +26,7 @@ import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { ActionButton } from "../components/Button";
 
 // define fetch data URL by admins
-const initUrl = import.meta.env.VITE_API_URL_GET_ALL_ADMIN;
+const initUrl = import.meta.env.VITE_API_ALL_ADMIN;
 
 export const AdminsContext = createContext();
 

@@ -12,6 +12,7 @@ import { getUser } from "../utils/Session/Admin";
 import { getCurrentEndpoint } from "./../utils/Navigation";
 import { updateSession } from "../Redux/Slices/UserSlice";
 import { Alert, WarningAlert } from "../components/Alert";
+const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
 
 export default function MyProfile() {
   const [fileUpload, setFileUpload] = useState(false);
@@ -56,10 +57,7 @@ export default function MyProfile() {
     e.preventDefault();
 
     try {
-      const response = await axios.put(
-        "http://127.0.0.1:8000/api/admins",
-        formData
-      );
+      const response = await axios.put(URL_ADMIN, formData);
       console.log("data send successfully:", response.data);
       // dispatch(updateSession(formData.username));
     } catch (error) {

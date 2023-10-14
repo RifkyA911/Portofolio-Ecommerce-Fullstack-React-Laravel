@@ -21,7 +21,7 @@ import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { ActionModalForm, InfoModal } from "../components/Modal";
 
 // Custom Const
-const APIGetTransaction = import.meta.env.VITE_API_URL_GET_ALL_TRANSACTION;
+const APIGetTransaction = import.meta.env.VITE_API_ALL_TRANSACTION;
 
 export default function Invoices(props) {
   // ---- Admins Basic States ----

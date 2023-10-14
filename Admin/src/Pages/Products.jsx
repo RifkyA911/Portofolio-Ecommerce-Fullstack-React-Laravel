@@ -21,7 +21,7 @@ import { ProductImage } from "../components/Products/ProductsTableBody";
 import { ActionButton } from "../components/Button";
 
 // define fetch data URL by products
-const initUrl = import.meta.env.VITE_API_URL_GET_ALL_PRODUCT;
+const initUrl = import.meta.env.VITE_API_ALL_PRODUCT;
 
 export default function Products() {
   // ---- Admins Basic States ----
@@ -103,23 +103,17 @@ export default function Products() {
   // ===================== MyTableEngine =====================
   // Fungsi handler saat checkbox di klik
   const handleCheckboxChange = (id, name, pict) => {
-    // Cek apakah indeks sudah ada dalam selectedRows
     const isSelected = selectedRows.some((item) => item.id === id);
-
-    // Buat objek yang berisi indeks, name, dan pict
     const newRow = { id, name, pict };
-
     if (!isSelected) {
-      // Jika checkbox dicentang dan indeks belum ada dalam selectedRows, tambahkan objek baru
       setSelectedRows([...selectedRows, newRow]);
     } else {
-      // Jika checkbox dicentang dan indeks sudah ada dalam selectedRows, hapus objek dengan indeks yang cocok
       setSelectedRows(selectedRows.filter((item) => item.id !== id));
     }
   };
-  useEffect(() => {
-    console.info(selectedRows);
-  }, [selectedRows]);
+  // useEffect(() => {
+  //   console.info(selectedRows);
+  // }, [selectedRows]);
 
   // ---- MyTableEngine Search Filter ----
   useEffect(() => {
@@ -210,13 +204,14 @@ export default function Products() {
   // Urutan kolom yang diinginkan
   const columnOrder = [
     "id",
+    "barcode",
     "pict",
     "name",
     "category",
     "stock",
     "price",
     "discount",
-    "description",
+    // "description",
     "created_at",
     "updated_at",
   ];
@@ -230,6 +225,7 @@ export default function Products() {
         key,
         feature: [
           "id",
+          "barcode",
           "name",
           "category",
           "price",
@@ -375,6 +371,9 @@ export default function Products() {
                               </Th>
                             </>
                           )}
+                          <Td className={`${table_styling.td} w-auto`}>
+                            <div className="line-clamp-5">{row.barcode}</div>
+                          </Td>
                           <Td className={`${table_styling.td} 2/12`}>
                             <ProductImage
                               data={row}
@@ -398,11 +397,7 @@ export default function Products() {
                           <Td className={`${table_styling.td} w-1/12`}>
                             {row.discount}
                           </Td>
-                          <Td className={`${table_styling.td} w-2/12`}>
-                            <div className="line-clamp-5">
-                              {row.description}
-                            </div>
-                          </Td>
+
                           <Td className="px-4">
                             <ActionButton
                               key={index}

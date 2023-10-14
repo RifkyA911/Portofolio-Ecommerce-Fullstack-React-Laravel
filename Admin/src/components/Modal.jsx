@@ -214,6 +214,9 @@ export const InfoModal = (props) => {
                           {table_id?.updated_at || "NaN"}
                         </small>
                       </div>
+                      <small name="" id="" cols="30" rows="10">
+                        {table_id?.description || "NaN"}
+                      </small>
                     </div>
                     <form
                       method="dialog"
@@ -281,18 +284,18 @@ export const ActionModalForm = (props) => {
     setPage(newPage);
   };
 
-  let URL;
-  let URL_METHODS;
+  let URL_BY_ID;
+  let URL_ALL;
 
   if (table === "admins") {
-    URL = import.meta.env.VITE_API_URL_GET_BY_ID_ADMIN + "/" + table_id;
-    URL_METHODS = import.meta.env.VITE_API_URL_PUT_ADMIN;
+    URL_BY_ID = import.meta.env.VITE_API_ID_ADMIN + "/" + table_id;
+    URL_ALL = import.meta.env.VITE_API_ALL_ADMIN;
   } else if (table === "products") {
-    URL = import.meta.env.VITE_API_URL_GET_BY_ID_PRODUCT + "/" + table_id;
-    URL_METHODS = import.meta.env.VITE_API_URL_PUT_PRODUCT;
+    URL_BY_ID = import.meta.env.VITE_API_ID_PRODUCT + "/" + table_id;
+    URL_ALL = import.meta.env.VITE_API_ALL_PRODUCT;
   } else if (table === "orders") {
-    URL = import.meta.env.VITE_API_URL_GET_BY_ID_TRANSACTION + "/" + table_id;
-    URL_METHODS = import.meta.env.VITE_API_URL_PUT_TRANSACTION;
+    URL_BY_ID = import.meta.env.VITE_API_ID_TRANSACTION + "/" + table_id;
+    URL_ALL = import.meta.env.VITE_API_ALL_TRANSACTION;
   }
 
   // Define comp and defaultvalues data pada react-hook-Form
@@ -322,9 +325,9 @@ export const ActionModalForm = (props) => {
       // temp method: ini perlu dilakukan untuk menampilkan update setiap ada data baru
       if (table_id !== "" && table_id !== null) {
         axios
-          .get(URL)
+          .get(URL_BY_ID)
           .then((response) => {
-            console.table("fetching:", URL);
+            console.table("fetching:", URL_BY_ID);
             switch (table) {
               case `admins`:
                 setData({
@@ -342,6 +345,7 @@ export const ActionModalForm = (props) => {
                 setData({
                   superAuthorizationPassword: "superAdmin",
                   id: response.data.data.id,
+                  barcode: response.data.data.barcode,
                   name: response.data.data.name,
                   price: response.data.data.price,
                   category: response.data.data.category,
@@ -444,6 +448,7 @@ export const ActionModalForm = (props) => {
           initialFormValue = {
             superAuthorizationPassword: "superAdmin",
             productId: data.id,
+            barcode: data.barcode,
             name: data.name,
             price: parseInt(data.price),
             category: data.category,
@@ -495,15 +500,15 @@ export const ActionModalForm = (props) => {
     setSending(!sending);
     try {
       if (formType === "INSERT") {
-        axiosResponse = await axios.post(URL_METHODS, form);
+        axiosResponse = await axios.post(URL_ALL, form);
         console.log("Input data baru berhasil :", axiosResponse);
       } else if (formType === "ALTER_BY_ID") {
-        axiosResponse = await axios.put(URL_METHODS, form);
+        axiosResponse = await axios.put(URL_ALL, form);
         console.log("Update data berhasil :", axiosResponse);
       } else if (formType === "DROP_BY_ID") {
         switch (table) {
           case `admins`:
-            axiosResponse = await axios.delete(URL_METHODS, {
+            axiosResponse = await axios.delete(URL_ALL, {
               data: {
                 adminsId: form.adminsId,
                 superAuthorizationPassword: form.superAuthorizationPassword,
@@ -511,7 +516,7 @@ export const ActionModalForm = (props) => {
             });
             break;
           case `products`:
-            axiosResponse = await axios.delete(URL_METHODS, {
+            axiosResponse = await axios.delete(URL_ALL, {
               data: {
                 productsId: form.productsId,
                 superAuthorizationPassword: form.superAuthorizationPassword,
@@ -530,7 +535,7 @@ export const ActionModalForm = (props) => {
           let deleteRequest; // Deklarasikan sebagai let
           switch (table) {
             case `admins`:
-              deleteRequest = axios.delete(URL_METHODS, {
+              deleteRequest = axios.delete(URL_ALL, {
                 data: {
                   superAuthorizationPassword: item.superAuthorizationPassword,
                   adminsId: item.id, // Sesuaikan dengan atribut yang sesuai
@@ -538,7 +543,7 @@ export const ActionModalForm = (props) => {
               });
               break;
             case `products`:
-              deleteRequest = axios.delete(URL_METHODS, {
+              deleteRequest = axios.delete(URL_ALL, {
                 data: {
                   superAuthorizationPassword: item.superAuthorizationPassword,
                   productsId: item.id, // Sesuaikan dengan atribut yang sesuai

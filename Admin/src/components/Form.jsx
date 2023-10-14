@@ -47,6 +47,7 @@ export const TextInput = (props) => {
         )}
       </label>
       <input
+        id={name}
         type={type}
         placeholder={placeholder.toLowerCase()}
         className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
@@ -209,6 +210,7 @@ export const SelectInput = (props) => {
         )}
       </label>
       <select
+        id={name}
         className={`${style} select select-info select-sm max-w-3xl focus:outline-none self-start font-roboto-medium`}
         {...register(name, { required: "select one" })}
         defaultValue={getValues(name)}

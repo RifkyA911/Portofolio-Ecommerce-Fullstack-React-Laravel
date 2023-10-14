@@ -70,7 +70,7 @@ function App() {
       {appMode == "development" ? (
         <>
           <MyDebuggerPanel />
-          <MyToDoList />
+          {/* <MyToDoList /> */}
           <MyJump />
         </>
       ) : (

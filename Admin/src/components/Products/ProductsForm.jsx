@@ -170,8 +170,8 @@ export const ProductsAlterForm = (props) => {
         {/* Form */}
         <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
           {/* {console.log(name, ":", getValues(name))}  {setValue("barcode", "HJAHAHA")} */}
-          {console.log("form_values", ":", getValues())}
-          {console.log("data", ":", data)}
+          {/* {console.log("form_values", ":", getValues())} */}
+          {/* {console.log("data", ":", data)} */}
           <TextInput
             className={`flex gap-4 flex-col w-full`}
             label="Barcode/No. Product"
