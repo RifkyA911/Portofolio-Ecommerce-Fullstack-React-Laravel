@@ -113,6 +113,7 @@ class ProductController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            "barcode" => 'required',
             "name" => 'required',
             "category" => 'required',
             "price" => 'required|numeric',
@@ -122,12 +123,13 @@ class ProductController extends Controller
         if ($validator->fails()) {
             return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
         }
-        $produk = Product::find($request->input('id'));
+        $produk = Product::find($request->input('productId'));
+        $produk->barcode = $request->input('barcode');
         $produk->name = $request->input('name');
-        $produk->category = $request->input('category');
-        $produk->price = $request->input('price');
-        $produk->stock = $request->input('stock');
-        $produk->discount = $request->input('discount');
+        $produk->category = $request->input('category') ?? 'none';
+        $produk->price = $request->input('price') ?? 0;
+        $produk->stock = $request->input('stock') ?? 0;
+        $produk->discount = $request->input('discount') ?? 0;
         $produk->pict = $request->input('pict');
         $produk->description = $request->input('description');
         return new PostResource(true, "Produk ter-update.", $produk->update());
