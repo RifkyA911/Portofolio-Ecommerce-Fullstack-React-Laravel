@@ -406,10 +406,11 @@ export const ActionModalForm = (props) => {
 
   // Config value for react-hook-form
   let initialFormValue;
+  let deleteValue;
   let passwordRef = useRef({});
 
   useEffect(() => {
-    console.table(table);
+    // console.table(table);
     if (formType === "INSERT") {
       switch (table) {
         case `admins`:
@@ -483,15 +484,15 @@ export const ActionModalForm = (props) => {
         case `products`:
           initialFormValue = {
             superAuthorizationPassword: "superAdmin",
-            id: data.id,
+            productsId: data.id,
             name: data.name,
-            category: data.category,
-            stock: parseInt(data.stock),
-            discount: parseFloat(data.discount),
-            pict: data.pict,
-            description: data.description,
-            created_at: data.created_at,
-            updated_at: data.updated_at,
+            // category: data.category,
+            // stock: parseInt(data.stock),
+            // discount: parseFloat(data.discount),
+            // pict: data.pict,
+            // description: data.description,
+            // created_at: data.created_at,
+            // updated_at: data.updated_at,
           };
           break;
         default:
@@ -517,12 +518,26 @@ export const ActionModalForm = (props) => {
         axiosResponse = await axios.put(URL_METHODS, form);
         console.log("Update data berhasil :", axiosResponse);
       } else if (formType === "DROP_BY_ID") {
-        axiosResponse = await axios.delete(URL_METHODS, {
-          data: {
-            adminsId: form.adminsId,
-            superAuthorizationPassword: form.superAuthorizationPassword,
-          },
-        });
+        switch (table) {
+          case `admins`:
+            axiosResponse = await axios.delete(URL_METHODS, {
+              data: {
+                adminsId: form.adminsId,
+                superAuthorizationPassword: form.superAuthorizationPassword,
+              },
+            });
+            break;
+          case `products`:
+            axiosResponse = await axios.delete(URL_METHODS, {
+              data: {
+                productsId: form.productsId,
+                superAuthorizationPassword: form.superAuthorizationPassword,
+              },
+            });
+            break;
+          default:
+            break;
+        }
         console.log("Data berhasil di drop:", axiosResponse);
       } else if (formType === "DROP_BY_SELECTED") {
         // Loop melalui data dan buat permintaan DELETE untuk setiap elemen

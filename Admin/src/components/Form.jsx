@@ -388,3 +388,117 @@ export const FileInput = (props) => {
     </>
   );
 };
+
+export const DropByIdForm = (props) => {
+  const { tableId, productsId, location, thisName, pict } = props;
+
+  const {
+    table,
+    data,
+    formType,
+    // react-hook-form
+    getValues,
+    register,
+    setValue,
+    setError,
+    control,
+    errors,
+    isValid,
+    dirtyFields,
+    watch,
+  } = useModalContext();
+  return (
+    <>
+      <input
+        type="hidden"
+        {...register(tableId, {
+          required: `This ${tableId} Credentials ID are required`,
+        })}
+        defaultValue={getValues(tableId)}
+      />
+      {/* Images */}
+      <img
+        src={
+          pict
+            ? `./src/assets/${location}/${pict}`
+            : `./src/assets/${location}/blank.jpg`
+        }
+        alt="Avatar Tailwind CSS Component"
+        className="w-72 rounded-full max-w-3xl shadow-lg m-auto"
+        loading="lazy"
+      />
+      <h1 className="text-xl text-center pt-8 pb-4 line-clamp-2">
+        Are you sure to delete <span className="font-bold">"{thisName}"</span> ?
+      </h1>
+    </>
+  );
+};
+
+export const DropBySelectedForm = (props) => {
+  const { table, data, location } = props;
+  const id = useId();
+
+  return (
+    <>
+      <div key={id}>
+        {/* <input
+        type="hidden"
+        {...register(tableId, {
+          required: `This ${tableId} Credentials ID are required`,
+        })}
+        defaultValue={getValues(tableId)}
+      /> */}
+        <div
+          key={id}
+          className="relative flex flex-row items-center justify-center"
+        >
+          {data.map((selected, index) => (
+            <>
+              <span
+                key={selected.id}
+                className="flex-col overflow-x-scroll overflow-y-hidden line-clamp-1 py-4"
+              >
+                <img
+                  key={selected.id}
+                  src={
+                    selected.pict
+                      ? `./src/assets/${location}/${selected.pict}`
+                      : `./src/assets/${location}/blank.jpg`
+                  }
+                  alt="Avatar Tailwind CSS Component"
+                  className={`w-36 rounded-full shadow-lg m-auto`}
+                  loading="lazy"
+                />
+              </span>
+            </>
+          ))}
+        </div>
+        <div className="relative  text-xl text-center line-clamp-2 s">
+          <div className="flex gap-12 flex-row justify-center items-center font-semibold text-sm">
+            <table className="w-full bg-white">
+              <thead className={`bg-slate-300 font-roboto-regular`}>
+                <tr>
+                  <th>No</th>
+                  <th>Nama {table}</th>
+                </tr>
+              </thead>
+              <tbody className="font-roboto-regular max-h-20 overflow-y-scroll">
+                {data.map((selected, index) => (
+                  <tr key={selected.id} className="divide-y p">
+                    <td className="p-0 w-0 bg-slate-100">{index + 1}</td>
+                    <td className="px-4 py-1 w-96">
+                      <p key={selected.id}>{selected.username}</p>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <h1 className="my-4">
+            Are you sure to delete these selected {table}s?
+          </h1>
+        </div>
+      </div>
+    </>
+  );
+};

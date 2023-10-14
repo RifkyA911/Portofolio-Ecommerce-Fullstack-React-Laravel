@@ -3,7 +3,7 @@
 export function getUser() {
     let getToken = sessionStorage.getItem("token");
     if (getToken) {
-      getToken = JSON.parse(getToken);
+      getToken = JSON.parse(getToken); // JWT
     } else {
       getToken = null;
     }
