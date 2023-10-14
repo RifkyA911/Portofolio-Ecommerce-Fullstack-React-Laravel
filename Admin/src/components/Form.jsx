@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import { useModalContext } from "./Modal";
 import { Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
@@ -37,7 +37,7 @@ export const TextInput = (props) => {
       {/* <p>{watch("product")}</p> */}
       <label
         htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500"
+        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
       >
         {label}
         {errors[name] && (
@@ -113,7 +113,7 @@ export const NumberInput = (props) => {
       {/* <p>{watch("product")}</p> */}
       <label
         htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500"
+        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
       >
         {label}
         {errors[name] && (
@@ -199,7 +199,7 @@ export const SelectInput = (props) => {
       {/* Role */}
       <label
         htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500"
+        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
       >
         {label}
         {errors[name] && (
@@ -273,8 +273,8 @@ export const TextArea = (props) => {
   const validationRules = {
     required: true,
     maxLength: {
-      value: 200,
-      message: label + " input must not exceed 200 characters",
+      value: 500,
+      message: label + " input must not exceed 500 characters",
     },
     minLength: {
       value: 4,
@@ -286,7 +286,7 @@ export const TextArea = (props) => {
       {/* <p>{watch("product")}</p> */}
       <label
         htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500"
+        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
       >
         {label}
         {errors[name] && (
@@ -369,7 +369,7 @@ export const FileInput = (props) => {
 
   return (
     <>
-      <div className="relative w-96 rounded-full">
+      <div className="relative w-96 rounded-full z-[-1]">
         <img
           src={
             data.pict
@@ -436,68 +436,59 @@ export const DropByIdForm = (props) => {
 
 export const DropBySelectedForm = (props) => {
   const { table, data, location } = props;
+  // const { table } = useModalContext();
   const id = useId();
-
+  // console.log(data);
   return (
     <>
-      <div key={id}>
-        {/* <input
-        type="hidden"
-        {...register(tableId, {
-          required: `This ${tableId} Credentials ID are required`,
-        })}
-        defaultValue={getValues(tableId)}
-      /> */}
-        <div
-          key={id}
-          className="relative flex flex-row items-center justify-center"
-        >
-          {data.map((selected, index) => (
-            <>
-              <span
-                key={selected.id}
-                className="flex-col overflow-x-scroll overflow-y-hidden line-clamp-1 py-4"
-              >
-                <img
-                  key={selected.id}
-                  src={
-                    selected.pict
-                      ? `./src/assets/${location}/${selected.pict}`
-                      : `./src/assets/${location}/blank.jpg`
-                  }
-                  alt="Avatar Tailwind CSS Component"
-                  className={`w-36 rounded-full shadow-lg m-auto`}
-                  loading="lazy"
-                />
-              </span>
-            </>
-          ))}
-        </div>
-        <div className="relative  text-xl text-center line-clamp-2 s">
-          <div className="flex gap-12 flex-row justify-center items-center font-semibold text-sm">
-            <table className="w-full bg-white">
-              <thead className={`bg-slate-300 font-roboto-regular`}>
-                <tr>
-                  <th>No</th>
-                  <th>Nama {table}</th>
-                </tr>
-              </thead>
-              <tbody className="font-roboto-regular max-h-20 overflow-y-scroll">
-                {data.map((selected, index) => (
-                  <tr key={selected.id} className="divide-y p">
-                    <td className="p-0 w-0 bg-slate-100">{index + 1}</td>
-                    <td className="px-4 py-1 w-96">
-                      <p key={selected.id}>{selected.username}</p>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div
+        key={id}
+        className="relative flex flex-row items-center justify-center"
+      >
+        {data.map((selected, index) => (
+          <div
+            key={selected.id}
+            className="flex-col overflow-x-scroll overflow-y-hidden line-clamp-1 py-4"
+          >
+            <img
+              key={selected.id}
+              src={
+                selected.pict
+                  ? `./src/assets/${location}/${selected.pict}`
+                  : `./src/assets/${location}/blank.jpg`
+              }
+              alt="Avatar Tailwind CSS Component"
+              className={`w-36 rounded-full shadow-lg m-auto`}
+              loading="lazy"
+            />
           </div>
-          <h1 className="my-4">
-            Are you sure to delete these selected {table}s?
-          </h1>
+        ))}
+      </div>
+      <div className="relative  text-xl text-center line-clamp-2 s">
+        <div className="flex gap-12 flex-row justify-center items-center font-semibold text-sm">
+          <table className="w-full bg-white">
+            <thead className={`bg-gray-200 font-roboto-regular`}>
+              <tr>
+                <th>No</th>
+                <th>Nama {table}</th>
+              </tr>
+            </thead>
+            <tbody className="font-roboto-medium max-h-20 overflow-y-scroll">
+              {data.map((selected, index) => (
+                <tr key={selected.id} className="divide-y p">
+                  <td className="p-0 w-0 bg-slate-100">{index + 1}</td>
+                  <td className="px-4 py-1 w-96 font-roboto-light">
+                    <p key={selected.id}>
+                      {table === "Admins" && selected.username}
+                      {table === "Products" && selected.name}
+                    </p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+        <h1 className="my-4">Are you sure to delete these selected {table}?</h1>
       </div>
     </>
   );

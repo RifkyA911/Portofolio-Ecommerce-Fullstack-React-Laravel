@@ -22,6 +22,7 @@ import {
   TextArea,
   FileInput,
   DropByIdForm,
+  DropBySelectedForm,
 } from "../Form";
 import { ConfirmButton } from "../Button";
 import { DateRecord } from "../Span";
@@ -238,8 +239,6 @@ export const ProductsAlterForm = (props) => {
 export const ProductsDropForm = (props) => {
   // const { data, formType } = props;
   const { refresh, data, formType, clearData } = useContext(ModalContext);
-
-  console.log(data);
 
   return (
     <>

@@ -362,13 +362,10 @@ export const ActionModalForm = (props) => {
           })
           .catch((error) => {
             if (error.response) {
-              // Tangani kesalahan respons dari server
               console.log("Response error:", error.response.data);
             } else if (error.request) {
-              // Tangani kesalahan permintaan (misalnya tidak ada koneksi)
               console.log("Request error:", error.request);
             } else {
-              // Kesalahan lainnya
               console.log("Error:", error.message);
             }
             setLoading(false);
@@ -383,19 +380,13 @@ export const ActionModalForm = (props) => {
       }
     } else if (formType === "DROP_BY_SELECTED") {
       if (table_id !== null && table !== null) {
-        // Mengonversi objek "table_id" menjadi array dari objek-objek
         const dataArray = Object.values(table_id);
-
-        // Mengubah struktur objek-objek dalam array
         const modifiedDataArray = dataArray.map((item) => ({
           ...item,
           superAuthorizationPassword: "superAdmin",
         }));
-
-        // Set data dengan array yang sudah diubah strukturnya
         setData(modifiedDataArray);
       }
-      // throw new Error(data);
       setLoading(false);
       setErrorMessage(null);
       setMethod(formType);
@@ -406,7 +397,6 @@ export const ActionModalForm = (props) => {
 
   // Config value for react-hook-form
   let initialFormValue;
-  let deleteValue;
   let passwordRef = useRef({});
 
   useEffect(() => {
@@ -486,13 +476,6 @@ export const ActionModalForm = (props) => {
             superAuthorizationPassword: "superAdmin",
             productsId: data.id,
             name: data.name,
-            // category: data.category,
-            // stock: parseInt(data.stock),
-            // discount: parseFloat(data.discount),
-            // pict: data.pict,
-            // description: data.description,
-            // created_at: data.created_at,
-            // updated_at: data.updated_at,
           };
           break;
         default:
@@ -596,7 +579,7 @@ export const ActionModalForm = (props) => {
 
   // submit form handler
   const onSubmit = async (form) => {
-    console.table("data:", data);
+    console.info("data form:", form);
     if (!form) {
       alert("there is no form to send");
     }
@@ -655,17 +638,17 @@ export const ActionModalForm = (props) => {
             <div
               className={`bg-slate-50 sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
             >
-              <h3 className="p-4 w-4/12 font-bold text-lg text-left capitalize">
+              <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
                 {formType === "INSERT" && `Add New ${table}`}
                 {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
                 {formType === "DROP_BY_ID" && `Delete This ${table}`}
                 {formType === "DROP_BY_SELECTED" && `Delete Multiple ${table}`}
-              </h3>
+              </div>
               {errorMessage ? (
                 <>
-                  <h4
+                  <div
                     key={id}
-                    className={`p-1 font-roboto-bold w-8/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
+                    className={`p-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
                   >
                     {/* {Object.keys(errors).map((fieldName) => (
                       <>
@@ -674,7 +657,7 @@ export const ActionModalForm = (props) => {
                     ))} */}
                     {console.log(errors)}
                     {errorMessage}
-                  </h4>
+                  </div>
                 </>
               ) : (
                 <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>

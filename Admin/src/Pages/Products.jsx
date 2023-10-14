@@ -101,6 +101,26 @@ export default function Products() {
   };
 
   // ===================== MyTableEngine =====================
+  // Fungsi handler saat checkbox di klik
+  const handleCheckboxChange = (id, name, pict) => {
+    // Cek apakah indeks sudah ada dalam selectedRows
+    const isSelected = selectedRows.some((item) => item.id === id);
+
+    // Buat objek yang berisi indeks, name, dan pict
+    const newRow = { id, name, pict };
+
+    if (!isSelected) {
+      // Jika checkbox dicentang dan indeks belum ada dalam selectedRows, tambahkan objek baru
+      setSelectedRows([...selectedRows, newRow]);
+    } else {
+      // Jika checkbox dicentang dan indeks sudah ada dalam selectedRows, hapus objek dengan indeks yang cocok
+      setSelectedRows(selectedRows.filter((item) => item.id !== id));
+    }
+  };
+  useEffect(() => {
+    console.info(selectedRows);
+  }, [selectedRows]);
+
   // ---- MyTableEngine Search Filter ----
   useEffect(() => {
     if (products !== null && products.length > 0) {
@@ -293,37 +313,67 @@ export default function Products() {
                           className={"divide-y "}
                         >
                           {toggleSelect ? (
-                            <Th
-                              key={index}
-                              feature={"select"}
-                              onChange={() => handleCheckboxChange(row.id)}
-                              selectedRows={selectedRows}
-                              rowId={row.id}
-                              className=""
-                            >
-                              {selectedRows.some(
-                                (item) => item.id === row.id
-                              ) ? (
-                                <button
-                                  onClick={() => handleCheckboxChange(row.id)}
-                                  className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
-                                ></button>
+                            <>
+                              {row.role != 0 ? (
+                                <>
+                                  <Th
+                                    key={index}
+                                    feature={"select"}
+                                    onChange={() =>
+                                      handleCheckboxChange(
+                                        row.id,
+                                        row.name,
+                                        row.pict
+                                      )
+                                    }
+                                    selectedRows={selectedRows}
+                                    rowId={row.id}
+                                    className=""
+                                  >
+                                    {selectedRows.some(
+                                      (item) => item.id === row.id
+                                    ) ? (
+                                      <button
+                                        onClick={() =>
+                                          handleCheckboxChange(
+                                            row.id,
+                                            row.name,
+                                            row.pict
+                                          )
+                                        }
+                                        className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
+                                      ></button>
+                                    ) : (
+                                      <button
+                                        onClick={() =>
+                                          handleCheckboxChange(
+                                            row.id,
+                                            row.name,
+                                            row.pict
+                                          )
+                                        }
+                                        className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
+                                      ></button>
+                                    )}
+                                  </Th>
+                                </>
                               ) : (
-                                <button
-                                  onClick={() => handleCheckboxChange(row.id)}
-                                  className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
-                                ></button>
+                                <th className="cursor-not-allowed">
+                                  <MuiIcon iconName="BlockRounded" />
+                                </th>
                               )}
-                            </Th>
+                            </>
                           ) : (
-                            <Th
-                              key={index}
-                              className={`w-0 {BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
-                            >
-                              {parseInt(row.id) == 0
-                                ? parseInt(row.id) + 1
-                                : row.id}
-                            </Th>
+                            <>
+                              <Th
+                                key={index}
+                                className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
+                              >
+                                {parseInt(row.id) == 0
+                                  ? parseInt(row.id) + 1
+                                  : row.id}
+                              </Th>
+                            </>
                           )}
                           <Td className={`${table_styling.td} 2/12`}>
                             <ProductImage
