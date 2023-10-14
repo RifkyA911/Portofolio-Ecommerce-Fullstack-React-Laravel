@@ -22,7 +22,7 @@ export const TextInput = (props) => {
   } = useModalContext();
 
   const validationRules = {
-    required: true,
+    required: `This ${label} field is required`,
     maxLength: {
       value: 200,
       message: label + " input must not exceed 200 characters",
@@ -92,7 +92,7 @@ export const NumberInput = (props) => {
   } = useModalContext();
 
   const validationRules = {
-    required: true,
+    required: `This ${label} field is required`,
     pattern: {
       value: /\d+/,
       message: label + " input is number only.",
@@ -122,17 +122,6 @@ export const NumberInput = (props) => {
           </span>
         )}
       </label>
-      {/* <input
-        type="number"
-        placeholder={placeholder.toLowerCase()}
-        className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-        {...register(name, validationRules)}
-        onChange={(e) => {
-          //   handleInputChange(e);
-          console.log(e.target.value);
-          setValue(name, e.target.value);
-        }}
-      /> */}
       <Controller
         control={control}
         name={name}
@@ -148,6 +137,7 @@ export const NumberInput = (props) => {
             allowNegative={false} // Untuk menghindari nilai negatif
             decimalScale={decimalOptions} // Untuk menghindari desimal
             isAllowed={(values) => {
+              console.log(values);
               const { floatValue } = values;
               return floatValue < limitDigits;
             }}
@@ -157,6 +147,17 @@ export const NumberInput = (props) => {
           />
         )}
       />
+      {/* <input
+        type="number"
+        placeholder={placeholder.toLowerCase()}
+        className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+        {...register(name, validationRules)}
+        onChange={(e) => {
+          //   handleInputChange(e);
+          console.log(e.target.value);
+          setValue(name, e.target.value);
+        }}
+      /> */}
     </div>
   );
 };
@@ -189,7 +190,7 @@ export const SelectInput = (props) => {
   } = useModalContext();
 
   const validationRules = {
-    required: true,
+    required: `This ${label} field is required`,
     maxLength: 4,
   };
 
@@ -351,7 +352,7 @@ export const FileInput = (props) => {
   } = useModalContext();
 
   const validationRules = {
-    required: true,
+    required: `This ${label} field is required`,
     pattern: {
       value: /\d+/,
       message: label + " input is number only.",
