@@ -1,15 +1,14 @@
-// import jwt from 'jsonwebtoken';
+import jwtDecode from "jwt-decode";
 
-// export function decodeJWT(getToken) {
-    
-//     const token = getToken; // Gantilah dengan token yang Anda terima dari server
-//     const secretKey = import.meta.env.VITE_JWT_SECRET; // Gantilah dengan kunci rahasia (secret key) yang digunakan untuk menghasilkan token
-
-//     try {
-//         const decoded = jwt.verify(token, secretKey);
-//         console.log(decoded);
-//     // Di sini, 'decoded' akan berisi payload token JWT yang dapat Anda gunakan.
-//     } catch (error) {
-//         console.error("Error decoding JWT:", error);
-//     }
-// }
+const secretKey = import.meta.env.VITE_JWT_SECRET; // Ganti dengan kunci rahasia Anda
+function decodeJWT (token) {
+    let decodedToken
+    try {
+    decodedToken = jwtDecode(token);
+    // console.log('token:', decodedToken);
+    } catch (error) {
+    console.error("Error decoding token:", error);
+    }
+  return decodedToken
+};
+export default decodeJWT

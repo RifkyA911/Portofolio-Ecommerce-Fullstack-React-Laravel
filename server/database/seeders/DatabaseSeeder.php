@@ -76,9 +76,13 @@ class DatabaseSeeder extends Seeder
         Category::create(['name' => 'headware', 'type' => 'accessories']);
         Category::create(['name' => 'hat', 'type' => 'accessories']);
         Category::create(['name' => 'jumpsuits', 'type' => 'man suit']);
+        Category::create(['name' => 'coat', 'type' => 'man suit']);
+        Category::create(['name' => 'bulf', 'type' => 'woman suit']);
         Category::create(['name' => 'skirt', 'type' => 'woman suit']);
         Category::create(['name' => 'kerudung', 'type' => 'woman suit']);
         Category::create(['name' => 'boots', 'type' => 'shoes']);
+        Category::create(['name' => 'sandals', 'type' => 'shoes']);
+        Category::create(['name' => 'sneaker', 'type' => 'shoes']);
         // Category::factory(10)->create();
 
         Product::create([
