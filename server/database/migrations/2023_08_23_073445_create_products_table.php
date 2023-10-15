@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('barcode');
             $table->string('name');
-            $table->string('category');
+            $table->foreignId('category_id');
             $table->integer('price');
             $table->integer('stock');
             $table->string('discount')->nullable();

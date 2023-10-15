@@ -10,6 +10,8 @@ class Message extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+    // default eager loading
+    protected $with = ['dialog'];
 
     // relation
     public function dialog(): BelongsTo {

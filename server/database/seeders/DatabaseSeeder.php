@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Dialog;
 use App\Models\Message;
 use App\Models\Product;
@@ -59,7 +60,7 @@ class DatabaseSeeder extends Seeder
             'role' => 1,
             'pict' => '77845097_p0.jpg'
         ]);
-        Admin::factory(100)->create();
+        Admin::factory(10)->create();
 
 
         User::create([
@@ -70,11 +71,15 @@ class DatabaseSeeder extends Seeder
             'verified' => null,
             'pict' => '78949689_p4.jpg',
         ]);
-        User::factory(100)->create();
+        User::factory(10)->create();
 
+        Category::create(['name' => 'headware']);
+        Category::factory(10)->create();
+        
         Product::create([
+            'barcode' => fake()->unique()->numerify('#############'),
             'name' => 'topi merah',
-            'category' => 'topi',
+            'category_id' => 1,
             'price' => 20000,
             'stock' => 9,
             'discount' => null,
@@ -82,8 +87,9 @@ class DatabaseSeeder extends Seeder
             'description' => null
         ]);
         Product::create([
+            'barcode' => fake()->unique()->numerify('#############'),
             'name' => 'kerudung hijau',
-            'category' => 'kerudung',
+            'category_id' => 1,
             'price' => 40000,
             'stock' => 5,
             'discount' => null,
@@ -91,22 +97,24 @@ class DatabaseSeeder extends Seeder
             'description' => fake()->sentence(16)
         ]);
         Product::create([
+            'barcode' => fake()->unique()->numerify('#############'),
             'name' => 'topi biru',
-            'category' => 'topi',
+            'category_id' => 1,
             'price' => 20000,
             'stock' => 7,
             'discount' => null,
             'pict' => 'topi_biru.jpg',
             'description' => fake()->sentence(9)
         ]);
-        Product::factory(100)->create();
+        Product::factory(10)->create();
 
 
         Transaction::create([
             'user_id' => '1',
             'admin_id' => '2',
-            'products_id' => "{'product_id': '1', 'quantity':'3'}",
+            'products_id' => '[{"product_id": "1", "quantity":"3"},{"product_id": "2", "quantity":"4"}]',
             'total_price' => 60000,
+            'address' => fake()->address(),
             'checked_out' => now(),
             'sent' => null,
             'done' => null
@@ -114,8 +122,9 @@ class DatabaseSeeder extends Seeder
         Transaction::create([
             'user_id' => '2',
             'admin_id' => '1',
-            'products_id' => "{'product_id': '2', 'quantity':'15'}",
+            'products_id' => '[{"product_id": "2", "quantity":"15"}]',
             'total_price' => 40000,
+            'address' => fake()->address(),
             'checked_out' => null,
             'sent' => null,
             'done' => null
@@ -123,8 +132,9 @@ class DatabaseSeeder extends Seeder
         Transaction::create([
             'user_id' => '1',
             'admin_id' => '2',
-            'products_id' => "{'product_id': '6', 'quantity':'32'}",
+            'products_id' => '[{"product_id": "6", "quantity":"5"},{"product_id": "1", "quantity":"3"},{"product_id": "2", "quantity":"4"}]',
             'total_price' => 60000,
+            'address' => fake()->address(),
             'checked_out' => now(),
             'sent' => null,
             'done' => null
@@ -132,8 +142,9 @@ class DatabaseSeeder extends Seeder
         Transaction::create([
             'user_id' => '2',
             'admin_id' => '1',
-            'products_id' => "{'product_id': '7', 'quantity':'135'}",
+            'products_id' => '[{"product_id": "7", "quantity":"135"}]',
             'total_price' => 40000,
+            'address' => fake()->address(),
             'checked_out' => null,
             'sent' => null,
             'done' => null

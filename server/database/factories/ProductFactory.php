@@ -19,9 +19,10 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
+            'barcode' => $this->faker->unique()->numerify('#############'),
             'name' => $this->faker->unique()->word,
-            'category' => $this->faker->word,
-            'price' => $this->faker->randomNumber(4), // Angka 2 adalah jumlah digit desimal
+            'category_id' => $this->faker->randomDigitNot(0),
+            'price' => $this->faker->randomNumber(4),
             'stock' => $this->faker->randomNumber(3),
             'discount' => $this->faker->randomNumber(3),
             // 'pict' => Str::random(6) . '.jpg',

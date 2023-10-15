@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use \App\Models\Product;
+use \App\Models\Category;
 use Illuminate\Http\Request;
 use \App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Validator;
@@ -31,7 +32,7 @@ class ProductController extends Controller
         $produk = Product::all();
 
         //return collection of posts as a resource
-        return new PostResource(true, 'List Data Produk', $produk);
+        return new PostResource(true, 'List Data Produk', $produk->makeHidden('category_id'));
     }
     public function showLimit($page, $perPage)
     {
@@ -81,7 +82,7 @@ class ProductController extends Controller
         if ($request->input('superAuthorizationPassword') === "superAdmin") {
             $validator = Validator::make($request->all(), [
                 "name" => 'required',
-                "category" => 'required',
+                "category_id" => 'required',
                 "price" => 'required|numeric',
                 "stock" => 'required|numeric'
             ]);
@@ -91,7 +92,7 @@ class ProductController extends Controller
             }
 
             if (Product::create($request->except(['superAuthorizationPassword'])) !== false) {
-                return new PostResource(true, ['message' => "Product berhasil ditambahkan.", 'status' => 201], $request->only(['name', 'category']));
+                return new PostResource(true, ['message' => "Product berhasil ditambahkan.", 'status' => 201], $request->only(['name', 'category_id']));
             } else {
                 return response(new PostResource(false, "validasi data error", "Something went wrong with the DB :("), 403);
             }
@@ -104,7 +105,7 @@ class ProductController extends Controller
      */
     public function getById($id)
     {
-        return new PostResource(true, "data Produk :", Product::find($id));
+        return new PostResource(true, "data Produk :", Product::find($id)->makeHidden('category_id'));
     }
 
     /**
@@ -115,7 +116,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             "barcode" => 'required',
             "name" => 'required',
-            "category" => 'required',
+            "category_id" => 'required',
             "price" => 'required|numeric',
             "stock" => 'required|numeric'
         ]);
@@ -126,7 +127,7 @@ class ProductController extends Controller
         $produk = Product::find($request->input('productId'));
         $produk->barcode = $request->input('barcode');
         $produk->name = $request->input('name');
-        $produk->category = $request->input('category') ?? 'none';
+        $produk->category_id = $request->input('category_id') ?? 'none';
         $produk->price = $request->input('price') ?? 0;
         $produk->stock = $request->input('stock') ?? 0;
         $produk->discount = $request->input('discount') ?? 0;

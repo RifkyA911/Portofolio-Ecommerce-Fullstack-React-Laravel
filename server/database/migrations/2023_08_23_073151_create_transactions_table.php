@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('admin_id')->nullable();
             $table->text('products_id');
             $table->integer('total_price');
+            $table->string('address');
             $table->timestamp('checked_out')->nullable()->default(null);
             $table->timestamp('sent')->nullable()->default(null);
             $table->timestamp('done')->nullable()->default(null);
