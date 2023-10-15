@@ -6,6 +6,7 @@ use \App\Models\Product;
 use \App\Models\Category;
 use Illuminate\Http\Request;
 use \App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -26,6 +27,26 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('search'); // Ambil parameter pencarian dari input form
+
+        // $products = Product::where('name', 'like', '%' . $searchTerm . '%')
+        //     ->orWhere('description', 'like', '%' . $searchTerm . '%')
+        //     ->get();
+
+        $products = Product::where(function ($query) use ($searchTerm) {
+            $columns = Schema::getColumnListing('products'); // Mengambil daftar nama kolom dari tabel products
+            foreach ($columns as $column) {
+                $query->orWhere($column, 'like', '%' . $searchTerm . '%');
+            }
+        })->get();
+
+        $length = $products->count();
+
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $products);
+    }
+
     public function getAll()
     {
         //get all posts
@@ -34,6 +55,7 @@ class ProductController extends Controller
         //return collection of posts as a resource
         return new PostResource(true, 'List Data Produk', $produk->makeHidden('category_id'));
     }
+
     public function showLimit($page, $perPage)
     {
         // Mengonversi halaman dan perPage yang diterima menjadi integer

@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
 use function Laravel\Prompts\select;
@@ -25,6 +26,27 @@ class AdminsController extends Controller
         //return collection of posts as a resource
         return new PostResource(true, 'List Data Admin', $admins);
     }
+
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('search'); // Ambil parameter pencarian dari input form
+
+        // $admins = Product::where('name', 'like', '%' . $searchTerm . '%')
+        //     ->orWhere('description', 'like', '%' . $searchTerm . '%')
+        //     ->get();
+
+        $admins = Admin::where(function ($query) use ($searchTerm) {
+            $columns = Schema::getColumnListing('admins'); // Mengambil daftar nama kolom dari tabel admins
+            foreach ($columns as $column) {
+                $query->orWhere($column, 'like', '%' . $searchTerm . '%');
+            }
+        })->get();
+
+        $length = $admins->count();
+
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $admins);
+    }
+
 
     public function showLimit($page, $perPage)
     {
@@ -99,7 +121,7 @@ class AdminsController extends Controller
         return $this->respondWithToken(auth('admin')->refresh());
     }
 
-    
+
     protected function respondWithToken($token)
     {
         return response()->json([
