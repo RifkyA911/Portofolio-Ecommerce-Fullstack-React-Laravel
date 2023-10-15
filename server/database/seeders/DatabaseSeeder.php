@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
             'role' => 1,
             'pict' => '77845097_p0.jpg'
         ]);
-        Admin::factory(10)->create();
+        Admin::factory(25)->create();
 
 
         User::create([
@@ -71,11 +71,16 @@ class DatabaseSeeder extends Seeder
             'verified' => null,
             'pict' => '78949689_p4.jpg',
         ]);
-        User::factory(10)->create();
+        User::factory(25)->create();
 
-        Category::create(['name' => 'headware']);
-        Category::factory(10)->create();
-        
+        Category::create(['name' => 'headware', 'type' => 'accessories']);
+        Category::create(['name' => 'hat', 'type' => 'accessories']);
+        Category::create(['name' => 'jumpsuits', 'type' => 'man suit']);
+        Category::create(['name' => 'skirt', 'type' => 'woman suit']);
+        Category::create(['name' => 'kerudung', 'type' => 'woman suit']);
+        Category::create(['name' => 'boots', 'type' => 'shoes']);
+        // Category::factory(10)->create();
+
         Product::create([
             'barcode' => fake()->unique()->numerify('#############'),
             'name' => 'topi merah',
@@ -84,7 +89,7 @@ class DatabaseSeeder extends Seeder
             'stock' => 9,
             'discount' => null,
             'pict' => 'red_hat.jpg',
-            'description' => null
+            'description' => fake()->sentence(20)
         ]);
         Product::create([
             'barcode' => fake()->unique()->numerify('#############'),
@@ -106,7 +111,7 @@ class DatabaseSeeder extends Seeder
             'pict' => 'topi_biru.jpg',
             'description' => fake()->sentence(9)
         ]);
-        Product::factory(10)->create();
+        Product::factory(110)->create();
 
 
         Transaction::create([

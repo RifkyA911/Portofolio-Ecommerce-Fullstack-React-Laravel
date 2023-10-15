@@ -24,6 +24,10 @@ class UserFactory extends Factory
         // $imageFiles = File::allFiles($imageDirectory);
         // $randomImage = $imageFiles[mt_rand(0, count($imageFiles) - 1)]; // Memilih file secara acak
 
+        $images = ["08362dcc-fa01-423c-855e-f12de6609ce6.jpg", "0a69fbdf-96f2-451d-889e-047f1f9bd354.jpg", "0ae78ee4-baef-4563-8323-23f64eb6d26b.jpg", "13ceb6a9-89d7-4a3f-a01d-f4926ba61604.jpg", "25b602bd-3333-4e87-9bf1-73cfd997d0f8.jpg", "5103c33b-48e6-4081-9e64-bcfefa9ca71e.jpg", "52523876-3b64-426e-b72f-5bc4bd640cd0.jpg", "54b6e1c2-8ced-42ba-8bd1-7c58eaf8d212.jpg", "5a2f854a-1d95-480a-8e43-831d4dc892c4.jpg", "5e06d7ee-1969-482f-8383-2aa047f843d5.jpg", "78949689_p10.jpg", "78949689_p2.jpg", "78949689_p3.jpg", "78949689_p4.jpg", "78949689_p5.jpg", "78949689_p6.jpg", "78949689_p7.jpg", "78949689_p8.jpg", "78949689_p9.jpg", "79074291_p0.jpg", "79074291_p1.jpg", "79074291_p2.jpg", "79074291_p3.jpg", "79074291_p4.jpg", "79074291_p5.jpg", "79074291_p6.jpg", "79074291_p7.jpg", "79074291_p8.jpg", "79318308_p0.jpg", "79318308_p1.jpg", "79988645_p0.jpg", "79988645_p1.jpg", "79988645_p2.jpg", "79988645_p3.jpg", "79988645_p4.jpg", "79988645_p5.jpg", "79988645_p6.jpg", "79988645_p7.jpg", "79988645_p8.jpg", "84719630_p0.jpg", "84719630_p2.jpg", "84719630_p3.jpg", "84719630_p4.jpg", "84719630_p5.jpg", "84719630_p6.jpg", "84719630_p7.jpg", "84719630_p8.jpg", "85633671_p0.jpg", "85633671_p1.jpg", "85633671_p2.jpg", "85633671_p3.jpg", "85633671_p4.jpg", "85633671_p5.jpg", "85633671_p6.jpg", "85633671_p7.jpg", "85633671_p8.jpg", "85d24f2a-2336-478d-9984-729a55e82db1.jpg", "86466834_p0.jpg", "87036407_p0.jpg", "87500297_p0.jpg", "88129567_p0.jpg", "88316563_p0.jpg", "88620583_p0.jpg", "89437506_p0.jpg", "89937713_p0.jpg", "89937761_p0.jpg", "91384932_p0.jpg", "91831124_p0.jpg", "92541207_p0.jpg", "92923145_p0.jpg", "93076323_p0.jpg", "93076323_p2.jpg", "93233124_p0.jpg", "93388262_p0.jpg", "93388262_p1.jpg", "93388262_p2.jpg", "93388262_p3.jpg", "93388262_p4.jpg", "93388262_p5.jpg", "93388262_p6.jpg", "93388262_p7.jpg", "93388262_p8.jpg", "94570737_p0.jpg", "94945638_p0.jpg", "95528013_p0.jpg", "95779111_p0.jpg", "96311355_p0.jpg", "96311355_p1.jpg", "96898468_p0.jpg", "97063666_p0.jpg", "97063699_p0.jpg", "97268353_p1.jpg", "98061275_p0.jpg", "98650216_p0.jpg", "98650252_p0.jpg", "98747005_p0.jpg", "99551974_p0.jpg", "be297bc5ly1hdcyxfyf8yj20jg0jgq9l.jpg", "be297bc5ly1hdcyxghr4tj20jg0jgtf8.jpg", "d7582795-42ba-45d1-ace5-bfacf4cc84e2.jpg", "e47689b6-bce7-4450-825b-43d9e605bbff.jpg"];
+        // Secara acak memilih satu nama gambar dari daftar
+        $randomIndex = array_rand($images);
+
         return [
             'email' => fake()->unique()->safeEmail(),
             'username' => fake()->name(),
@@ -31,7 +35,9 @@ class UserFactory extends Factory
             'address' => fake()->address(),
             'verified' => null,
             // 'pict' => Str::random(6).'.jpg',
-            'pict' => 'default.png',
+            // 'pict' => 'default.png',
+            'pict' => $images[$randomIndex],
+
             // 'pict' =>  $randomImage->getFilename() // Menggunakan nama file acak
 
         ];
