@@ -1,10 +1,20 @@
-import React, { useId, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
+import Select from "react-select";
+
 import { useModalContext } from "./Modal";
 import { Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
 export const TextInput = (props) => {
-  const { className, label, name, placeholder, type = name, onChange } = props;
+  const {
+    className,
+    label,
+    name,
+    autoFocus = false,
+    placeholder,
+    type = name,
+    onChange,
+  } = props;
 
   const {
     data,
@@ -13,6 +23,7 @@ export const TextInput = (props) => {
     getValues,
     register,
     setValue,
+    setFocus,
     setError,
     control,
     errors,
@@ -20,6 +31,8 @@ export const TextInput = (props) => {
     dirtyFields,
     watch,
   } = useModalContext();
+
+  const id = useId();
 
   const validationRules = {
     required: `This ${label} field is required`,
@@ -33,12 +46,14 @@ export const TextInput = (props) => {
     },
   };
   return (
-    <div className={className}>
+    <div
+      onClick={() => {
+        setFocus(name);
+      }}
+      className={className}
+    >
       {/* <p>{watch("product")}</p> */}
-      <label
-        htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
-      >
+      <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 sz-[-1]">
         {label}
         {errors[name] && (
           <span className="absolute right-0 text-red-500">
@@ -47,7 +62,7 @@ export const TextInput = (props) => {
         )}
       </label>
       <input
-        id={name}
+        id={id}
         type={type}
         placeholder={placeholder.toLowerCase()}
         className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
@@ -84,6 +99,7 @@ export const NumberInput = (props) => {
     getValues,
     register,
     setValue,
+    setFocus,
     setError,
     control,
     errors,
@@ -107,10 +123,17 @@ export const NumberInput = (props) => {
       message: label + " input min 3 digits",
     },
   };
+  const ref = useRef();
 
   // console.table(props);
   return (
-    <div className={className}>
+    <div
+      onClick={() => {
+        setFocus(name);
+        console.log(name);
+      }}
+      className={className}
+    >
       {/* <p>{watch("product")}</p> */}
       <label
         htmlFor={name}
@@ -126,13 +149,14 @@ export const NumberInput = (props) => {
       <Controller
         control={control}
         name={name}
-        render={({ field: { onChange, name, value } }) => (
+        render={({ field: { onChange, name, value, ref } }) => (
           <NumericFormat
             name={name}
             value={value}
             className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl focus:outline-none`}
             displayType={"input"}
             thousandSeparator
+            getInputRef={ref}
             prefix={prefix}
             suffix={suffix}
             allowNegative={false} // Untuk menghindari nilai negatif
@@ -173,6 +197,12 @@ export const SelectInput = (props) => {
     type = name,
     onChange,
   } = props;
+  const [isClearable, setIsClearable] = useState(true);
+  const [isSearchable, setIsSearchable] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRtl, setIsRtl] = useState(false);
+  const [optionsList, setOptionsList] = useState([]);
 
   const {
     data,
@@ -182,6 +212,7 @@ export const SelectInput = (props) => {
     getValues,
     register,
     setValue,
+    setFocus,
     setError,
     control,
     errors,
@@ -195,21 +226,48 @@ export const SelectInput = (props) => {
     maxLength: 4,
   };
 
+  const selectOptions = (select) => {
+    if (Array.isArray(select)) {
+      const newOptions = select.map((option, index) => ({
+        value: option,
+        label: option,
+        color: "#00B8D9",
+        isFixed: true,
+      }));
+
+      // Gunakan setOptionsList untuk mengubah nilai optionsList
+      setOptionsList(newOptions);
+    }
+  };
+
+  useEffect(() => {
+    selectOptions(select);
+    // console.log(optionsList);
+  }, [name]);
+
   return (
-    <div className={className}>
-      {/* Role */}
-      <label
-        htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
-      >
-        {label}
-        {errors[name] && (
-          <span className="absolute right-0 text-red-500">
-            {errors[name].message}
-          </span>
-        )}
-      </label>
-      <select
+    <>
+      {optionsList !== null && (
+        <div
+          onClick={() => {
+            setFocus(name);
+            console.log(setFocus(name));
+          }}
+          className={className}
+        >
+          {/* Role */}
+          <label
+            htmlFor={name}
+            className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
+          >
+            {label}
+            {errors[name] && (
+              <span className="absolute right-0 text-red-500">
+                {errors[name].message}
+              </span>
+            )}
+          </label>
+          {/* <select
         id={name}
         className={`${style} select select-info select-sm max-w-3xl focus:outline-none self-start font-roboto-medium`}
         {...register(name, { required: "select one" })}
@@ -225,32 +283,41 @@ export const SelectInput = (props) => {
             {option}
           </option>
         ))}
-      </select>
-      {/* <Controller
-        name={name}
-        control={control}
-        defaultValue="1" // Nilai default jika perlu
-        render={({ field }) => (
-          <select
-            onChange={(e) => {
-              field.onChange(e); // Menggunakan field.onChange untuk mengatur nilai di dalam Controller
-              alert(
-                "be carefull changing category grant access",
-                e.target.value
-              ); // Menggunakan e.target.value karena field.value mungkin belum diperbarui
-            }}
-            className="select select-info select-sm w-full max-w-3xl focus:outline-none self-start font-roboto-medium"
-            value={field.value} // Menggunakan field.value untuk nilai saat ini
-          >
-            {options.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        )}
-      /> */}
-    </div>
+      </select> */}
+
+          <Controller
+            name={name}
+            control={control}
+            render={({ field: { onChange, name, value, ref } }) => (
+              <Select
+                ref={ref}
+                options={optionsList}
+                value={optionsList.find((c) => c.value === value)}
+                onChange={(select) => onChange(select.value)}
+                className={`${style}  max-w-3xl focus:outline-none text-left font-roboto-medium basic-single`}
+                classNamePrefix="select"
+                isSearchable={isSearchable}
+                // isDisabled={isDisabled}
+                // isLoading={isLoading}
+                // isClearable={isClearable}
+                // isRtl={isRtl}
+                theme={(theme) => ({
+                  ...theme,
+                  borderRadius: 8,
+                  colors: {
+                    ...theme.colors,
+                    text: "blue", // Change text color to blue
+                    primary25: "skyblue", // Change the background color of the selected option to skyblue
+                    primary: "skyblue", // Change the border color to blue
+                  },
+                })}
+              />
+            )}
+            rules={{ required: "select one" }}
+          />
+        </div>
+      )}
+    </>
   );
 };
 
@@ -264,6 +331,7 @@ export const TextArea = (props) => {
     getValues,
     register,
     setValue,
+    setFocus,
     setError,
     control,
     errors,
@@ -284,7 +352,12 @@ export const TextArea = (props) => {
     },
   };
   return (
-    <div className={className}>
+    <div
+      onClick={() => {
+        setFocus(name);
+      }}
+      className={className}
+    >
       {/* <p>{watch("product")}</p> */}
       <label
         htmlFor={name}

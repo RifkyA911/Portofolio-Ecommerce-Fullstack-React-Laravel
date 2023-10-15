@@ -128,7 +128,7 @@ export default function Products() {
     if (products) {
       // Mengambil semua kategori unik dari data
       setSelect([...new Set(products.map((item) => item.category))]);
-      // console.log(select);
+      console.log(select);
     }
   }, [searchTerm, products]);
 

@@ -44,7 +44,8 @@ export const ProductsInsertForm = (props) => {
   } = useContext(ModalContext);
   //   const nameValue = getValues("barcode");
   //   console.log(nameValue);
-
+  const barcodeInputRef = useRef(null);
+  const nameInputRef = useRef(null);
   return (
     <>
       <div className="flex flex-row">
