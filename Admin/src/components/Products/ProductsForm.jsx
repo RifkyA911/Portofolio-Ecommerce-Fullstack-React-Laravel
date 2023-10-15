@@ -14,7 +14,7 @@ import ModalContext from "../Modal";
 import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../../utils/RenderIcons";
-import { convertISODateToJSDate } from "../../utils/DateFormatter";
+import { convertISODateToJSDate } from "../../utils/Formatter";
 import {
   TextInput,
   SelectInput,
@@ -59,7 +59,7 @@ export const ProductsInsertForm = (props) => {
           />
         </div>
         {/* Form */}
-        <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
+        <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium">
           {/* {console.log(name, ":", getValues(name))}  {setValue("barcode", "HJAHAHA")} */}
           <TextInput
             className={`flex gap-4 flex-col w-full`}
@@ -169,7 +169,7 @@ export const ProductsAlterForm = (props) => {
           />
         </div>
         {/* Form */}
-        <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
+        <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium">
           {/* {console.log(name, ":", getValues(name))}  {setValue("barcode", "HJAHAHA")} */}
           {/* {console.log("form_values", ":", getValues())} */}
           {/* {console.log("data", ":", data)} */}

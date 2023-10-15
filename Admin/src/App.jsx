@@ -21,6 +21,7 @@ import LoginRouter from "./Config/LoginRouter";
 import MyJump from "./utils/MyJump";
 import MyDebuggerPanel from "./utils/MyDebuggerPanel";
 import MyToDoList from "./utils/MyToDoList";
+import { updateSession } from "./Redux/Slices/UserSlice";
 // import Summary from "./utils/Summary";
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
     (state) => state.UI
   );
-  const { logged } = useSelector((state) => state.user);
+  const { logged, user } = useSelector((state) => state.user);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,39 +40,37 @@ function App() {
   const appMode = import.meta.env.MODE;
   // console.info("Mode:", import.meta.env);
   // console.log(location);
-  const token =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2FkbWluL2xvZ2luIiwiaWF0IjoxNjk3MTg4MzU5LCJleHAiOjE2OTcxOTE5NTksIm5iZiI6MTY5NzE4ODM1OSwianRpIjoiWEE3eTR5N1FhM0E5WVRLRSIsInN1YiI6IjEiLCJwcnYiOiJkZjg4M2RiOTdiZDA1ZWY4ZmY4NTA4MmQ2ODZjNDVlODMyZTU5M2E5In0.WjAHEtv1iKMfET3NUbaVYzSFDzRCOEFC8SiKFRmS0uE";
-  // console.log(jwt.verify(token, import.meta.env.VITE_JWT_SECRET));
 
   useEffect(() => {
     if (userSession == null) {
-      // tambahkan semua kategori
       navigate("/login");
     }
-    //   //this code else bellow won't works if you at /login
-    // else {
-    //   setuUserSession(true);
-    //   console.log("proceed navigate to /");
-    //   navigate("/");
-    // }
+    dispatch(updateSession({ user: getUser() }));
+    // console.log(user);
   }, [userSession]);
   return (
     <>
-      {userSession !== null ? (
+      {logged ? (
         <>
-          <MyAppRoutes />
-        </>
-      ) : (
-        <>
-          <LoginRouter />
-        </>
-      )}
-      {/* Developer Panel */}
-      {appMode == "development" ? (
-        <>
-          <MyDebuggerPanel />
-          {/* <MyToDoList /> */}
-          <MyJump />
+          {userSession !== null ? (
+            <>
+              <MyAppRoutes />
+            </>
+          ) : (
+            <>
+              <LoginRouter />
+            </>
+          )}
+          {/* Developer Panel */}
+          {appMode == "development" ? (
+            <>
+              <MyDebuggerPanel />
+              {/* <MyToDoList /> */}
+              <MyJump />
+            </>
+          ) : (
+            <></>
+          )}
         </>
       ) : (
         <></>

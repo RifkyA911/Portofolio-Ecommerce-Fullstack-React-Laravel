@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { sideNavigation } from "../Config/PagesLink";
 
 // REDUX
@@ -9,10 +9,9 @@ import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utility
 import { MuiIcon } from "../utils/RenderIcons";
 import { getUser } from "../utils/Session/Admin";
-import { getCurrentEndpoint } from "../utils/Navigation";
 
 const Sidebar = () => {
-  const [current, setCurrent] = useState("Dashboard");
+  const [current, setCurrent] = useState();
 
   // REDUX
   const { BgColor, textColor, screenWidth, sidebarOpen } = useSelector(
@@ -21,10 +20,15 @@ const Sidebar = () => {
 
   const { showNav, currentLocation } = useSelector((state) => state.navigation);
   const dispatch = useDispatch();
-  // dispatch(setCurrentSidebar(getCurrentEndpoint()));
+  const location = useLocation();
+
   const userSession = getUser();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (location) {
+      dispatch(setCurrentSidebar(location.pathname));
+    }
+  }, [location]);
 
   const SidebarHandler = (key) => {
     setCurrent(key); // active current page
@@ -72,7 +76,7 @@ const Sidebar = () => {
                                 to={link.href}
                                 onClick={() => SidebarHandler(link.name)}
                                 className={`flex flex-row items-center w-full px-6 py-2 rounded-lg ${
-                                  link.name === current
+                                  link.href === currentLocation
                                     ? "bg-violet-200 text-gray-800"
                                     : "hover:text-gray-800 hover:bg-violet-100"
                                 }`}

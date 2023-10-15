@@ -4,14 +4,15 @@ import axios from "axios";
 import { Container, Content } from "../Layout";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 
 // Utils
 import { MuiIcon } from "./../utils/RenderIcons";
 import { getUser } from "../utils/Session/Admin";
-import { getCurrentEndpoint } from "./../utils/Navigation";
 import { updateSession } from "../Redux/Slices/UserSlice";
 import { Alert, WarningAlert } from "../components/Alert";
+import { TextInput } from "../components/Form";
+import { ConfirmButton } from "../components/Button";
+
 const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
 
 export default function MyProfile() {
@@ -30,8 +31,6 @@ export default function MyProfile() {
     (state) => state.UI
   );
 
-  const dispatch = useDispatch();
-  dispatch(setCurrentSidebar(getCurrentEndpoint()));
   const userSession = getUser();
 
   useEffect(() => {
@@ -100,7 +99,7 @@ export default function MyProfile() {
         ) : (
           <>
             <Content pageName="My Profile">
-              <WarningAlert message="Nunggu JWT Progress" />
+              <WarningAlert message="Proceed Forms and Drag Pict" />
               <div className="MyProfile">
                 <div className="font-bold justify-center lg:max-h-full">
                   <div className="flex flex-wrap lg:flex-nowrap flex-row py-4">
@@ -127,6 +126,12 @@ export default function MyProfile() {
                           <div className="divider divider-horizontal"></div>
                           <li className="flex flex-col w-96 justify-center items-center py-10">
                             <div className="flex flex-col divide-slate-700 w-[350px] justify-center px-4">
+                              {/* <TextInput
+                                className={`flex gap-4 flex-col w-full`}
+                                label="Email"
+                                name="email"
+                                placeholder="Masukkan Kode Barcode/No. Product"
+                              /> */}
                               <label className="mb-4 spr-4 block text-left">
                                 <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
                                   Email
@@ -195,8 +200,13 @@ export default function MyProfile() {
                                 />
                               </label>
                               <div className="pt-10">
+                                <ConfirmButton
+                                  onClick={() => console.log("s")}
+                                  confirmType="alter"
+                                />
+
                                 <button
-                                  className="btn btn-warning font-bold outline-none border-none w-full"
+                                  className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-yellow-500 to-amber-500 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
                                   type="submit"
                                 >
                                   {<MuiIcon iconName="SettingsSuggest" />}

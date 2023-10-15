@@ -7,8 +7,10 @@ import { DangerAlert, WarningAlert } from "../components/Alert";
 function Login() {
   //states
   const [auth_key, setAuth_key] = useState(import.meta.env.VITE_ADMIN_AUTH_KEY);
-  const [email, setEmail] = useState("super.duper@gmail.com");
-  const [password, setPassword] = useState("superadmin");
+  const [email, setEmail] = useState(import.meta.env.VITE_SUPER_ADMIN_EMAIL);
+  const [password, setPassword] = useState(
+    import.meta.env.VITE_SUPER_ADMIN_PASSWORD
+  );
 
   // redux state
   const { loading, error } = useSelector((state) => state.user);

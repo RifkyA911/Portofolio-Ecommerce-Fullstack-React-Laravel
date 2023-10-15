@@ -1,4 +1,4 @@
-import { convertISODateToJSDate } from "../utils/DateFormatter";
+import { convertISODateToJSDate } from "../utils/Formatter";
 
 export const DateRecord = (props) => {
   const { data } = props;

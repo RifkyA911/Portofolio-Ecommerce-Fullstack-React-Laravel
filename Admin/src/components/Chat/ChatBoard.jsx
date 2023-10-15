@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { MuiIcon } from "../../utils/RenderIcons";
-import { DateFormatter } from "../../utils/DateFormatter";
+import { DateFormatter } from "../../utils/Formatter";
 
 export const ChatBoard = (props) => {
   const { messages } = props;

@@ -25,6 +25,8 @@ import {
   ProductsInsertForm,
 } from "./Products/ProductsForm";
 
+const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const ModalContext = createContext();
@@ -214,9 +216,6 @@ export const InfoModal = (props) => {
                           {table_id?.updated_at || "NaN"}
                         </small>
                       </div>
-                      <small name="" id="" cols="30" rows="10">
-                        {table_id?.description || "NaN"}
-                      </small>
                     </div>
                     <form
                       method="dialog"
@@ -237,7 +236,7 @@ export const InfoModal = (props) => {
 };
 
 // setData({
-//   superAuthorizationPassword: "superAdmin",
+//   superAuthorizationPassword: SuperAdminKey,
 //   id: null,
 //   email: null,
 //   username: null,
@@ -312,7 +311,7 @@ export const ActionModalForm = (props) => {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      superAuthorizationPassword: "superAdmin",
+      superAuthorizationPassword: SuperAdminKey,
     },
   });
 
@@ -332,7 +331,7 @@ export const ActionModalForm = (props) => {
             switch (table) {
               case `admins`:
                 setData({
-                  superAuthorizationPassword: "superAdmin",
+                  superAuthorizationPassword: SuperAdminKey,
                   id: response.data.data.id,
                   email: response.data.data.email,
                   username: response.data.data.username,
@@ -344,7 +343,7 @@ export const ActionModalForm = (props) => {
                 break;
               case `products`:
                 setData({
-                  superAuthorizationPassword: "superAdmin",
+                  superAuthorizationPassword: SuperAdminKey,
                   id: response.data.data.id,
                   barcode: response.data.data.barcode,
                   name: response.data.data.name,
@@ -388,7 +387,7 @@ export const ActionModalForm = (props) => {
         const dataArray = Object.values(table_id);
         const modifiedDataArray = dataArray.map((item) => ({
           ...item,
-          superAuthorizationPassword: "superAdmin",
+          superAuthorizationPassword: SuperAdminKey,
         }));
         setData(modifiedDataArray);
       }
@@ -412,7 +411,7 @@ export const ActionModalForm = (props) => {
           passwordRef.current = watch("password", "");
 
           initialFormValue = {
-            superAuthorizationPassword: "superAdmin",
+            superAuthorizationPassword: SuperAdminKey,
             email: "",
             username: "",
             role: 1,
@@ -423,7 +422,7 @@ export const ActionModalForm = (props) => {
           break;
         case `products`:
           initialFormValue = {
-            superAuthorizationPassword: "superAdmin",
+            superAuthorizationPassword: SuperAdminKey,
             pict: "default.jpg",
           };
           break;
@@ -434,7 +433,7 @@ export const ActionModalForm = (props) => {
       switch (table) {
         case `admins`:
           initialFormValue = {
-            superAuthorizationPassword: "superAdmin",
+            superAuthorizationPassword: SuperAdminKey,
             adminsId: data.id,
             email: data.email,
             username: data.username,
@@ -447,7 +446,7 @@ export const ActionModalForm = (props) => {
           break;
         case `products`:
           initialFormValue = {
-            superAuthorizationPassword: "superAdmin",
+            superAuthorizationPassword: SuperAdminKey,
             productId: data.id,
             barcode: data.barcode,
             name: data.name,
@@ -469,7 +468,7 @@ export const ActionModalForm = (props) => {
       switch (table) {
         case `admins`:
           initialFormValue = {
-            superAuthorizationPassword: "superAdmin",
+            superAuthorizationPassword: SuperAdminKey,
             adminsId: data.id,
             email: data.email,
             username: data.username,
@@ -479,7 +478,7 @@ export const ActionModalForm = (props) => {
           break;
         case `products`:
           initialFormValue = {
-            superAuthorizationPassword: "superAdmin",
+            superAuthorizationPassword: SuperAdminKey,
             productsId: data.id,
             name: data.name,
           };
@@ -692,7 +691,7 @@ export const ActionModalForm = (props) => {
                               "Your Credentials superAuthorizationPassword are required",
                           })}
                         />
-                        {setValue("superAuthorizationPassword", "superAdmin")}{" "}
+                        {setValue("superAuthorizationPassword", SuperAdminKey)}{" "}
                         {/* Panggilan setValue diluar input */}
                         {table === "admins" && (
                           <>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Routes,
   Route,
@@ -27,19 +27,19 @@ import NotFound, {
   Unauthorized,
 } from "../Pages/Error/Error";
 import { getUser } from "../utils/Session/Admin";
+import { useDispatch } from "react-redux";
+import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 
 function MyAppRoutes() {
-  const navigate = useNavigate();
-
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  // const dispatch = useDispatch();
   const currentUser = getUser();
-  // console.log(currentUser.role);
-  // useEffect(() => {
-  //   if (userSession == null) {
-  //     // tambahkan semua kategori
-  //     navigate("/");
-  //   }
-  // }
 
+  // useEffect(() => {
+  //   dispatch(setCurrentSidebar(location.pathname));
+  //   console.log(location);
+  // }, [location]);
   // Konten komponen
   return (
     <>
@@ -47,9 +47,10 @@ function MyAppRoutes() {
       <Navbar />
       <Routes>
         <Route exact path="/" element={<Dashboard />} />
-        {currentUser.role !== 0 ? (
+        {currentUser.role !== 0 && (
           <Route path="/admins" element={<Unauthorized />} />
-        ) : (
+        )}
+        {currentUser.role === 0 && (
           <Route path="/admins" element={<Admins />} />
         )}
         <Route path="/chat" element={<Chat />} />

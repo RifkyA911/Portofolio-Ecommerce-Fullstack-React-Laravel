@@ -8,6 +8,9 @@ import {
   Th,
   Td,
 } from "../components/Table/MyTableEngine";
+import jwtDecode from "jwt-decode";
+
+import Barcode from "react-jsbarcode";
 // Layout
 import { Container, Content } from "../Layout";
 // REDUX
@@ -81,6 +84,10 @@ export default function Products() {
     }
   };
 
+  // useEffect(() => {
+  //   console.log(products);
+  // }, [products]);
+
   useEffect(() => {
     fetchProducts(URL);
   }, [paginate, rows]);
@@ -127,8 +134,8 @@ export default function Products() {
     }
     if (products) {
       // Mengambil semua kategori unik dari data
-      setSelect([...new Set(products.map((item) => item.category))]);
-      console.log(select);
+      setSelect([...new Set(products.map((item) => item.category.name))]); /// get category
+      // console.log(select);
     }
   }, [searchTerm, products]);
 
@@ -236,7 +243,6 @@ export default function Products() {
           : null,
         style: `capitalize px-4`,
       })),
-
       td: `border-2 py-2 px-2 `,
     };
   }
@@ -274,6 +280,7 @@ export default function Products() {
                   <InfoModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
+                  <div className="divider">Product List</div>
                   <MyTableEngine {...MyTableEngineProps} className="rounded-xl">
                     <Thead className={`${BgOuterTable} ${textColor} `}>
                       <Tr key="TableHead" className={table_styling.tr}>
@@ -371,10 +378,14 @@ export default function Products() {
                               </Th>
                             </>
                           )}
-                          <Td className={`${table_styling.td} w-auto`}>
-                            <div className="line-clamp-5">{row.barcode}</div>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            <Barcode
+                              className={`h-[68px] p-0 m-0 max-w-[150px]`}
+                              value={row.barcode}
+                              // options={{ format: "EAN13" }}
+                            />
                           </Td>
-                          <Td className={`${table_styling.td} 2/12`}>
+                          <Td className={`${table_styling.td} w-1/12`}>
                             <ProductImage
                               data={row}
                               onProductPictureClick={() => {
@@ -386,7 +397,7 @@ export default function Products() {
                             {row.name}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
-                            {row.category}
+                            {row.category?.name}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
                             {row.stock}

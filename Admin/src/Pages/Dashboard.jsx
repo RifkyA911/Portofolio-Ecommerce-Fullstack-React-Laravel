@@ -99,7 +99,7 @@ const Dashboard = (props) => {
                                 <tr key={product.id}>
                                   <th>{index + 1}</th>
                                   <td>{product.name}</td>
-                                  <td>{product.category}</td>
+                                  <td>{product.category.name}</td>
                                   <td>{product.price}</td>
                                   <td>
                                     <div className="rating rating-xs">

@@ -14,7 +14,7 @@ import ModalContext from "../Modal";
 import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../../utils/RenderIcons";
-import { convertISODateToJSDate } from "../../utils/DateFormatter";
+import { convertISODateToJSDate } from "../../utils/Formatter";
 import { ConfirmButton } from "../Button";
 
 // export const BackupForm = (props) => {

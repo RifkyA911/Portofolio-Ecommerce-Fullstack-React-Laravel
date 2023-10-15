@@ -26,11 +26,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Admin::create([
-            'username' => 'Superidol Admin 的笑容 都没你的甜 八月正午的阳光 都没你耀眼 热爱105°C的你 滴滴清纯的蒸馏水',
+            'username' => 'Silver Wolf W11X',
             'email' => 'super.duper@gmail.com',
             'password' => Hash::make('superadmin'),
             'role' => '0',
-            'pict' => '78949689_p1.jpg'
+            'pict' => 'silver_wolf.jpg'
         ]);
         Admin::create([
             'username' => 'Admin 1',

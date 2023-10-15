@@ -45,7 +45,9 @@ const userSlice = createSlice({
     },
     reducers: {
         updateSession: (state, action)=>{
-            state.user = action.payload
+            // console.log(action.payload.user)
+            state.user = action.payload;
+            state.logged = true;
         }
     },
     extraReducers: (builder)=>{
@@ -55,7 +57,7 @@ const userSlice = createSlice({
             state.user = null;
             state.error = null;
         })
-        .addCase(loginUser.fulfilled, (state, action)=>{
+        .addCase(loginUser.fulfilled, (state, action)=>{ // kenapa state tidak berubah???
             state.loading = false;
             state.user = action.payload;
             state.logged = true;
