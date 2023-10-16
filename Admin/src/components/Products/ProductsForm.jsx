@@ -137,6 +137,7 @@ export const ProductsAlterForm = (props) => {
     register,
     getValues,
     setValue,
+    setFocus,
     setError,
     control,
     errors,
@@ -178,12 +179,22 @@ export const ProductsAlterForm = (props) => {
             label="Barcode/No. Product"
             name="barcode"
             placeholder="Masukkan Kode Barcode/No. Product"
+            formContext={ModalContext}
+            // register={register}
+            // setValue={setValue}
+            // setFocus={setFocus}
+            // errors={errors}
           />
           <TextInput
             className={`flex gap-4 flex-col w-full`}
             label="Product Name"
             name="name"
             placeholder="Masukkan Nama Product"
+            formContext={ModalContext}
+            // register={register}
+            // setValue={setValue}
+            // setFocus={setFocus}
+            // errors={errors}
           />
           <div className="w-full flex flex-row gap-4 justify-between items-center">
             <SelectInput

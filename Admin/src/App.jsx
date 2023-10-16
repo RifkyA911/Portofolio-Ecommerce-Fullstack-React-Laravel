@@ -26,7 +26,7 @@ import { updateSession } from "./Redux/Slices/UserSlice";
 
 function App() {
   // login component
-  const [userSession, setuUserSession] = useState(getUser());
+  const [userSession, setUserSession] = useState(getUser()); // need to change
 
   // REDUX
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
@@ -44,36 +44,37 @@ function App() {
   useEffect(() => {
     if (userSession == null) {
       navigate("/login");
+      dispatch(updateSession({ user: null }));
     }
+    // console.log(`logged:`, logged);
+    // console.log(`userSession:`, userSession);
+    // console.log(`user:`, user);
+    // setUserSession(getUser())
     dispatch(updateSession({ user: getUser() }));
     // console.log(user);
   }, [userSession]);
   return (
     <>
-      {logged ? (
+      {userSession !== null ? (
         <>
-          {userSession !== null ? (
+          {logged && (
             <>
               <MyAppRoutes />
             </>
-          ) : (
-            <>
-              <LoginRouter />
-            </>
-          )}
-          {/* Developer Panel */}
-          {appMode == "development" ? (
-            <>
-              <MyDebuggerPanel />
-              {/* <MyToDoList /> */}
-              <MyJump />
-            </>
-          ) : (
-            <></>
           )}
         </>
       ) : (
-        <></>
+        <>
+          <LoginRouter />
+        </>
+      )}
+      {/* Developer Panel */}
+      {appMode == "development" && (
+        <>
+          <MyDebuggerPanel />
+          {/* <MyToDoList /> */}
+          <MyJump />
+        </>
       )}
     </>
   );

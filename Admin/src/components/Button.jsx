@@ -45,7 +45,7 @@ export const ActionButton = (props) => {
 };
 
 export const ConfirmButton = (props) => {
-  const { confirmType, onClick } = props;
+  const { className, confirmType, onClick, children } = props;
   return (
     <>
       <div
@@ -57,6 +57,7 @@ export const ConfirmButton = (props) => {
             className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
           >
             <MuiIcon iconName="AddBoxRounded" /> Add New Data
+            {children}
           </button>
         )}
         {confirmType === "alter" && (

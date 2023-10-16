@@ -1,9 +1,10 @@
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useContext, useEffect, useId, useRef, useState } from "react";
 import Select from "react-select";
 
-import { useModalContext } from "./Modal";
+import { ModalContext, useModalContext } from "./Modal";
 import { Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import { MuiIcon } from "../utils/RenderIcons";
 
 export const TextInput = (props) => {
   const {
@@ -13,24 +14,29 @@ export const TextInput = (props) => {
     autoFocus = false,
     placeholder,
     type = name,
+    formContext,
     onChange,
+    // register,
+    // setValue,
+    // setFocus,
+    // errors,
   } = props;
 
+  // react-hook-form
   const {
-    data,
-    formType,
-    // react-hook-form
+    // data,
+    // formType,
     getValues,
     register,
     setValue,
     setFocus,
+    errors,
     setError,
     control,
-    errors,
     isValid,
     dirtyFields,
     watch,
-  } = useModalContext();
+  } = useContext(formContext);
 
   const id = useId();
 
@@ -46,34 +52,42 @@ export const TextInput = (props) => {
     },
   };
   return (
-    <div
-      onClick={() => {
-        setFocus(name);
-      }}
-      className={className}
-    >
-      {/* <p>{watch("product")}</p> */}
-      <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 sz-[-1]">
-        {label}
-        {errors[name] && (
-          <span className="absolute right-0 text-red-500">
-            {errors[name].message}
-          </span>
-        )}
-      </label>
-      <input
-        id={id}
-        type={type}
-        placeholder={placeholder.toLowerCase()}
-        className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-        {...register(name, validationRules)}
-        onChange={(e) => {
-          console.log(name, ":", e.target.value);
-          setValue(name, e.target.value);
-        }}
-        // onClick={console.log(name, ":", getValues(name))}
-      />
-    </div>
+    <>
+      {(name != "password" ||
+        name != "password_confirmation" ||
+        name != "newPassword" ||
+        name != "newPassword_confirmation") && (
+        <div
+          onClick={() => {
+            setFocus(name);
+          }}
+          className={className}
+        >
+          {/* <p>{watch("product")}</p> */}
+          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 sz-[-1]">
+            {label}
+            {errors[name] && (
+              <span className="absolute right-0 text-red-500">
+                {errors[name].message}
+              </span>
+            )}
+          </label>
+          <input
+            id={id}
+            autoFocus={autoFocus}
+            type={type}
+            placeholder={placeholder.toLowerCase()}
+            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+            {...register(name, validationRules)}
+            onChange={(e) => {
+              console.log(name, ":", e.target.value);
+              setValue(name, e.target.value);
+            }}
+            // onClick={console.log(name, ":", getValues(name))}
+          />
+        </div>
+      )}
+    </>
   );
 };
 
@@ -315,6 +329,97 @@ export const SelectInput = (props) => {
             )}
             rules={{ required: "select one" }}
           />
+        </div>
+      )}
+    </>
+  );
+};
+
+export const PasswordInput = (props) => {
+  const {
+    className,
+    label,
+    name,
+    autoFocus = false,
+    placeholder,
+    type = name,
+    formContext,
+    onChange,
+    // register,
+    // setValue,
+    // setFocus,
+    // errors,
+  } = props;
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  // react-hook-form
+  const {
+    // data,
+    // formType,
+    getValues,
+    register,
+    setValue,
+    setFocus,
+    errors,
+    setError,
+    control,
+    isValid,
+    dirtyFields,
+    watch,
+  } = useContext(formContext);
+
+  const id = useId();
+
+  const validationRules = {
+    required: `This ${label} field is required`,
+    maxLength: {
+      value: 22,
+      message: label + " input must not exceed 22 characters",
+    },
+    minLength: {
+      value: 6,
+      message: label + " input must exceed 6 characters",
+    },
+    validate: (value) => {
+      value <= 6 || "Passwords kurang";
+    },
+  };
+  return (
+    <>
+      {(name == "password" ||
+        name == "password_confirmation" ||
+        name == "newPassword" ||
+        name == "newPassword_confirmation") && (
+        <div
+          onClick={() => {
+            setFocus(name);
+          }}
+          className={`relative ${className}`}
+        >
+          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 sz-[-1]">
+            {label}
+            {errors[name] && (
+              <span className="absolute right-0 text-red-500">
+                {errors[name].message}
+              </span>
+            )}
+          </label>
+          <input
+            type={showPassword ? "text" : name}
+            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+            {...register(name, validationRules)}
+          />
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute bg-transparent w-4 right-[20px] bottom-[8px] cursor-pointer"
+          >
+            <MuiIcon
+              iconName={
+                showPassword ? "VisibilityRounded" : "VisibilityOffRounded"
+              }
+            />
+          </span>
         </div>
       )}
     </>

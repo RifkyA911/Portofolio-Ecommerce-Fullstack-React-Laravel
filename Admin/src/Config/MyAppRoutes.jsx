@@ -37,11 +37,13 @@ function MyAppRoutes() {
   const currentUser = getUser();
 
   // useEffect(() => {
-  //   dispatch(setCurrentSidebar(location.pathname));
-  //   console.log(location);
-  // }, [location]);
+  //   // dispatch(setCurrentSidebar(location.pathname));
+  //   console.log(currentUser);
+  // }, [currentUser]);
   // Konten komponen
   return (
+    // <>
+    //   {currentUser !== null && currentUser !== undefined ? (
     <>
       <Sidebar />
       <Navbar />
@@ -67,6 +69,10 @@ function MyAppRoutes() {
       </Routes>
       <Footer />
     </>
+    //   ) : (
+    //     <p>no session</p>
+    //   )}
+    // </>
   );
 }
 export default MyAppRoutes;

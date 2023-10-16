@@ -29,7 +29,7 @@ const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const ModalContext = createContext();
+export const ModalContext = createContext();
 
 export const useModalContext = () => {
   return useContext(ModalContext);
