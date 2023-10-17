@@ -1,18 +1,26 @@
 import React, { useState, useEffect, createContext } from "react";
 import axios from "axios";
+import { useDropzone } from "react-dropzone";
+
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 // Layout and Components
 import { Container, Content } from "../Layout";
-import { Alert, WarningAlert } from "../components/Alert";
+import {
+  Alert,
+  DangerAlert,
+  SuccessAlert,
+  WarningAlert,
+} from "../components/Alert";
 import { PasswordInput, TextInput } from "../components/Form";
 import { ConfirmButton } from "../components/Button";
 // Utils
 import { MuiIcon } from "./../utils/RenderIcons";
 import { getUser } from "../utils/Session/Admin";
-import { updateSession } from "../Redux/Slices/UserSlice";
+import { updateCredentials, updateSession } from "../Redux/Slices/UserSlice";
 import { useForm, Controller } from "react-hook-form";
 import { SkeltonForm } from "../components/Skelton/SkeltonForm";
+import { CropperModal } from "../components/Modal";
 
 const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -20,21 +28,27 @@ const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 export const MyProfileContext = createContext();
 
 export default function MyProfile() {
-  const [toggleForm, setToggleForm] = useState(false);
+  const [toggleForm, setToggleForm] = useState({
+    inputChange: null,
+    passwordChange: false,
+    btnChange: false,
+  });
+  const [change, setChange] = useState(null);
   const [fileUpload, setFileUpload] = useState(false);
   const [filePath, setFilePath] = useState("./src/assets/admin_avatar/");
-  const [formData, setFormData] = useState({
-    id: null,
-    email: "",
-    username: "",
-    pict: "",
-    newPassword: null,
-    newPassword_confirmation: null,
-  });
+  const [statusMessage, setStatusMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(true);
   // REDUX
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
     (state) => state.UI
   );
+
+  const { logged, adminsId, id, email, username, pict } = useSelector(
+    (state) => state.user
+  );
+
+  const dispatch = useDispatch();
 
   // react-hook-form
   const {
@@ -51,6 +65,7 @@ export default function MyProfile() {
     mode: "onChange",
     defaultValues: {
       superAuthorizationPassword: SuperAdminKey,
+      pict: "default.png",
     },
   });
 
@@ -58,34 +73,49 @@ export default function MyProfile() {
 
   let initialFormValue;
   useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData, //spread opreator object
-      id: userSession.id,
-      email: userSession.email,
-      username: userSession.username,
-      pict: userSession.pict,
-    }));
     initialFormValue = {
       // PS: ganti nanti ambil dari redux
       superAuthorizationPassword: SuperAdminKey,
-      adminsId: userSession.id,
-      email: userSession.email,
-      username: userSession.username,
-      pict: userSession.pict,
+      id: id,
+      adminsId: adminsId,
+      email: email,
+      username: username,
+      pict: pict,
+      password: "superadmin",
+      password_confirmation: null,
+      newPassword: null,
+      newPassword_confirmation: null,
     };
     for (const key in initialFormValue) {
       setValue(key, initialFormValue[key]);
+      setLoading(false);
     }
     initialFormValue = null;
-  }, []);
+    // console.log(getValues());
+  }, [statusMessage, errorMessage]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  useEffect(() => {
+    // console.log("sd");
+    setToggleForm({ ...toggleForm, btnChange: (toggleForm.btnChange = true) });
+  }, [change]);
+
+  useEffect(() => {
+    if (toggleForm) {
+      setValue("newPassword", null);
+      setValue("newPassword_confirmation", null);
+    } else {
+      setValue("password", null);
+    }
+  }, [toggleForm.passwordChange]);
+
+  const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
+    useDropzone({
+      accept: {
+        "image/jpeg": [],
+        "image/png": [],
+      },
+    });
+
   function uploadPicture(e) {
     const file = e.target.files[0];
     setFileUpload(true);
@@ -96,15 +126,19 @@ export default function MyProfile() {
     }));
   }
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (form) => {
+    // console.log(form);
     try {
-      const response = await axios.put(URL_ADMIN, formData);
-      console.log("data send successfully:", response.data);
+      const response = await axios.put(URL_ADMIN, form);
+      setStatusMessage(response.data.message);
+      // console.log("data send successfully:", response.data);
       // dispatch(updateSession(formData.username));
     } catch (error) {
-      console.error("Error updating admin:", error);
+      // console.error("Error updating admin:", error);
+      setErrorMessage(error.response.data.message);
     }
+    // finally {}
+    dispatch(updateCredentials({ user: form }));
   };
 
   const MyProfileContextValue = {
@@ -126,41 +160,47 @@ export default function MyProfile() {
     <>
       <Container>
         <MyProfileContext.Provider value={MyProfileContextValue}>
-          {!formData.id ? (
+          {loading ? (
             <SkeltonForm />
           ) : (
             <>
+              {/* <WarningAlert message="Proceed Forms and Drag Pict" /> */}
               <Content pageName="My Profile">
-                <WarningAlert message="Proceed Forms and Drag Pict" />
+                {errorMessage && <DangerAlert message={errorMessage} />}
+                {statusMessage && <SuccessAlert message={statusMessage} />}
+                {/* {console.log(errors.adminsId.message)} */}
+                {errors?.adminsId?.message && (
+                  <>
+                    {console.log(getValues("adminsId"))}
+                    <DangerAlert message={errors.adminsId.message} />
+                  </>
+                )}
                 <div className="flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-full py-4">
                   <form
-                    className="font-base flex flex-row justify-center p-4 bg-white rounded-xl shadow-sm text-black"
+                    className="font-base flex flex-row justify-center p-4 bg-white rounded-xl shadow-md text-black"
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                   >
                     <input
                       type="hidden"
                       {...register("adminsId", {
-                        required: `not allowed`,
+                        required: `adminsId value not exist`,
                       })}
                     />
                     <ul className="flex flex-col lg:flex-row lg:justify-center w-full ">
                       <li className="flex flex-col w-96 py-16">
                         <div className="flex-col justify-center items-center form-control w-full ">
                           <img
-                            src={`${filePath}${
-                              getValues("pict")
-                                ? getValues("pict")
-                                : "default.png"
-                            }`}
+                            src={`${filePath}${getValues("pict")}`}
                             className="w-60 h-60 rounded-[7rem] shadow-md shadow-slate-400"
                           />
-                          <input
+                          {/* <input
                             type="file"
                             name="pict"
                             className="file-input file-input-bordered file-input-md w-64 text-sm mt-6"
                             onChange={uploadPicture}
-                          />
+                          /> */}
+                          <CropperModal />
                         </div>
                       </li>
                       <div className="divider divider-horizontal"></div>
@@ -180,7 +220,7 @@ export default function MyProfile() {
                             placeholder="Masukkan Username"
                             formContext={MyProfileContext}
                           />
-                          {!toggleForm ? (
+                          {!toggleForm.passwordChange ? (
                             <>
                               <PasswordInput
                                 className={`flex gap-4 flex-col w-full`}
@@ -208,86 +248,37 @@ export default function MyProfile() {
                               />
                             </>
                           )}
-
-                          {/* DDFDFDF */}
-                          {/* <div className="hidden">
-                                  <label className="mb-4 spr-4 block text-left">
-                                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
-                                      Email
-                                    </span>
-                                    <input
-                                      type="email"
-                                      name="email"
-                                      className="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
-                                      value={formData.email}
-                                      onChange={handleChange}
-                                      placeholder="Email"
-                                    />
-                                  </label>
-                                  <label className="mb-4 spr-4 block text-left">
-                                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
-                                      Username
-                                    </span>
-                                    <input
-                                      type="username"
-                                      name="username"
-                                      className="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
-                                      value={formData.username}
-                                      onChange={handleChange}
-                                      placeholder="Username"
-                                    />
-                                  </label>
-                                  <label className="mb-4 spr-4 block text-left">
-                                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
-                                      Password "superadmin"
-                                    </span>
-                                    <input
-                                      className="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
-                                      type="password"
-                                      name="password"
-                                      onChange={handleChange}
-                                      placeholder="Password"
-                                    />
-                                  </label>
-                                  <label className="mb-4 spr-4 block text-left">
-                                    <span className="after:content-[''] after:ml-0.5 after:text-blue-500 block text-sm font-medium text-slate-700">
-                                      New Password
-                                    </span>
-                                    <input
-                                      className="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
-                                      type="password"
-                                      name="newPassword"
-                                      onChange={handleChange}
-                                      placeholder="New Password"
-                                    />
-                                  </label>
-                                  <label className="mb-4 spr-4 block text-left">
-                                    <span className="after:content-[''] after:ml-0.5 after:text-blue-500 block text-sm font-medium text-slate-700">
-                                      Confirm New Password
-                                    </span>
-                                    <input
-                                      className="mt-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
-                                      type="password"
-                                      name="newPassword_confirmation"
-                                      onChange={handleChange}
-                                      placeholder="Confirm New Password"
-                                    />
-                                  </label>
-                                </div> */}
-                          <div className="pt-10">
+                          <div>
                             <button
-                              onClick={() => setToggleForm(!toggleForm)}
-                              className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-yellow-500 to-amber-500 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-                              type="submit"
+                              onClick={() =>
+                                setToggleForm({
+                                  ...toggleForm, // Menyalin nilai properti yang ada
+                                  passwordChange: !toggleForm.passwordChange, // Mengubah properti btnChange
+                                })
+                              }
+                              className={`btn btn-sm outline-none border-none transition-all duration-300
+                            ${
+                              !toggleForm.passwordChange
+                                ? "bg-amber-500 "
+                                : "bg-gray-500 "
+                            }
+                             rounded-lg text-white font-roboto-bold font-bold capitalize`}
+                              type="button"
                             >
-                              {<MuiIcon iconName="SettingsSuggest" />}
-                              New Password
+                              {<MuiIcon iconName="AutorenewRounded" />}
+                              {!toggleForm.passwordChange
+                                ? "New Password"
+                                : "Cancel"}
                             </button>
-                            <ConfirmButton
-                              onClick={() => console.log("s")}
-                              confirmType="alter"
-                            />
                           </div>
+                          {toggleForm.btnChange && (
+                            <div className="pt-10">
+                              <ConfirmButton
+                                onClick={() => console.log("s")}
+                                confirmType="alter"
+                              />
+                            </div>
+                          )}
                         </div>
                       </li>
                     </ul>

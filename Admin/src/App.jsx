@@ -21,7 +21,11 @@ import LoginRouter from "./Config/LoginRouter";
 import MyJump from "./utils/MyJump";
 import MyDebuggerPanel from "./utils/MyDebuggerPanel";
 import MyToDoList from "./utils/MyToDoList";
-import { updateSession } from "./Redux/Slices/UserSlice";
+import {
+  clearSession,
+  updateCredentials,
+  updateSession,
+} from "./Redux/Slices/UserSlice";
 // import Summary from "./utils/Summary";
 
 function App() {
@@ -44,13 +48,14 @@ function App() {
   useEffect(() => {
     if (userSession == null) {
       navigate("/login");
-      dispatch(updateSession({ user: null }));
+      dispatch(clearSession());
+    } else {
+      dispatch(updateCredentials({ user: getUser() }));
     }
     // console.log(`logged:`, logged);
     // console.log(`userSession:`, userSession);
     // console.log(`user:`, user);
     // setUserSession(getUser())
-    dispatch(updateSession({ user: getUser() }));
     // console.log(user);
   }, [userSession]);
   return (
