@@ -45,12 +45,22 @@ export const ActionButton = (props) => {
 };
 
 export const ConfirmButton = (props) => {
-  const { className, confirmType, onClick, children } = props;
+  const { className, confirmType, type, onClick, children } = props;
   return (
     <>
       <div
         className={`sticky bottom-0 z-10 py-2 shadow-inner shadow-slate-50 bg-slate-100`}
       >
+        {confirmType === "confirm" && (
+          <button
+            onClick={onClick}
+            type={type}
+            className="btn bg-gradient-to-tr hover:from-green-500 hover:to-teal-500 transition-all duration-500 from-green-500 to-lime-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
+          >
+            <MuiIcon iconName="CheckRounded" /> Confirm
+            {children}
+          </button>
+        )}
         {confirmType === "add" && (
           <button
             type="submit"
