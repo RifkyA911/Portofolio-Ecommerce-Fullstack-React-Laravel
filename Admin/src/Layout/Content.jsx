@@ -21,14 +21,22 @@ export const Content = (props) => {
   return (
     <>
       <div className="w-full h-full p-4 max-w-[1920px] mx-auto">
-        <div className="pages-title flex flex-row items-center justify-start text-xl font-roboto-medium mb-3 px-2">
-          <h1>{pageName}</h1>
-          <i className="px-2 text-md">
+        <div className="pages-title flex flex-row items-end justify-start text-xl font-roboto-medium mb-3 px-2">
+          <i className="pr-2 text-md">
+            {pageName == "Dashboard" && <MuiIcon iconName={"Home"} />}
             {pageName == "Notifications" && <IconsBs iconName="BsBellFill" />}
-            {pageName == "Admins" && (
-              <MuiIcon iconName={"PeopleAlt"} fontSize={24} />
+            {pageName == "Statistic" && <MuiIcon iconName={"BarChart"} />}
+            {pageName == "Chat" && <MuiIcon iconName={"Sms"} />}
+            {pageName == "Products" && <MuiIcon iconName={"Store"} />}
+            {pageName == "Orders" && <MuiIcon iconName={"LocalShipping"} />}
+            {pageName == "Invoices" && <MuiIcon iconName={"ReceiptLong"} />}
+            {pageName == "Admins" && <MuiIcon iconName={"PeopleAlt"} />}
+            {pageName == "My Profile" && (
+              <MuiIcon iconName={"ManageAccounts"} />
             )}
+            {pageName == "Settings" && <MuiIcon iconName={"Settings"} />}
           </i>
+          <h1>{pageName}</h1>
         </div>
         <div className="div"></div>
         <div

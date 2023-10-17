@@ -16,6 +16,10 @@ export const NavbarComponent = () => {
   const { BgColor, textColor, screenWidth, ComponentColor } = useSelector(
     (state) => state.UI
   );
+  const { logged, adminsId, id, email, username, pict, role } = useSelector(
+    (state) => state.user
+  );
+
   const dispatch = useDispatch();
   const userSession = getUser();
 
@@ -293,17 +297,17 @@ export const NavbarComponent = () => {
                     <div className="flex flex-row picture items-center px-4">
                       <div className="flex relative pr-4">
                         <img
-                          src={`./src/assets/admin_avatar/${userSession.pict}`}
+                          src={`./src/assets/admin_avatar/${pict}`}
                           alt="profile"
                           className="w-14 h-14 rounded-full text-center"
                         />
                       </div>
                       <div className="flex flex-col text-left ">
                         <p className="flex-none font-medium text-sm text-ellipsis overflow-hidden max-h-[85px] max-w-[85px] line-clamp-2">
-                          {userSession.username}
+                          {username}
                         </p>
                         <p className="text-xs">
-                          {userSession.role == 0 ? "Super Admin" : "Admin"}
+                          {role == 0 ? "Super Admin" : "Admin"}
                         </p>
                       </div>
                     </div>

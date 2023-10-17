@@ -23,6 +23,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   const userSession = getUser();
+  // console.log(userSession);
 
   useEffect(() => {
     if (location) {
@@ -72,21 +73,27 @@ const Sidebar = () => {
                         <ul>
                           {group.Links.map((link) => (
                             <li key={link.id} className="my-1 mx-4">
-                              <Link
-                                to={link.href}
-                                onClick={() => SidebarHandler(link.name)}
-                                className={`flex flex-row items-center w-full px-6 py-2 rounded-lg ${
-                                  link.href === currentLocation
-                                    ? "bg-violet-200 text-gray-800"
-                                    : "hover:text-gray-800 hover:bg-violet-100"
-                                }`}
-                              >
-                                <i className="mr-4">
-                                  {<MuiIcon iconName={link.icon} />}
-                                </i>
+                              {userSession.role !== 0 &&
+                              link.name === "Admins" &&
+                              link.href === "/admins" ? (
+                                <></>
+                              ) : (
+                                <Link
+                                  to={link.href}
+                                  onClick={() => SidebarHandler(link.name)}
+                                  className={`flex flex-row items-center w-full px-6 py-2 rounded-lg ${
+                                    link.href === currentLocation
+                                      ? "bg-gradient-to-l from-violet-200 via-indigo-200 to-indigo-200 text-gray-800"
+                                      : "hover:text-gray-800 hover:bg-violet-100"
+                                  }`}
+                                >
+                                  <i className="mr-4">
+                                    {<MuiIcon iconName={link.icon} />}
+                                  </i>
 
-                                <span className="text-sm">{link.name}</span>
-                              </Link>
+                                  <span className="text-sm">{link.name}</span>
+                                </Link>
+                              )}
                             </li>
                           ))}
                         </ul>
