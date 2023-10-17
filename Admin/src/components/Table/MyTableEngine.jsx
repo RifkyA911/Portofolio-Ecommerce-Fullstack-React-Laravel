@@ -672,14 +672,14 @@ export const MyTablePagination = (props) => {
             className={`${BgOuterTable} ${textColor} `}
           >
             <div
-              className={`${BgOuterTable} flex flex-wrap lg:flex-row h-auto lg:h-12 font-roboto-medium text-base p-0 justify-center items-center`}
+              className={`${BgOuterTable} flex flex-wrap lg:flex-row h-auto lg:h-12 font-roboto-medium text-sm p-0 justify-center items-center`}
             >
               <div className="selector w-auto">
-                <span className="px-4 font-roboto-regular text-xs lg:text-base">
+                <span className="px-4 font-roboto-regular text-xs lg:text-sm">
                   Rows per page:
                 </span>
                 <select
-                  className="text-black select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-base"
+                  className="text-black select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-sm"
                   autoComplete="off"
                   value={rows}
                   onChange={(e) => {
@@ -694,13 +694,13 @@ export const MyTablePagination = (props) => {
                   <option value={totalItems}>All</option>
                 </select>
 
-                <span className="px-4 text-xs lg:text-base">
+                <span className="px-4 text-xs lg:text-sm">
                   {currentPage * totalRows - totalRows + 1}-
                   {Math.min(currentPage * totalRows, totalItems)} of{" "}
                   {totalItems}
                 </span>
               </div>
-              <div className="navigate max-w-[420px] overflow-y-scroll text-xs lg:text-base">
+              <div className="navigate max-w-[420px] overflow-y-scroll text-xs lg:text-sm">
                 {pageNumbers}
               </div>
             </div>

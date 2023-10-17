@@ -1,5 +1,15 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
+import jwtDecode from "jwt-decode";
+
+import Barcode from "react-jsbarcode";
 // Components
+import { SkeltonTable } from "../components/Skelton/SkeltonTable";
+import { SetErrorMessage } from "../components/Error/ErrorMessage";
+import { ActionModalForm, InfoModal } from "../components/Modal";
+import { ProductImage } from "../components/Products/ProductsTableBody";
+import { ActionButton } from "../components/Button";
+import { NumberSpan } from "../components/Span";
 import {
   MyTableEngine,
   Thead,
@@ -8,21 +18,13 @@ import {
   Th,
   Td,
 } from "../components/Table/MyTableEngine";
-import jwtDecode from "jwt-decode";
-
-import Barcode from "react-jsbarcode";
 // Layout
 import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../utils/RenderIcons";
-import { SkeltonTable } from "../components/Skelton/SkeltonTable";
-import { SetErrorMessage } from "../components/Error/ErrorMessage";
-import { ActionModalForm, InfoModal } from "../components/Modal";
-import { ProductImage } from "../components/Products/ProductsTableBody";
-import { ActionButton } from "../components/Button";
-import { NumberSpan } from "../components/Span";
+import { newAbortSignal } from "../utils/API/AxiosToken";
 
 // define fetch data URL by products
 const initUrl = import.meta.env.VITE_API_ALL_PRODUCT;
@@ -67,6 +69,7 @@ export default function Products() {
   } = useSelector((state) => state.UI);
 
   const URL = `${initUrl}/paginate/${paginate}/${rows}`;
+  const URL_SEARCH = `${initUrl}/search?search=`;
 
   const fetchProducts = async (url) => {
     try {
@@ -122,39 +125,45 @@ export default function Products() {
   // useEffect(() => {
   //   console.info(selectedRows);
   // }, [selectedRows]);
+  let response;
+  const searchProducts = async (url, form) => {
+    const controller = new AbortController();
+
+    await axios
+      .post(`${url}${form}`, {
+        signal: controller.signal,
+      })
+      .then(function (response) {
+        // console.log("Results for " + searchTerm + ": ", response.data.data);
+        setProducts(response.data.data);
+      });
+    // cancel the request
+    controller.abort();
+  };
 
   // ---- MyTableEngine Search Filter ----
   useEffect(() => {
     if (products !== null && products.length > 0) {
-      const filteredData = products.filter((products) =>
-        products.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSearchResults(filteredData);
+      if (searchTerm.length > 1) {
+        searchProducts(URL_SEARCH, searchTerm);
+      } else {
+        fetchProducts(URL);
+      }
+
+      // console.log(searchResults);
+
       const newColspan = Object.keys(products[0]).length;
       setColspan(newColspan);
     }
-    // set select input options
+  }, [searchTerm]);
+
+  useEffect(() => {
     if (products) {
-      // Mengambil semua kategori unik dari data
-      // setCategories([
-      //   ...new Set(
-      //     products.map((item) => ({
-      //       ...item,
-      //       category: {
-      //         id: item.category.id,
-      //         name: item.category.name,
-      //         type: item.category.type,
-      //       },
-      //     }))
-      //   ),
-      // ]); /// get category
       setCategories(products.map((item) => item.category));
     }
-  }, [searchTerm, products]);
-
-  // useEffect(() => {
+  }, [products]);
+  // set select input options
   //   console.log(select);
-  // }, [select]);
 
   const MyTableEngineProps = {
     inputData: products,
@@ -297,12 +306,7 @@ export default function Products() {
                   <InfoModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
-                  <div className="divider">Category List</div>
-                  <table className="">
-                    <tbody>
-                      <td></td>
-                    </tbody>
-                  </table>
+
                   <div className="divider">Product List</div>
                   <MyTableEngine {...MyTableEngineProps} className="rounded-xl">
                     <Thead className={`${BgOuterTable} ${textColor} `}>
@@ -332,7 +336,7 @@ export default function Products() {
                       </Tr>
                     </Thead>
                     <Tbody className={table_styling.tbody}>
-                      {searchResults.map((row, index) => (
+                      {products.map((row, index) => (
                         <Tr
                           key={index}
                           customKey={index}
@@ -409,19 +413,23 @@ export default function Products() {
                               handleInfoButton(row, "SHOW_PRODUCT_BARCODE");
                             }}
                           >
-                            <Barcode
-                              className={`h-[68px] p-0 m-0 max-w-[150px]`}
-                              value={row.barcode}
-                              // options={{ format: "EAN13" }}
-                            />
+                            {row.id && (
+                              <Barcode
+                                className={`h-[68px] p-0 m-0 max-w-[150px]`}
+                                value={row.barcode}
+                                // options={{ format: "EAN13" }}
+                              />
+                            )}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
-                            <ProductImage
-                              data={row}
-                              onProductPictureClick={() => {
-                                handleInfoButton(row, "SHOW_PRODUCT_PICTURE");
-                              }}
-                            />
+                            {row.id && (
+                              <ProductImage
+                                data={row}
+                                onProductPictureClick={() => {
+                                  handleInfoButton(row, "SHOW_PRODUCT_PICTURE");
+                                }}
+                              />
+                            )}
                           </Td>
                           <Td className={`${table_styling.td} w-2/12`}>
                             {row.name}
@@ -446,6 +454,157 @@ export default function Products() {
                             </span>
                           </Td>
 
+                          <Td className="px-4">
+                            {row.id && (
+                              <ActionButton
+                                key={index}
+                                data={row}
+                                hide={["view, print"]}
+                                onClickView={() => {
+                                  document
+                                    .getElementById("ModalForms")
+                                    .showModal();
+                                  handleActionButton(row.id, "DROP_BY_ID");
+                                }}
+                                onClickDelete={() => {
+                                  document
+                                    .getElementById("ModalForms")
+                                    .showModal();
+                                  handleActionButton(row.id, "DROP_BY_ID");
+                                }}
+                                onClickEdit={() => {
+                                  document
+                                    .getElementById("ModalForms")
+                                    .showModal();
+                                  handleActionButton(row.id, "ALTER_BY_ID");
+                                }}
+                              />
+                            )}
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </MyTableEngine>
+                  <div className="divider">Category List</div>
+                  <MyTableEngine {...MyTableEngineProps} className="rounded-sm">
+                    <Thead className={`${BgOuterTable} ${textColor} `}>
+                      <Tr key="TableHead" className={table_styling.tr}>
+                        {table_styling.th.map((th, index) => (
+                          <Th
+                            key={index}
+                            name={th.key === "id" ? "" : th.key}
+                            column={th.key}
+                            feature={th.feature}
+                            sortOrder="asc"
+                            className={th.style}
+                            hidden={
+                              th.key === "created_at" || th.key === "updated_at"
+                                ? true
+                                : false
+                            }
+                          ></Th>
+                        ))}
+                        <Th
+                          key={55}
+                          name="Action"
+                          column="Action"
+                          feature={null}
+                          className="capitalize px-4"
+                        ></Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody className={table_styling.tbody}>
+                      {categories.map((row, index) => (
+                        <Tr
+                          key={index}
+                          customKey={index}
+                          className={
+                            "divide-y font-roboto-medium capitalize text-gray-900"
+                          }
+                        >
+                          {toggleSelect ? (
+                            <>
+                              {row.role != 0 ? (
+                                <>
+                                  <Th
+                                    key={index}
+                                    feature={"select"}
+                                    onChange={() =>
+                                      handleCheckboxChange(
+                                        row.id,
+                                        row.name,
+                                        row.pict
+                                      )
+                                    }
+                                    selectedRows={selectedRows}
+                                    rowId={row.id}
+                                    className=""
+                                  >
+                                    {selectedRows.some(
+                                      (item) => item.id === row.id
+                                    ) ? (
+                                      <button
+                                        onClick={() =>
+                                          handleCheckboxChange(
+                                            row.id,
+                                            row.name,
+                                            row.pict
+                                          )
+                                        }
+                                        className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
+                                      ></button>
+                                    ) : (
+                                      <button
+                                        onClick={() =>
+                                          handleCheckboxChange(
+                                            row.id,
+                                            row.name,
+                                            row.pict
+                                          )
+                                        }
+                                        className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
+                                      ></button>
+                                    )}
+                                  </Th>
+                                </>
+                              ) : (
+                                <th className="cursor-not-allowed">
+                                  <MuiIcon iconName="BlockRounded" />
+                                </th>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <Th
+                                key={index}
+                                className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
+                              >
+                                {parseInt(row.id) == 0
+                                  ? parseInt(row.id) + 1
+                                  : row.id}
+                              </Th>
+                            </>
+                          )}
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            <ProductImage
+                              data={row}
+                              onProductPictureClick={() => {
+                                handleInfoButton(row, "SHOW_PRODUCT_PICTURE");
+                              }}
+                            />
+                          </Td>
+                          <Td className={`${table_styling.td} w-2/12`}>
+                            {row.name}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {row.type}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {row.stock}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {row.price}
+                          </Td>
                           <Td className="px-4">
                             <ActionButton
                               key={index}
