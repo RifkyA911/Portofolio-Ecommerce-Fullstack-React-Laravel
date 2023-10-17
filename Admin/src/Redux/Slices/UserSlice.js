@@ -38,19 +38,44 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     loading: false,
+    id: null,
+    adminsId: null,
+    username: null,
+    email: null,
+    role: null,
+    pict: null,
+    authority: null,
     user: null,
     logged: false,
     jwtExp: 0,
     error: null,
   },
   reducers: {
+    updateCredentials: (state, action) => {
+      // console.log(action.payload.user);
+      state.id = action.payload.user.id;
+      state.adminsId = action.payload.user.id;
+      state.username = action.payload.user.username;
+      state.email = action.payload.user.email;
+      state.role = action.payload.user.role;
+      state.pict = action.payload.user.pict;
+      state.authority = action.payload.user.authority;
+      state.logged = true;
+    },
     updateSession: (state, action) => {
       //   console.log(action.payload.user);
       state.user = action.payload.user;
-      state.logged = true;
     },
     updateJWT: (state, action) => {
       state.jwtExp = action.payload;
+    },
+    clearSession: (state, action) => {
+      state.username = null;
+      state.email = null;
+      state.role = null;
+      state.pict = null;
+      state.authority = null;
+      state.logged = false;
     },
   },
   extraReducers: (builder) => {
@@ -85,4 +110,5 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { updateSession } = userSlice.actions;
+export const { updateSession, updateCredentials, clearSession } =
+  userSlice.actions;
