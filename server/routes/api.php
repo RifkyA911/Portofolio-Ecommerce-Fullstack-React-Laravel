@@ -73,7 +73,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/product/{id}', 'getById'); // parameter id
     Route::post('/products/search', 'search');   // parameter name, category, price(numeric), stok(numeric)
     // create product
-    Route::post('/product', 'store');   // parameter name, category, price(numeric), stok(numeric)
+    Route::post('/product/store', 'store');   // parameter name, category, price(numeric), stok(numeric)
     // optional : discount, pict, description
     // update product
     Route::put('/products', 'update');   // parameter id, name, category, price(numeric), stok(numeric)

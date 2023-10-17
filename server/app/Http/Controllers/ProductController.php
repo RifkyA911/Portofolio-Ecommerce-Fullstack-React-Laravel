@@ -119,7 +119,7 @@ class ProductController extends Controller
                 return response(new PostResource(false, "validasi data error", "Something went wrong with the DB :("), 403);
             }
         }
-        return response(new PostResource(false, "Data Product gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan akun Product.", $request->input()), 403);
+        return response(new PostResource(false, "Data Product gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan Product.", $request->input()), 403);
     }
 
     /**

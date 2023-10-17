@@ -270,4 +270,16 @@ class AdminsController extends Controller
         }
     }
     // return response(new PostResource(false, 'Masuk coy :v', $request->input(), 302));
+
+    // Contoh metode controller Laravel untuk mengunggah gambar
+    public function uploadImage(Request $request)
+    {
+        $imageData = $request->input('image'); // Data gambar hasil pemangkasan dari React
+        $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imageData)); // Konversi data gambar ke binary
+
+        $imagePath = 'path/to/your/image/directory/' . 'image.jpg'; // Tentukan lokasi penyimpanan lokal
+        file_put_contents($imagePath, $imageData); // Simpan gambar secara lokal
+
+        return response()->json(['imagePath' => $imagePath]);
+    }
 }
