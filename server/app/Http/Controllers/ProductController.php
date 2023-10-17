@@ -44,7 +44,30 @@ class ProductController extends Controller
 
         $length = $products->count();
 
-        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $products);
+        if ($length == null || $length == 0 || $products === null) {
+            return new PostResource(true, ['Message' => 'Tidak ada Data', 'length' => $length], [array(
+                'id' => null,
+                'barcode' => null,
+                'name' => 'tidak ada',
+                'category_id' => null,
+                'price' => null,
+                'stock' => null,
+                'discount' => null,
+                'pict' => 'not_found.jpg',
+                'description' => null,
+                'admin_id' => null,
+                'created_at' => null,
+                'updated_at' => null,
+                'category' =>
+                array(
+                    'id' => null,
+                    'name' => null,
+                    'type' => null,
+                ),
+            )]);
+        } else {
+            return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $products);
+        }
     }
 
     public function getAll()
