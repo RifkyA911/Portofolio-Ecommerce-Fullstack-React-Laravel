@@ -22,6 +22,7 @@ import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { ActionModalForm, InfoModal } from "../components/Modal";
 import { ProductImage } from "../components/Products/ProductsTableBody";
 import { ActionButton } from "../components/Button";
+import { NumberSpan } from "../components/Span";
 
 // define fetch data URL by products
 const initUrl = import.meta.env.VITE_API_ALL_PRODUCT;
@@ -29,6 +30,7 @@ const initUrl = import.meta.env.VITE_API_ALL_PRODUCT;
 export default function Products() {
   // ---- Admins Basic States ----
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState();
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +50,6 @@ export default function Products() {
 
   // ---- Modal States ----
   const [product, setProduct] = useState("");
-  const [select, setSelect] = useState();
   const [showModal, setShowModal] = useState(false);
   const [formType, setFormType] = useState(null);
 
@@ -132,12 +133,28 @@ export default function Products() {
       const newColspan = Object.keys(products[0]).length;
       setColspan(newColspan);
     }
+    // set select input options
     if (products) {
       // Mengambil semua kategori unik dari data
-      setSelect([...new Set(products.map((item) => item.category.name))]); /// get category
-      // console.log(select);
+      // setCategories([
+      //   ...new Set(
+      //     products.map((item) => ({
+      //       ...item,
+      //       category: {
+      //         id: item.category.id,
+      //         name: item.category.name,
+      //         type: item.category.type,
+      //       },
+      //     }))
+      //   ),
+      // ]); /// get category
+      setCategories(products.map((item) => item.category));
     }
   }, [searchTerm, products]);
+
+  // useEffect(() => {
+  //   console.log(select);
+  // }, [select]);
 
   const MyTableEngineProps = {
     inputData: products,
@@ -190,7 +207,7 @@ export default function Products() {
   const ModalProps = {
     table: "products",
     table_id: product,
-    select: select,
+    select: categories,
     showModal: showModal,
     setShowModal: () => {
       setShowModal(false);
@@ -280,6 +297,12 @@ export default function Products() {
                   <InfoModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
+                  <div className="divider">Category List</div>
+                  <table className="">
+                    <tbody>
+                      <td></td>
+                    </tbody>
+                  </table>
                   <div className="divider">Product List</div>
                   <MyTableEngine {...MyTableEngineProps} className="rounded-xl">
                     <Thead className={`${BgOuterTable} ${textColor} `}>
@@ -313,7 +336,9 @@ export default function Products() {
                         <Tr
                           key={index}
                           customKey={index}
-                          className={"divide-y "}
+                          className={
+                            "divide-y font-roboto-medium capitalize text-gray-900"
+                          }
                         >
                           {toggleSelect ? (
                             <>
@@ -378,7 +403,12 @@ export default function Products() {
                               </Th>
                             </>
                           )}
-                          <Td className={`${table_styling.td} w-1/12`}>
+                          <Td
+                            className={`${table_styling.td} w-1/12 cursor-pointer`}
+                            onClick={() => {
+                              handleInfoButton(row, "SHOW_PRODUCT_BARCODE");
+                            }}
+                          >
                             <Barcode
                               className={`h-[68px] p-0 m-0 max-w-[150px]`}
                               value={row.barcode}
@@ -406,7 +436,14 @@ export default function Products() {
                             {row.price}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
-                            {row.discount}
+                            <span className="flex flex-row gap-2 justify-center items-center">
+                              {row.discount && (
+                                <NumberSpan
+                                  data={row.discount + " %"}
+                                  className="text-green-600 text-sm"
+                                />
+                              )}
+                            </span>
                           </Td>
 
                           <Td className="px-4">

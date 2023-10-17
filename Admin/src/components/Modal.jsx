@@ -9,6 +9,10 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
+import Barcode from "react-jsbarcode";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+
 // Components
 // UTILS
 import axios from "axios";
@@ -24,6 +28,7 @@ import {
   ProductsDropForm,
   ProductsInsertForm,
 } from "./Products/ProductsForm";
+import { ConfirmButton } from "./Button";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 
@@ -160,72 +165,83 @@ export const InfoModal = (props) => {
           {showModal && (
             <div className="modal-list">
               <div className="list-modal">
-                {formType === "SHOW_ADMIN_PROFILE_PICTURE" && (
-                  <dialog id="ShowPict" className={`${textColor} modal `}>
-                    <div
-                      className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden p-0`}
-                    >
-                      <div className="flex flex-col justify-center items-center">
-                        <h3 className="font-bold text-xl py-4 line-clamp-2">
-                          {table_id?.username || "username?"}
-                        </h3>
-                        <img
-                          src={`./src/assets/admin_avatar/${
-                            table_id?.pict || "default.png"
-                          }`}
-                          alt={`Profile Picture ${
-                            table_id?.username || "username?"
-                          }`}
-                          className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
-                        />
-                      </div>
-                      <div className="py-4">
-                        <small className="">
-                          <span className="font-bold ">Updated At : </span>
-                          {table_id?.updated_at || "NaN"}
-                        </small>
-                      </div>
-                    </div>
-                    <form method="dialog" className="modal-backdrop">
-                      <button>close</button>
-                    </form>
-                  </dialog>
-                )}
-                {formType === "SHOW_PRODUCT_PICTURE" && (
-                  <dialog id="ShowPict" className={`${textColor} modal `}>
-                    <div
-                      className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden p-0`}
-                    >
-                      <div className="flex flex-col justify-center items-center">
-                        <h3 className="font-bold text-xl py-4 line-clamp-2">
-                          {table_id?.name || "This Product"}
-                        </h3>
-                        <img
-                          src={`./src/assets/products/${
-                            table_id?.pict || "default.png"
-                          }`}
-                          alt={`Profile Picture ${
-                            table_id?.name || "username?"
-                          }`}
-                          className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
-                        />
-                      </div>
-                      <div className="py-4">
-                        <small className="">
-                          <span className="font-bold ">Updated At : </span>
-                          {table_id?.updated_at || "NaN"}
-                        </small>
-                      </div>
-                    </div>
-                    <form
-                      method="dialog"
-                      className="modal-backdrop"
-                      onClick={setShowModal}
-                    >
-                      <button>close</button>
-                    </form>
-                  </dialog>
-                )}
+                <dialog id="ShowPict" className={`${textColor} modal `}>
+                  <div
+                    className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden p-0`}
+                  >
+                    {formType === "SHOW_ADMIN_PROFILE_PICTURE" && (
+                      <>
+                        <div className="flex flex-col justify-center items-center">
+                          <h3 className="font-bold text-xl py-4 line-clamp-2">
+                            {table_id?.username || "username?"}
+                          </h3>
+                          <img
+                            src={`./src/assets/admin_avatar/${
+                              table_id?.pict || "default.png"
+                            }`}
+                            alt={`Profile Picture ${
+                              table_id?.username || "username?"
+                            }`}
+                            className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
+                          />
+                        </div>
+                        <div className="py-4">
+                          <small className="">
+                            <span className="font-bold ">Updated At : </span>
+                            {table_id?.updated_at || "NaN"}
+                          </small>
+                        </div>
+                      </>
+                    )}
+                    {formType === "SHOW_PRODUCT_PICTURE" && (
+                      <>
+                        <div className="flex flex-col justify-center items-center">
+                          <h3 className="font-bold text-xl py-4 line-clamp-2">
+                            {table_id?.name || "This Product"}
+                          </h3>
+                          <img
+                            src={`./src/assets/products/${
+                              table_id?.pict || "default.png"
+                            }`}
+                            alt={`Profile Picture ${
+                              table_id?.name || "username?"
+                            }`}
+                            className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
+                          />
+                        </div>
+                        <div className="py-4">
+                          <small className="">
+                            <span className="font-bold ">Updated At : </span>
+                            {table_id?.updated_at || "NaN"}
+                          </small>
+                        </div>
+                      </>
+                    )}
+                    {formType === "SHOW_PRODUCT_BARCODE" && (
+                      <>
+                        <div className="flex flex-col justify-center items-center">
+                          <h3 className="font-bold text-xl py-4 line-clamp-2">
+                            {table_id?.name || "This Product"}
+                          </h3>
+                          <Barcode
+                            className={`h-[150px] p-0 m-0 max-w-[300px]`}
+                            value={table_id?.barcode}
+                            // options={{ format: "EAN13" }}
+                          />
+                        </div>
+                        <div className="py-4">
+                          <small className="">
+                            <span className="font-bold ">Updated At : </span>
+                            {table_id?.updated_at || "NaN"}
+                          </small>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                  </form>
+                </dialog>
               </div>
             </div>
           )}
@@ -235,16 +251,6 @@ export const InfoModal = (props) => {
   );
 };
 
-// setData({
-//   superAuthorizationPassword: SuperAdminKey,
-//   id: null,
-//   email: null,
-//   username: null,
-//   pict: null,
-//   role: null,
-//   created_at: null,s
-//   updated_at: null,
-// });
 export const ActionModalForm = (props) => {
   const { refresh, table, table_id, select, formType, clearData } = props;
   const [method, setMethod] = useState(null);
@@ -284,13 +290,18 @@ export const ActionModalForm = (props) => {
   };
 
   let URL_BY_ID;
+  let URL_STORE;
+  let URL_UPDATE;
+  let URL_DROP;
   let URL_ALL;
 
   if (table === "admins") {
     URL_BY_ID = import.meta.env.VITE_API_ID_ADMIN + "/" + table_id;
+    URL_STORE = import.meta.env.VITE_API_STORE_ADMIN;
     URL_ALL = import.meta.env.VITE_API_ALL_ADMIN;
   } else if (table === "products") {
     URL_BY_ID = import.meta.env.VITE_API_ID_PRODUCT + "/" + table_id;
+    URL_STORE = import.meta.env.VITE_API_STORE_PRODUCT;
     URL_ALL = import.meta.env.VITE_API_ALL_PRODUCT;
   } else if (table === "orders") {
     URL_BY_ID = import.meta.env.VITE_API_ID_TRANSACTION + "/" + table_id;
@@ -348,7 +359,9 @@ export const ActionModalForm = (props) => {
                   barcode: response.data.data.barcode,
                   name: response.data.data.name,
                   price: response.data.data.price,
-                  category: response.data.data.category,
+                  category_id: response.data.data.category.id,
+                  category_name: response.data.data.category.name,
+                  category_type: response.data.data.category.type,
                   stock: response.data.data.stock,
                   discount: response.data.data.discount,
                   pict: response.data.data.pict,
@@ -405,6 +418,7 @@ export const ActionModalForm = (props) => {
 
   useEffect(() => {
     // console.table(table);
+    // console.log(data);
     if (formType === "INSERT") {
       switch (table) {
         case `admins`:
@@ -451,7 +465,7 @@ export const ActionModalForm = (props) => {
             barcode: data.barcode,
             name: data.name,
             price: parseInt(data.price),
-            category: data.category,
+            category_id: data.category_id,
             stock: parseInt(data.stock),
             discount: parseFloat(data.discount),
             pict: data.pict,
@@ -498,9 +512,10 @@ export const ActionModalForm = (props) => {
 
   async function sendFormDataByMethod(form) {
     setSending(!sending);
+    console.log(formType, table_id);
     try {
       if (formType === "INSERT") {
-        axiosResponse = await axios.post(URL_ALL, form);
+        axiosResponse = await axios.post(URL_STORE, form);
         console.log("Input data baru berhasil :", axiosResponse);
       } else if (formType === "ALTER_BY_ID") {
         axiosResponse = await axios.put(URL_ALL, form);
@@ -576,7 +591,7 @@ export const ActionModalForm = (props) => {
       refresh(); // parent props
     } catch (error) {
       setSending(false);
-      setErrorMessage(error.message);
+      setErrorMessage(error.response.data.message);
       console.info(error);
       console.error("Terjadi kesalahan:", error);
     }
@@ -715,12 +730,18 @@ export const ActionModalForm = (props) => {
                         )}
                         {table === "products" && (
                           <>
-                            {formType === "INSERT" && (
+                            {/* {formType === "INSERT" && (
                               <>
                                 <ProductsInsertForm />
                               </>
                             )}
                             {formType === "ALTER_BY_ID" && (
+                              <>
+                                <ProductsAlterForm />
+                              </>
+                            )} */}
+                            {(formType === "INSERT" ||
+                              formType === "ALTER_BY_ID") && (
                               <>
                                 <ProductsAlterForm />
                               </>
@@ -765,6 +786,140 @@ export const ActionModalForm = (props) => {
         </dialog>
       </ModalContext.Provider>
     </>
+  );
+};
+
+export const CropperModal = () => {
+  const [image, setImage] = useState(null);
+  const [modal, setModal] = useState(null);
+  const cropperRef = useRef(null);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    // Maksimal ukuran file dalam byte (512KB)
+    // const maxSize = 512 * 1024;
+    const maxSize = 10000 * 1024;
+
+    if (selectedFile) {
+      if (selectedFile.size > maxSize) {
+        alert("File terlalu besar. Maksimal 512KB diperbolehkan.");
+        e.target.value = ""; // Menghapus pilihan file yang tidak valid
+      } else {
+        // Baca file gambar
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+
+          img.onload = () => {
+            // Maksimal lebar dan tinggi gambar
+            // const maxWidth = 512;
+            // const maxHeight = 512;
+            const maxWidth = 5112;
+            const maxHeight = 5112;
+
+            if (img.width > maxWidth || img.height > maxHeight) {
+              alert(
+                "Dimensi gambar terlalu besar. Maksimal 512px x 512px diperbolehkan."
+              );
+              e.target.value = ""; // Menghapus pilihan file yang tidak valid
+            } else {
+              reader.onload = (event) => {
+                setImage(event.target.result);
+              };
+
+              reader.readAsDataURL(selectedFile);
+            }
+          };
+        };
+        reader.readAsDataURL(selectedFile);
+      }
+    }
+  };
+
+  const cropImage = () => {
+    if (cropperRef.current) {
+      // Pastikan gambar telah dimuat sepenuhnya
+      if (cropperRef.current.cropper.getCroppedCanvas) {
+        // Dapatkan data hasil pemangkasan
+        const croppedDataUrl = cropperRef.current.cropper
+          .getCroppedCanvas()
+          .toDataURL();
+
+        // Lakukan sesuatu dengan data gambar hasil pemangkasan
+        console.log("Data gambar hasil pemangkasan:", croppedDataUrl);
+
+        // Kirim gambar hasil pemangkasan ke server Laravel
+        // fetch("URL_SERVER_LARAVEL/uploadImage", {
+        //   method: "POST",
+        //   body: JSON.stringify({ image: croppedDataUrl }),
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        // })
+        //   .then((response) => response.json())
+        //   .then((data) => {
+        //     const imagePath = data.imagePath;
+        //     // Lakukan sesuatu dengan imagePath, seperti menampilkannya di komponen React
+        //   });
+      }
+    }
+  };
+
+  // useEffect(() => {
+  //   // Saat komponen selesai dirender, periksa apakah elemen "croppers" ada dalam DOM
+  // }, []);
+  // const dialogElement = document.getElementById("croppers");
+  // if (modal && dialogElement) {
+  //   dialogElement.showModal();
+  // }
+
+  return (
+    <div>
+      <input
+        className="file-input file-input-bordered file-input-md w-64 text-sm mt-6"
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        onClick={() => document.getElementById("croppers").showModal()}
+      />
+      <dialog id="croppers" className="modal">
+        {image && (
+          <>
+            <div className="modal-box w-12/12 max-w-3xl ">
+              <form method="dialog">
+                <button
+                  // onClick={() => setImage(null)}
+                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                >
+                  ✕
+                </button>
+              </form>
+
+              <h3 className="font-bold text-lg">Hello!</h3>
+              <div className={`p-4`}>
+                <Cropper
+                  ref={cropperRef}
+                  src={image}
+                  aspectRatio={8 / 8} // Sesuaikan dengan rasio aspek yang Anda inginkan
+                  guides={true}
+                  zoomable={false} // Mencegah zoom
+                />
+                <ConfirmButton
+                  confirmType="confirm"
+                  type="button"
+                  onClick={cropImage}
+                />
+                {/* <button onClick={cropImage}>Crop</button> */}
+              </div>
+            </div>
+            <form method="dialog" className="modal-backdrop">
+              <button>close</button>
+            </form>
+          </>
+        )}
+      </dialog>
+    </div>
   );
 };
 

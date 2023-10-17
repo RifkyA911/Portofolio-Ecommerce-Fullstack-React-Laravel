@@ -502,7 +502,9 @@ export const Td = (props) => {
   const { element, className, onClick, event } = props;
   return (
     <>
-      <td className={className}>{props.children}</td>
+      <td onClick={onClick} className={className}>
+        {props.children}
+      </td>
     </>
   );
 };

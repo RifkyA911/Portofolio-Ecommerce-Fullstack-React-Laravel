@@ -44,8 +44,6 @@ export const ProductsInsertForm = (props) => {
   } = useContext(ModalContext);
   //   const nameValue = getValues("barcode");
   //   console.log(nameValue);
-  const barcodeInputRef = useRef(null);
-  const nameInputRef = useRef(null);
   return (
     <>
       <div className="flex flex-row">
@@ -66,12 +64,14 @@ export const ProductsInsertForm = (props) => {
             label="Barcode/No. Product"
             name="barcode"
             placeholder="Masukkan Kode Barcode/No. Product"
+            formContext={ModalContext}
           />
           <TextInput
             className={`flex gap-4 flex-col w-full`}
             label="Product Name"
             name="name"
             placeholder="Masukkan Nama Product"
+            formContext={ModalContext}
           />
           <div className="w-full flex flex-row gap-4 justify-between items-center">
             <SelectInput
@@ -180,10 +180,6 @@ export const ProductsAlterForm = (props) => {
             name="barcode"
             placeholder="Masukkan Kode Barcode/No. Product"
             formContext={ModalContext}
-            // register={register}
-            // setValue={setValue}
-            // setFocus={setFocus}
-            // errors={errors}
           />
           <TextInput
             className={`flex gap-4 flex-col w-full`}
@@ -191,16 +187,12 @@ export const ProductsAlterForm = (props) => {
             name="name"
             placeholder="Masukkan Nama Product"
             formContext={ModalContext}
-            // register={register}
-            // setValue={setValue}
-            // setFocus={setFocus}
-            // errors={errors}
           />
           <div className="w-full flex flex-row gap-4 justify-between items-center">
             <SelectInput
               className={`w-full flex gap-4 flex-col `}
               label="Category"
-              name="category"
+              name="category_id"
               // options={["topi", "baju", "kerudung"]}
               style="w-full h-[38px]"
             />
@@ -243,7 +235,13 @@ export const ProductsAlterForm = (props) => {
           <DateRecord data={data} />
         </div>
       </div>
-      <ConfirmButton confirmType="alter" />
+      {formType === "INSERT" && (
+        <ConfirmButton
+          onClick={() => console.log("sd", register)}
+          confirmType="add"
+        />
+      )}
+      {formType === "ALTER_BY_ID" && <ConfirmButton confirmType="alter" />}
     </>
   );
 };

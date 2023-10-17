@@ -80,7 +80,7 @@ export const TextInput = (props) => {
             className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
             {...register(name, validationRules)}
             onChange={(e) => {
-              console.log(name, ":", e.target.value);
+              // console.log(name, ":", e.target.value);
               setValue(name, e.target.value);
             }}
             // onClick={console.log(name, ":", getValues(name))}
@@ -243,8 +243,8 @@ export const SelectInput = (props) => {
   const selectOptions = (select) => {
     if (Array.isArray(select)) {
       const newOptions = select.map((option, index) => ({
-        value: option,
-        label: option,
+        value: option.id,
+        label: option.name,
         color: "#00B8D9",
         isFixed: true,
       }));
@@ -258,14 +258,14 @@ export const SelectInput = (props) => {
     selectOptions(select);
     // console.log(optionsList);
   }, [name]);
-
+  // console.log(select);
   return (
     <>
       {optionsList !== null && (
         <div
           onClick={() => {
             setFocus(name);
-            console.log(setFocus(name));
+            // console.log(setFocus(name));
           }}
           className={className}
         >
@@ -308,7 +308,7 @@ export const SelectInput = (props) => {
                 options={optionsList}
                 value={optionsList.find((c) => c.value === value)}
                 onChange={(select) => onChange(select.value)}
-                className={`${style}  max-w-3xl focus:outline-none text-left font-roboto-medium basic-single`}
+                className={`${style}  max-w-3xl focus:outline-none text-left font-roboto-medium basic-single capitalize`}
                 classNamePrefix="select"
                 isSearchable={isSearchable}
                 // isDisabled={isDisabled}
@@ -407,6 +407,7 @@ export const PasswordInput = (props) => {
           </label>
           <input
             type={showPassword ? "text" : name}
+            placeholder={placeholder}
             className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
             {...register(name, validationRules)}
           />
