@@ -341,10 +341,13 @@ export default function Products() {
                   <InfoModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
-                  {/* <PrintTest /> */}
+                  <PrintTest />
 
                   <div className="divider">Product List</div>
-                  <MyTableEngine {...MyTableEngineProps} className="rounded-xl">
+                  <MyTableEngine
+                    {...MyTableEngineProps}
+                    className="rounded-xl mx-auto"
+                  >
                     <Thead className={`${BgOuterTable} ${textColor} `}>
                       <Tr key="TableHead" className={table_styling.tr}>
                         {table_styling.th.map((th, index) => (
@@ -490,7 +493,7 @@ export default function Products() {
                             </span>
                           </Td>
 
-                          <Td className="px-4">
+                          <Td className="print:hidden px-4">
                             {row.id && (
                               <ActionButton
                                 key={index}

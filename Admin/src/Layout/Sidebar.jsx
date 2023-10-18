@@ -83,7 +83,7 @@ const Sidebar = () => {
                                   onClick={() => SidebarHandler(link.name)}
                                   className={`flex flex-row items-center w-full px-6 py-2 rounded-lg ${
                                     link.href === currentLocation
-                                      ? "bg-gradient-to-l from-violet-200 via-indigo-200 to-indigo-200 text-gray-800"
+                                      ? "bg-gradient-to-l from-violet-200  via-indigo-200 to-indigo-200 text-gray-800"
                                       : "hover:text-gray-800 hover:bg-violet-100"
                                   }`}
                                 >

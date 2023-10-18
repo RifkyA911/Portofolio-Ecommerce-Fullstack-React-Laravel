@@ -662,7 +662,7 @@ export const MyTablePagination = (props) => {
 
   return (
     <>
-      <tfoot>
+      <tfoot className="print:hidden ">
         <tr>
           <td
             key={9999}
