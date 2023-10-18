@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
-
+import debounce from "lodash/debounce";
 import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
@@ -25,6 +25,8 @@ import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../utils/RenderIcons";
 import { newAbortSignal } from "../utils/API/AxiosToken";
+import { PrintTest } from "../components/Print";
+import { useReactToPrint } from "react-to-print";
 
 // define fetch data URL by products
 const initUrl = import.meta.env.VITE_API_ALL_PRODUCT;
@@ -94,6 +96,10 @@ export default function Products() {
 
   useEffect(() => {
     fetchProducts(URL);
+    if (products !== null && products !== undefined) {
+      // const newColspan = Object.keys(columnOrder[0]).length;
+      setColspan(columnOrder.length + 1);
+    }
   }, [paginate, rows]);
 
   // Handler Ketika mengklik info button
@@ -128,32 +134,34 @@ export default function Products() {
   let response;
   const searchProducts = async (url, form) => {
     const controller = new AbortController();
-
-    await axios
-      .post(`${url}${form}`, {
+    try {
+      const response = await axios.post(`${url}${form}`, {
         signal: controller.signal,
-      })
-      .then(function (response) {
-        // console.log("Results for " + searchTerm + ": ", response.data.data);
-        setProducts(response.data.data);
       });
+      setProducts(response.data.data);
+    } catch (error) {
+      // Handle errors here
+    }
     // cancel the request
-    controller.abort();
+    // controller.abort();
   };
+
+  // Membuat fungsi debouncedOnChange menggunakan Lodash debounce
+  const debouncedOnChange = debounce((value) => {
+    console.log(value); // Lakukan apa yang Anda inginkan saat debouncedOnChange dipanggil
+    // Misalnya, Anda bisa melakukan fetching di sini
+  }, 1000);
 
   // ---- MyTableEngine Search Filter ----
   useEffect(() => {
+    // console.log("sd", searchTerm);
     if (products !== null && products.length > 0) {
-      if (searchTerm.length > 1) {
+      if (searchTerm.length > 1 || searchTerm !== "") {
+        // searchProducts(URL_SEARCH, searchTerm);
         searchProducts(URL_SEARCH, searchTerm);
       } else {
         fetchProducts(URL);
       }
-
-      // console.log(searchResults);
-
-      const newColspan = Object.keys(products[0]).length;
-      setColspan(newColspan);
     }
   }, [searchTerm]);
 
@@ -166,7 +174,6 @@ export default function Products() {
   //   console.log(select);
 
   const MyTableEngineProps = {
-    inputData: products,
     refresh: () => {
       fetchProducts(URL, "fetch");
       setLoading(true);
@@ -174,8 +181,17 @@ export default function Products() {
     // ------------- Table Header Menu -------------
     TabHeader: true,
     hideHeaderBtn: "",
+    printBtn: useReactToPrint({
+      content: () => componentRef.current,
+      // documentTitle: `${employee.name.replace(/\s/g, "-")}-Payslip`,
+      documentTitle: `Payslip`,
+      onPrintError: () => alert("there is an error when printing"),
+    }),
     searchTerm: searchTerm,
-    setSearchTerm: (e) => setSearchTerm(e.target.value),
+    setSearchTerm: (e) => {
+      setSearchTerm(e.target.value);
+      // setTimeout(setSearchTerm(e.target.value), 2000);
+    },
     setAddModal: () => {
       document.getElementById("ModalForms").showModal();
       handleActionButton(null, "INSERT");
@@ -245,8 +261,8 @@ export default function Products() {
     "price",
     "discount",
     // "description",
-    "created_at",
-    "updated_at",
+    // "created_at",
+    // "updated_at",
   ];
 
   let table_styling = {};
@@ -276,7 +292,14 @@ export default function Products() {
   // useEffect(() => {
   //   console.info(table_styling);
   // }, [table_styling]);
+  let componentRef = useRef(null);
 
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    // documentTitle: `${employee.name.replace(/\s/g, "-")}-Payslip`,
+    documentTitle: `Payslip`,
+    onPrintError: () => alert("there is an error when printing"),
+  });
   return (
     <>
       {/* <AdminsContext.Provider value={AdminsContextValue}> */}
@@ -287,7 +310,19 @@ export default function Products() {
           ) : (
             <>
               {products !== null ? (
-                <div id="Products" className="rounded-lg text-sm ">
+                <div
+                  ref={componentRef}
+                  id="Products"
+                  className="rounded-lg text-sm "
+                >
+                  {/* <div className="print:hidden">
+                    <button
+                      onClick={handlePrint}
+                      className="bg-cyan-500 px-6 py-2 text-white border border-cyan-500 font-bold rounded-md mb-3 w-full lg:w-fit my-6 max-w-sm"
+                    >
+                      Print Payslip
+                    </button>
+                  </div> */}
                   {/* ================ Error ================ */}
                   <div>
                     {errorMessage && (
@@ -306,6 +341,7 @@ export default function Products() {
                   <InfoModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
+                  {/* <PrintTest /> */}
 
                   <div className="divider">Product List</div>
                   <MyTableEngine {...MyTableEngineProps} className="rounded-xl">
@@ -319,11 +355,11 @@ export default function Products() {
                             feature={th.feature}
                             sortOrder="asc"
                             className={th.style}
-                            hidden={
-                              th.key === "created_at" || th.key === "updated_at"
-                                ? true
-                                : false
-                            }
+                            // hidden={
+                            //   th.key === "created_at" || th.key === "updated_at"
+                            //     ? true
+                            //     : false
+                            // }
                           ></Th>
                         ))}
                         <Th
@@ -486,154 +522,6 @@ export default function Products() {
                     </Tbody>
                   </MyTableEngine>
                   <div className="divider">Category List</div>
-                  <MyTableEngine {...MyTableEngineProps} className="rounded-sm">
-                    <Thead className={`${BgOuterTable} ${textColor} `}>
-                      <Tr key="TableHead" className={table_styling.tr}>
-                        {table_styling.th.map((th, index) => (
-                          <Th
-                            key={index}
-                            name={th.key === "id" ? "" : th.key}
-                            column={th.key}
-                            feature={th.feature}
-                            sortOrder="asc"
-                            className={th.style}
-                            hidden={
-                              th.key === "created_at" || th.key === "updated_at"
-                                ? true
-                                : false
-                            }
-                          ></Th>
-                        ))}
-                        <Th
-                          key={55}
-                          name="Action"
-                          column="Action"
-                          feature={null}
-                          className="capitalize px-4"
-                        ></Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody className={table_styling.tbody}>
-                      {categories.map((row, index) => (
-                        <Tr
-                          key={index}
-                          customKey={index}
-                          className={
-                            "divide-y font-roboto-medium capitalize text-gray-900"
-                          }
-                        >
-                          {toggleSelect ? (
-                            <>
-                              {row.role != 0 ? (
-                                <>
-                                  <Th
-                                    key={index}
-                                    feature={"select"}
-                                    onChange={() =>
-                                      handleCheckboxChange(
-                                        row.id,
-                                        row.name,
-                                        row.pict
-                                      )
-                                    }
-                                    selectedRows={selectedRows}
-                                    rowId={row.id}
-                                    className=""
-                                  >
-                                    {selectedRows.some(
-                                      (item) => item.id === row.id
-                                    ) ? (
-                                      <button
-                                        onClick={() =>
-                                          handleCheckboxChange(
-                                            row.id,
-                                            row.name,
-                                            row.pict
-                                          )
-                                        }
-                                        className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
-                                      ></button>
-                                    ) : (
-                                      <button
-                                        onClick={() =>
-                                          handleCheckboxChange(
-                                            row.id,
-                                            row.name,
-                                            row.pict
-                                          )
-                                        }
-                                        className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
-                                      ></button>
-                                    )}
-                                  </Th>
-                                </>
-                              ) : (
-                                <th className="cursor-not-allowed">
-                                  <MuiIcon iconName="BlockRounded" />
-                                </th>
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              <Th
-                                key={index}
-                                className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
-                              >
-                                {parseInt(row.id) == 0
-                                  ? parseInt(row.id) + 1
-                                  : row.id}
-                              </Th>
-                            </>
-                          )}
-                          <Td className={`${table_styling.td} w-1/12`}>
-                            <ProductImage
-                              data={row}
-                              onProductPictureClick={() => {
-                                handleInfoButton(row, "SHOW_PRODUCT_PICTURE");
-                              }}
-                            />
-                          </Td>
-                          <Td className={`${table_styling.td} w-2/12`}>
-                            {row.name}
-                          </Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
-                            {row.type}
-                          </Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
-                            {row.stock}
-                          </Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
-                            {row.price}
-                          </Td>
-                          <Td className="px-4">
-                            <ActionButton
-                              key={index}
-                              data={row}
-                              hide={["view, print"]}
-                              onClickView={() => {
-                                document
-                                  .getElementById("ModalForms")
-                                  .showModal();
-                                handleActionButton(row.id, "DROP_BY_ID");
-                              }}
-                              onClickDelete={() => {
-                                document
-                                  .getElementById("ModalForms")
-                                  .showModal();
-                                handleActionButton(row.id, "DROP_BY_ID");
-                              }}
-                              onClickEdit={() => {
-                                document
-                                  .getElementById("ModalForms")
-                                  .showModal();
-                                handleActionButton(row.id, "ALTER_BY_ID");
-                              }}
-                            />
-                          </Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </MyTableEngine>
                 </div>
               ) : (
                 "tidak ada data"

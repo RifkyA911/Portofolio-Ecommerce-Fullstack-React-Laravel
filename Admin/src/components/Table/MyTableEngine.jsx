@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import debounce from "lodash/debounce";
+
 // Components
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import { usePDF } from "react-to-pdf";
+import generatePDF, { usePDF } from "react-to-pdf";
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
 import { useAdminsContext } from "../../Pages/Admins";
 
@@ -12,12 +14,12 @@ const TableContext = createContext();
 export const MyTableEngine = (props) => {
   const {
     // Main Logic Table Component
-    inputData,
     refresh,
     className,
     // Tab Header Table Component
     TabHeader = false,
     hideHeaderBtn = null,
+    printBtn,
     searchTerm,
     setSearchTerm,
     setAddModal,
@@ -51,25 +53,11 @@ export const MyTableEngine = (props) => {
   const [sortBy, setSortBy] = useState(getSortBy);
   const [sortOrder, setSortOrder] = useState(getSortOrder);
 
-  // REDUX
-  const { BorderOuterTable } = useSelector((state) => state.UI);
-
+  // const targetRef = useRef();
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
-  useEffect(() => {
-    if (Array.isArray(inputData)) {
-      setData(inputData);
-    } else {
-      console.error("Data input harus berupa array.");
-      return 0;
-    }
-    const dataArray = ["Data 1", "Data 2", "Data 3"];
-
-    // Looping untuk mengirim data ke komponen induk
-    // dataArray.forEach((data) => {
-    //   sendDataToParent(data);
-    // });
-  }, []); // temp
+  // REDUX
+  const { BorderOuterTable } = useSelector((state) => state.UI);
 
   const updateMyTableState = (action) => {
     switch (action.type) {
@@ -90,6 +78,13 @@ export const MyTableEngine = (props) => {
         break;
     }
   };
+  const options = {
+    filename: "using-function.pdf",
+    page: {
+      margin: 20,
+    },
+  };
+
   return (
     <div className="relative">
       <TableContext.Provider
@@ -107,6 +102,7 @@ export const MyTableEngine = (props) => {
         {TabHeader && (
           <>
             <MyTableHeader
+              printBtn={printBtn}
               hideHeaderBtn={hideHeaderBtn}
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
@@ -143,6 +139,7 @@ export const MyTableEngine = (props) => {
 
 export const MyTableHeader = (props) => {
   const {
+    printBtn,
     hideHeaderBtn,
     searchTerm,
     setSearchTerm,
@@ -155,13 +152,13 @@ export const MyTableHeader = (props) => {
   } = props;
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isSelectedActive, setSelectedActive] = useState(false);
-  const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
+  // const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
   return (
     <>
       <div
-        ref={targetRef}
-        className=" flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-scroll focus:touch-pan-x"
+        // ref={targetRef}
+        className="print:hidden flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-scroll focus:touch-pan-x"
       >
         <div className="flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
           <button
@@ -171,17 +168,19 @@ export const MyTableHeader = (props) => {
             <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
           </button>
           <input
+            name="search"
             type="text"
             placeholder="Find data in this pagination"
             value={searchTerm}
             className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none"
+            // onChange={setSearchTerm}
             onChange={setSearchTerm}
           />
         </div>
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
           {hideHeaderBtn !== "printBtn" && (
             <button
-              onClick={() => toPDF()}
+              onClick={printBtn}
               className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
             >
               <i className="font-xs">
@@ -679,6 +678,7 @@ export const MyTablePagination = (props) => {
                   Rows per page:
                 </span>
                 <select
+                  name="pagination"
                   className="text-black select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-sm"
                   autoComplete="off"
                   value={rows}
