@@ -52,6 +52,8 @@ const styles = StyleSheet.create({
 });
 
 export const PrintTest = (props) => {
+  const { inputData } = props;
+
   const [employee, setEmployee] = useState({
     id: 1685328248504,
     name: "John Doe",
@@ -82,21 +84,29 @@ export const PrintTest = (props) => {
       </div> */}
       <div className="mx-auto">
         <PDFViewer className="mx-auto" width="1000" height="600">
-          <ReactPDF />
+          <ReactPDF inputData={inputData} />
         </PDFViewer>
       </div>
       {/* Ukuran kertas F4 dalam pixel (72 DPI) = 595 x 935 pixel 
       Ukuran kertas F4 dalam pixel (96 DPI) = 793 x 1247 pixel 
       Ukuran kertas F4 dalam pixel (150 DPI) = 1240 x 1948 pixel 
       Ukuran kertas F4 dalam pixel (300 DPI) = 2481 x 3897 pixel */}
-      <main className="min-h-screen bg-white shadow-lg mx-auto h-[816px] w-[1054px]">
-        <ReactToPrint employee={employee} />
-      </main>
+      <div className="collapse bg-base-200">
+        <input type="checkbox" />
+        <div className="collapse-title text-xl font-medium">Product Detail</div>
+        <div className="collapse-content">
+          <main className="min-h-screen bg-white shadow-lg mx-auto h-[816px] w-[1054px]">
+            <ReactToPrint employee={employee} />
+          </main>
+        </div>
+      </div>
     </>
   );
 };
 
 export const ReactPDF = (props) => {
+  const { inputData } = props;
+  // console.log(inputData)
   const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;
 
   const tw = createTw({
@@ -176,6 +186,7 @@ export const ReactPDF = (props) => {
                   style={tw(
                     "h-80 w-80 p-2 sm:flex text-center shadow-lg rounded-lg"
                   )}
+                  //   src={"./src/assets/user_avatar/84719630_p0.jpg"}
                   src={"./src/assets/user_avatar/84719630_p0.jpg"}
                 ></Image>
               </View>
@@ -189,14 +200,18 @@ export const ReactPDF = (props) => {
                   <Text style={tw("sborder-b-2")}>Created at :</Text>
                   <Text style={tw("sborder-b-2")}>Updated at :</Text>
                 </View>
-                <View style={tw("flex gap-4 justify-start p-4 text-gray-800")}>
-                  <Text style={tw("")}>213123231 </Text>
-                  <Text style={tw("")}>Topi Kuning</Text>
-                  <Text style={tw("")}>Topi</Text>
-                  <Text style={tw("")}>Rp. 250.000,00</Text>
-                  <Text style={tw("")}>15%</Text>
-                  <Text style={tw("")}>2023-10-17T09:16:15.000000Z</Text>
-                  <Text style={tw("")}>2023-10-17T09:16:15.000000Z</Text>
+                <View
+                  style={tw(
+                    "flex gap-4 justify-start p-4 text-gray-800 capitalize"
+                  )}
+                >
+                  <Text style={tw("")}>{inputData[0].barcode}</Text>
+                  <Text style={tw("")}>{inputData[0].name}</Text>
+                  <Text style={tw("")}>{inputData[0].category.name}</Text>
+                  <Text style={tw("")}>Rp. {inputData[0].price}</Text>
+                  <Text style={tw("")}>{inputData[0].discount} %</Text>
+                  <Text style={tw("")}>{inputData[0].created_at}</Text>
+                  <Text style={tw("")}>{inputData[0].updated_at}</Text>
                 </View>
               </View>
             </View>
@@ -207,7 +222,8 @@ export const ReactPDF = (props) => {
                   "text-base font-medium line-clamp-[30] text-gray-700"
                 )}
               >
-                Lorem Ipsum adalah contoh teks atau dummy dalam industri
+                {inputData[0].description ||
+                  `Lorem Ipsum adalah contoh teks atau dummy dalam industri
                 percetakan dan penataan huruf atau typesetting. Lorem Ipsum
                 telah menjadi standar contoh teks sejak tahun 1500an, saat
                 seorang tukang cetak yang tidak dikenal mengambil sebuah
@@ -235,7 +251,7 @@ export const ReactPDF = (props) => {
                 ditulis pada tahun 45 sebelum masehi. BUku ini adalah risalah
                 dari teori etika yang sangat terkenal pada masa Renaissance.
                 Baris pertama dari Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-                berasal dari sebuah baris di bagian 1.10.32.
+                berasal dari sebuah baris di bagian 1.10.32.`}
               </Text>
             </View>
             {/* <Svg></Svg> */}

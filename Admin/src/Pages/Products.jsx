@@ -341,8 +341,7 @@ export default function Products() {
                   <InfoModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
-                  <PrintTest />
-
+                  <PrintTest inputData={products} />
                   <div className="divider">Product List</div>
                   <MyTableEngine
                     {...MyTableEngineProps}

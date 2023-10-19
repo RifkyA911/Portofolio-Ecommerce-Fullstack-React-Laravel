@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 
 // Components
 // REDUX
@@ -154,13 +155,14 @@ export const MyTableHeader = (props) => {
   const [isSelectedActive, setSelectedActive] = useState(false);
   // const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
+  const debouncedOnChange = debounce(setSearchTerm, 1000);
   return (
     <>
       <div
         // ref={targetRef}
         className="print:hidden flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-scroll focus:touch-pan-x"
       >
-        <div className="flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
+        <div className="relative flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
           <button
             className="px-2 mr-2 bg-gray-200 text-black rounded-md"
             onClick={() => setDialogOpen(!isDialogOpen)}
@@ -171,11 +173,12 @@ export const MyTableHeader = (props) => {
             name="search"
             type="text"
             placeholder="Find data in this pagination"
-            value={searchTerm}
+            // value={searchTerm}
             className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none"
             // onChange={setSearchTerm}
-            onChange={setSearchTerm}
+            onChange={debouncedOnChange}
           />
+          <span className="absolute right-12 bottom-2 loading loading-dots loading-sm"></span>
         </div>
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
           {hideHeaderBtn !== "printBtn" && (
