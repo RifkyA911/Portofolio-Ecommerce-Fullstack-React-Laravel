@@ -1,5 +1,6 @@
 import React from "react";
 import { MuiIcon } from "../utils/RenderIcons";
+import { debounce } from "lodash";
 
 export const ActionButton = (props) => {
   const { onClickDelete, onClickEdit, onClickView, hide = "view" } = props;
@@ -45,6 +46,8 @@ export const ActionButton = (props) => {
 };
 
 export const ConfirmButton = (props) => {
+  // const debouncedOnChange = debounce(setSearchTerm, 1000);
+
   const { className, confirmType, type, onClick, children } = props;
   return (
     <>
@@ -121,6 +124,23 @@ export const MyButton = (props) => {
       <button className="btn btn-success">Success</button>
       <button className="btn btn-warning">Warning</button>
       <button className="btn btn-error">Error</button>
+    </>
+  );
+};
+
+export const ListMenu = (props) => {
+  const { className, backdrop = false, onClick, text } = props;
+  return (
+    <>
+      {backdrop && (
+        <div
+          className="absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.91px]"
+          onClick={onClick}
+        ></div>
+      )}
+      <button className={className} onClick={onClick}>
+        {text}
+      </button>
     </>
   );
 };

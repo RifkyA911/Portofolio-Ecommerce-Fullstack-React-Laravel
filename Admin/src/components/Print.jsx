@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import Barcode from "react-jsbarcode";
-
 import {
   Document,
   Page,
@@ -11,82 +10,38 @@ import {
   Image,
   Link,
   Svg,
+  PDFDownloadLink,
 } from "@react-pdf/renderer";
 import { createTw } from "react-pdf-tailwind";
 
 import { useReactToPrint } from "react-to-print";
-
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: "row",
-    backgroundColor: "#E4E4E4",
-  },
-  image: {
-    width: 40,
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
-  },
-  table: {
-    display: "table",
-    width: "auto",
-    borderStyle: "solid",
-    borderColor: "#b2b2b2",
-    borderWidth: 1,
-    borderCollapse: "collapse",
-    marginTop: 10,
-  },
-  tableRow: {
-    margin: "auto",
-    flexDirection: "row",
-  },
-  tableCell: {
-    margin: 5,
-    borderStyle: "solid",
-    borderColor: "#b2b2b2",
-    borderWidth: 1,
-    padding: 5,
-  },
-});
+import { GetDateTime } from "../utils/Formatter";
+const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;
 
 export const PrintTest = (props) => {
   const { inputData } = props;
 
-  const [employee, setEmployee] = useState({
-    id: 1685328248504,
-    name: "John Doe",
-    email: "johndoe@gmail.com",
-    position: "accountant",
-    cadreLevel: "Consultant",
-    isAdmin: false,
-    earnings: {
-      basic: 5000,
-      transport: 1000,
-      overtime: 370,
-      housing: 700,
-    },
-    deductions: {
-      tax: 500,
-      pension: 200,
-    },
-  });
-
   return (
     <>
-      {/* <div tabIndex={0} className="collapse border border-base-300 bg-base-200">
-        <div className="collapse-title text-xl font-medium">
-          Focus me to see content
-        </div>
-        <div className="collapse-content">
-        </div>
-      </div> */}
-      <div className="mx-auto">
+      {/* <div className="mx-auto">
         <PDFViewer className="mx-auto" width="1000" height="600">
           <ReactPDF inputData={inputData} />
         </PDFViewer>
-      </div>
+        {inputData && inputData.length > 1 && inputData !== undefined ? (
+          <PDFDownloadLink
+            className="btn btn-success"
+            document={<ReactPDF inputData={inputData} />}
+            // fileName={`${inputData[0].name}#${GetDateTime()}.pdf`}
+            fileName={`products.pdf`}
+          >
+            {({ blob, url, loading, error }) =>
+              loading ? "Loading document..." : "Download now"
+            }
+          </PDFDownloadLink>
+        ) : (
+          <p>Loading</p>
+        )}
+      </div> */}
       {/* Ukuran kertas F4 dalam pixel (72 DPI) = 595 x 935 pixel 
       Ukuran kertas F4 dalam pixel (96 DPI) = 793 x 1247 pixel 
       Ukuran kertas F4 dalam pixel (150 DPI) = 1240 x 1948 pixel 
@@ -96,7 +51,7 @@ export const PrintTest = (props) => {
         <div className="collapse-title text-xl font-medium">Product Detail</div>
         <div className="collapse-content">
           <main className="min-h-screen bg-white shadow-lg mx-auto h-[816px] w-[1054px]">
-            <ReactToPrint employee={employee} />
+            <ReactToPrint />
           </main>
         </div>
       </div>
@@ -107,7 +62,6 @@ export const PrintTest = (props) => {
 export const ReactPDF = (props) => {
   const { inputData } = props;
   // console.log(inputData)
-  const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;
 
   const tw = createTw({
     theme: {
@@ -263,8 +217,27 @@ export const ReactPDF = (props) => {
   );
 };
 
-export const ReactToPrint = ({ employee }) => {
+export const ReactToPrint = (props) => {
   let componentRef = useRef(null);
+
+  const [employee, setEmployee] = useState({
+    id: 1685328248504,
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    position: "accountant",
+    cadreLevel: "Consultant",
+    isAdmin: false,
+    earnings: {
+      basic: 5000,
+      transport: 1000,
+      overtime: 370,
+      housing: 700,
+    },
+    deductions: {
+      tax: 500,
+      pension: 200,
+    },
+  });
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
