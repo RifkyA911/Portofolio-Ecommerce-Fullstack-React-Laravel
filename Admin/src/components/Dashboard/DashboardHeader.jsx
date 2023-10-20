@@ -17,7 +17,7 @@ const DashboardHeader = (props) => {
                   key={item.name}
                   className={`relative text-left text-xl text-gray-50 overflow-hidden basis-2/6 shrink rounded-xl ${
                     item.color
-                  } p-2 xl:px-8 lg:px-4 lg:py-2 w-full lg:w-96 h-24 lg:h-44 mb-2 lg:mb-0 ${
+                  } p-2 xl:px-8 lg:px-4 lg:py-2 w-full lg:w-96 h-24 lg:h-40 mb-2 lg:mb-0 ${
                     item.name != "User" ? "lg:mr-4" : "lg:mr-0"
                   }`}
                 >
@@ -57,7 +57,7 @@ const DashboardHeader = (props) => {
                             <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
                               $ {item.value}
                             </div>
-                            <div className="lg:flex-col py-4 font-roboto-bold shadow-sm xl:line-clamp-1">
+                            <div className="lg:flex-col py-2 font-roboto-bold shadow-sm xl:line-clamp-1">
                               <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
                                 4.20%
                               </span>
@@ -72,7 +72,7 @@ const DashboardHeader = (props) => {
                             <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
                               $ {item.value}
                             </div>
-                            <div className=" py-4 font-roboto-bold shadow-sm line-clamp-1">
+                            <div className=" py-2 font-roboto-bold shadow-sm line-clamp-1">
                               <span className="text-xs text-red-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
                                 -1.20%
                               </span>
@@ -87,7 +87,7 @@ const DashboardHeader = (props) => {
                             <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
                               + {item.value}
                             </div>
-                            <div className="py-4 font-roboto-bold shadow-sm line-clamp-1">
+                            <div className="py-2 font-roboto-bold shadow-sm line-clamp-1">
                               <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
                                 160%
                               </span>
@@ -102,7 +102,7 @@ const DashboardHeader = (props) => {
                             <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
                               + {item.value}
                             </div>
-                            <div className="py-4 font-roboto-bold shadow-sm line-clamp-1">
+                            <div className="py-2 font-roboto-bold shadow-sm line-clamp-1">
                               <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
                                 102%
                               </span>
