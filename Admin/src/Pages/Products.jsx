@@ -133,7 +133,7 @@ export default function Products() {
   // useEffect(() => {
   //   console.info(selectedRows);
   // }, [selectedRows]);
-  let response;
+
   const searchProducts = async (url, form) => {
     const controller = new AbortController();
     try {
@@ -141,12 +141,10 @@ export default function Products() {
         signal: controller.signal,
       });
       setProducts(response.data.data);
-      setLengthData(response.message.length);
+      setLengthData(response.data.message.length);
     } catch (error) {
-      // Handle errors here
+      console.error(error);
     }
-    // cancel the request
-    // controller.abort();
   };
 
   // ---- MyTableEngine Search Filter ----
@@ -171,6 +169,7 @@ export default function Products() {
   //   console.log(select);
 
   const MyTableEngineProps = {
+    context: ProductsContext,
     inputData: products,
     refresh: () => {
       fetchProducts(URL, "fetch");
@@ -216,7 +215,7 @@ export default function Products() {
     onChangePaginate: (newPaginate) => {
       setLoading(true);
       setPaginate(newPaginate);
-      console.log("paginate-", newPaginate);
+      // console.log("paginate-", newPaginate);
     },
     rows: rows,
     onRowsChange: (newRows) => {
@@ -308,13 +307,13 @@ export default function Products() {
           ) : (
             <>
               {products !== null ? (
-                <ProductsContext.Provider value={MyTableEngineProps}>
-                  <div
-                    ref={componentRef}
-                    id="Products"
-                    className="rounded-lg text-sm "
-                  >
-                    {/* <div className="print:hidden">
+                // <ProductsContext.Provider value={MyTableEngineProps}>
+                <div
+                  ref={componentRef}
+                  id="Products"
+                  className="rounded-lg text-sm "
+                >
+                  {/* <div className="print:hidden">
                     <button
                       onClick={handlePrint}
                       className="bg-cyan-500 px-6 py-2 text-white border border-cyan-500 font-bold rounded-md mb-3 w-full lg:w-fit my-6 max-w-sm"
@@ -322,215 +321,210 @@ export default function Products() {
                       Print Payslip
                     </button>
                   </div> */}
-                    {/* ================ Error ================ */}
-                    <div>
-                      {errorMessage && (
-                        <SetErrorMessage
-                          errorMessage={errorMessage}
-                          refresh={() => {
-                            fetchProducts(URL, "fetch");
-                            setLoading(true);
-                          }}
-                        >
-                          <span className="text-md font-medium my-2">
-                            {URL}
-                          </span>
-                        </SetErrorMessage>
-                      )}
-                    </div>
-                    {/* ================ Modal ================= */}
-                    <InfoModal {...ModalProps} />
-                    <ActionModalForm {...ModalProps} />
-                    {/* ================ Table ================ */}
-                    <PrintTest inputData={products} />
-                    <div className="divider">Product List</div>
-                    <MyTableEngine
-                      {...MyTableEngineProps}
-                      className="rounded-md mx-auto"
-                    >
-                      <Thead className={`${BgOuterTable} ${textColor} `}>
-                        <Tr key="TableHead" className={table_styling.tr}>
-                          {table_styling.th.map((th, index) => (
-                            <Th
-                              key={index}
-                              name={th.key === "id" ? "" : th.key}
-                              column={th.key}
-                              feature={th.feature}
-                              sortOrder="asc"
-                              className={th.style}
-                              // hidden={
-                              //   th.key === "created_at" || th.key === "updated_at"
-                              //     ? true
-                              //     : false
-                              // }
-                            ></Th>
-                          ))}
-                          <Th
-                            key={55}
-                            name="Action"
-                            column="Action"
-                            feature={null}
-                            className="capitalize px-4"
-                          ></Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody className={table_styling.tbody}>
-                        {products.map((row, index) => (
-                          <Tr
-                            key={index}
-                            customKey={index}
-                            className={
-                              "divide-y font-roboto-medium capitalize text-gray-900"
-                            }
-                          >
-                            {toggleSelect ? (
-                              <>
-                                {row.role != 0 ? (
-                                  <>
-                                    <Th
-                                      key={index}
-                                      feature={"select"}
-                                      onChange={() =>
-                                        handleCheckboxChange(
-                                          row.id,
-                                          row.name,
-                                          row.pict
-                                        )
-                                      }
-                                      selectedRows={selectedRows}
-                                      rowId={row.id}
-                                      className=""
-                                    >
-                                      {selectedRows.some(
-                                        (item) => item.id === row.id
-                                      ) ? (
-                                        <button
-                                          onClick={() =>
-                                            handleCheckboxChange(
-                                              row.id,
-                                              row.name,
-                                              row.pict
-                                            )
-                                          }
-                                          className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
-                                        ></button>
-                                      ) : (
-                                        <button
-                                          onClick={() =>
-                                            handleCheckboxChange(
-                                              row.id,
-                                              row.name,
-                                              row.pict
-                                            )
-                                          }
-                                          className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
-                                        ></button>
-                                      )}
-                                    </Th>
-                                  </>
-                                ) : (
-                                  <th className="cursor-not-allowed">
-                                    <MuiIcon iconName="BlockRounded" />
-                                  </th>
-                                )}
-                              </>
-                            ) : (
-                              <>
-                                <Th
-                                  key={index}
-                                  className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
-                                >
-                                  {parseInt(row.id) == 0
-                                    ? parseInt(row.id) + 1
-                                    : row.id}
-                                </Th>
-                              </>
-                            )}
-                            <Td
-                              className={`${table_styling.td} w-1/12 cursor-pointer`}
-                              onClick={() => {
-                                handleInfoButton(row, "SHOW_PRODUCT_BARCODE");
-                              }}
-                            >
-                              {row.id && (
-                                <Barcode
-                                  className={`h-[68px] p-0 m-0 max-w-[150px]`}
-                                  value={row.barcode}
-                                  // options={{ format: "EAN13" }}
-                                />
-                              )}
-                            </Td>
-                            <Td className={`${table_styling.td} w-1/12`}>
-                              {row.id && (
-                                <ProductImage
-                                  data={row}
-                                  onProductPictureClick={() => {
-                                    handleInfoButton(
-                                      row,
-                                      "SHOW_PRODUCT_PICTURE"
-                                    );
-                                  }}
-                                />
-                              )}
-                            </Td>
-                            <Td className={`${table_styling.td} w-2/12`}>
-                              {row.name}
-                            </Td>
-                            <Td className={`${table_styling.td} w-1/12`}>
-                              {row.category?.name}
-                            </Td>
-                            <Td className={`${table_styling.td} w-1/12`}>
-                              {row.stock}
-                            </Td>
-                            <Td className={`${table_styling.td} w-1/12`}>
-                              {row.price}
-                            </Td>
-                            <Td className={`${table_styling.td} w-1/12`}>
-                              <span className="flex flex-row gap-2 justify-center items-center">
-                                {row.discount && (
-                                  <NumberSpan
-                                    data={row.discount + " %"}
-                                    className="text-green-600 text-sm"
-                                  />
-                                )}
-                              </span>
-                            </Td>
-
-                            <Td className="print:hidden px-4">
-                              {row.id && (
-                                <ActionButton
-                                  key={index}
-                                  data={row}
-                                  hide={["view, print"]}
-                                  onClickView={() => {
-                                    document
-                                      .getElementById("ModalForms")
-                                      .showModal();
-                                    handleActionButton(row.id, "DROP_BY_ID");
-                                  }}
-                                  onClickDelete={() => {
-                                    document
-                                      .getElementById("ModalForms")
-                                      .showModal();
-                                    handleActionButton(row.id, "DROP_BY_ID");
-                                  }}
-                                  onClickEdit={() => {
-                                    document
-                                      .getElementById("ModalForms")
-                                      .showModal();
-                                    handleActionButton(row.id, "ALTER_BY_ID");
-                                  }}
-                                />
-                              )}
-                            </Td>
-                          </Tr>
-                        ))}
-                      </Tbody>
-                    </MyTableEngine>
-                    <div className="divider">Category List</div>
+                  {/* ================ Error ================ */}
+                  <div>
+                    {errorMessage && (
+                      <SetErrorMessage
+                        errorMessage={errorMessage}
+                        refresh={() => {
+                          fetchProducts(URL, "fetch");
+                          setLoading(true);
+                        }}
+                      >
+                        <span className="text-md font-medium my-2">{URL}</span>
+                      </SetErrorMessage>
+                    )}
                   </div>
-                </ProductsContext.Provider>
+                  {/* ================ Modal ================= */}
+                  <InfoModal {...ModalProps} />
+                  <ActionModalForm {...ModalProps} />
+                  {/* ================ Table ================ */}
+                  <PrintTest inputData={products} />
+                  <div className="divider">Product List</div>
+                  <MyTableEngine
+                    {...MyTableEngineProps}
+                    className="rounded-md mx-auto"
+                  >
+                    <Thead className={`${BgOuterTable} ${textColor} `}>
+                      <Tr key="TableHead" className={table_styling.tr}>
+                        {table_styling.th.map((th, index) => (
+                          <Th
+                            key={index}
+                            name={th.key === "id" ? "" : th.key}
+                            column={th.key}
+                            feature={th.feature}
+                            sortOrder="asc"
+                            className={th.style}
+                            // hidden={
+                            //   th.key === "created_at" || th.key === "updated_at"
+                            //     ? true
+                            //     : false
+                            // }
+                          ></Th>
+                        ))}
+                        <Th
+                          key={55}
+                          name="Action"
+                          column="Action"
+                          feature={null}
+                          className="print:hidden capitalize px-4"
+                        ></Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody className={table_styling.tbody}>
+                      {products.map((row, index) => (
+                        <Tr
+                          key={index}
+                          customKey={index}
+                          className={
+                            "divide-y font-roboto-medium capitalize text-gray-900"
+                          }
+                        >
+                          {toggleSelect ? (
+                            <>
+                              {row.role != 0 ? (
+                                <>
+                                  <Th
+                                    key={index}
+                                    feature={"select"}
+                                    onChange={() =>
+                                      handleCheckboxChange(
+                                        row.id,
+                                        row.name,
+                                        row.pict
+                                      )
+                                    }
+                                    selectedRows={selectedRows}
+                                    rowId={row.id}
+                                    className=""
+                                  >
+                                    {selectedRows.some(
+                                      (item) => item.id === row.id
+                                    ) ? (
+                                      <button
+                                        onClick={() =>
+                                          handleCheckboxChange(
+                                            row.id,
+                                            row.name,
+                                            row.pict
+                                          )
+                                        }
+                                        className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
+                                      ></button>
+                                    ) : (
+                                      <button
+                                        onClick={() =>
+                                          handleCheckboxChange(
+                                            row.id,
+                                            row.name,
+                                            row.pict
+                                          )
+                                        }
+                                        className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
+                                      ></button>
+                                    )}
+                                  </Th>
+                                </>
+                              ) : (
+                                <th className="cursor-not-allowed">
+                                  <MuiIcon iconName="BlockRounded" />
+                                </th>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <Th
+                                key={index}
+                                className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-[1%] p-0 font-roboto-bold border-b-[2px] border-white`}
+                              >
+                                {parseInt(row.id) == 0
+                                  ? parseInt(row.id) + 1
+                                  : row.id}
+                              </Th>
+                            </>
+                          )}
+                          <Td
+                            className={`${table_styling.td} w-1/12 cursor-pointer`}
+                            onClick={() => {
+                              handleInfoButton(row, "SHOW_PRODUCT_BARCODE");
+                            }}
+                          >
+                            {row.id && (
+                              <Barcode
+                                className={`h-[68px] p-0 m-0 max-w-[150px]`}
+                                value={row.barcode}
+                                // options={{ format: "EAN13" }}
+                              />
+                            )}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {row.id && (
+                              <ProductImage
+                                data={row}
+                                onProductPictureClick={() => {
+                                  handleInfoButton(row, "SHOW_PRODUCT_PICTURE");
+                                }}
+                              />
+                            )}
+                          </Td>
+                          <Td className={`${table_styling.td} w-2/12`}>
+                            {row.name}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {row.category?.name}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {row.stock}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {row.price}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            <span className="flex flex-row gap-2 justify-center items-center">
+                              {row.discount && (
+                                <NumberSpan
+                                  data={row.discount + " %"}
+                                  className="text-green-600 text-sm "
+                                />
+                              )}
+                            </span>
+                          </Td>
+
+                          <Td className="print:hidden px-4">
+                            {row.id && (
+                              <ActionButton
+                                key={index}
+                                data={row}
+                                hide={["view, print"]}
+                                onClickView={() => {
+                                  document
+                                    .getElementById("ModalForms")
+                                    .showModal();
+                                  handleActionButton(row.id, "DROP_BY_ID");
+                                }}
+                                onClickDelete={() => {
+                                  document
+                                    .getElementById("ModalForms")
+                                    .showModal();
+                                  handleActionButton(row.id, "DROP_BY_ID");
+                                }}
+                                onClickEdit={() => {
+                                  document
+                                    .getElementById("ModalForms")
+                                    .showModal();
+                                  handleActionButton(row.id, "ALTER_BY_ID");
+                                }}
+                              />
+                            )}
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </MyTableEngine>
+                  <div className="divider">Category List</div>
+                </div>
               ) : (
+                // </ProductsContext.Provider>
                 "tidak ada data"
               )}
             </>

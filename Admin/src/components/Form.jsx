@@ -5,6 +5,33 @@ import { ModalContext, useModalContext } from "./Modal";
 import { Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { MuiIcon } from "../utils/RenderIcons";
+import { debounce } from "lodash";
+
+export const SearchInput = (props) => {
+  const { func } = props;
+  const [loading, setLoading] = useState(false);
+  // const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
+
+  const searchInput = useRef(null);
+
+  const debouncedOnChange = debounce(func, 1000);
+  return (
+    <>
+      <input
+        ref={searchInput}
+        name="search"
+        type="text"
+        placeholder="Find inputData in this pagination"
+        className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none"
+        // value={setSearchTerm} this is useless
+        onChange={debouncedOnChange}
+      />
+      {loading && (
+        <span className="absolute right-12 bottom-2 loading loading-dots loading-sm"></span>
+      )}
+    </>
+  );
+};
 
 export const TextInput = (props) => {
   const {

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
 import { useReactToPrint } from "react-to-print";
+import { SearchInput } from "../Form";
 
 const TableContext = createContext();
 
@@ -171,7 +172,8 @@ export const MyTableHeader = (props) => {
           >
             <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
           </button>
-          <input
+          <SearchInput func={setSearchTerm} />
+          {/* <input
             ref={searchInput}
             name="search"
             type="text"
@@ -182,7 +184,7 @@ export const MyTableHeader = (props) => {
           />
           {loading && (
             <span className="absolute right-12 bottom-2 loading loading-dots loading-sm"></span>
-          )}
+          )} */}
         </div>
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
           {hideHeaderBtn !== "printBtn" && (
@@ -617,6 +619,12 @@ export const MyTablePagination = (props) => {
       setMaxButtons(5);
     }
   });
+
+  useEffect(() => {
+    setTotalItems(length);
+    setTotalRows(rows);
+    // console.log("length:", length, "rows:", rows);
+  }, [length, rows]);
 
   // Inisialisasi array untuk menyimpan nomor halaman yang akan ditampilkan.
   const pageNumbers = [];
