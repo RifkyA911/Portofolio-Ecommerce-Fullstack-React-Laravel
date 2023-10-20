@@ -154,7 +154,7 @@ export default function Products() {
       if (searchTerm.length > 1 || searchTerm !== "") {
         // searchProducts(URL_SEARCH, searchTerm);
         searchProducts(URL_SEARCH, searchTerm);
-      } else {
+      } else if (searchTerm == "") {
         fetchProducts(URL);
       }
     }

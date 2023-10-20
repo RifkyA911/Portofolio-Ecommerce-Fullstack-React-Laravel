@@ -173,18 +173,6 @@ export const MyTableHeader = (props) => {
             <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
           </button>
           <SearchInput func={setSearchTerm} />
-          {/* <input
-            ref={searchInput}
-            name="search"
-            type="text"
-            placeholder="Find inputData in this pagination"
-            className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none"
-            // onChange={setSearchTerm}
-            onChange={debouncedOnChange}
-          />
-          {loading && (
-            <span className="absolute right-12 bottom-2 loading loading-dots loading-sm"></span>
-          )} */}
         </div>
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
           {hideHeaderBtn !== "printBtn" && (
