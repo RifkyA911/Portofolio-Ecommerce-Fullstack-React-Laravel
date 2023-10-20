@@ -7,6 +7,9 @@ import { useSelector } from "react-redux";
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
 import { useReactToPrint } from "react-to-print";
 import { SearchInput } from "../Form";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { ReactPDF } from "../Print";
+import { GetDateTime } from "../../utils/Formatter";
 
 const TableContext = createContext();
 
@@ -119,6 +122,7 @@ export const MyTableEngine = (props) => {
 
 export const MyTableHeader = (props) => {
   const {
+    inputData,
     length,
     handlePrint,
     hideHeaderBtn,
@@ -175,7 +179,7 @@ export const MyTableHeader = (props) => {
           <SearchInput func={setSearchTerm} />
         </div>
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
-          {hideHeaderBtn !== "printBtn" && (
+          {hideHeaderBtn !== "printBtn" && !toggleSelect && (
             <>
               <button
                 onClick={() =>
@@ -192,20 +196,31 @@ export const MyTableHeader = (props) => {
                 <span className="font-base px-2">Print</span>
               </button>
 
-              {isDialogOpen.print && (
-                <>
+              {/* {isDialogOpen.print && ( */}
+              <>
+                <div
+                  className={`${
+                    !isDialogOpen.print ? "hidden" : "block"
+                  } absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.5px]`}
+                  onClick={() => {
+                    setDialogOpen({
+                      ...isDialogOpen,
+                      print: !isDialogOpen.print,
+                    });
+                  }}
+                ></div>
+                {/* <PDFViewer className="mx-auto" width="1000" height="600">
+                    <ReactPDF inputData={inputData} />
+                  </PDFViewer> */}
+                {inputData &&
+                inputData.length > 1 &&
+                inputData !== undefined ? (
                   <div
-                    className="absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.91px]"
-                    onClick={() => {
-                      setDialogOpen({
-                        ...isDialogOpen,
-                        print: !isDialogOpen.print,
-                      });
-                    }}
-                  ></div>
-                  <div className="absolute bg-white w-[140px] top-11 right-[235px] shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium">
+                    className={`${
+                      !isDialogOpen.print ? "hidden" : "block"
+                    } absolute bg-white w-[140px] top-11 right-[235px] shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
+                  >
                     <button
-                      className="py-2 px-4 w-full hover:bg-slate-200 text-left"
                       onClick={() => {
                         // handlePrint();
                         setDialogOpen({
@@ -213,8 +228,19 @@ export const MyTableHeader = (props) => {
                           print: !isDialogOpen.print,
                         });
                       }}
+                      className="py-2 px-4 w-full hover:bg-slate-200 text-left"
                     >
-                      Print Per Product
+                      <PDFDownloadLink
+                        className=""
+                        document={<ReactPDF inputData={inputData} />}
+                        fileName={`products_${
+                          inputData[0].name
+                        }#${GetDateTime()}.pdf`}
+                      >
+                        {({ blob, url, loading, error }) =>
+                          loading ? "Loading document..." : "Print Per Product"
+                        }
+                      </PDFDownloadLink>
                     </button>
                     <button
                       className="py-2 px-4 w-full hover:bg-slate-200 text-left"
@@ -241,8 +267,11 @@ export const MyTableHeader = (props) => {
                       Print Table
                     </button>
                   </div>
-                </>
-              )}
+                ) : (
+                  <p>Loading</p>
+                )}
+              </>
+              {/* )} */}
             </>
           )}
 
@@ -321,7 +350,7 @@ export const MyTableHeader = (props) => {
               </button>
             </>
           )}
-          {hideHeaderBtn !== "addBtn" && (
+          {hideHeaderBtn !== "addBtn" && !toggleSelect && (
             <>
               <button
                 className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "

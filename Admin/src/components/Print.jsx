@@ -23,7 +23,7 @@ export const PrintTest = (props) => {
 
   return (
     <>
-      {/* <div className="mx-auto">
+      {/* <div className="mx-auto p-4">
         <PDFViewer className="mx-auto" width="1000" height="600">
           <ReactPDF inputData={inputData} />
         </PDFViewer>

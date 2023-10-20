@@ -21,6 +21,7 @@ import { updateCredentials, updateSession } from "../Redux/Slices/UserSlice";
 import { useForm, Controller } from "react-hook-form";
 import { SkeltonForm } from "../components/Skelton/SkeltonForm";
 import { CropperModal } from "../components/Modal";
+import { debounce } from "lodash";
 
 const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -140,6 +141,8 @@ export default function MyProfile() {
     // finally {}
     dispatch(updateCredentials({ user: form }));
   };
+
+  // const debouncedOnChange = debounce(, 1000);
 
   const MyProfileContextValue = {
     //react-hook-form
@@ -273,10 +276,7 @@ export default function MyProfile() {
                           </div>
                           {toggleForm.btnChange && (
                             <div className="pt-10">
-                              <ConfirmButton
-                                onClick={() => console.log("s")}
-                                confirmType="alter"
-                              />
+                              <ConfirmButton confirmType="alter" />
                             </div>
                           )}
                         </div>
