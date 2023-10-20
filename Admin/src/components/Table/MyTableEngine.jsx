@@ -48,23 +48,17 @@ export const MyTableEngine = (props) => {
     // sendDataToParent,
   } = props;
 
-  const [data, setData] = useState([]);
   const [errorMessage, setErrorMessage] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const [sortBy, setSortBy] = useState(getSortBy);
   const [sortOrder, setSortOrder] = useState(getSortOrder);
 
-  // const targetRef = useRef();
-  const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
-
   // REDUX
   const { BorderOuterTable } = useSelector((state) => state.UI);
 
   useEffect(() => {
-    if (Array.isArray(inputData)) {
-      setData(inputData);
-    } else {
+    if (!Array.isArray(inputData)) {
       console.error("Data input harus berupa array.");
       return 0;
     }
@@ -73,37 +67,23 @@ export const MyTableEngine = (props) => {
   const updateMyTableState = (action) => {
     switch (action.type) {
       case "UPDATE_SORT":
-        setData(action.payload.newData);
         setSortOrder(action.payload.newSortOrder); // Toggle urutan
         setSortBy(action.payload.newSortBy);
         sortData(action.payload.newData); // oper props ke parent
         // console.table("MYENGINETABLE:", action.payload.newData);
         break;
-      case "UPDATE_SEARCH":
-        setSearchTerm(action.payload.newData);
-        break;
-      case "DELETE_MULTIPLE":
-        setSearchTerm(action.payload.newData);
-        break;
       default:
         break;
     }
-  };
-  const options = {
-    filename: "using-function.pdf",
-    page: {
-      margin: 20,
-    },
   };
 
   return (
     <div className="relative">
       <TableContext.Provider
         value={{
-          data,
-          errorMessage,
+          ...props,
           loading,
-          searchTerm,
+          errorMessage,
           sortBy,
           sortOrder,
           updateMyTableState,
@@ -113,17 +93,17 @@ export const MyTableEngine = (props) => {
         {TabHeader && (
           <>
             <MyTableHeader
-              length={length}
-              printBtn={printBtn}
-              hideHeaderBtn={hideHeaderBtn}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              setAddModal={setAddModal}
-              setDeleteModal={setDeleteModal}
-              toggleSelect={toggleSelect}
-              setToggleSelect={setToggleSelect}
-              setSelectedRows={setSelectedRows}
-              refresh={refresh}
+            // length={length}
+            // printBtn={printBtn}
+            // hideHeaderBtn={hideHeaderBtn}
+            // searchTerm={searchTerm}
+            // setSearchTerm={setSearchTerm}
+            // setAddModal={setAddModal}
+            // setDeleteModal={setDeleteModal}
+            // toggleSelect={toggleSelect}
+            // setToggleSelect={setToggleSelect}
+            // setSelectedRows={setSelectedRows}
+            // refresh={refresh}
             />
           </>
         )}
@@ -134,12 +114,12 @@ export const MyTableEngine = (props) => {
             {children}
             {TabPagination && (
               <MyTablePagination
-                colSpan={colSpan}
-                paginate={paginate}
-                onChangePaginate={onChangePaginate}
-                rows={rows}
-                onRowsChange={onRowsChange}
-                length={length}
+              // colSpan={colSpan}
+              // paginate={paginate}
+              // onChangePaginate={onChangePaginate}
+              // rows={rows}
+              // onRowsChange={onRowsChange}
+              // length={length}
               />
             )}
           </Table>
@@ -162,7 +142,7 @@ export const MyTableHeader = (props) => {
     setToggleSelect,
     setSelectedRows,
     refresh,
-  } = props;
+  } = useContext(TableContext);
   const [isDialogOpen, setDialogOpen] = useState({
     print: false,
     select: false,
@@ -208,7 +188,7 @@ export const MyTableHeader = (props) => {
             ref={searchInput}
             name="search"
             type="text"
-            placeholder="Find data in this pagination"
+            placeholder="Find inputData in this pagination"
             className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none"
             // onChange={setSearchTerm}
             onChange={debouncedOnChange}
@@ -473,7 +453,7 @@ export const Thead = (props) => {
 
 export const Th = (props) => {
   const {
-    data,
+    inputData,
     errorMessage,
     sortOrder = "asc",
     sortBy,
@@ -496,9 +476,7 @@ export const Th = (props) => {
 
   const handleSortClick = (column) => {
     // Lakukan pengurutan atau manipulasi data sesuai kebutuhan Anda
-    const sortedData = [...data].sort((a, b) => {
-      // console.table("a:", a[column]);
-      // console.table("b:", b[column]);
+    const sortedData = [...inputData].sort((a, b) => {
       if (a[column] < b[column]) {
         return sortOrder === "desc" ? -1 : 1;
       }
@@ -507,7 +485,6 @@ export const Th = (props) => {
       }
       return 0;
     });
-    // console.table(sortedData);
     const newSortedValue = {
       newData: sortedData,
       newSortOrder: sortOrder === "asc" ? "desc" : "asc",
@@ -623,7 +600,7 @@ export const Td = (props) => {
 
 export const MyTablePagination = (props) => {
   const { colSpan, paginate, onChangePaginate, rows, onRowsChange, length } =
-    props;
+    useContext(TableContext);
 
   const [currentPage, setCurrentPage] = useState(paginate);
   // const [headPage, setHeadPage] = useState(1);
