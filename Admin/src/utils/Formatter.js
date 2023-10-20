@@ -44,7 +44,7 @@ export const ConvertToDateMonth = (input) => {
   // Membuat format tanggal yang diinginkan
   const formattedDate = `${day} ${monthName}`;
 
-  console.log(formattedDate); // Output: "17 Okt"
+  // console.log(formattedDate); // Output: "17 Okt"
   return formattedDate;
 };
 

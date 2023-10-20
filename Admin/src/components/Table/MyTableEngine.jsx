@@ -1,14 +1,11 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import debounce from "lodash/debounce";
-import throttle from "lodash/throttle";
-
 // Components
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import generatePDF, { usePDF } from "react-to-pdf";
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
-import { useAdminsContext } from "../../Pages/Admins";
+import { useReactToPrint } from "react-to-print";
 
 const TableContext = createContext();
 
@@ -76,12 +73,20 @@ export const MyTableEngine = (props) => {
         break;
     }
   };
+  let printRef = useRef(null);
 
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    // documentTitle: `${employee.name.replace(/\s/g, "-")}-Payslip`,
+    documentTitle: `Payslip`,
+    onPrintError: () => alert("there is an error when printing"),
+  });
   return (
     <div className="relative">
       <TableContext.Provider
         value={{
           ...props,
+          handlePrint,
           loading,
           errorMessage,
           sortBy,
@@ -92,36 +97,18 @@ export const MyTableEngine = (props) => {
         {/* ------------- HEADER ------------- */}
         {TabHeader && (
           <>
-            <MyTableHeader
-            // length={length}
-            // printBtn={printBtn}
-            // hideHeaderBtn={hideHeaderBtn}
-            // searchTerm={searchTerm}
-            // setSearchTerm={setSearchTerm}
-            // setAddModal={setAddModal}
-            // setDeleteModal={setDeleteModal}
-            // toggleSelect={toggleSelect}
-            // setToggleSelect={setToggleSelect}
-            // setSelectedRows={setSelectedRows}
-            // refresh={refresh}
-            />
+            <MyTableHeader />
           </>
         )}
         {/* ------------- TABLE -------------*/}
 
-        <div className={`${BorderOuterTable} ${className} overflow-x-auto`}>
+        <div
+          ref={printRef}
+          className={`${BorderOuterTable} ${className} overflow-x-auto`}
+        >
           <Table className={`text-sm w-full `}>
             {children}
-            {TabPagination && (
-              <MyTablePagination
-              // colSpan={colSpan}
-              // paginate={paginate}
-              // onChangePaginate={onChangePaginate}
-              // rows={rows}
-              // onRowsChange={onRowsChange}
-              // length={length}
-              />
-            )}
+            {TabPagination && <MyTablePagination />}
           </Table>
         </div>
       </TableContext.Provider>
@@ -132,7 +119,7 @@ export const MyTableEngine = (props) => {
 export const MyTableHeader = (props) => {
   const {
     length,
-    printBtn,
+    handlePrint,
     hideHeaderBtn,
     searchTerm,
     setSearchTerm,
@@ -222,7 +209,7 @@ export const MyTableHeader = (props) => {
                     onClick={() => {
                       setDialogOpen({
                         ...isDialogOpen,
-                        select: !isDialogOpen.select,
+                        print: !isDialogOpen.print,
                       });
                     }}
                   ></div>
@@ -230,7 +217,7 @@ export const MyTableHeader = (props) => {
                     <button
                       className="py-2 px-4 w-full hover:bg-slate-200 text-left"
                       onClick={() => {
-                        printBtn();
+                        // handlePrint();
                         setDialogOpen({
                           ...isDialogOpen,
                           print: !isDialogOpen.print,
@@ -242,7 +229,7 @@ export const MyTableHeader = (props) => {
                     <button
                       className="py-2 px-4 w-full hover:bg-slate-200 text-left"
                       onClick={() => {
-                        printBtn();
+                        // handlePrint();
                         setDialogOpen({
                           ...isDialogOpen,
                           print: !isDialogOpen.print,
@@ -254,14 +241,14 @@ export const MyTableHeader = (props) => {
                     <button
                       className="py-2 px-4 w-full hover:bg-slate-200 text-left"
                       onClick={() => {
-                        printBtn();
+                        handlePrint();
                         setDialogOpen({
                           ...isDialogOpen,
                           print: !isDialogOpen.print,
                         });
                       }}
                     >
-                      Print List
+                      Print Table
                     </button>
                   </div>
                 </>
