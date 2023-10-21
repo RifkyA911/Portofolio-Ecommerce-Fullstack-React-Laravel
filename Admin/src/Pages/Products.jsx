@@ -6,7 +6,7 @@ import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
-import { ActionModalForm, InfoModal } from "../components/Modal";
+import { ActionModalForm, InfoModal, PrintModal } from "../components/Modal";
 import { ProductImage } from "../components/Products/ProductsTableBody";
 import { ActionButton } from "../components/Button";
 import { NumberSpan } from "../components/Span";
@@ -186,6 +186,10 @@ export default function Products() {
       setSearchTerm(e.target.value);
       // setTimeout(setSearchTerm(e.target.value), 2000);
     },
+    setPrintModal: () => {
+      document.getElementById("ModalForms").showModal();
+      handleActionButton(selectedRows, "PRINT_BATCH");
+    },
     setAddModal: () => {
       document.getElementById("ModalForms").showModal();
       handleActionButton(null, "INSERT");
@@ -200,6 +204,7 @@ export default function Products() {
     setToggleSelect: () => {
       setToggleSelect((toggleSelectProps) => !toggleSelectProps);
     },
+    selectedRows: selectedRows,
     setSelectedRows: (propsValue) => setSelectedRows(propsValue),
     // Sorting Filter
     sortData: (newSortedData) => {
@@ -334,6 +339,7 @@ export default function Products() {
                   </div>
                   {/* ================ Modal ================= */}
                   <InfoModal {...ModalProps} />
+                  <PrintModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
                   <PrintTest inputData={products} />
@@ -448,7 +454,7 @@ export default function Products() {
                           >
                             {row.id && (
                               <Barcode
-                                className={`h-[68px] p-0 m-0 max-w-[150px]`}
+                                className={`h-[64px] p-0 m-0 max-w-[150px]`}
                                 value={row.barcode}
                                 // options={{ format: "EAN13" }}
                               />
@@ -491,13 +497,12 @@ export default function Products() {
                             {row.id && (
                               <ActionButton
                                 key={index}
-                                data={row}
-                                hide={["view, print"]}
-                                onClickView={() => {
+                                inputData={row}
+                                onClickPrint={() => {
                                   document
-                                    .getElementById("ModalForms")
+                                    .getElementById("PrintModal")
                                     .showModal();
-                                  handleActionButton(row.id, "DROP_BY_ID");
+                                  handleActionButton(row.id, "PRINT_BY_ID");
                                 }}
                                 onClickDelete={() => {
                                   document

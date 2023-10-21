@@ -27,6 +27,7 @@ export const MyTableEngine = (props) => {
     printBtn,
     searchTerm,
     setSearchTerm,
+    setPrintModal,
     setAddModal,
     setDeleteModal,
     // Sorting Table Component
@@ -130,10 +131,12 @@ export const MyTableHeader = (props) => {
     hideHeaderBtn,
     searchTerm,
     setSearchTerm,
+    setPrintModal,
     setAddModal,
     setDeleteModal,
     toggleSelect,
     setToggleSelect,
+    selectedRows,
     setSelectedRows,
     refresh,
   } = useContext(TableContext);
@@ -141,7 +144,10 @@ export const MyTableHeader = (props) => {
     print: false,
     select: false,
   });
-
+  const [showFixedBtn, setShowFixedBtn] = useState(null);
+  // useEffect(() => {
+  //   console.info(selectedRows.length);
+  // }, [selectedRows]);
   return (
     <>
       <div
@@ -159,11 +165,67 @@ export const MyTableHeader = (props) => {
           </button>
           <SearchInput func={setSearchTerm} />
         </div>
+        {/*  FIXED AREA */}
+        {toggleSelect && showFixedBtn && (
+          <div className=" drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
+            {showFixedBtn === "DELETE" && (
+              <button
+                disabled={selectedRows.length === 0}
+                onClick={setDeleteModal}
+                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
+                  selectedRows.length === 0
+                    ? "from-red-300 to-pink-300 btn-disable"
+                    : "from-red-500 to-pink-500"
+                } hover:from-red-600 hover:to-pink-600 border-none`}
+              >
+                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
+                <span id="showDelete" className="options px-[4px]">
+                  Delete
+                </span>
+              </button>
+            )}
+            {showFixedBtn === "PRINT" && (
+              <button
+                disabled={selectedRows.length === 0}
+                onClick={setPrintModal}
+                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
+                  selectedRows.length === 0
+                    ? "from-orange-300 to-red-300 btn-disable"
+                    : "from-orange-500 to-red-500"
+                } hover:from-amber-600 hover:to-pink-600 border-none`}
+              >
+                <MuiIcon iconName={"PrintSharp"} fontSize={20} />
+                <span id="showDelete" className="options px-[4px]">
+                  Print
+                </span>
+              </button>
+            )}
+            <button
+              onClick={() => {
+                setToggleSelect(false);
+                setSelectedRows([]);
+              }}
+              className="flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
+            >
+              <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
+              <span id="showCancelDelete" className="options px-[4px]">
+                Cancel
+              </span>
+            </button>
+          </div>
+        )}
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
-          {hideHeaderBtn !== "printBtn" && !toggleSelect && (
+          {hideHeaderBtn !== "printBtn" && (
             <MyTableHeaderPrint
+              btnType="PRINT"
+              showFixedBtn={showFixedBtn}
+              setShowFixedBtn={setShowFixedBtn}
               inputData={inputData}
               isDialogOpen={isDialogOpen}
+              setPrintModal={setPrintModal}
+              toggleSelect={toggleSelect}
+              setToggleSelect={setToggleSelect}
+              setSelectedRows={setSelectedRows}
               closeFunction={() => {
                 setDialogOpen({
                   ...isDialogOpen,
@@ -175,6 +237,9 @@ export const MyTableHeader = (props) => {
           )}
           {hideHeaderBtn !== "deleteBtn" && (
             <MyTableHeaderDelete
+              btnType="DELETE"
+              showFixedBtn={showFixedBtn}
+              setShowFixedBtn={setShowFixedBtn}
               setDeleteModal={setDeleteModal}
               toggleSelect={toggleSelect}
               setToggleSelect={setToggleSelect}

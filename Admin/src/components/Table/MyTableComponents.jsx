@@ -6,7 +6,10 @@ import { ReactPDF } from "../Print";
 export const MyTableHeaderPrint = (props) => {
   const {
     inputData,
+    showFixedBtn,
+    setShowFixedBtn,
     isDialogOpen,
+    setPrintModal,
     toggleSelect,
     setToggleSelect,
     setSelectedRows,
@@ -15,6 +18,7 @@ export const MyTableHeaderPrint = (props) => {
   } = props;
   return (
     <>
+      {/* BTN HEADER */}
       <button
         onClick={closeFunction}
         className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
@@ -27,33 +31,6 @@ export const MyTableHeaderPrint = (props) => {
 
       {/* {isDialogOpen.print && (  ERROR, REACT PDF WONT WORK*/}
       <>
-        {/*  FIXED AREA */}
-        {toggleSelect && (
-          <div className="drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
-            <button
-              onClick={setDeleteModal}
-              className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 border-none"
-            >
-              <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-              <span id="showDelete" className="options px-[4px]">
-                Delete
-              </span>
-            </button>
-            <button
-              onClick={() => {
-                setToggleSelect(false);
-                setSelectedRows([]);
-              }}
-              className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
-            >
-              <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-              <span id="showCancelDelete" className="options px-[4px]">
-                Cancel
-              </span>
-            </button>
-          </div>
-        )}
-        {/* BTN HEADER */}
         <div
           className={`${
             !isDialogOpen.print ? "hidden" : "block"
@@ -67,35 +44,24 @@ export const MyTableHeaderPrint = (props) => {
             } absolute bg-white w-[140px] top-11 right-[235px] shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
           >
             <button
+              // onClick={closeFunction}
               onClick={() => {
-                // closeFunction();
-                setToggleSelect;
-                // setSelectedRows([]);
+                setShowFixedBtn("PRINT");
+                closeFunction();
+                setToggleSelect(true);
+                setSelectedRows([]);
               }}
               className="py-2 px-4 w-full hover:bg-slate-200 text-left"
             >
-              Test Select
-            </button>
-
-            <button
-              onClick={closeFunction}
-              className="py-2 px-4 w-full hover:bg-slate-200 text-left"
-            >
-              <PDFDownloadLink
+              {/* <PDFDownloadLink
                 className=""
                 document={<ReactPDF inputData={inputData} />}
                 fileName={`products_${inputData[0].name}#${GetDateTime()}.pdf`}
               >
                 {({ blob, url, loading, error }) =>
-                  loading ? "Loading document..." : "Print Product"
+                  loading ? "Loading document..." : "Print Batch"
                 }
-              </PDFDownloadLink>
-            </button>
-            <button
-              className="py-2 px-4 w-full hover:bg-slate-200 text-left"
-              onClick={closeFunction}
-            >
-              Print Batch
+              </PDFDownloadLink> */}
             </button>
             <button
               className="py-2 px-4 w-full hover:bg-slate-200 text-left"
@@ -117,36 +83,16 @@ export const MyTableHeaderPrint = (props) => {
 };
 
 export const MyTableHeaderDelete = (props) => {
-  const { setDeleteModal, toggleSelect, setToggleSelect, setSelectedRows } =
-    props;
+  const {
+    setDeleteModal,
+    showFixedBtn,
+    setShowFixedBtn,
+    toggleSelect,
+    setToggleSelect,
+    setSelectedRows,
+  } = props;
   return (
     <>
-      {/*  FIXED AREA */}
-      {toggleSelect && (
-        <div className="drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
-          <button
-            onClick={setDeleteModal}
-            className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 border-none"
-          >
-            <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-            <span id="showDelete" className="options px-[4px]">
-              Delete
-            </span>
-          </button>
-          <button
-            onClick={() => {
-              setToggleSelect(false);
-              setSelectedRows([]);
-            }}
-            className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
-          >
-            <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-            <span id="showCancelDelete" className="options px-[4px]">
-              Cancel
-            </span>
-          </button>
-        </div>
-      )}
       {/* BTN HEADER */}
       <button
         className={`mx-1 grow-0 shrink-0 focus:outline-none ${
@@ -156,7 +102,10 @@ export const MyTableHeaderDelete = (props) => {
         } hover:bg-gradient-to-r  rounded-md font-roboto-medium text-white items-center transition-all duration-200`}
         onClick={
           !toggleSelect
-            ? () => setToggleSelect(true)
+            ? () => {
+                setShowFixedBtn("DELETE");
+                setToggleSelect(true);
+              }
             : () => {
                 // setToggleSelect(false);
                 setSelectedRows([]);

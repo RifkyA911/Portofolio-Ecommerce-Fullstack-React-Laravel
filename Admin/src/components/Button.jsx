@@ -3,12 +3,12 @@ import { MuiIcon } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 
 export const ActionButton = (props) => {
-  const { onClickDelete, onClickEdit, onClickView, hide = "view" } = props;
+  const { onClickView, onClickPrint, onClickDelete, onClickEdit } = props;
 
   return (
     <>
       <div className="w-full gap-4 xflex-wrap flex lg:flex-row justify-around items-center">
-        {/* {hide !== "view" && (
+        {/* {
           <button
             onClick={onClickView}
             className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-lime-600 hover:to-lime-500 hover:outline-none outline outline-2 outline-amber-400 transition-all duration-200"
@@ -16,7 +16,15 @@ export const ActionButton = (props) => {
             <MuiIcon iconName={"RemoveRedEyeRounded"} fontSize={26} />
           </button>
         )} */}
-        {hide !== "delete" && (
+        {onClickPrint && (
+          <button
+            onClick={onClickPrint}
+            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-amber-500 hover:to-yellow-500 hover:outline-none outline outline-2 outline-amber-400 transition-all duration-200"
+          >
+            <MuiIcon iconName={"LocalPrintshopRounded"} fontSize={26} />
+          </button>
+        )}
+        {onClickDelete && (
           <button
             onClick={onClickDelete}
             className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-red-600 hover:to-red-500 hover:outline-none outline outline-2 outline-red-400 transition-all duration-200"
@@ -24,7 +32,7 @@ export const ActionButton = (props) => {
             <MuiIcon iconName={"DeleteForeverOutlined"} fontSize={26} />
           </button>
         )}
-        {hide !== "edit" && (
+        {onClickEdit && (
           <button
             onClick={onClickEdit}
             className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200"
@@ -32,14 +40,6 @@ export const ActionButton = (props) => {
             <MuiIcon iconName={"AutoFixHighOutlined"} fontSize={26} />
           </button>
         )}
-        {/* {hide !== "print" && (
-          <button
-            onClick={onClickEdit}
-            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200"
-          >
-            <MuiIcon iconName={"LocalPrintshopRounded"} fontSize={26} />
-          </button>
-        )} */}
       </div>
     </>
   );

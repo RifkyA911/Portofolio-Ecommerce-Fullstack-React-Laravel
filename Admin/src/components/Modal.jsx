@@ -29,10 +29,14 @@ import {
   ProductsInsertForm,
 } from "./Products/ProductsForm";
 import { ConfirmButton } from "./Button";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { ReactPDF } from "./Print";
+import { GetDateTime } from "../utils/Formatter";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+let URL_BY_ID;
+let URL_ALL;
 
 export const ModalContext = createContext();
 
@@ -264,7 +268,7 @@ export const ActionModalForm = (props) => {
   const [loading, setLoading] = useState(true);
 
   const id = useId();
-
+  // console.log(props);
   // REDUX
   const {
     BgColor,
@@ -790,7 +794,9 @@ export const PrintModal = (props) => {
   const [loading, setLoading] = useState(true);
 
   const id = useId();
-
+  useEffect(() => {
+    console.log(props);
+  }, [table_id]);
   // REDUX
   const {
     BgColor,
@@ -803,9 +809,6 @@ export const PrintModal = (props) => {
     BorderRowTable,
     BorderOuterTable,
   } = useSelector((state) => state.UI);
-
-  let URL_BY_ID;
-  let URL_ALL;
 
   if (table === "admins") {
     URL_BY_ID = import.meta.env.VITE_API_ID_ADMIN + "/" + table_id;
@@ -834,12 +837,7 @@ export const PrintModal = (props) => {
   });
 
   useEffect(() => {
-    if (formType === "INSERT") {
-      setData({
-        pict: "default.png",
-        email: "",
-      });
-    } else if (formType === "ALTER_BY_ID" || formType === "DROP_BY_ID") {
+    if (formType === "PRINT_BY_ID" || formType === "PRINT_BATCH") {
       // temp method: ini perlu dilakukan untuk menampilkan update setiap ada data baru
       if (table_id !== "" && table_id !== null) {
         axios
@@ -1139,12 +1137,16 @@ export const PrintModal = (props) => {
     watch,
   };
 
+  // useEffect(() => {
+  //   console.table(data);
+  // }, [data]);
+
   return (
     <>
       <ModalContext.Provider value={ModalContextValue}>
         <dialog id="PrintModal" className="modal">
           <div
-            className={`modal-box h-auto w-12/12 max-w-3xl bg-gray-50 overflow-y-scroll cursor-auto p-0`}
+            className={`modal-box h-auto w-11/12 max-w-6xl bg-gray-50 overflow-y-scroll cursor-auto p-0`}
           >
             <form method="dialog" className={` sticky top-0 z-10`}>
               <button
@@ -1161,7 +1163,7 @@ export const PrintModal = (props) => {
               className={`bg-slate-50 sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
             >
               <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
-                Print {table}
+                {formType === "PRINT_BATCH" && `Print Multiple ${table}`}
               </div>
               {errorMessage ? (
                 <>
@@ -1181,7 +1183,7 @@ export const PrintModal = (props) => {
                 </>
               )}
             </div>
-            {getValues() !== undefined && getValues() !== null ? (
+            {data !== undefined && data !== null ? (
               <div className="content">
                 {!loading ? (
                   <>
@@ -1207,7 +1209,58 @@ export const PrintModal = (props) => {
                         )}
                         {table === "products" && (
                           <>
-                            <p></p>
+                            {formType === "PRINT_BY_ID" && (
+                              <>
+                                <div className="mx-auto p-4">
+                                  <>
+                                    <PDFViewer
+                                      className="mx-auto"
+                                      width="1000"
+                                      height="800"
+                                    >
+                                      <ReactPDF inputData={data} />
+                                    </PDFViewer>
+                                    <PDFDownloadLink
+                                      className="btn btn-success"
+                                      document={<ReactPDF inputData={data} />}
+                                      fileName={`${table}_${
+                                        data.name
+                                      }#${GetDateTime()}.pdf`}
+                                    >
+                                      {({ blob, url, loading, error }) =>
+                                        loading
+                                          ? "Loading document..."
+                                          : "Download now"
+                                      }
+                                    </PDFDownloadLink>
+                                  </>
+                                </div>
+                              </>
+                            )}
+                            {formType === "PRINT_BATCH" && (
+                              <>
+                                {/* <PDFViewer
+                                      className="mx-auto"
+                                      width="1000"
+                                      height="600"
+                                    >
+                                      <ReactPDF inputData={data} />
+                                    </PDFViewer>
+                                    <PDFDownloadLink
+                                      className="btn btn-success"
+                                      document={<ReactPDF inputData={data} />}
+                                      fileName={`${table}_${
+                                        data[0].name
+                                      }#${GetDateTime()}.pdf`}
+                                    >
+                                      {({ blob, url, loading, error }) =>
+                                        loading
+                                          ? "Loading document..."
+                                          : "Download now"
+                                      }
+                                    </PDFDownloadLink> */}
+                              </>
+                            )}
                           </>
                         )}
                       </form>
