@@ -41,6 +41,7 @@ Route::controller(AdminsController::class)->group(function () {
     Route::put('/admins', 'update');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     Route::post('admin/login', 'login'); // parameter email, password
     Route::post('admin/logout', 'logout');
+    Route::post('admin/refresh', 'refresh');    // parameter 'token' with value jwt token
     Route::post('admin/cek', 'me');     // uji coba, DELETE when deployed
     // patch admin
     Route::patch('/admins', 'patch');    // parameter spasial
@@ -63,6 +64,7 @@ Route::controller(UserController::class)->group(function () {
     // login user
     Route::post('/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
     Route::post('/logout', 'logout');
+    Route::post('user/refresh', 'refresh');    // parameter 'token' with value jwt token
     Route::post('user/cek', 'me');  // uji coba, DELETE when deployed
 });
 
