@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DialogController;
+use App\Http\Controllers\ImagesController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
@@ -28,6 +29,11 @@ use App\Models\Message;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+// Endpoint Images for image's stuff
+Route::controller(ImagesController::class)->group(function () {
+    Route::post('image/{type}/{filename}', 'show');     // type = choose between product, admin, or user
+});
 
 // Endpoint Admin
 Route::controller(AdminsController::class)->group(function () {

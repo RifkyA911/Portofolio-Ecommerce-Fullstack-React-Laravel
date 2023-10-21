@@ -104,9 +104,10 @@ class AdminsController extends Controller
         }
     }
 
-    public function me()
+    public function me(Request $request)
     {
         return response()->json(auth('admin')->user());
+    // }
     }
 
     public function logout()
