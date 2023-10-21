@@ -23,7 +23,7 @@ export const PrintTest = (props) => {
 
   return (
     <>
-      {/* <div className="mx-auto p-4">
+      <div className="mx-auto p-4">
         <PDFViewer className="mx-auto" width="1000" height="600">
           <ReactPDF inputData={inputData} />
         </PDFViewer>
@@ -41,7 +41,7 @@ export const PrintTest = (props) => {
         ) : (
           <p>Loading</p>
         )}
-      </div> */}
+      </div>
       {/* Ukuran kertas F4 dalam pixel (72 DPI) = 595 x 935 pixel 
       Ukuran kertas F4 dalam pixel (96 DPI) = 793 x 1247 pixel 
       Ukuran kertas F4 dalam pixel (150 DPI) = 1240 x 1948 pixel 
@@ -75,36 +75,91 @@ export const ReactPDF = (props) => {
       },
     },
   });
+
+  const styles = StyleSheet.create({
+    header: {
+      display: "flex",
+      overflow: "hidden",
+      padding: "14px",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
+      backgroundColor: "#F3F4F6",
+      boxShadow:
+        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+      maxHeight: "140px",
+    },
+    headerLeft: {
+      display: "flex",
+      flexDirection: "row",
+      order: -9999,
+      justifyContent: "flex-start",
+      alignSelf: "flex-start",
+      width: "66.666667%",
+    },
+    // headerLeft Child
+    headerLeftPict: {
+      display: "none",
+      padding: "8px",
+      width: "80px",
+      height: "80px",
+      textAlign: "center",
+      "@media (min-width: 640px)": { display: "flex" },
+    },
+    headerLeftText: {
+      display: "flex",
+      marginLeft: "16px",
+      marginRight: "16px",
+      flexDirection: "column",
+      gap: "4px",
+      alignItems: "flex-start",
+      color: "#111827",
+      textDecoration: "underline",
+      textTransform: "capitalize",
+      ":hover": { color: "#1F2937" },
+    },
+    headerRight: {
+      display: "flex",
+      flexDirection: "row",
+      order: 9999,
+      justifyContent: "flex-end",
+      alignSelf: "flex-end",
+      width: "33.333333%",
+    },
+  });
   return (
     <>
       <Document>
         <Page size="LETTER" dpi={96}>
           {/* =================== HEADER =================== */}
           <View
-            style={tw(
-              "header p-4 bg-gray-100 shadow-xl xborder-b-2 border-slate-200 flex flex-row justify-between items-center max-h-[140px] overflow-hidden w-full"
-            )}
+            // style={tw(
+            //   "header p-4 bg-gray-100 shadow-xl xborder-b-2 border-slate-200 flex flex-row justify-between items-center max-h-[140px] overflow-hidden w-full"
+            // )}
+            style={styles.header}
           >
             {/* Left */}
             <Link
               src={CompanyProfileURL}
-              style={tw(
-                "order-first flex flex-row w-2/3 justify-start self-start"
-              )}
+              // style={tw(
+              //   "order-first flex flex-row w-2/3 justify-start self-start"
+              // )}
+              style={styles.headerLeft}
             >
               <Image
-                style={tw("h-20 w-20 p-2 hidden sm:flex text-center")}
+                style={tw("h-20 w-20 hidden sm:flex text-center")}
+                // style={styles.headerLeftPict}
                 src={"src/assets/logo.png"}
               />
               <View
                 style={tw(
                   "mx-4 flex flex-col gap-1 items-start capitalize underline text-gray-900 hover:text-gray-800 visited:text-gray-800"
                 )}
+                // style={styles.headerLeftText}
               >
-                <Text style={tw("font-extrabold text-large")}>
-                  Your Company Name
-                </Text>
-                <Text style={tw("font-semibold text-base line-clamp-2")}>
+                <Text style={tw("font-extrabold")}>Your Company Name</Text>
+                <Text style={tw("font-semibold text-base")}>
                   Jl. Mayjend. Sungkono Blok B 1 no. 105 Surabaya 6025
                 </Text>
                 <Text style={tw("font-bold no-underline text-xs")}>
@@ -117,7 +172,8 @@ export const ReactPDF = (props) => {
             </Link>
             {/* Right */}
             <View
-              style={tw("order-last flex flex-row w-1/3 justify-end self-end")}
+              // style={tw("order-last flex flex-row w-1/3 justify-end self-end")}
+              style={styles.headerRight}
             >
               <View style={tw("mx-4 flex flex-col justify-between items-end")}>
                 <Text style={tw("text-base")}>INVOICE : 2021/INV/017</Text>
@@ -129,53 +185,43 @@ export const ReactPDF = (props) => {
             </View>
           </View>
           {/* =================== BODY =================== */}
-          <View
-            style={tw(
-              "flex flex-col bg-to-gradient-l from-indigo-200 to-violet-300 w-full p-12"
-            )}
-          >
+          <View style={tw("flex flex-col w-full p-12")}>
             <View style={tw("flex flex-row w-full")}>
-              <View style={tw("flex w-1/3 justify-start ")}>
+              <View style={tw("flex w-1/3 justify-start")}>
                 <Image
-                  style={tw(
-                    "h-80 w-80 p-2 sm:flex text-center shadow-lg rounded-lg"
-                  )}
+                  style={tw("h-80 w-80 sm:flex text-center rounded-lg")}
                   //   src={"./src/assets/user_avatar/84719630_p0.jpg"}
                   src={"./src/assets/user_avatar/84719630_p0.jpg"}
                 ></Image>
               </View>
-              <View style={tw("flex flex-row w-2/3 justify-start p-2 ")}>
+              <View style={tw("flex flex-row w-2/3 justify-start")}>
                 <View style={tw("flex gap-4 justify-start p-4 bg-slate-100")}>
-                  <Text style={tw("sborder-b-2")}>Barcode : </Text>
-                  <Text style={tw("sborder-b-2")}>Name :</Text>
-                  <Text style={tw("sborder-b-2")}>Category :</Text>
-                  <Text style={tw("sborder-b-2")}>Price :</Text>
-                  <Text style={tw("sborder-b-2")}>Discount :</Text>
-                  <Text style={tw("sborder-b-2")}>Created at :</Text>
-                  <Text style={tw("sborder-b-2")}>Updated at :</Text>
+                  <Text>Barcode : </Text>
+                  <Text>Name :</Text>
+                  <Text>Category :</Text>
+                  <Text>Price :</Text>
+                  <Text>Discount :</Text>
+                  <Text>Created at :</Text>
+                  <Text>Updated at :</Text>
                 </View>
                 <View
                   style={tw(
                     "flex gap-4 justify-start p-4 text-gray-800 capitalize"
                   )}
                 >
-                  <Text style={tw("")}>{inputData[0].barcode}</Text>
-                  <Text style={tw("")}>{inputData[0].name}</Text>
-                  <Text style={tw("")}>{inputData[0].category.name}</Text>
-                  <Text style={tw("")}>Rp. {inputData[0].price}</Text>
-                  <Text style={tw("")}>{inputData[0].discount} %</Text>
-                  <Text style={tw("")}>{inputData[0].created_at}</Text>
-                  <Text style={tw("")}>{inputData[0].updated_at}</Text>
+                  <Text>{inputData[0].barcode}</Text>
+                  <Text>{inputData[0].name}</Text>
+                  <Text>{inputData[0].category.name}</Text>
+                  <Text>Rp. {inputData[0].price}</Text>
+                  <Text>{inputData[0].discount} %</Text>
+                  <Text>{inputData[0].created_at}</Text>
+                  <Text>{inputData[0].updated_at}</Text>
                 </View>
               </View>
             </View>
             <View style={tw("flex gap-4 p-4")}>
-              <Text style={tw("")}>Description :</Text>
-              <Text
-                style={tw(
-                  "text-base font-medium line-clamp-[30] text-gray-700"
-                )}
-              >
+              <Text>Description :</Text>
+              <Text style={tw("text-base font-medium text-gray-700")}>
                 {inputData[0].description ||
                   `Lorem Ipsum adalah contoh teks atau dummy dalam industri
                 percetakan dan penataan huruf atau typesetting. Lorem Ipsum
@@ -189,7 +235,7 @@ export const ReactPDF = (props) => {
                 kalimat-kalimat dari Lorem Ipsum, dan seiring munculnya
                 perangkat lunak Desktop Publishing seperti Aldus PageMaker juga
                 memiliki versi Lorem Ipsum.
-                {""}
+                ${""}
                 Tidak seperti anggapan banyak orang, Lorem Ipsum bukanlah
                 teks-teks yang diacak. Ia berakar dari sebuah naskah sastra
                 latin klasik dari era 45 sebelum masehi, hingga bisa dipastikan
@@ -211,7 +257,7 @@ export const ReactPDF = (props) => {
             {/* <Svg></Svg> */}
           </View>
         </Page>
-        {/* <Text style={tw("")}></Text> */}
+        {/* <Text ></Text> */}
       </Document>
     </>
   );

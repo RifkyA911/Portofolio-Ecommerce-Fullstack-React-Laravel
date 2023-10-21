@@ -99,14 +99,12 @@ export default function Products() {
   useEffect(() => {
     fetchProducts(URL);
     if (products !== null && products !== undefined) {
-      // const newColspan = Object.keys(columnOrder[0]).length;
       setColspan(columnOrder.length + 1);
     }
   }, [paginate, rows]);
 
   // Handler Ketika mengklik info button
   const handleInfoButton = (id, formType) => {
-    // console.log("data = ", id);
     setShowModal(true);
     setProduct(id);
     setFormType(formType);
@@ -114,7 +112,6 @@ export default function Products() {
 
   // Handler Ketika mengklik actions button
   const handleActionButton = (id, formType) => {
-    // console.log("data = ", id);
     setProduct(id);
     setFormType(formType);
   };
@@ -435,7 +432,7 @@ export default function Products() {
                             <>
                               <Th
                                 key={index}
-                                className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-[1%] p-0 font-roboto-bold border-b-[2px] border-white`}
+                                className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-[1%] p-0 font-roboto-bold text-xs border-b-[2px] border-white`}
                               >
                                 {parseInt(row.id) == 0
                                   ? parseInt(row.id) + 1
