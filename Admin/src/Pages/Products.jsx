@@ -1,7 +1,5 @@
 import { useState, useEffect, useMemo, useRef, createContext } from "react";
 import axios from "axios";
-import jwtDecode from "jwt-decode";
-import debounce from "lodash/debounce";
 import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
@@ -186,15 +184,15 @@ export default function Products() {
       setSearchTerm(e.target.value);
       // setTimeout(setSearchTerm(e.target.value), 2000);
     },
-    setPrintModal: () => {
-      document.getElementById("ModalForms").showModal();
+    setPrintBatchModal: () => {
+      document.getElementById("ModalForms").showModal(); // ganti nanti
       handleActionButton(selectedRows, "PRINT_BATCH");
     },
     setAddModal: () => {
       document.getElementById("ModalForms").showModal();
       handleActionButton(null, "INSERT");
     },
-    setDeleteModal: () => {
+    setDeleteBatchModal: () => {
       // console.table(Object.assign({}, selectedRows));
       document.getElementById("ModalForms").showModal();
       handleActionButton(selectedRows, "DROP_BY_SELECTED");
@@ -291,14 +289,6 @@ export default function Products() {
   // useEffect(() => {
   //   console.info(table_styling);
   // }, [table_styling]);
-  let componentRef = useRef(null);
-
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    // documentTitle: `${employee.name.replace(/\s/g, "-")}-Payslip`,
-    documentTitle: `Payslip`,
-    onPrintError: () => alert("there is an error when printing"),
-  });
   return (
     <>
       {/* <AdminsContext.Provider value={AdminsContextValue}> */}
@@ -310,19 +300,7 @@ export default function Products() {
             <>
               {products !== null ? (
                 // <ProductsContext.Provider value={MyTableEngineProps}>
-                <div
-                  ref={componentRef}
-                  id="Products"
-                  className="rounded-lg text-sm "
-                >
-                  {/* <div className="print:hidden">
-                    <button
-                      onClick={handlePrint}
-                      className="bg-cyan-500 px-6 py-2 text-white border border-cyan-500 font-bold rounded-md mb-3 w-full lg:w-fit my-6 max-w-sm"
-                    >
-                      Print Payslip
-                    </button>
-                  </div> */}
+                <div id="Products" className="rounded-lg text-sm ">
                   {/* ================ Error ================ */}
                   <div>
                     {errorMessage && (

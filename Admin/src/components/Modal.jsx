@@ -35,9 +35,6 @@ import { GetDateTime } from "../utils/Formatter";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 
-let URL_BY_ID;
-let URL_ALL;
-
 export const ModalContext = createContext();
 
 export const useModalContext = () => {
@@ -794,9 +791,9 @@ export const PrintModal = (props) => {
   const [loading, setLoading] = useState(true);
 
   const id = useId();
-  useEffect(() => {
-    console.log(props);
-  }, [table_id]);
+  // useEffect(() => {
+  //   console.log(props);
+  // }, [table_id]);
   // REDUX
   const {
     BgColor,
@@ -809,7 +806,8 @@ export const PrintModal = (props) => {
     BorderRowTable,
     BorderOuterTable,
   } = useSelector((state) => state.UI);
-
+  let URL_BY_ID;
+  let URL_ALL;
   if (table === "admins") {
     URL_BY_ID = import.meta.env.VITE_API_ID_ADMIN + "/" + table_id;
   } else if (table === "products") {
@@ -919,96 +917,96 @@ export const PrintModal = (props) => {
   let initialFormValue;
   let passwordRef = useRef({});
 
-  useEffect(() => {
-    // console.table(table);
-    // console.log(data);
-    if (formType === "INSERT") {
-      switch (table) {
-        case `admins`:
-          passwordRef.current = watch("password", "");
+  // useEffect(() => {
+  //   // console.table(table);
+  //   // console.log(data);
+  //   if (formType === "INSERT") {
+  //     switch (table) {
+  //       case `admins`:
+  //         passwordRef.current = watch("password", "");
 
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            email: "",
-            username: "",
-            role: 1,
-            pict: "default.png",
-            password: "123456f",
-            password_confirmation: "123456f",
-          };
-          break;
-        case `products`:
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            pict: "default.jpg",
-          };
-          break;
-        default:
-          break;
-      }
-    } else if (formType === "ALTER_BY_ID") {
-      switch (table) {
-        case `admins`:
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            adminsId: data.id,
-            email: data.email,
-            username: data.username,
-            role: data.role,
-            pict: data.pict,
-            newPassword: "123456FF",
-            newPassword_confirmation: "123456FF",
-            p: "p",
-          };
-          break;
-        case `products`:
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            productId: data.id,
-            barcode: data.barcode,
-            name: data.name,
-            price: parseInt(data.price),
-            category_id: data.category_id,
-            stock: parseInt(data.stock),
-            discount: parseFloat(data.discount),
-            pict: data.pict,
-            description: data.description,
-            created_at: data.created_at,
-            updated_at: data.updated_at,
-          };
+  //         initialFormValue = {
+  //           superAuthorizationPassword: SuperAdminKey,
+  //           email: "",
+  //           username: "",
+  //           role: 1,
+  //           pict: "default.png",
+  //           password: "123456f",
+  //           password_confirmation: "123456f",
+  //         };
+  //         break;
+  //       case `products`:
+  //         initialFormValue = {
+  //           superAuthorizationPassword: SuperAdminKey,
+  //           pict: "default.jpg",
+  //         };
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   } else if (formType === "ALTER_BY_ID") {
+  //     switch (table) {
+  //       case `admins`:
+  //         initialFormValue = {
+  //           superAuthorizationPassword: SuperAdminKey,
+  //           adminsId: data.id,
+  //           email: data.email,
+  //           username: data.username,
+  //           role: data.role,
+  //           pict: data.pict,
+  //           newPassword: "123456FF",
+  //           newPassword_confirmation: "123456FF",
+  //           p: "p",
+  //         };
+  //         break;
+  //       case `products`:
+  //         initialFormValue = {
+  //           superAuthorizationPassword: SuperAdminKey,
+  //           productId: data.id,
+  //           barcode: data.barcode,
+  //           name: data.name,
+  //           price: parseInt(data.price),
+  //           category_id: data.category_id,
+  //           stock: parseInt(data.stock),
+  //           discount: parseFloat(data.discount),
+  //           pict: data.pict,
+  //           description: data.description,
+  //           created_at: data.created_at,
+  //           updated_at: data.updated_at,
+  //         };
 
-          break;
-        default:
-          break;
-      }
-    } else if (formType === "DROP_BY_ID") {
-      switch (table) {
-        case `admins`:
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            adminsId: data.id,
-            email: data.email,
-            username: data.username,
-            role: data.role,
-            pict: data.pict,
-          };
-          break;
-        case `products`:
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            productsId: data.id,
-            name: data.name,
-          };
-          break;
-        default:
-          break;
-      }
-    }
-    for (const key in initialFormValue) {
-      setValue(key, initialFormValue[key]);
-    }
-    initialFormValue = null;
-  }, [getValues()]);
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   } else if (formType === "DROP_BY_ID") {
+  //     switch (table) {
+  //       case `admins`:
+  //         initialFormValue = {
+  //           superAuthorizationPassword: SuperAdminKey,
+  //           adminsId: data.id,
+  //           email: data.email,
+  //           username: data.username,
+  //           role: data.role,
+  //           pict: data.pict,
+  //         };
+  //         break;
+  //       case `products`:
+  //         initialFormValue = {
+  //           superAuthorizationPassword: SuperAdminKey,
+  //           productsId: data.id,
+  //           name: data.name,
+  //         };
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   }
+  //   for (const key in initialFormValue) {
+  //     setValue(key, initialFormValue[key]);
+  //   }
+  //   initialFormValue = null;
+  // }, [getValues()]);
 
   // jika submit, lakukan req ke server
   let axiosResponse;

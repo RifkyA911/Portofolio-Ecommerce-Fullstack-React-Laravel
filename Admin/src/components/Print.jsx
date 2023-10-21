@@ -16,7 +16,9 @@ import { createTw } from "react-pdf-tailwind";
 
 import { useReactToPrint } from "react-to-print";
 import { GetDateTime } from "../utils/Formatter";
+
 const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;
+const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 
 export const PrintTest = (props) => {
   const { inputData } = props;
@@ -65,7 +67,7 @@ export const ReactPDF = (props) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    console.log(inputData);
+    // console.log(inputData);
     setData(inputData);
   }, [inputData]);
 
@@ -200,7 +202,7 @@ export const ReactPDF = (props) => {
                   <Image
                     style={tw("h-80 w-80 sm:flex text-center rounded-lg")}
                     //   src={"./src/assets/user_avatar/84719630_p0.jpg"}
-                    src={"./src/assets/user_avatar/84719630_p0.jpg"}
+                    src={`${ServerProductsImg}${data.pict}`}
                   ></Image>
                 </View>
                 <View style={tw("flex flex-row w-2/3 justify-start")}>

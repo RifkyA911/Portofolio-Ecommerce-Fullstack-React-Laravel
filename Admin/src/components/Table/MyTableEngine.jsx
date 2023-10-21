@@ -27,9 +27,9 @@ export const MyTableEngine = (props) => {
     printBtn,
     searchTerm,
     setSearchTerm,
-    setPrintModal,
+    setPrintBatchModal,
     setAddModal,
-    setDeleteModal,
+    setDeleteBatchModal,
     // Sorting Table Component
     sortData,
     getSortBy = "id",
@@ -131,9 +131,9 @@ export const MyTableHeader = (props) => {
     hideHeaderBtn,
     searchTerm,
     setSearchTerm,
-    setPrintModal,
+    setPrintBatchModal,
     setAddModal,
-    setDeleteModal,
+    setDeleteBatchModal,
     toggleSelect,
     setToggleSelect,
     selectedRows,
@@ -171,10 +171,10 @@ export const MyTableHeader = (props) => {
             {showFixedBtn === "DELETE" && (
               <button
                 disabled={selectedRows.length === 0}
-                onClick={setDeleteModal}
+                onClick={setDeleteBatchModal}
                 className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
                   selectedRows.length === 0
-                    ? "from-red-300 to-pink-300 btn-disable"
+                    ? "from-red-400 to-pink-400 btn-disable"
                     : "from-red-500 to-pink-500"
                 } hover:from-red-600 hover:to-pink-600 border-none`}
               >
@@ -187,7 +187,7 @@ export const MyTableHeader = (props) => {
             {showFixedBtn === "PRINT" && (
               <button
                 disabled={selectedRows.length === 0}
-                onClick={setPrintModal}
+                onClick={setPrintBatchModal}
                 className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
                   selectedRows.length === 0
                     ? "from-orange-300 to-red-300 btn-disable"
@@ -222,7 +222,7 @@ export const MyTableHeader = (props) => {
               setShowFixedBtn={setShowFixedBtn}
               inputData={inputData}
               isDialogOpen={isDialogOpen}
-              setPrintModal={setPrintModal}
+              setPrintBatchModal={setPrintBatchModal}
               toggleSelect={toggleSelect}
               setToggleSelect={setToggleSelect}
               setSelectedRows={setSelectedRows}
@@ -240,7 +240,7 @@ export const MyTableHeader = (props) => {
               btnType="DELETE"
               showFixedBtn={showFixedBtn}
               setShowFixedBtn={setShowFixedBtn}
-              setDeleteModal={setDeleteModal}
+              setDeleteBatchModal={setDeleteBatchModal}
               toggleSelect={toggleSelect}
               setToggleSelect={setToggleSelect}
               setSelectedRows={setSelectedRows}
