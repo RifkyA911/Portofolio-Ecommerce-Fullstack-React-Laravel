@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Barcode from "react-jsbarcode";
 import {
   Document,
@@ -16,7 +16,9 @@ import { createTw } from "react-pdf-tailwind";
 
 import { useReactToPrint } from "react-to-print";
 import { GetDateTime } from "../utils/Formatter";
+
 const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;
+const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 
 export const PrintTest = (props) => {
   const { inputData } = props;
@@ -61,7 +63,13 @@ export const PrintTest = (props) => {
 
 export const ReactPDF = (props) => {
   const { inputData } = props;
-  // console.log(inputData)
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // console.log(inputData);
+    setData(inputData);
+  }, [inputData]);
 
   const tw = createTw({
     theme: {
@@ -75,109 +83,158 @@ export const ReactPDF = (props) => {
       },
     },
   });
+
+  const styles = StyleSheet.create({
+    header: {
+      display: "flex",
+      overflow: "hidden",
+      padding: "14px",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
+      backgroundColor: "#F3F4F6",
+      boxShadow:
+        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+      maxHeight: "140px",
+    },
+    headerLeft: {
+      display: "flex",
+      flexDirection: "row",
+      order: -9999,
+      justifyContent: "flex-start",
+      alignSelf: "flex-start",
+      width: "66.666667%",
+    },
+    // headerLeft Child
+    headerLeftPict: {
+      display: "none",
+      padding: "8px",
+      width: "80px",
+      height: "80px",
+      textAlign: "center",
+      "@media (min-width: 640px)": { display: "flex" },
+    },
+    headerLeftText: {
+      display: "flex",
+      marginLeft: "16px",
+      marginRight: "16px",
+      flexDirection: "column",
+      gap: "4px",
+      alignItems: "flex-start",
+      color: "#111827",
+      textDecoration: "underline",
+      textTransform: "capitalize",
+      ":hover": { color: "#1F2937" },
+    },
+    headerRight: {
+      display: "flex",
+      flexDirection: "row",
+      order: 9999,
+      justifyContent: "flex-end",
+      alignSelf: "flex-end",
+      width: "33.333333%",
+    },
+  });
   return (
     <>
-      <Document>
-        <Page size="LETTER" dpi={96}>
-          {/* =================== HEADER =================== */}
-          <View
-            style={tw(
-              "header p-4 bg-gray-100 shadow-xl xborder-b-2 border-slate-200 flex flex-row justify-between items-center max-h-[140px] overflow-hidden w-full"
-            )}
-          >
-            {/* Left */}
-            <Link
-              src={CompanyProfileURL}
-              style={tw(
-                "order-first flex flex-row w-2/3 justify-start self-start"
-              )}
-            >
-              <Image
-                style={tw("h-20 w-20 p-2 hidden sm:flex text-center")}
-                src={"src/assets/logo.png"}
-              />
-              <View
-                style={tw(
-                  "mx-4 flex flex-col gap-1 items-start capitalize underline text-gray-900 hover:text-gray-800 visited:text-gray-800"
-                )}
-              >
-                <Text style={tw("font-extrabold text-large")}>
-                  Your Company Name
-                </Text>
-                <Text style={tw("font-semibold text-base line-clamp-2")}>
-                  Jl. Mayjend. Sungkono Blok B 1 no. 105 Surabaya 6025
-                </Text>
-                <Text style={tw("font-bold no-underline text-xs")}>
-                  Phone: 031-5671868; Fax: 031-5664979
-                </Text>
-                <Text style={tw("font-bold no-underline text-xs")}>
-                  E-mail: drarya2006@gmail.com
-                </Text>
-              </View>
-            </Link>
-            {/* Right */}
+      {data !== null && data !== "" && data !== undefined && (
+        <Document>
+          <Page size="LETTER" dpi={96}>
+            {/* =================== HEADER =================== */}
             <View
-              style={tw("order-last flex flex-row w-1/3 justify-end self-end")}
+              // style={tw(
+              //   "header p-4 bg-gray-100 shadow-xl xborder-b-2 border-slate-200 flex flex-row justify-between items-center max-h-[140px] overflow-hidden w-full"
+              // )}
+              style={styles.header}
             >
-              <View style={tw("mx-4 flex flex-col justify-between items-end")}>
-                <Text style={tw("text-base")}>INVOICE : 2021/INV/017</Text>
-                <View style={tw("flex flex-col justify-between items-end")}>
-                  <Text style={tw("text-base")}>Date : 12/12/2000</Text>
-                  <Text style={tw("text-base")}>Admin : Silver Wolf IXX</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-          {/* =================== BODY =================== */}
-          <View
-            style={tw(
-              "flex flex-col bg-to-gradient-l from-indigo-200 to-violet-300 w-full p-12"
-            )}
-          >
-            <View style={tw("flex flex-row w-full")}>
-              <View style={tw("flex w-1/3 justify-start ")}>
+              {/* Left */}
+              <Link
+                src={CompanyProfileURL}
+                // style={tw(
+                //   "order-first flex flex-row w-2/3 justify-start self-start"
+                // )}
+                style={styles.headerLeft}
+              >
                 <Image
-                  style={tw(
-                    "h-80 w-80 p-2 sm:flex text-center shadow-lg rounded-lg"
-                  )}
-                  //   src={"./src/assets/user_avatar/84719630_p0.jpg"}
-                  src={"./src/assets/user_avatar/84719630_p0.jpg"}
-                ></Image>
-              </View>
-              <View style={tw("flex flex-row w-2/3 justify-start p-2 ")}>
-                <View style={tw("flex gap-4 justify-start p-4 bg-slate-100")}>
-                  <Text style={tw("sborder-b-2")}>Barcode : </Text>
-                  <Text style={tw("sborder-b-2")}>Name :</Text>
-                  <Text style={tw("sborder-b-2")}>Category :</Text>
-                  <Text style={tw("sborder-b-2")}>Price :</Text>
-                  <Text style={tw("sborder-b-2")}>Discount :</Text>
-                  <Text style={tw("sborder-b-2")}>Created at :</Text>
-                  <Text style={tw("sborder-b-2")}>Updated at :</Text>
-                </View>
+                  style={tw("h-20 w-20 hidden sm:flex text-center")}
+                  // style={styles.headerLeftPict}
+                  src={"src/assets/logo.png"}
+                />
                 <View
                   style={tw(
-                    "flex gap-4 justify-start p-4 text-gray-800 capitalize"
+                    "mx-4 flex flex-col gap-1 items-start capitalize underline text-gray-900 hover:text-gray-800 visited:text-gray-800"
                   )}
+                  // style={styles.headerLeftText}
                 >
-                  <Text style={tw("")}>{inputData[0].barcode}</Text>
-                  <Text style={tw("")}>{inputData[0].name}</Text>
-                  <Text style={tw("")}>{inputData[0].category.name}</Text>
-                  <Text style={tw("")}>Rp. {inputData[0].price}</Text>
-                  <Text style={tw("")}>{inputData[0].discount} %</Text>
-                  <Text style={tw("")}>{inputData[0].created_at}</Text>
-                  <Text style={tw("")}>{inputData[0].updated_at}</Text>
+                  <Text style={tw("font-extrabold")}>Your Company Name</Text>
+                  <Text style={tw("font-semibold text-base")}>
+                    Jl. Mayjend. Sungkono Blok B 1 no. 105 Surabaya 6025
+                  </Text>
+                  <Text style={tw("font-bold no-underline text-xs")}>
+                    Phone: 031-5671868; Fax: 031-5664979
+                  </Text>
+                  <Text style={tw("font-bold no-underline text-xs")}>
+                    E-mail: drarya2006@gmail.com
+                  </Text>
+                </View>
+              </Link>
+              {/* Right */}
+              <View
+                // style={tw("order-last flex flex-row w-1/3 justify-end self-end")}
+                style={styles.headerRight}
+              >
+                <View
+                  style={tw("mx-4 flex flex-col justify-between items-end")}
+                >
+                  <Text style={tw("text-base")}>INVOICE : 2021/INV/017</Text>
+                  <View style={tw("flex flex-col justify-between items-end")}>
+                    <Text style={tw("text-base")}>Date : 12/12/2000</Text>
+                    <Text style={tw("text-base")}>Admin : Silver Wolf IXX</Text>
+                  </View>
                 </View>
               </View>
             </View>
-            <View style={tw("flex gap-4 p-4")}>
-              <Text style={tw("")}>Description :</Text>
-              <Text
-                style={tw(
-                  "text-base font-medium line-clamp-[30] text-gray-700"
-                )}
-              >
-                {inputData[0].description ||
-                  `Lorem Ipsum adalah contoh teks atau dummy dalam industri
+            {/* =================== BODY =================== */}
+            <View style={tw("flex flex-col w-full p-12")}>
+              <View style={tw("flex flex-row w-full")}>
+                <View style={tw("flex w-1/3 justify-start")}>
+                  <Image
+                    style={tw("h-80 w-80 sm:flex text-center rounded-lg")}
+                    //   src={"./src/assets/user_avatar/84719630_p0.jpg"}
+                    src={`${ServerProductsImg}${data.pict}`}
+                  ></Image>
+                </View>
+                <View style={tw("flex flex-row w-2/3 justify-start")}>
+                  <View style={tw("flex gap-4 justify-start p-4 bg-slate-100")}>
+                    <Text>Barcode : </Text>
+                    <Text>Name :</Text>
+                    <Text>Category :</Text>
+                    <Text>Price :</Text>
+                    <Text>Discount :</Text>
+                    <Text>Created at :</Text>
+                    <Text>Updated at :</Text>
+                  </View>
+                  <View
+                    style={tw(
+                      "flex gap-4 justify-start p-4 text-gray-800 capitalize"
+                    )}
+                  >
+                    <Text>{data.barcode}</Text>
+                    <Text>{data.name}</Text>
+                    <Text>{data.category_name}</Text>
+                    <Text>Rp. {data.price}</Text>
+                    <Text>{data.discount} %</Text>
+                    <Text>{data.created_at}</Text>
+                    <Text>{data.updated_at}</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={tw("flex gap-4 p-4")}>
+                <Text>Description :</Text>
+                <Text style={tw("text-base font-medium text-gray-700")}>
+                  {data.description ||
+                    `Lorem Ipsum adalah contoh teks atau dummy dalam industri
                 percetakan dan penataan huruf atau typesetting. Lorem Ipsum
                 telah menjadi standar contoh teks sejak tahun 1500an, saat
                 seorang tukang cetak yang tidak dikenal mengambil sebuah
@@ -189,7 +246,7 @@ export const ReactPDF = (props) => {
                 kalimat-kalimat dari Lorem Ipsum, dan seiring munculnya
                 perangkat lunak Desktop Publishing seperti Aldus PageMaker juga
                 memiliki versi Lorem Ipsum.
-                {""}
+                ${""}
                 Tidak seperti anggapan banyak orang, Lorem Ipsum bukanlah
                 teks-teks yang diacak. Ia berakar dari sebuah naskah sastra
                 latin klasik dari era 45 sebelum masehi, hingga bisa dipastikan
@@ -206,13 +263,14 @@ export const ReactPDF = (props) => {
                 dari teori etika yang sangat terkenal pada masa Renaissance.
                 Baris pertama dari Lorem Ipsum, "Lorem ipsum dolor sit amet..",
                 berasal dari sebuah baris di bagian 1.10.32.`}
-              </Text>
+                </Text>
+              </View>
+              {/* <Svg></Svg> */}
             </View>
-            {/* <Svg></Svg> */}
-          </View>
-        </Page>
-        {/* <Text style={tw("")}></Text> */}
-      </Document>
+          </Page>
+          {/* <Text ></Text> */}
+        </Document>
+      )}
     </>
   );
 };

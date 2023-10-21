@@ -1,12 +1,10 @@
 import { useState, useEffect, useMemo, useRef, createContext } from "react";
 import axios from "axios";
-import jwtDecode from "jwt-decode";
-import debounce from "lodash/debounce";
 import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
-import { ActionModalForm, InfoModal } from "../components/Modal";
+import { ActionModalForm, InfoModal, PrintModal } from "../components/Modal";
 import { ProductImage } from "../components/Products/ProductsTableBody";
 import { ActionButton } from "../components/Button";
 import { NumberSpan } from "../components/Span";
@@ -99,14 +97,12 @@ export default function Products() {
   useEffect(() => {
     fetchProducts(URL);
     if (products !== null && products !== undefined) {
-      // const newColspan = Object.keys(columnOrder[0]).length;
       setColspan(columnOrder.length + 1);
     }
   }, [paginate, rows]);
 
   // Handler Ketika mengklik info button
   const handleInfoButton = (id, formType) => {
-    // console.log("data = ", id);
     setShowModal(true);
     setProduct(id);
     setFormType(formType);
@@ -114,7 +110,6 @@ export default function Products() {
 
   // Handler Ketika mengklik actions button
   const handleActionButton = (id, formType) => {
-    // console.log("data = ", id);
     setProduct(id);
     setFormType(formType);
   };
@@ -189,11 +184,15 @@ export default function Products() {
       setSearchTerm(e.target.value);
       // setTimeout(setSearchTerm(e.target.value), 2000);
     },
+    setPrintBatchModal: () => {
+      document.getElementById("ModalForms").showModal(); // ganti nanti
+      handleActionButton(selectedRows, "PRINT_BATCH");
+    },
     setAddModal: () => {
       document.getElementById("ModalForms").showModal();
       handleActionButton(null, "INSERT");
     },
-    setDeleteModal: () => {
+    setDeleteBatchModal: () => {
       // console.table(Object.assign({}, selectedRows));
       document.getElementById("ModalForms").showModal();
       handleActionButton(selectedRows, "DROP_BY_SELECTED");
@@ -203,6 +202,7 @@ export default function Products() {
     setToggleSelect: () => {
       setToggleSelect((toggleSelectProps) => !toggleSelectProps);
     },
+    selectedRows: selectedRows,
     setSelectedRows: (propsValue) => setSelectedRows(propsValue),
     // Sorting Filter
     sortData: (newSortedData) => {
@@ -289,14 +289,6 @@ export default function Products() {
   // useEffect(() => {
   //   console.info(table_styling);
   // }, [table_styling]);
-  let componentRef = useRef(null);
-
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    // documentTitle: `${employee.name.replace(/\s/g, "-")}-Payslip`,
-    documentTitle: `Payslip`,
-    onPrintError: () => alert("there is an error when printing"),
-  });
   return (
     <>
       {/* <AdminsContext.Provider value={AdminsContextValue}> */}
@@ -308,19 +300,7 @@ export default function Products() {
             <>
               {products !== null ? (
                 // <ProductsContext.Provider value={MyTableEngineProps}>
-                <div
-                  ref={componentRef}
-                  id="Products"
-                  className="rounded-lg text-sm "
-                >
-                  {/* <div className="print:hidden">
-                    <button
-                      onClick={handlePrint}
-                      className="bg-cyan-500 px-6 py-2 text-white border border-cyan-500 font-bold rounded-md mb-3 w-full lg:w-fit my-6 max-w-sm"
-                    >
-                      Print Payslip
-                    </button>
-                  </div> */}
+                <div id="Products" className="rounded-lg text-sm ">
                   {/* ================ Error ================ */}
                   <div>
                     {errorMessage && (
@@ -337,6 +317,7 @@ export default function Products() {
                   </div>
                   {/* ================ Modal ================= */}
                   <InfoModal {...ModalProps} />
+                  <PrintModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
                   <PrintTest inputData={products} />
@@ -435,7 +416,7 @@ export default function Products() {
                             <>
                               <Th
                                 key={index}
-                                className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-[1%] p-0 font-roboto-bold border-b-[2px] border-white`}
+                                className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-[1%] p-0 font-roboto-bold text-xs border-b-[2px] border-white`}
                               >
                                 {parseInt(row.id) == 0
                                   ? parseInt(row.id) + 1
@@ -451,7 +432,7 @@ export default function Products() {
                           >
                             {row.id && (
                               <Barcode
-                                className={`h-[68px] p-0 m-0 max-w-[150px]`}
+                                className={`h-[64px] p-0 m-0 max-w-[150px]`}
                                 value={row.barcode}
                                 // options={{ format: "EAN13" }}
                               />
@@ -494,13 +475,12 @@ export default function Products() {
                             {row.id && (
                               <ActionButton
                                 key={index}
-                                data={row}
-                                hide={["view, print"]}
-                                onClickView={() => {
+                                inputData={row}
+                                onClickPrint={() => {
                                   document
-                                    .getElementById("ModalForms")
+                                    .getElementById("PrintModal")
                                     .showModal();
-                                  handleActionButton(row.id, "DROP_BY_ID");
+                                  handleActionButton(row.id, "PRINT_BY_ID");
                                 }}
                                 onClickDelete={() => {
                                   document

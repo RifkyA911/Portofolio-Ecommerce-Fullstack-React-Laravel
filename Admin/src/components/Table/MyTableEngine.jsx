@@ -1,15 +1,17 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import debounce from "lodash/debounce";
-// Components
 // REDUX
 import { useSelector } from "react-redux";
+// Components
+import {
+  MyTableHeaderDelete,
+  MyTableHeaderMenu,
+  MyTableHeaderPrint,
+} from "./MyTableComponents";
 // UTILS
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
 import { useReactToPrint } from "react-to-print";
 import { SearchInput } from "../Form";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import { ReactPDF } from "../Print";
-import { GetDateTime } from "../../utils/Formatter";
 
 const TableContext = createContext();
 
@@ -25,8 +27,9 @@ export const MyTableEngine = (props) => {
     printBtn,
     searchTerm,
     setSearchTerm,
+    setPrintBatchModal,
     setAddModal,
-    setDeleteModal,
+    setDeleteBatchModal,
     // Sorting Table Component
     sortData,
     getSortBy = "id",
@@ -128,10 +131,12 @@ export const MyTableHeader = (props) => {
     hideHeaderBtn,
     searchTerm,
     setSearchTerm,
+    setPrintBatchModal,
     setAddModal,
-    setDeleteModal,
+    setDeleteBatchModal,
     toggleSelect,
     setToggleSelect,
+    selectedRows,
     setSelectedRows,
     refresh,
   } = useContext(TableContext);
@@ -139,28 +144,10 @@ export const MyTableHeader = (props) => {
     print: false,
     select: false,
   });
-  const [loading, setLoading] = useState(false);
-  // const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
-
-  const searchInput = useRef(null);
-
-  const debouncedOnChange = debounce(setSearchTerm, 1000);
-
-  useEffect(() => {
-    setLoading(true);
-    // Setelah 1 detik, periksa apakah ada perubahan lebih lanjut
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timeout);
-
-    // if (initLength != length) {
-    //   const timeout = setTimeout(() => {
-    //     setLoading(false);
-    //   }, 1000 * 60);
-    //   // setLoading(false);
-    // }
-  }, [searchTerm]);
+  const [showFixedBtn, setShowFixedBtn] = useState(null);
+  // useEffect(() => {
+  //   console.info(selectedRows.length);
+  // }, [selectedRows]);
   return (
     <>
       <div
@@ -178,177 +165,86 @@ export const MyTableHeader = (props) => {
           </button>
           <SearchInput func={setSearchTerm} />
         </div>
+        {/*  FIXED AREA */}
+        {toggleSelect && showFixedBtn && (
+          <div className=" drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
+            {showFixedBtn === "DELETE" && (
+              <button
+                disabled={selectedRows.length === 0}
+                onClick={setDeleteBatchModal}
+                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
+                  selectedRows.length === 0
+                    ? "from-red-400 to-pink-400 btn-disable"
+                    : "from-red-500 to-pink-500"
+                } hover:from-red-600 hover:to-pink-600 border-none`}
+              >
+                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
+                <span id="showDelete" className="options px-[4px]">
+                  Delete
+                </span>
+              </button>
+            )}
+            {showFixedBtn === "PRINT" && (
+              <button
+                disabled={selectedRows.length === 0}
+                onClick={setPrintBatchModal}
+                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
+                  selectedRows.length === 0
+                    ? "from-orange-300 to-red-300 btn-disable"
+                    : "from-orange-500 to-red-500"
+                } hover:from-amber-600 hover:to-pink-600 border-none`}
+              >
+                <MuiIcon iconName={"PrintSharp"} fontSize={20} />
+                <span id="showDelete" className="options px-[4px]">
+                  Print
+                </span>
+              </button>
+            )}
+            <button
+              onClick={() => {
+                setToggleSelect(false);
+                setSelectedRows([]);
+              }}
+              className="flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
+            >
+              <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
+              <span id="showCancelDelete" className="options px-[4px]">
+                Cancel
+              </span>
+            </button>
+          </div>
+        )}
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
-          {hideHeaderBtn !== "printBtn" && !toggleSelect && (
-            <>
-              <button
-                onClick={() =>
-                  setDialogOpen({
-                    ...isDialogOpen,
-                    print: !isDialogOpen.print,
-                  })
-                }
-                className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
-              >
-                <i className="font-xs">
-                  <MuiIcon iconName={"PrintSharp"} fontSize={20} />
-                </i>
-                <span className="font-base px-2">Print</span>
-              </button>
-
-              {/* {isDialogOpen.print && ( */}
-              <>
-                <div
-                  className={`${
-                    !isDialogOpen.print ? "hidden" : "block"
-                  } absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.5px]`}
-                  onClick={() => {
-                    setDialogOpen({
-                      ...isDialogOpen,
-                      print: !isDialogOpen.print,
-                    });
-                  }}
-                ></div>
-                {/* <PDFViewer className="mx-auto" width="1000" height="600">
-                    <ReactPDF inputData={inputData} />
-                  </PDFViewer> */}
-                {inputData &&
-                inputData.length > 1 &&
-                inputData !== undefined ? (
-                  <div
-                    className={`${
-                      !isDialogOpen.print ? "hidden" : "block"
-                    } absolute bg-white w-[140px] top-11 right-[235px] shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
-                  >
-                    <button
-                      onClick={() => {
-                        // handlePrint();
-                        setDialogOpen({
-                          ...isDialogOpen,
-                          print: !isDialogOpen.print,
-                        });
-                      }}
-                      className="py-2 px-4 w-full hover:bg-slate-200 text-left"
-                    >
-                      <PDFDownloadLink
-                        className=""
-                        document={<ReactPDF inputData={inputData} />}
-                        fileName={`products_${
-                          inputData[0].name
-                        }#${GetDateTime()}.pdf`}
-                      >
-                        {({ blob, url, loading, error }) =>
-                          loading ? "Loading document..." : "Print Per Product"
-                        }
-                      </PDFDownloadLink>
-                    </button>
-                    <button
-                      className="py-2 px-4 w-full hover:bg-slate-200 text-left"
-                      onClick={() => {
-                        // handlePrint();
-                        setDialogOpen({
-                          ...isDialogOpen,
-                          print: !isDialogOpen.print,
-                        });
-                      }}
-                    >
-                      Print Batch
-                    </button>
-                    <button
-                      className="py-2 px-4 w-full hover:bg-slate-200 text-left"
-                      onClick={() => {
-                        handlePrint();
-                        setDialogOpen({
-                          ...isDialogOpen,
-                          print: !isDialogOpen.print,
-                        });
-                      }}
-                    >
-                      Print Table
-                    </button>
-                  </div>
-                ) : (
-                  <p>Loading</p>
-                )}
-              </>
-              {/* )} */}
-            </>
+          {hideHeaderBtn !== "printBtn" && (
+            <MyTableHeaderPrint
+              btnType="PRINT"
+              showFixedBtn={showFixedBtn}
+              setShowFixedBtn={setShowFixedBtn}
+              inputData={inputData}
+              isDialogOpen={isDialogOpen}
+              setPrintBatchModal={setPrintBatchModal}
+              toggleSelect={toggleSelect}
+              setToggleSelect={setToggleSelect}
+              setSelectedRows={setSelectedRows}
+              closeFunction={() => {
+                setDialogOpen({
+                  ...isDialogOpen,
+                  print: !isDialogOpen.print,
+                });
+              }}
+              handlePrint={handlePrint}
+            />
           )}
-
           {hideHeaderBtn !== "deleteBtn" && (
-            <>
-              {/*  FIXED AREA */}
-              {toggleSelect && (
-                <div className="drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
-                  <button
-                    onClick={setDeleteModal}
-                    className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 border-none"
-                  >
-                    <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-                    <span id="showDelete" className="options px-[4px]">
-                      Delete
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setToggleSelect(false);
-                      setSelectedRows([]);
-                    }}
-                    className="flex hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 text-white bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
-                  >
-                    <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-                    <span id="showCancelDelete" className="options px-[4px]">
-                      Cancel
-                    </span>
-                  </button>
-                </div>
-              )}
-              {/* BTN HEADER */}
-              <button
-                className={`mx-1 grow-0 shrink-0 focus:outline-none ${
-                  !toggleSelect
-                    ? "bg-red-500 hover:from-rose-500 hover:to-pink-500"
-                    : "bg-gray-500 hover:from-yellow-500 hover:to-orange-400"
-                } hover:bg-gradient-to-r  rounded-md font-roboto-medium text-white items-center transition-all duration-200`}
-                onClick={
-                  !toggleSelect
-                    ? () => setToggleSelect(true)
-                    : () => {
-                        // setToggleSelect(false);
-                        setSelectedRows([]);
-                      }
-                }
-              >
-                {!toggleSelect ? (
-                  <>
-                    <span
-                      id="showDelete"
-                      className="options  py-[6px] px-[4px]"
-                    >
-                      <i className="font-xs">
-                        <MuiIcon
-                          iconName={"DeleteForeverSharp"}
-                          fontSize={20}
-                        />
-                      </i>
-                    </span>
-                    <span className="font-base pr-2">Delete</span>
-                  </>
-                ) : (
-                  <>
-                    <span
-                      id="showCancelDelete"
-                      className="options py-[6px] px-[4px]"
-                    >
-                      <i className="font-xs px-[4px]">
-                        <MuiIcon iconName={"DeselectRounded"} fontSize={20} />
-                      </i>
-                      <span className="font-medium pr-2">Select None</span>
-                    </span>
-                  </>
-                )}
-              </button>
-            </>
+            <MyTableHeaderDelete
+              btnType="DELETE"
+              showFixedBtn={showFixedBtn}
+              setShowFixedBtn={setShowFixedBtn}
+              setDeleteBatchModal={setDeleteBatchModal}
+              toggleSelect={toggleSelect}
+              setToggleSelect={setToggleSelect}
+              setSelectedRows={setSelectedRows}
+            />
           )}
           {hideHeaderBtn !== "addBtn" && !toggleSelect && (
             <>
@@ -378,57 +274,12 @@ export const MyTableHeader = (props) => {
             </>
           )}
           {hideHeaderBtn !== "menuBtn" && (
-            <>
-              <button
-                className="px-1 bg-white text-black rounded-md"
-                onClick={() =>
-                  setDialogOpen({
-                    ...isDialogOpen,
-                    select: !isDialogOpen.select,
-                  })
-                }
-              >
-                <MuiIcon iconName={"MoreVertRounded"} fontSize={20} />
-              </button>
-              {isDialogOpen.select && (
-                <>
-                  <div
-                    className="absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.91px]"
-                    onClick={() => {
-                      setDialogOpen({
-                        ...isDialogOpen,
-                        select: !isDialogOpen.select,
-                      });
-                    }}
-                  ></div>
-                  <div className="absolute  bg-white w-[140px] top-11 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium">
-                    <button
-                      className="py-2 px-4 w-full hover:bg-slate-200 text-left"
-                      onClick={() => {
-                        setToggleSelect(true);
-                        setDialogOpen({
-                          ...isDialogOpen,
-                          select: !isDialogOpen.select,
-                        });
-                      }}
-                    >
-                      {!toggleSelect ? "Select Row" : "Cancel Select"}
-                    </button>
-                    <button
-                      className="py-2 px-4 w-full hover:bg-slate-200 text-left line-through text-slate-500 cursor-not-allowed"
-                      onClick={() => {
-                        setDialogOpen({
-                          ...isDialogOpen,
-                          select: !isDialogOpen.select,
-                        });
-                      }}
-                    >
-                      Export CSV
-                    </button>
-                  </div>
-                </>
-              )}
-            </>
+            <MyTableHeaderMenu
+              setDialogOpen={setDialogOpen}
+              isDialogOpen={isDialogOpen}
+              toggleSelect={toggleSelect}
+              setToggleSelect={setToggleSelect}
+            />
           )}
         </div>
       </div>

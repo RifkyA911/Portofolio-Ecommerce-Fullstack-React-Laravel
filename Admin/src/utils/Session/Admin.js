@@ -25,3 +25,5 @@ export function logOutUser() {
   console.log("session data are cleared");
   sessionStorage.clear();
 }
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
