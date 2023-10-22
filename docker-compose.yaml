@@ -1,4 +1,4 @@
-version: '0.127'
+
 services:
     backend:
         build:
