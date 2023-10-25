@@ -14,7 +14,7 @@ build with https://readme.so/editor
 
 **Client:** React, ...
 
-**Admin:** React, Redux, TailwindCSS, react-hook-form, axios, ,,,
+**Admin:** React, Redux, TailwindCSS, react-hook-form, react-cropper, axios, ,,,
 
 **Server:** JWT, Laravel 10
 
