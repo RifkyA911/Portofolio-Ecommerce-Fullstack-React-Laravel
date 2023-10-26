@@ -79,6 +79,17 @@ class ProductController extends Controller
         return new PostResource(true, 'List Data Produk', $produk->makeHidden('category_id'));
     }
 
+    public function print(Request $request)
+    {
+        // Ambil daftar ID dari request
+        $ids = $request->input('ids');
+
+        // Cari product berdasarkan ID yang diberikan
+        $products = Product::whereIn('id', $ids)->get();
+
+        return new PostResource(true, "Data products:", $products);
+    }
+
     public function showLimit($page, $perPage)
     {
         // Mengonversi halaman dan perPage yang diterima menjadi integer

@@ -79,6 +79,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'getAll');
     Route::get('/products/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/product/{id}', 'getById'); // parameter id
+    Route::post('/products/print', 'print');     // parameter id
     Route::post('/products/search', 'search');   // parameter name, category, price(numeric), stok(numeric)
     // create product
     Route::post('/product/store', 'store');   // parameter name, category, price(numeric), stok(numeric)
