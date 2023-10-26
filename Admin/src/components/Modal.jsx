@@ -1143,43 +1143,49 @@ export const PrintModal = (props) => {
     <>
       <ModalContext.Provider value={ModalContextValue}>
         <dialog id="PrintModal" className="modal">
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
           <div
-            className={`modal-box h-auto w-11/12 max-w-6xl bg-gray-50 overflow-y-scroll cursor-auto p-0`}
+            className={`modal-box h-full w-11/12 max-w-7xl bg-transparent backdrop-blur-sm overflow-y-auto cursor-auto p-0`}
           >
-            <form method="dialog" className={` sticky top-0 z-10`}>
-              <button
-                onClick={() => {
-                  refresh();
-                  clearData();
-                }}
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-3 hover:bg-red-300"
+            <div className="hidden">
+              <form method="dialog" className={` sticky top-0 z-10`}>
+                <button
+                  onClick={() => {
+                    refresh();
+                    clearData();
+                  }}
+                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-3 hover:bg-red-300"
+                >
+                  <MuiIcon iconName="CloseRounded" />
+                </button>
+              </form>
+              <div
+                className={`bg-slate-50 sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
               >
-                <MuiIcon iconName="CloseRounded" />
-              </button>
-            </form>
-            <div
-              className={`bg-slate-50 sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
-            >
-              <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
-                {formType === "PRINT_BATCH" && `Print Multiple ${table}`}
+                <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
+                  {formType === "PRINT_BATCH" && `Print Multiple ${table}`}
+                  {formType === "PRINT_BY_ID" && `Print a ${table}`}
+                </div>
+                {errorMessage ? (
+                  <>
+                    <div
+                      key={id}
+                      className={`p-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
+                    >
+                      {errorMessage}
+                    </div>
+                  </>
+                ) : (
+                  <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
+                )}
+                {sending && (
+                  <>
+                    <span className="loading loading-dots loading-md"></span>
+                  </>
+                )}
               </div>
-              {errorMessage ? (
-                <>
-                  <div
-                    key={id}
-                    className={`p-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
-                  >
-                    {errorMessage}
-                  </div>
-                </>
-              ) : (
-                <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
-              )}
-              {sending && (
-                <>
-                  <span className="loading loading-dots loading-md"></span>
-                </>
-              )}
             </div>
             {data !== undefined && data !== null ? (
               <div className="content">
@@ -1209,29 +1215,36 @@ export const PrintModal = (props) => {
                           <>
                             {formType === "PRINT_BY_ID" && (
                               <>
-                                <div className="mx-auto p-4">
-                                  <>
-                                    <PDFViewer
-                                      className="mx-auto"
-                                      width="1000"
-                                      height="800"
-                                    >
-                                      <ReactPDF inputData={data} />
-                                    </PDFViewer>
-                                    <PDFDownloadLink
-                                      className="btn btn-success"
-                                      document={<ReactPDF inputData={data} />}
-                                      fileName={`${table}_${
-                                        data.name
-                                      }#${GetDateTime()}.pdf`}
-                                    >
-                                      {({ blob, url, loading, error }) =>
-                                        loading
-                                          ? "Loading document..."
-                                          : "Download now"
-                                      }
-                                    </PDFDownloadLink>
-                                  </>
+                                <div className="relative flex flex-row p-4">
+                                  <PDFViewer
+                                    className="mx-auto"
+                                    width="1000"
+                                    height="1000"
+                                  >
+                                    <ReactPDF inputData={data} />
+                                  </PDFViewer>
+                                  <PDFDownloadLink
+                                    className="absolute right-4 px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
+                                    document={<ReactPDF inputData={data} />}
+                                    fileName={`${table}_${
+                                      data.name
+                                    }#${GetDateTime()}.pdf`}
+                                  >
+                                    {({ blob, url, loading, error }) =>
+                                      loading ? (
+                                        "Loading..."
+                                      ) : (
+                                        <div className="flex flex-row items-end">
+                                          <MuiIcon
+                                            iconName="SaveRounded"
+                                            fontSize={18}
+                                            className="mr-2"
+                                          />
+                                          Save .Pdf
+                                        </div>
+                                      )
+                                    }
+                                  </PDFDownloadLink>
                                 </div>
                               </>
                             )}

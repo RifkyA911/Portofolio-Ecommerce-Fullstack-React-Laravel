@@ -13,6 +13,18 @@ export const GetDateTime = () => {
   return formattedDateTime;
 };
 
+export const GetDate = () => {
+  const currentDate = new Date();
+
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+
+  const formattedDate = `${year}/${month}/${day}`;
+
+  return formattedDate;
+};
+
 export const ConvertToDateMonth = (input) => {
   // Membuat objek Date dari tanggal asli
   const date = new Date(input);
