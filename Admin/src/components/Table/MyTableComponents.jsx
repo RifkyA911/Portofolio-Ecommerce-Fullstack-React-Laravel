@@ -1,7 +1,7 @@
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { MuiIcon } from "../../utils/RenderIcons";
 import { GetDateTime } from "../../utils/Formatter";
-import { ReactPDF } from "../Print";
+import { PrintReactPDF } from "../Print/Print";
 
 export const MyTableHeaderPrint = (props) => {
   const {
@@ -53,15 +53,7 @@ export const MyTableHeaderPrint = (props) => {
               }}
               className="py-2 px-4 w-full hover:bg-slate-200 text-left"
             >
-              {/* <PDFDownloadLink
-                className=""
-                document={<ReactPDF inputData={inputData} />}
-                fileName={`products_${inputData[0].name}#${GetDateTime()}.pdf`}
-              >
-                {({ blob, url, loading, error }) =>
-                  loading ? "Loading document..." : "Print Batch"
-                }
-              </PDFDownloadLink> */}
+              Print Batch
             </button>
             <button
               className="py-2 px-4 w-full hover:bg-slate-200 text-left"

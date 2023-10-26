@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../utils/RenderIcons";
 import { newAbortSignal } from "../utils/API/AxiosToken";
-import { PrintTest } from "../components/Print";
+import { PrintTest } from "../components/Print/Print";
 import { useReactToPrint } from "react-to-print";
 
 // define fetch data URL by products
@@ -185,7 +185,7 @@ export default function Products() {
       // setTimeout(setSearchTerm(e.target.value), 2000);
     },
     setPrintBatchModal: () => {
-      document.getElementById("ModalForms").showModal(); // ganti nanti
+      document.getElementById("PrintModal").showModal();
       handleActionButton(selectedRows, "PRINT_BATCH");
     },
     setAddModal: () => {
@@ -324,7 +324,7 @@ export default function Products() {
                   <div className="divider">Product List</div>
                   <MyTableEngine
                     {...MyTableEngineProps}
-                    className="rounded-md mx-auto"
+                    className="rounded-sm mx-auto"
                   >
                     <Thead className={`${BgOuterTable} ${textColor} `}>
                       <Tr key="TableHead" className={table_styling.tr}>

@@ -366,11 +366,11 @@ export const Th = (props) => {
               onClick={() => handleSortClick(column)}
               className={`${className} min-h-[36px]`}
             >
-              <div className="relative">
+              <div className="relative ">
                 <span className="absolute left-0 text-[14px] bottom-[-10px]">
                   {name}
                 </span>
-                <i className="absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
+                <i className="print:hidden absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
                   {sortBy === column &&
                     (sortOrder === "asc" ? (
                       <IconsHi2 iconName="HiArrowLongDown" className="" />

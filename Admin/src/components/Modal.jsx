@@ -30,7 +30,7 @@ import {
 } from "./Products/ProductsForm";
 import { ConfirmButton } from "./Button";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import { ReactPDF } from "./Print";
+import { PrintReactPDF } from "./Print/Print";
 import { GetDateTime } from "../utils/Formatter";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -812,32 +812,15 @@ export const PrintModal = (props) => {
     URL_BY_ID = import.meta.env.VITE_API_ID_ADMIN + "/" + table_id;
   } else if (table === "products") {
     URL_BY_ID = import.meta.env.VITE_API_ID_PRODUCT + "/" + table_id;
+    URL_ALL = import.meta.env.VITE_API_ALL_PRODUCT + "/print";
   } else if (table === "orders") {
     URL_BY_ID = import.meta.env.VITE_API_ID_TRANSACTION + "/" + table_id;
   }
 
-  // Define comp and defaultvalues data pada react-hook-Form
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    setFocus,
-    setError,
-    control,
-    formState: { errors, isValid, dirtyFields },
-    watch,
-  } = useForm({
-    mode: "onChange",
-    defaultValues: {
-      superAuthorizationPassword: SuperAdminKey,
-    },
-  });
-
   useEffect(() => {
-    if (formType === "PRINT_BY_ID" || formType === "PRINT_BATCH") {
-      // temp method: ini perlu dilakukan untuk menampilkan update setiap ada data baru
-      if (table_id !== "" && table_id !== null) {
+    if (table_id !== "" && table_id !== null) {
+      if (formType === "PRINT_BY_ID") {
+        // temp method: ini perlu dilakukan untuk menampilkan update setiap ada data baru
         axios
           .get(URL_BY_ID)
           .then((response) => {
@@ -890,421 +873,242 @@ export const PrintModal = (props) => {
             setLoading(false);
             setErrorMessage(error.message || "An error occurred.");
           });
-      } else {
-        setOnWorking(false);
-        setLoading(false);
-        setErrorMessage(
-          "Invalid table_id. It should not be an empty string or null."
-        );
-      }
-    } else if (formType === "DROP_BY_SELECTED") {
-      if (table_id !== null && table !== null) {
+      } else if (formType === "PRINT_BATCH") {
         const dataArray = Object.values(table_id);
-        const modifiedDataArray = dataArray.map((item) => ({
-          ...item,
-          superAuthorizationPassword: SuperAdminKey,
-        }));
-        setData(modifiedDataArray);
+        // return console.log("dataArray", dataArray);
+        // Ekstrak seluruh ID dari array dan letakkan dalam array terpisah
+        const ids = dataArray.map((item) => item.id);
+        //////////////////////////////////////////////////////////////////////////////////////
+        axios
+          .post(URL_ALL, { ids: ids })
+          .then((response) => {
+            // return console.log(response.data);
+            console.table("fetching:", URL_ALL);
+            // setData([response.data.data]);
+            setData(response.data.data);
+            setLoading(false);
+            setErrorMessage(null);
+          })
+          .catch((error) => {
+            if (error.response) {
+              console.log("Response error:", error.response.data);
+            } else if (error.request) {
+              console.log("Request error:", error.request);
+            } else {
+              console.log("Error:", error.message);
+            }
+            setLoading(false);
+            setErrorMessage(error.message || "An error occurred.");
+          });
+
+        //////////////////////////////////////////////////////////////////////////////////////
+        setLoading(false);
+        setErrorMessage(null);
+      } else {
+        setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
+        setOnWorking(false);
       }
-      setLoading(false);
-      setErrorMessage(null);
+      // jika !table
     } else {
-      setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
+      setLoading(false);
+      setErrorMessage(
+        "Invalid table_id. It should not be an empty string or null."
+      );
     }
   }, [table_id, formType]); // Gunakan table_id sebagai dependency untuk useEffect.
 
-  // Config value for react-hook-form
-  let initialFormValue;
-  let passwordRef = useRef({});
-
   // useEffect(() => {
-  //   // console.table(table);
-  //   // console.log(data);
-  //   if (formType === "INSERT") {
-  //     switch (table) {
-  //       case `admins`:
-  //         passwordRef.current = watch("password", "");
-
-  //         initialFormValue = {
-  //           superAuthorizationPassword: SuperAdminKey,
-  //           email: "",
-  //           username: "",
-  //           role: 1,
-  //           pict: "default.png",
-  //           password: "123456f",
-  //           password_confirmation: "123456f",
-  //         };
-  //         break;
-  //       case `products`:
-  //         initialFormValue = {
-  //           superAuthorizationPassword: SuperAdminKey,
-  //           pict: "default.jpg",
-  //         };
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   } else if (formType === "ALTER_BY_ID") {
-  //     switch (table) {
-  //       case `admins`:
-  //         initialFormValue = {
-  //           superAuthorizationPassword: SuperAdminKey,
-  //           adminsId: data.id,
-  //           email: data.email,
-  //           username: data.username,
-  //           role: data.role,
-  //           pict: data.pict,
-  //           newPassword: "123456FF",
-  //           newPassword_confirmation: "123456FF",
-  //           p: "p",
-  //         };
-  //         break;
-  //       case `products`:
-  //         initialFormValue = {
-  //           superAuthorizationPassword: SuperAdminKey,
-  //           productId: data.id,
-  //           barcode: data.barcode,
-  //           name: data.name,
-  //           price: parseInt(data.price),
-  //           category_id: data.category_id,
-  //           stock: parseInt(data.stock),
-  //           discount: parseFloat(data.discount),
-  //           pict: data.pict,
-  //           description: data.description,
-  //           created_at: data.created_at,
-  //           updated_at: data.updated_at,
-  //         };
-
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   } else if (formType === "DROP_BY_ID") {
-  //     switch (table) {
-  //       case `admins`:
-  //         initialFormValue = {
-  //           superAuthorizationPassword: SuperAdminKey,
-  //           adminsId: data.id,
-  //           email: data.email,
-  //           username: data.username,
-  //           role: data.role,
-  //           pict: data.pict,
-  //         };
-  //         break;
-  //       case `products`:
-  //         initialFormValue = {
-  //           superAuthorizationPassword: SuperAdminKey,
-  //           productsId: data.id,
-  //           name: data.name,
-  //         };
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   }
-  //   for (const key in initialFormValue) {
-  //     setValue(key, initialFormValue[key]);
-  //   }
-  //   initialFormValue = null;
-  // }, [getValues()]);
-
-  // jika submit, lakukan req ke server
-  let axiosResponse;
-
-  async function sendFormDataByMethod(form) {
-    setSending(!sending);
-    console.log(formType, table_id);
-    try {
-      if (formType === "INSERT") {
-        axiosResponse = await axios.post(URL_STORE, form);
-        console.log("Input data baru berhasil :", axiosResponse);
-      } else if (formType === "ALTER_BY_ID") {
-        axiosResponse = await axios.put(URL_ALL, form);
-        console.log("Update data berhasil :", axiosResponse);
-      } else if (formType === "DROP_BY_ID") {
-        switch (table) {
-          case `admins`:
-            axiosResponse = await axios.delete(URL_ALL, {
-              data: {
-                adminsId: form.adminsId,
-                superAuthorizationPassword: form.superAuthorizationPassword,
-              },
-            });
-            break;
-          case `products`:
-            axiosResponse = await axios.delete(URL_ALL, {
-              data: {
-                productsId: form.productsId,
-                superAuthorizationPassword: form.superAuthorizationPassword,
-              },
-            });
-            break;
-          default:
-            break;
-        }
-        console.log("Data berhasil di drop:", axiosResponse);
-      } else if (formType === "DROP_BY_SELECTED") {
-        // Loop melalui data dan buat permintaan DELETE untuk setiap elemen
-        const deleteRequests = []; // Deklarasikan sebagai array
-        for (const item of getValues()) {
-          // Buat permintaan DELETE dengan axios
-          let deleteRequest; // Deklarasikan sebagai let
-          switch (table) {
-            case `admins`:
-              deleteRequest = axios.delete(URL_ALL, {
-                data: {
-                  superAuthorizationPassword: item.superAuthorizationPassword,
-                  adminsId: item.id, // Sesuaikan dengan atribut yang sesuai
-                },
-              });
-              break;
-            case `products`:
-              deleteRequest = axios.delete(URL_ALL, {
-                data: {
-                  superAuthorizationPassword: item.superAuthorizationPassword,
-                  productsId: item.id, // Sesuaikan dengan atribut yang sesuai
-                },
-              });
-              break;
-            default:
-              break;
-          }
-
-          deleteRequests.push(deleteRequest);
-        }
-        try {
-          // Kirim semua permintaan DELETE secara bersamaan
-          const responses = await axios.all(deleteRequests);
-          console.log("Batch data berhasil dihapus:", responses);
-          setData([]);
-        } catch (error) {
-          setData([]);
-          console.error("Terjadi kesalahan saat menghapus batch data:", error);
-        }
-      }
-      setData([]);
-      // console.table(data);
-      setSending(false);
-      setErrorMessage(null);
-      setLoading(false);
-      setOnWorking(false);
-      clearData(); // parent props
-      refresh(); // parent props
-    } catch (error) {
-      setSending(false);
-      setErrorMessage(error.response.data.message);
-      console.info(error);
-      console.error("Terjadi kesalahan:", error);
-    }
-  }
-
-  // submit form handler
-  const onSubmit = async (form) => {
-    console.log("Kesalahan dalam formulir:", errors);
-    console.info("data form:", form);
-    if (!form) {
-      alert("there is no form to send");
-    }
-
-    // await sendFormDataByMethod(form);
-  };
-
-  const ModalContextValue = {
-    // MyTable
-    table,
-    refresh,
-    clearData,
-    // Modal
-    setData,
-    select,
-    formType,
-    showPassword,
-    setShowPassword: () => setShowPassword(!showPassword),
-    //react-hook-form
-    passwordRef,
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    setFocus,
-    setError,
-    control,
-    errors,
-    isValid,
-    dirtyFields,
-    watch,
-  };
-
-  // useEffect(() => {
-  //   console.table(data);
+  //   console.log(data);
   // }, [data]);
+
+  // const ModalContextValue = {
+  //   // MyTable
+  //   table,
+  //   refresh,
+  //   clearData,
+  //   // Modal
+  //   setData,
+  //   select,
+  //   formType,
+  //   showPassword,
+  //   setShowPassword: () => setShowPassword(!showPassword),
+  //   //react-hook-form
+  //   passwordRef,
+  //   register,
+  //   handleSubmit,
+  //   setValue,
+  //   getValues,
+  //   setFocus,
+  //   setError,
+  //   control,
+  //   errors,
+  //   isValid,
+  //   dirtyFields,
+  //   watch,
+  // };
 
   return (
     <>
-      <ModalContext.Provider value={ModalContextValue}>
-        <dialog id="PrintModal" className="modal">
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
-          </form>
-          <div
-            className={`modal-box h-full w-11/12 max-w-7xl bg-transparent backdrop-blur-sm overflow-y-auto cursor-auto p-0`}
-          >
-            <div className="hidden">
-              <form method="dialog" className={` sticky top-0 z-10`}>
-                <button
-                  onClick={() => {
-                    refresh();
-                    clearData();
-                  }}
-                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-3 hover:bg-red-300"
-                >
-                  <MuiIcon iconName="CloseRounded" />
-                </button>
-              </form>
-              <div
-                className={`bg-slate-50 sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
+      {/* <ModalContext.Provider value={ModalContextValue}> */}
+      <dialog id="PrintModal" className="modal">
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+        <div
+          className={`modal-box h-full w-11/12 max-w-7xl bg-transparent backdrop-blur-sm overflow-y-auto cursor-auto p-0`}
+        >
+          <div className="hidden">
+            <form method="dialog" className={` sticky top-0 z-10`}>
+              <button
+                onClick={() => {
+                  refresh();
+                  clearData();
+                }}
+                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-3 hover:bg-red-300"
               >
-                <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
-                  {formType === "PRINT_BATCH" && `Print Multiple ${table}`}
-                  {formType === "PRINT_BY_ID" && `Print a ${table}`}
-                </div>
-                {errorMessage ? (
-                  <>
-                    <div
-                      key={id}
-                      className={`p-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
-                    >
-                      {errorMessage}
-                    </div>
-                  </>
-                ) : (
-                  <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
-                )}
-                {sending && (
-                  <>
-                    <span className="loading loading-dots loading-md"></span>
-                  </>
-                )}
+                <MuiIcon iconName="CloseRounded" />
+              </button>
+            </form>
+            <div
+              className={`bg-slate-50 sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
+            >
+              <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
+                {formType === "PRINT_BATCH" && `Print Multiple ${table}`}
+                {formType === "PRINT_BY_ID" && `Print a ${table}`}
+              </div>
+              {errorMessage ? (
+                <>
+                  <div
+                    key={id}
+                    className={`p-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
+                  >
+                    {errorMessage}
+                  </div>
+                </>
+              ) : (
+                <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
+              )}
+              {sending && (
+                <>
+                  <span className="loading loading-dots loading-md"></span>
+                </>
+              )}
+            </div>
+          </div>
+          {data !== undefined && data !== null ? (
+            <div className="content">
+              {!loading ? (
+                <>
+                  {onWorking ? (
+                    // =========================== Main Form ========================
+                    <form autoComplete="off">
+                      {/* Panggilan setValue diluar input */}
+                      {table === "admins" && (
+                        <>
+                          <p></p>
+                        </>
+                      )}
+                      {table === "products" && (
+                        <>
+                          {formType === "PRINT_BY_ID" && (
+                            <>
+                              <div className="relative flex flex-row p-4">
+                                <PDFViewer
+                                  className="mx-auto"
+                                  width="1000"
+                                  height="1000"
+                                >
+                                  <PrintReactPDF inputData={data} />
+                                </PDFViewer>
+                                <PDFDownloadLink
+                                  className="absolute right-4 px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
+                                  document={<PrintReactPDF inputData={data} />}
+                                  fileName={`${table}_${
+                                    data.name
+                                  }#${GetDateTime()}.pdf`}
+                                >
+                                  {({ blob, url, loading, error }) =>
+                                    loading ? (
+                                      "Loading..."
+                                    ) : (
+                                      <div className="flex flex-row items-end">
+                                        <MuiIcon
+                                          iconName="SaveRounded"
+                                          fontSize={18}
+                                          className="mr-2"
+                                        />
+                                        Save .Pdf
+                                      </div>
+                                    )
+                                  }
+                                </PDFDownloadLink>
+                              </div>
+                            </>
+                          )}
+                          {formType === "PRINT_BATCH" && (
+                            <>
+                              <PDFViewer
+                                className="mx-auto"
+                                width="1000"
+                                height="1000"
+                              >
+                                <PrintReactPDF inputData={data} />
+                              </PDFViewer>
+                              <PDFDownloadLink
+                                className="absolute right-4 top-4 px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
+                                document={<PrintReactPDF inputData={data} />}
+                                fileName={`${table}_Batch#${GetDateTime()}.pdf`}
+                              >
+                                {({ blob, url, loading, error }) =>
+                                  loading ? (
+                                    "Loading..."
+                                  ) : (
+                                    <div className="flex flex-row items-end">
+                                      <MuiIcon
+                                        iconName="SaveRounded"
+                                        fontSize={18}
+                                        className="mr-2"
+                                      />
+                                      Save .Pdf
+                                    </div>
+                                  )
+                                }
+                              </PDFDownloadLink>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </form>
+                  ) : (
+                    <>
+                      <h1 className="font-roboto-bold py-8 text-xl">
+                        Modal Logic Error !
+                      </h1>
+                    </>
+                  )}
+                  {/* end of onWorking */}
+                </>
+              ) : (
+                <>
+                  <p>Loading...</p>
+                </>
+              )}
+              {/* end of loading */}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
+              <h1 className="font-poppins-medium text-xl">
+                Loading Render Form...
+              </h1>
+              <div className="flex-row">
+                <span className="loading loading-bars loading-lg"></span>
               </div>
             </div>
-            {data !== undefined && data !== null ? (
-              <div className="content">
-                {!loading ? (
-                  <>
-                    {onWorking ? (
-                      // =========================== Main Form ========================
-                      <form
-                        autoComplete="off"
-                        onSubmit={handleSubmit(onSubmit)}
-                      >
-                        <input
-                          type="hidden"
-                          {...register("superAuthorizationPassword", {
-                            required:
-                              "Your Credentials superAuthorizationPassword are required",
-                          })}
-                        />
-                        {setValue("superAuthorizationPassword", SuperAdminKey)}
-                        {/* Panggilan setValue diluar input */}
-                        {table === "admins" && (
-                          <>
-                            <p></p>
-                          </>
-                        )}
-                        {table === "products" && (
-                          <>
-                            {formType === "PRINT_BY_ID" && (
-                              <>
-                                <div className="relative flex flex-row p-4">
-                                  <PDFViewer
-                                    className="mx-auto"
-                                    width="1000"
-                                    height="1000"
-                                  >
-                                    <ReactPDF inputData={data} />
-                                  </PDFViewer>
-                                  <PDFDownloadLink
-                                    className="absolute right-4 px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
-                                    document={<ReactPDF inputData={data} />}
-                                    fileName={`${table}_${
-                                      data.name
-                                    }#${GetDateTime()}.pdf`}
-                                  >
-                                    {({ blob, url, loading, error }) =>
-                                      loading ? (
-                                        "Loading..."
-                                      ) : (
-                                        <div className="flex flex-row items-end">
-                                          <MuiIcon
-                                            iconName="SaveRounded"
-                                            fontSize={18}
-                                            className="mr-2"
-                                          />
-                                          Save .Pdf
-                                        </div>
-                                      )
-                                    }
-                                  </PDFDownloadLink>
-                                </div>
-                              </>
-                            )}
-                            {formType === "PRINT_BATCH" && (
-                              <>
-                                {/* <PDFViewer
-                                      className="mx-auto"
-                                      width="1000"
-                                      height="600"
-                                    >
-                                      <ReactPDF inputData={data} />
-                                    </PDFViewer>
-                                    <PDFDownloadLink
-                                      className="btn btn-success"
-                                      document={<ReactPDF inputData={data} />}
-                                      fileName={`${table}_${
-                                        data[0].name
-                                      }#${GetDateTime()}.pdf`}
-                                    >
-                                      {({ blob, url, loading, error }) =>
-                                        loading
-                                          ? "Loading document..."
-                                          : "Download now"
-                                      }
-                                    </PDFDownloadLink> */}
-                              </>
-                            )}
-                          </>
-                        )}
-                      </form>
-                    ) : (
-                      <>
-                        <h1 className="font-roboto-bold py-8 text-xl">
-                          Modal Logic Error !
-                        </h1>
-                      </>
-                    )}
-                    {/* end of onWorking */}
-                  </>
-                ) : (
-                  <>
-                    <p>Loading...</p>
-                  </>
-                )}
-                {/* end of loading */}
-              </div>
-            ) : (
-              <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
-                <h1 className="font-poppins-medium text-xl">
-                  Loading Render Form...
-                </h1>
-                <div className="flex-row">
-                  <span className="loading loading-bars loading-lg"></span>
-                </div>
-              </div>
-            )}
-            {/* end of data */}
-          </div>
-        </dialog>
-      </ModalContext.Provider>
+          )}
+          {/* end of data */}
+        </div>
+      </dialog>
+      {/* </ModalContext.Provider> */}
     </>
   );
 };
