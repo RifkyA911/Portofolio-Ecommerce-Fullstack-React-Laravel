@@ -34,6 +34,7 @@ import { PrintReactPDF } from "./Print/Print";
 import { GetDateTime } from "../utils/Formatter";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
+const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 
 export const ModalContext = createContext();
 
@@ -201,7 +202,7 @@ export const InfoModal = (props) => {
                             {table_id?.name || "This Product"}
                           </h3>
                           <img
-                            src={`./src/assets/products/${
+                            src={`${ServerProductsImg}${
                               table_id?.pict || "default.png"
                             }`}
                             alt={`Profile Picture ${

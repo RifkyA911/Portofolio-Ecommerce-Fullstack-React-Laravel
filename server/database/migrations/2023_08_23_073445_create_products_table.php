@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('discount')->nullable();
             $table->string('pict')->nullable();
             $table->text('description')->nullable()->default(null);
+            $table->boolean('visible')->default(false);
             $table->foreignId('admin_id');
             $table->timestamps();
         });
