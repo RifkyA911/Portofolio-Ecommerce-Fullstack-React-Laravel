@@ -22,8 +22,7 @@ import { Container, Content } from "../Layout";
 import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../utils/RenderIcons";
-import { newAbortSignal } from "../utils/API/AxiosToken";
-import { PrintTest } from "../components/Print/Print";
+import { ReactToPrint } from "../components/Print/Print";
 import { useReactToPrint } from "react-to-print";
 
 // define fetch data URL by products
@@ -333,7 +332,7 @@ export default function Products() {
                   <PrintModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
-                  <PrintTest inputData={products} />
+                  <ReactToPrint inputData={products} />
                   <div className="divider">Product List</div>
                   <MyTableEngine
                     {...MyTableEngineProps}

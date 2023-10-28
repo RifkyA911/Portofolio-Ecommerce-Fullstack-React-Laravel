@@ -30,7 +30,11 @@ import {
 } from "./Products/ProductsForm";
 import { ConfirmButton } from "./Button";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import { PrintReactPDF } from "./Print/Print";
+import {
+  DownloadBtnReactPDF,
+  LookReactPDF,
+  PrintReactPDF,
+} from "./Print/Print";
 import { GetDateTime } from "../utils/Formatter";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -783,10 +787,7 @@ export const PrintModal = (props) => {
   const { refresh, table, table_id, select, formType, clearData } = props;
 
   const [data, setData] = useState();
-  const [showPassword, setShowPassword] = useState(false);
-
   const [onWorking, setOnWorking] = useState(true);
-  const [sending, setSending] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -811,11 +812,13 @@ export const PrintModal = (props) => {
   let URL_ALL;
   if (table === "admins") {
     URL_BY_ID = import.meta.env.VITE_API_ID_ADMIN + "/" + table_id;
+    URL_ALL = import.meta.env.VITE_API_ALL_ADMIN + "/print";
   } else if (table === "products") {
     URL_BY_ID = import.meta.env.VITE_API_ID_PRODUCT + "/" + table_id;
     URL_ALL = import.meta.env.VITE_API_ALL_PRODUCT + "/print";
   } else if (table === "orders") {
     URL_BY_ID = import.meta.env.VITE_API_ID_TRANSACTION + "/" + table_id;
+    URL_ALL = import.meta.env.VITE_API_ALL_TRANSACTION + "/print";
   }
 
   useEffect(() => {
@@ -826,40 +829,7 @@ export const PrintModal = (props) => {
           .get(URL_BY_ID)
           .then((response) => {
             console.table("fetching:", URL_BY_ID);
-            switch (table) {
-              case `admins`:
-                setData({
-                  superAuthorizationPassword: SuperAdminKey,
-                  id: response.data.data.id,
-                  email: response.data.data.email,
-                  username: response.data.data.username,
-                  pict: response.data.data.pict,
-                  role: response.data.data.role,
-                  created_at: response.data.data.created_at,
-                  updated_at: response.data.data.updated_at,
-                });
-                break;
-              case `products`:
-                setData({
-                  superAuthorizationPassword: SuperAdminKey,
-                  id: response.data.data.id,
-                  barcode: response.data.data.barcode,
-                  name: response.data.data.name,
-                  price: response.data.data.price,
-                  category_id: response.data.data.category.id,
-                  category_name: response.data.data.category.name,
-                  category_type: response.data.data.category.type,
-                  stock: response.data.data.stock,
-                  discount: response.data.data.discount,
-                  pict: response.data.data.pict,
-                  description: response.data.data.description,
-                  created_at: response.data.data.created_at,
-                  updated_at: response.data.data.updated_at,
-                });
-                break;
-              default:
-                break;
-            }
+            setData(response.data.data);
             setLoading(false);
             setErrorMessage(null);
           })
@@ -909,48 +879,18 @@ export const PrintModal = (props) => {
         setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
         setOnWorking(false);
       }
-      // jika !table
-    } else {
-      setLoading(false);
-      setErrorMessage(
-        "Invalid table_id. It should not be an empty string or null."
-      );
     }
   }, [table_id, formType]); // Gunakan table_id sebagai dependency untuk useEffect.
 
   // useEffect(() => {
   //   console.log(data);
   // }, [data]);
-
-  // const ModalContextValue = {
-  //   // MyTable
-  //   table,
-  //   refresh,
-  //   clearData,
-  //   // Modal
-  //   setData,
-  //   select,
-  //   formType,
-  //   showPassword,
-  //   setShowPassword: () => setShowPassword(!showPassword),
-  //   //react-hook-form
-  //   passwordRef,
-  //   register,
-  //   handleSubmit,
-  //   setValue,
-  //   getValues,
-  //   setFocus,
-  //   setError,
-  //   control,
-  //   errors,
-  //   isValid,
-  //   dirtyFields,
-  //   watch,
-  // };
+  // useEffect(() => {
+  //   console.log(errorMessage);
+  // }, [errorMessage]);
 
   return (
     <>
-      {/* <ModalContext.Provider value={ModalContextValue}> */}
       <dialog id="PrintModal" className="modal">
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
@@ -958,7 +898,7 @@ export const PrintModal = (props) => {
         <div
           className={`modal-box h-full w-11/12 max-w-7xl bg-transparent backdrop-blur-sm overflow-y-auto cursor-auto p-0`}
         >
-          <div className="hidden">
+          <div className="bg-white bg-opacity-40 backdrop-blur-xl">
             <form method="dialog" className={` sticky top-0 z-10`}>
               <button
                 onClick={() => {
@@ -971,9 +911,9 @@ export const PrintModal = (props) => {
               </button>
             </form>
             <div
-              className={`bg-slate-50 sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
+              className={`bg-transparent sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
             >
-              <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
+              <div className="p-4 w-5/12 font-bold text-lg text-left capitalize">
                 {formType === "PRINT_BATCH" && `Print Multiple ${table}`}
                 {formType === "PRINT_BY_ID" && `Print a ${table}`}
               </div>
@@ -987,12 +927,7 @@ export const PrintModal = (props) => {
                   </div>
                 </>
               ) : (
-                <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
-              )}
-              {sending && (
-                <>
-                  <span className="loading loading-dots loading-md"></span>
-                </>
+                <div className="block p-4 bg-transparent font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
               )}
             </div>
           </div>
@@ -1003,82 +938,14 @@ export const PrintModal = (props) => {
                   {onWorking ? (
                     // =========================== Main Form ========================
                     <form autoComplete="off">
-                      {/* Panggilan setValue diluar input */}
-                      {table === "admins" && (
-                        <>
-                          <p></p>
-                        </>
-                      )}
-                      {table === "products" && (
-                        <>
-                          {formType === "PRINT_BY_ID" && (
-                            <>
-                              <div className="relative flex flex-row p-4">
-                                <PDFViewer
-                                  className="mx-auto"
-                                  width="1000"
-                                  height="1000"
-                                >
-                                  <PrintReactPDF inputData={data} />
-                                </PDFViewer>
-                                <PDFDownloadLink
-                                  className="absolute right-4 px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
-                                  document={<PrintReactPDF inputData={data} />}
-                                  fileName={`${table}_${
-                                    data.name
-                                  }#${GetDateTime()}.pdf`}
-                                >
-                                  {({ blob, url, loading, error }) =>
-                                    loading ? (
-                                      "Loading..."
-                                    ) : (
-                                      <div className="flex flex-row items-end">
-                                        <MuiIcon
-                                          iconName="SaveRounded"
-                                          fontSize={18}
-                                          className="mr-2"
-                                        />
-                                        Save .Pdf
-                                      </div>
-                                    )
-                                  }
-                                </PDFDownloadLink>
-                              </div>
-                            </>
-                          )}
-                          {formType === "PRINT_BATCH" && (
-                            <>
-                              <PDFViewer
-                                className="mx-auto"
-                                width="1000"
-                                height="1000"
-                              >
-                                <PrintReactPDF inputData={data} />
-                              </PDFViewer>
-                              <PDFDownloadLink
-                                className="absolute right-4 top-4 px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
-                                document={<PrintReactPDF inputData={data} />}
-                                fileName={`${table}_Batch#${GetDateTime()}.pdf`}
-                              >
-                                {({ blob, url, loading, error }) =>
-                                  loading ? (
-                                    "Loading..."
-                                  ) : (
-                                    <div className="flex flex-row items-end">
-                                      <MuiIcon
-                                        iconName="SaveRounded"
-                                        fontSize={18}
-                                        className="mr-2"
-                                      />
-                                      Save .Pdf
-                                    </div>
-                                  )
-                                }
-                              </PDFDownloadLink>
-                            </>
-                          )}
-                        </>
-                      )}
+                      <div className="relative flex flex-row p-4">
+                        <LookReactPDF inputData={data} table={table} />
+                        <DownloadBtnReactPDF
+                          formType={formType}
+                          inputData={data}
+                          table={table}
+                        />
+                      </div>
                     </form>
                   ) : (
                     <>

@@ -62,6 +62,114 @@ const tw = createTw({
   },
 });
 
+const PartOfHeader = () => {
+  return (
+    <>
+      <View
+        style={tw(
+          "p-4 bg-gray-100 border-b-2 border-slate-200 flex flex-row justify-between items-center max-h-[140px] overflow-hidden w-full"
+        )}
+        // style={styles.header}
+      >
+        {/* Left */}
+        <Link
+          src={CompanyProfileURL}
+          style={tw("order-first flex flex-row w-2/3 justify-start self-start")}
+          // style={styles.headerLeft}
+        >
+          <Image
+            style={tw("h-20 w-20 hidden sm:flex text-center")}
+            // style={styles.headerLeftPict}
+            src={"src/assets/logo.png"}
+          />
+          <View
+            style={tw(
+              "mx-4 flex flex-col gap-1 items-start capitalize underline text-gray-900 hover:text-gray-800 visited:text-gray-800"
+            )}
+            // style={styles.headerLeftText}
+          >
+            <Text style={tw("font-extrabold")}>Your Company Name</Text>
+            <Text style={tw("font-semibold text-base")}>
+              Jl. Mayjend. Sungkono Blok B 1 no. 105 Surabaya 6025
+            </Text>
+            <Text style={tw("font-bold no-underline text-xs")}>
+              Phone: 031-5671868; Fax: 031-5664979
+            </Text>
+            <Text style={tw("font-bold no-underline text-xs")}>
+              E-mail: drarya2006@gmail.com
+            </Text>
+          </View>
+        </Link>
+        {/* Right */}
+        <View
+          style={tw("order-last flex flex-row w-1/3 justify-end self-end")}
+          // style={styles.headerRight}
+        >
+          <View style={tw("mx-4 flex flex-col justify-between items-end")}>
+            <Text style={tw("text-base")}>INVOICE : 2021/INV/017</Text>
+            <View style={tw("flex flex-col justify-between items-end")}>
+              <Text style={tw("text-base")}>Date Created : {GetDate()}</Text>
+              <Text style={tw("text-base")}>
+                Admin : {userSession.username}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </>
+  );
+};
+
+const PartOfBody = (props) => {
+  const { inputData } = props;
+  return (
+    <>
+      <View style={tw("flex flex-col w-full p-12")}>
+        <View style={tw("flex flex-row w-full")}>
+          <View style={tw("flex w-1/3 justify-start")}>
+            <Image
+              style={tw("h-80 w-80 sm:flex text-center rounded-lg")}
+              //   src={"./src/assets/user_avatar/84719630_p0.jpg"}
+              src={`${ServerProductsImg}${inputData.pict}`}
+            ></Image>
+          </View>
+          <View style={tw("flex flex-row w-2/3 justify-start")}>
+            <View style={tw("flex gap-4 justify-start p-4 bg-slate-100")}>
+              <Text>Barcode : </Text>
+              <Text>Name :</Text>
+              <Text>Category :</Text>
+              <Text>Price :</Text>
+              <Text>Discount :</Text>
+              <Text>Created at :</Text>
+              <Text>Updated at :</Text>
+            </View>
+            <View
+              style={tw(
+                "flex gap-4 justify-start p-4 text-gray-800 capitalize"
+              )}
+            >
+              <Text>{inputData.barcode}</Text>
+              <Text>{inputData.name}</Text>
+              <Text>{inputData.category.name}</Text>
+              <Text>Rp. {inputData.price}</Text>
+              <Text>{inputData.discount} %</Text>
+              <Text>{inputData.created_at}</Text>
+              <Text>{inputData.updated_at}</Text>
+            </View>
+          </View>
+        </View>
+        <View style={tw("flex gap-4 p-4")}>
+          <Text>Description :</Text>
+          <Text style={tw("text-base font-medium text-gray-700")}>
+            {inputData.description || loremIpsum}
+          </Text>
+        </View>
+        {/* <Svg></Svg> */}
+      </View>
+    </>
+  );
+};
+
 export const PrintProducts = (props) => {
   const { inputData, printType } = props;
 
@@ -70,113 +178,14 @@ export const PrintProducts = (props) => {
       {inputData && (
         <>
           {printType === "SINGLE" && (
-            <View style={styles.page}>
-              {/* =================== HEADER =================== */}
-              <View
-                style={tw(
-                  "p-4 bg-gray-100 border-b-2 border-slate-200 flex flex-row justify-between items-center max-h-[140px] overflow-hidden w-full"
-                )}
-                // style={styles.header}
-              >
-                {/* Left */}
-                <Link
-                  src={CompanyProfileURL}
-                  style={tw(
-                    "order-first flex flex-row w-2/3 justify-start self-start"
-                  )}
-                  // style={styles.headerLeft}
-                >
-                  <Image
-                    style={tw("h-20 w-20 hidden sm:flex text-center")}
-                    // style={styles.headerLeftPict}
-                    src={"src/assets/logo.png"}
-                  />
-                  <View
-                    style={tw(
-                      "mx-4 flex flex-col gap-1 items-start capitalize underline text-gray-900 hover:text-gray-800 visited:text-gray-800"
-                    )}
-                    // style={styles.headerLeftText}
-                  >
-                    <Text style={tw("font-extrabold")}>Your Company Name</Text>
-                    <Text style={tw("font-semibold text-base")}>
-                      Jl. Mayjend. Sungkono Blok B 1 no. 105 Surabaya 6025
-                    </Text>
-                    <Text style={tw("font-bold no-underline text-xs")}>
-                      Phone: 031-5671868; Fax: 031-5664979
-                    </Text>
-                    <Text style={tw("font-bold no-underline text-xs")}>
-                      E-mail: drarya2006@gmail.com
-                    </Text>
-                  </View>
-                </Link>
-                {/* Right */}
-                <View
-                  style={tw(
-                    "order-last flex flex-row w-1/3 justify-end self-end"
-                  )}
-                  // style={styles.headerRight}
-                >
-                  <View
-                    style={tw("mx-4 flex flex-col justify-between items-end")}
-                  >
-                    <Text style={tw("text-base")}>INVOICE : 2021/INV/017</Text>
-                    <View style={tw("flex flex-col justify-between items-end")}>
-                      <Text style={tw("text-base")}>
-                        Date Created : {GetDate()}
-                      </Text>
-                      <Text style={tw("text-base")}>
-                        Admin : {userSession.username}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
+            <Page size="LETTER" dpi={96}>
+              <View style={styles.page}>
+                {/* =================== HEADER =================== */}
+                <PartOfHeader />
+                {/* =================== BODY =================== */}
+                <PartOfBody inputData={inputData} />
               </View>
-              {/* =================== BODY =================== */}
-              <View style={tw("flex flex-col w-full p-12")}>
-                <View style={tw("flex flex-row w-full")}>
-                  <View style={tw("flex w-1/3 justify-start")}>
-                    <Image
-                      style={tw("h-80 w-80 sm:flex text-center rounded-lg")}
-                      //   src={"./src/assets/user_avatar/84719630_p0.jpg"}
-                      src={`${ServerProductsImg}${inputData.pict}`}
-                    ></Image>
-                  </View>
-                  <View style={tw("flex flex-row w-2/3 justify-start")}>
-                    <View
-                      style={tw("flex gap-4 justify-start p-4 bg-slate-100")}
-                    >
-                      <Text>Barcode : </Text>
-                      <Text>Name :</Text>
-                      <Text>Category :</Text>
-                      <Text>Price :</Text>
-                      <Text>Discount :</Text>
-                      <Text>Created at :</Text>
-                      <Text>Updated at :</Text>
-                    </View>
-                    <View
-                      style={tw(
-                        "flex gap-4 justify-start p-4 text-gray-800 capitalize"
-                      )}
-                    >
-                      <Text>{inputData.barcode}</Text>
-                      <Text>{inputData.name}</Text>
-                      <Text>{inputData.category_name}</Text>
-                      <Text>Rp. {inputData.price}</Text>
-                      <Text>{inputData.discount} %</Text>
-                      <Text>{inputData.created_at}</Text>
-                      <Text>{inputData.updated_at}</Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={tw("flex gap-4 p-4")}>
-                  <Text>Description :</Text>
-                  <Text style={tw("text-base font-medium text-gray-700")}>
-                    {inputData.description || loremIpsum}
-                  </Text>
-                </View>
-                {/* <Svg></Svg> */}
-              </View>
-            </View>
+            </Page>
           )}
           {printType === "BATCH" && (
             <>
@@ -184,122 +193,9 @@ export const PrintProducts = (props) => {
                 <Page key={row.id} size="LETTER" dpi={96}>
                   <View style={styles.page}>
                     {/* =================== HEADER =================== */}
-                    <View
-                      // style={tw(
-                      //   "header p-4 bg-gray-100 shadow-xl xborder-b-2 border-slate-200 flex flex-row justify-between items-center max-h-[140px] overflow-hidden w-full"
-                      // )}
-                      style={styles.header}
-                    >
-                      {/* Left */}
-                      <Link
-                        src={CompanyProfileURL}
-                        // style={tw(
-                        //   "order-first flex flex-row w-2/3 justify-start self-start"
-                        // )}
-                        style={styles.headerLeft}
-                      >
-                        <Image
-                          style={tw("h-20 w-20 hidden sm:flex text-center")}
-                          // style={styles.headerLeftPict}
-                          src={"src/assets/logo.png"}
-                        />
-                        <View
-                          style={tw(
-                            "mx-4 flex flex-col gap-1 items-start capitalize underline text-gray-900 hover:text-gray-800 visited:text-gray-800"
-                          )}
-                          // style={styles.headerLeftText}
-                        >
-                          <Text style={tw("font-extrabold")}>
-                            Your Company Name
-                          </Text>
-                          <Text style={tw("font-semibold text-base")}>
-                            Jl. Mayjend. Sungkono Blok B 1 no. 105 Surabaya 6025
-                          </Text>
-                          <Text style={tw("font-bold no-underline text-xs")}>
-                            Phone: 031-5671868; Fax: 031-5664979
-                          </Text>
-                          <Text style={tw("font-bold no-underline text-xs")}>
-                            E-mail: drarya2006@gmail.com
-                          </Text>
-                        </View>
-                      </Link>
-                      {/* Right */}
-                      <View
-                        // style={tw("order-last flex flex-row w-1/3 justify-end self-end")}
-                        style={styles.headerRight}
-                      >
-                        <View
-                          style={tw(
-                            "mx-4 flex flex-col justify-between items-end"
-                          )}
-                        >
-                          <Text style={tw("text-base")}>
-                            INVOICE : 2021/INV/017
-                          </Text>
-                          <View
-                            style={tw(
-                              "flex flex-col justify-between items-end"
-                            )}
-                          >
-                            <Text style={tw("text-base")}>
-                              Date Created : {GetDate()}
-                            </Text>
-                            <Text style={tw("text-base")}>
-                              Admin : {userSession.username}
-                            </Text>
-                          </View>
-                        </View>
-                      </View>
-                    </View>
+                    <PartOfHeader />
                     {/* =================== BODY =================== */}
-                    <View style={tw("flex flex-col w-full p-12")}>
-                      <View style={tw("flex flex-row w-full")}>
-                        <View style={tw("flex w-1/3 justify-start")}>
-                          <Image
-                            style={tw(
-                              "h-80 w-80 sm:flex text-center rounded-lg"
-                            )}
-                            //   src={"./src/assets/user_avatar/84719630_p0.jpg"}
-                            src={`${ServerProductsImg}${row.pict}`}
-                          ></Image>
-                        </View>
-                        <View style={tw("flex flex-row w-2/3 justify-start")}>
-                          <View
-                            style={tw(
-                              "flex gap-4 justify-start p-4 bg-slate-100"
-                            )}
-                          >
-                            <Text>Barcode : </Text>
-                            <Text>Name :</Text>
-                            <Text>Category :</Text>
-                            <Text>Price :</Text>
-                            <Text>Discount :</Text>
-                            <Text>Created at :</Text>
-                            <Text>Updated at :</Text>
-                          </View>
-                          <View
-                            style={tw(
-                              "flex gap-4 justify-start p-4 text-gray-800 capitalize"
-                            )}
-                          >
-                            <Text>{row.barcode}</Text>
-                            <Text>{row.name}</Text>
-                            <Text>{row.category.name}</Text>
-                            <Text>Rp. {row.price}</Text>
-                            <Text>{row.discount} %</Text>
-                            <Text>{row.created_at}</Text>
-                            <Text>{row.updated_at}</Text>
-                          </View>
-                        </View>
-                      </View>
-                      <View style={tw("flex gap-4 p-4")}>
-                        <Text>Description :</Text>
-                        <Text style={tw("text-base font-medium text-gray-700")}>
-                          {row.description || loremIpsum}
-                        </Text>
-                      </View>
-                      {/* <Svg></Svg> */}
-                    </View>
+                    <PartOfBody inputData={row} />
                   </View>
                 </Page>
               ))}
