@@ -6,6 +6,7 @@ use \App\Models\Product;
 use \App\Models\Category;
 use Illuminate\Http\Request;
 use \App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
@@ -222,4 +223,23 @@ class ProductController extends Controller
         }
     }
     // return response(new PostResource(false, 'Masuk coy :v', $request->input(), 302));
+
+    // Contoh metode controller Laravel untuk mengunggah gambar
+    public function uploadImage(Request $request)
+    {
+        $imageData = $request->input('pict'); // Data gambar hasil pemangkasan dari React
+        if (!$imageData) {
+            return response(new PostResource(false, "Input Key dan Value Endpoint salah", 400));
+        }
+
+        if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
+            $data = substr($imageData, strpos($imageData, ',') + 1);
+            $data = base64_decode($data);
+            $imagePath = public_path('img/') . 'image.jpg'; // Tentukan lokasi penyimpanan lokal
+            file_put_contents($imagePath, $data); // Simpan gambar secara lokal
+            return response(new PostResource(true, $imagePath, 200));
+        } else {
+            return response(new PostResource(false, ['message' => "Tidak dapat memproses input", 'data' => $request], 500));
+        }
+    }
 }
