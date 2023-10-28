@@ -286,9 +286,7 @@ export const ActionModalForm = (props) => {
 
   let URL_BY_ID;
   let URL_STORE;
-  let URL_UPDATE;
-  let URL_DROP;
-  let URL_ALL;
+  let URL_ALL; // UPDATE,PATCH,DROP
 
   if (table === "admins") {
     URL_BY_ID = import.meta.env.VITE_API_ID_ADMIN + "/" + table_id;
@@ -300,26 +298,11 @@ export const ActionModalForm = (props) => {
     URL_ALL = import.meta.env.VITE_API_ALL_PRODUCT;
   } else if (table === "orders") {
     URL_BY_ID = import.meta.env.VITE_API_ID_TRANSACTION + "/" + table_id;
+    URL_STORE = import.meta.env.VITE_API_STORE_TRANSACTION;
     URL_ALL = import.meta.env.VITE_API_ALL_TRANSACTION;
   }
 
-  // Define comp and defaultvalues data pada react-hook-Form
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    setFocus,
-    setError,
-    control,
-    formState: { errors, isValid, dirtyFields },
-    watch,
-  } = useForm({
-    mode: "onChange",
-    defaultValues: {
-      superAuthorizationPassword: SuperAdminKey,
-    },
-  });
+  // ========================== Query Data ==========================
 
   useEffect(() => {
     if (formType === "INSERT") {
@@ -334,40 +317,7 @@ export const ActionModalForm = (props) => {
           .get(URL_BY_ID)
           .then((response) => {
             console.table("fetching:", URL_BY_ID);
-            switch (table) {
-              case `admins`:
-                setData({
-                  superAuthorizationPassword: SuperAdminKey,
-                  id: response.data.data.id,
-                  email: response.data.data.email,
-                  username: response.data.data.username,
-                  pict: response.data.data.pict,
-                  role: response.data.data.role,
-                  created_at: response.data.data.created_at,
-                  updated_at: response.data.data.updated_at,
-                });
-                break;
-              case `products`:
-                setData({
-                  superAuthorizationPassword: SuperAdminKey,
-                  id: response.data.data.id,
-                  barcode: response.data.data.barcode,
-                  name: response.data.data.name,
-                  price: response.data.data.price,
-                  category_id: response.data.data.category.id,
-                  category_name: response.data.data.category.name,
-                  category_type: response.data.data.category.type,
-                  stock: response.data.data.stock,
-                  discount: response.data.data.discount,
-                  pict: response.data.data.pict,
-                  description: response.data.data.description,
-                  created_at: response.data.data.created_at,
-                  updated_at: response.data.data.updated_at,
-                });
-                break;
-              default:
-                break;
-            }
+            setData(response.data.data);
             setLoading(false);
             setErrorMessage(null);
           })
@@ -401,14 +351,32 @@ export const ActionModalForm = (props) => {
       setLoading(false);
       setErrorMessage(null);
     } else {
-      setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
+      setLoading(false);
     }
-  }, [table_id, formType]); // Gunakan table_id sebagai dependency untuk useEffect.
+  }, [table_id, formType]);
 
-  // Config value for react-hook-form
+  // ========================== Config react-hook-form  ==========================
+  // Define comp and defaultvalues data pada react-hook-Form
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    setFocus,
+    setError,
+    control,
+    formState: { errors, isValid, dirtyFields },
+    watch,
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      superAuthorizationPassword: SuperAdminKey,
+    },
+  });
+
+  // set values by state data
   let initialFormValue;
   let passwordRef = useRef({});
-
   useEffect(() => {
     // console.table(table);
     // console.log(data);
@@ -458,7 +426,7 @@ export const ActionModalForm = (props) => {
             barcode: data.barcode,
             name: data.name,
             price: parseInt(data.price),
-            category_id: data.category_id,
+            category_id: data.category.id,
             stock: parseInt(data.stock),
             discount: parseFloat(data.discount),
             pict: data.pict,
@@ -561,7 +529,6 @@ export const ActionModalForm = (props) => {
             default:
               break;
           }
-
           deleteRequests.push(deleteRequest);
         }
         try {

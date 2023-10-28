@@ -7,6 +7,10 @@ import { NumericFormat } from "react-number-format";
 import { MuiIcon } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 
+const ServerPublicProductImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
+const ServerPublicAdminImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
+const ServerPublicUserImg = import.meta.env.VITE_SERVER_PUBLIC_USER;
+
 export const SearchInput = (props) => {
   const { func } = props;
   const [loading, setLoading] = useState(false);
@@ -280,6 +284,10 @@ export const SelectInput = (props) => {
       setOptionsList(newOptions);
     }
   };
+
+  // useEffect(() => {
+  //   console.log(select);
+  // }, []);
 
   useEffect(() => {
     selectOptions(select);
@@ -581,8 +589,14 @@ export const FileInput = (props) => {
         <img
           src={
             data.pict
-              ? `./src/assets/${table}/${getValues("pict")}`
-              : `./src/assets/${table}/default.jpg`
+              ? table === "products"
+                ? `${ServerPublicProductImg}${getValues("pict")}`
+                : table === "admins"
+                ? `${ServerPublicAdminImg}${getValues("pict")}`
+                : table === "users"
+                ? `${ServerPublicUserImg}${getValues("pict")}`
+                : `${ServerPublicProductImg}default.jpg`
+              : `${ServerPublicProductImg}default.jpg`
           }
           alt="Avatar Tailwind CSS Component"
           className=" w-96 rounded-full max-w-3xl shadow-lg"

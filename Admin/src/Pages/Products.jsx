@@ -25,8 +25,9 @@ import { MuiIcon } from "../utils/RenderIcons";
 import { ReactToPrint } from "../components/Print/Print";
 import { useReactToPrint } from "react-to-print";
 
-// define fetch data URL by products
-const initUrl = import.meta.env.VITE_API_ALL_PRODUCT;
+// define fetch data URL_PRODUCT by products
+const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCT;
+const initUrlCategories = import.meta.env.VITE_API_ALL_CATEGORIES;
 
 export const ProductsContext = createContext();
 
@@ -69,21 +70,28 @@ export default function Products() {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  const URL = `${initUrl}/paginate/${paginate}/${rows}`;
-  const URL_SEARCH = `${initUrl}/search?search=`;
+  const URL_PRODUCT = `${initUrlProduct}/paginate/${paginate}/${rows}`;
+  const URL_CATEGORIES = `${initUrlCategories}/paginate/${paginate}/${rows}`;
+  const URL_ALL_CATEGORIES = `${initUrlCategories}`;
+  const URL_SEARCH = `${initUrlProduct}/search?search=`;
 
-  const fetchProducts = async (url) => {
+  const fetchData = async (url, table) => {
     try {
       const response = await fetch(url);
       const data = await response.json();
       // console.table(data.data);
+      console.table(`fetching`, table);
       setLoading(false);
-      setProducts(data.data);
+      if (table === "products") {
+        setProducts(data.data);
+      } else if (table === "categories") {
+        setCategories(data.data);
+      }
       setErrorMessage(null);
       setLengthData(data.message.length);
     } catch (error) {
       setLoading(false);
-      let message = "Gagal Fetching Product";
+      let message = `Gagal Fetching '${table}'`;
       setErrorMessage(message);
       console.error(message, error);
     }
@@ -94,7 +102,8 @@ export default function Products() {
   // }, [products]);
 
   useEffect(() => {
-    fetchProducts(URL);
+    fetchData(URL_PRODUCT, "products");
+    fetchData(URL_ALL_CATEGORIES, "categories");
     if (products !== null && products !== undefined) {
       setColspan(columnOrder.length + 1);
     }
@@ -149,24 +158,16 @@ export default function Products() {
         // searchProducts(URL_SEARCH, searchTerm);
         searchProducts(URL_SEARCH, searchTerm);
       } else if (searchTerm == "") {
-        fetchProducts(URL);
+        fetchData(URL_PRODUCT, "products");
       }
     }
   }, [searchTerm]);
-
-  useEffect(() => {
-    if (products) {
-      setCategories(products.map((item) => item.category));
-    }
-  }, [products]);
-  // set select input options
-  //   console.log(select);
 
   const MyTableEngineProps = {
     context: ProductsContext,
     inputData: products,
     refresh: () => {
-      fetchProducts(URL, "fetch");
+      fetchData(URL_PRODUCT, "products");
       setLoading(true);
     },
     // ------------- Table Header Menu -------------
@@ -234,7 +235,7 @@ export default function Products() {
       setShowModal(false);
     },
     refresh: () => {
-      fetchProducts(URL, "fetch");
+      fetchData(URL_PRODUCT, "products");
       setLoading(true);
     },
     formType: formType,
@@ -289,17 +290,9 @@ export default function Products() {
   //   console.info(table_styling);
   // }, [table_styling]);
 
-  const fetchImage = async (data) => {
-    url = "http://127.0.0.1:8000/api/image/admin/" + data;
-    response = await axios
-      .post(url)
-      .then((data) => {
-        console.info(data.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  useEffect(() => {
+    console.log(categories);
+  }, [categories]);
 
   return (
     <>
@@ -319,11 +312,13 @@ export default function Products() {
                       <SetErrorMessage
                         errorMessage={errorMessage}
                         refresh={() => {
-                          fetchProducts(URL, "fetch");
+                          fetchData(URL_PRODUCT, "products");
                           setLoading(true);
                         }}
                       >
-                        <span className="text-md font-medium my-2">{URL}</span>
+                        <span className="text-md font-medium my-2">
+                          {URL_PRODUCT}
+                        </span>
                       </SetErrorMessage>
                     )}
                   </div>

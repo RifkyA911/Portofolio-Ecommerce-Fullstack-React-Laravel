@@ -62,6 +62,18 @@ const tw = createTw({
   },
 });
 
+const fetchImage = async (data) => {
+  url = "http://127.0.0.1:8000/api/image/admin/" + data;
+  response = await axios
+    .post(url)
+    .then((data) => {
+      console.info(data.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
+
 const PartOfHeader = () => {
   return (
     <>
