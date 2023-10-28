@@ -207,7 +207,7 @@ export const NumberInput = (props) => {
             allowNegative={false} // Untuk menghindari nilai negatif
             decimalScale={decimalOptions} // Untuk menghindari desimal
             isAllowed={(values) => {
-              console.log(values);
+              // console.log(values);
               const { floatValue } = values;
               return floatValue < limitDigits;
             }}
@@ -484,8 +484,8 @@ export const TextArea = (props) => {
   const validationRules = {
     required: true,
     maxLength: {
-      value: 500,
-      message: label + " input must not exceed 500 characters",
+      value: 3000,
+      message: label + " input must not exceed 3000 characters",
     },
     minLength: {
       value: 4,
@@ -527,7 +527,7 @@ export const TextArea = (props) => {
         placeholder={placeholder}
         {...register(name, validationRules)}
         onChange={(e) => {
-          console.log(name, ":", e.target.value);
+          // console.log(name, ":", e.target.value);
           setValue(name, e.target.value);
         }}
       >
