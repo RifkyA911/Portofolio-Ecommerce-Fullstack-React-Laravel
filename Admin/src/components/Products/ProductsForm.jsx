@@ -9,7 +9,7 @@ import React, {
 import { useForm, Controller } from "react-hook-form";
 // Components
 import Skeleton from "@mui/material/Skeleton";
-import ModalContext from "../Modal";
+import ModalContext, { CropperModal } from "../Modal";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
@@ -27,105 +27,7 @@ import {
 import { ConfirmButton } from "../Button";
 import { DateRecord } from "../Span";
 
-export const ProductsInsertForm = (props) => {
-  const {
-    data,
-    formType,
-    // react-hook-form
-    getValues,
-    register,
-    setValue,
-    setError,
-    control,
-    errors,
-    isValid,
-    dirtyFields,
-    watch,
-  } = useContext(ModalContext);
-  //   const nameValue = getValues("barcode");
-  //   console.log(nameValue);
-  return (
-    <>
-      <div className="flex flex-row">
-        {/* Images */}
-        <div className="flex justify-center items-center w-6/12 p-12">
-          <FileInput
-            type="picture"
-            // className={`flex gap-4 flex-col w-full`}
-            label="Product Picture"
-            name="pict"
-          />
-        </div>
-        {/* Form */}
-        <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium">
-          {/* {console.log(name, ":", getValues(name))}  {setValue("barcode", "HJAHAHA")} */}
-          <TextInput
-            className={`flex gap-4 flex-col w-full`}
-            label="Barcode/No. Product"
-            name="barcode"
-            placeholder="Masukkan Kode Barcode/No. Product"
-            formContext={ModalContext}
-          />
-          <TextInput
-            className={`flex gap-4 flex-col w-full`}
-            label="Product Name"
-            name="name"
-            placeholder="Masukkan Nama Product"
-            formContext={ModalContext}
-          />
-          <div className="w-full flex flex-row gap-4 justify-between items-center">
-            <SelectInput
-              className={`w-full flex gap-4 flex-col `}
-              label="Category"
-              name="category"
-              // options={["Topi", "Baju"]}
-              style="w-full h-[38px]"
-            />
-            <NumberInput
-              className={`flex gap-4 flex-col `}
-              prefix=""
-              label="Stock"
-              name="stock"
-              limitDigits={1000}
-              placeholder="Masukkan Harga"
-            />
-          </div>
-          <div className="w-full flex flex-row justify-between">
-            <NumberInput
-              className={`flex gap-4 flex-col `}
-              prefix="Rp. "
-              label="Price (IDR)"
-              name="price"
-              limitDigits={10000000000}
-              placeholder="Masukkan Harga"
-              style="w-full"
-            />
-
-            <NumberInput
-              className={`flex gap-4 flex-col `}
-              suffix=" %"
-              label="Discount %"
-              name="discount"
-              limitDigits={1000}
-              decimalOptions={3}
-              placeholder="Masukkan Harga"
-              style="w-full"
-            />
-          </div>
-          <TextArea
-            className={`flex gap-4 flex-col w-full`}
-            label="Description"
-            name="description"
-            placeholder="tamnbahkan deskripsi"
-          />
-        </div>
-      </div>
-      <ConfirmButton onClick={() => console.log(register)} confirmType="add" />
-    </>
-  );
-};
-
-export const ProductsAlterForm = (props) => {
+export const ProductsInputForm = (props) => {
   const {
     data,
     setData,
@@ -161,13 +63,14 @@ export const ProductsAlterForm = (props) => {
           )}
         </div>
         {/* Images */}
-        <div className="flex justify-center items-center w-6/12 p-12">
+        <div className="flex flex-col justify-center items-center w-6/12 p-12">
           <FileInput
             type="picture"
             // className={`flex gap-4 flex-col w-full`}
             label="Product Picture"
             name="pict"
           />
+          <CropperModal />
         </div>
         {/* Form */}
         <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium">

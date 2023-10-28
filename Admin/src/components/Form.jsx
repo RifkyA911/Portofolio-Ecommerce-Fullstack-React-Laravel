@@ -753,10 +753,10 @@ export const FileInput = (props) => {
           className=" w-96 rounded-full max-w-3xl shadow-lg"
           loading="lazy"
         />
-        <input
+        {/* <input
           type="file"
           className="absolute w-full h-full hover:block hover:bg-gray-600 hover:bg-opacity-10 m-auto top-0 left-0 rounded-full transition-all duration-300 cursor-pointer"
-        />
+        /> */}
       </div>
     </>
   );

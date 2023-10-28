@@ -23,18 +23,9 @@ import {
   AdminsDropForm,
   AdminsInsertForm,
 } from "./Admins/AdminsForm";
-import {
-  ProductsAlterForm,
-  ProductsDropForm,
-  ProductsInsertForm,
-} from "./Products/ProductsForm";
+import { ProductsInputForm, ProductsDropForm } from "./Products/ProductsForm";
 import { ConfirmButton } from "./Button";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import {
-  DownloadBtnReactPDF,
-  LookReactPDF,
-  PrintReactPDF,
-} from "./Print/Print";
+import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
 import { GetDateTime } from "../utils/Formatter";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -691,20 +682,10 @@ export const ActionModalForm = (props) => {
                         )}
                         {table === "products" && (
                           <>
-                            {/* {formType === "INSERT" && (
-                              <>
-                                <ProductsInsertForm />
-                              </>
-                            )}
-                            {formType === "ALTER_BY_ID" && (
-                              <>
-                                <ProductsAlterForm />
-                              </>
-                            )} */}
                             {(formType === "INSERT" ||
                               formType === "ALTER_BY_ID") && (
                               <>
-                                <ProductsAlterForm />
+                                <ProductsInputForm />
                               </>
                             )}
                             {(formType === "DROP_BY_ID" ||
