@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminsController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DialogController;
 use App\Http\Controllers\ImagesController;
 use App\Http\Controllers\MessageController;
@@ -40,6 +41,7 @@ Route::controller(AdminsController::class)->group(function () {
     Route::get('/admins', 'index');
     Route::get('/admins/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/admin/{id}', 'find');     // parameter id
+    // search admin
     Route::post('/admins/search', 'search');   // parameter name, category, price(numeric), stok(numeric)
     //  create admin
     Route::post('/admin', 'store');    // parameter role_admin == 0; data => email, username, password, role
@@ -77,20 +79,37 @@ Route::controller(UserController::class)->group(function () {
 // Endpoint Product
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'getAll');
-    Route::get('/products/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/product/{id}', 'getById'); // parameter id
+    // table utility
+    Route::get('/products/paginate/{page}/{perPage}', 'showLimit');
     Route::post('/products/print', 'print');     // parameter id
     Route::post('/products/search', 'search');   // parameter name, category, price(numeric), stok(numeric)
     // create product
     Route::post('/product/store', 'store');   // parameter name, category, price(numeric), stok(numeric)
-    // optional : discount, pict, description
     // update product
     Route::put('/products', 'update');   // parameter id, name, category, price(numeric), stok(numeric)
-    // optional : discount, pict, description
     // patch products
     Route::patch('/products', 'patch');    // parameter spasial
     // delete products
     Route::delete('/products', 'drop');    // parameter superAdmin, id)
+});
+
+// Endpoint Categories
+Route::controller(CategoriesController::class)->group(function () {
+    Route::get('/categories', 'getAll');
+    Route::get('/category/{id}', 'getById'); // parameter id
+    // table utility
+    Route::get('/categories/paginate/{page}/{perPage}', 'showLimit');
+    Route::post('/categories/print', 'print');     // parameter id
+    Route::post('/categories/search', 'search');   // parameter name, category, price(numeric), stok(numeric)
+    // create category
+    Route::post('/category/store', 'store');   // parameter name, category, price(numeric), stok(numeric)
+    // update category
+    Route::put('/categories', 'update');   // parameter id, name, category, price(numeric), stok(numeric)
+    // patch categories
+    Route::patch('/categories', 'patch');    // parameter spasial
+    // delete categories
+    Route::delete('/categories', 'drop');    // parameter superAdmin, id)
 });
 
 // Endpoint Cart/keranjang (user-only feature)
