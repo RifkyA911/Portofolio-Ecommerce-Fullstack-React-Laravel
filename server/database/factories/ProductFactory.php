@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\File;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
@@ -18,6 +19,10 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+
+        $imageDirectory = public_path('img/product_images'); // Ganti dengan lokasi direktori gambar Anda
+        $imageFiles = File::allFiles($imageDirectory);
+        $randomImage = $imageFiles[mt_rand(0, count($imageFiles) - 1)]; // Memilih file secara acak
         return [
             'barcode' => $this->faker->unique()->numerify('#############'),
             'name' => $this->faker->unique()->word,
@@ -26,7 +31,8 @@ class ProductFactory extends Factory
             'stock' => $this->faker->randomNumber(3),
             'discount' => $this->faker->randomNumber(3),
             // 'pict' => Str::random(6) . '.jpg',
-            'pict' => 'default.jpg',
+            // 'pict' => 'default.jpg',
+            'pict' =>  $randomImage->getFilename(), // Menggunakan nama file acak
             // 'description' => $this->faker->paragraphs(3, true),
             'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus luctus lacus sit amet lacus aliquam sagittis. Ut posuere mauris a lacus faucibus, eu convallis sapien varius. Phasellus tincidunt felis nec est efficitur placerat. Curabitur viverra felis magna, egestas dignissim sem mollis eu. Donec ornare eros at odio dapibus, ut aliquet orci faucibus. Phasellus mattis, nunc eu imperdiet ornare, enim sem egestas lectus, nec vehicula metus nisl sit amet diam. In nunc sem, sagittis at massa non, molestie aliquam ipsum.
 
