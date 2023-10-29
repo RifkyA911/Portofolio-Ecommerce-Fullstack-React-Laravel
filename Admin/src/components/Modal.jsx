@@ -780,6 +780,7 @@ export const PrintModal = (props) => {
             setData(response.data.data);
             setLoading(false);
             setErrorMessage(null);
+            setOnWorking(true);
           })
           .catch((error) => {
             if (error.response) {
@@ -805,6 +806,7 @@ export const PrintModal = (props) => {
             console.table("fetching:", URL_ALL);
             // setData([response.data.data]);
             setData(response.data.data);
+            setOnWorking(true);
             setLoading(false);
             setErrorMessage(null);
           })
@@ -819,10 +821,6 @@ export const PrintModal = (props) => {
             setLoading(false);
             setErrorMessage(error.message || "An error occurred.");
           });
-
-        //////////////////////////////////////////////////////////////////////////////////////
-        setLoading(false);
-        setErrorMessage(null);
       } else {
         setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
         setOnWorking(false);
@@ -931,7 +929,29 @@ export const PrintModal = (props) => {
 
 export const CropperModal = () => {
   const [image, setImage] = useState(null);
-  const [modal, setModal] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(null);
+  const [modal, setModal] = useState(false);
+
+  const {
+    data,
+    setData,
+    formType,
+    showPassword,
+    setShowPassword,
+    // react-hook-form
+    newPasswordRef,
+    register,
+    getValues,
+    setValue,
+    setFocus,
+    setError,
+    control,
+    errors,
+    isValid,
+    dirtyFields,
+    watch,
+  } = useContext(ModalContext);
+
   const cropperRef = useRef(null);
 
   const handleFileChange = (e) => {
@@ -950,7 +970,6 @@ export const CropperModal = () => {
         reader.onload = (event) => {
           const img = new Image();
           img.src = event.target.result;
-
           img.onload = () => {
             // Maksimal lebar dan tinggi gambar
             // const maxWidth = 512;
@@ -966,6 +985,7 @@ export const CropperModal = () => {
             } else {
               reader.onload = (event) => {
                 setImage(event.target.result);
+                setModal(true);
               };
 
               reader.readAsDataURL(selectedFile);
@@ -977,7 +997,11 @@ export const CropperModal = () => {
     }
   };
 
-  const cropImage = () => {
+  // useEffect(() => {
+  //   console.log("pict values :", getValues("pict"));
+  // }, [getValues("pict")]);
+
+  const applyCroppedImage = () => {
     if (cropperRef.current) {
       // Pastikan gambar telah dimuat sepenuhnya
       if (cropperRef.current.cropper.getCroppedCanvas) {
@@ -985,9 +1009,9 @@ export const CropperModal = () => {
         const croppedDataUrl = cropperRef.current.cropper
           .getCroppedCanvas()
           .toDataURL();
-
-        // Lakukan sesuatu dengan data gambar hasil pemangkasan
-        console.log("Data gambar hasil pemangkasan:", croppedDataUrl);
+        // console.log("Data gambar hasil pemangkasan:", croppedDataUrl);
+        setCroppedImage(croppedDataUrl);
+        setValue("pict", croppedDataUrl);
 
         // Kirim gambar hasil pemangkasan ke server Laravel
         // fetch("URL_SERVER_LARAVEL/uploadImage", {
@@ -1006,57 +1030,50 @@ export const CropperModal = () => {
     }
   };
 
-  // useEffect(() => {
-  //   // Saat komponen selesai dirender, periksa apakah elemen "croppers" ada dalam DOM
-  // }, []);
-  // const dialogElement = document.getElementById("croppers");
-  // if (modal && dialogElement) {
-  //   dialogElement.showModal();
-  // }
-
   return (
     <div>
       <input
         className="file-input file-input-bordered file-input-md w-64 text-sm mt-6"
         type="file"
         accept="image/*"
+        {...register("pict", {
+          required: "This pict are required",
+        })}
         onChange={handleFileChange}
         onClick={() => document.getElementById("croppers").showModal()}
       />
       <dialog id="croppers" className="modal">
         {image && (
-          <>
-            <div className="modal-box w-12/12 max-w-3xl ">
-              <form method="dialog">
-                <button
-                  // onClick={() => setImage(null)}
-                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                >
-                  ✕
-                </button>
-              </form>
-
-              <h3 className="font-bold text-lg">Hello!</h3>
-              <div className={`p-4`}>
-                <Cropper
-                  ref={cropperRef}
-                  src={image}
-                  aspectRatio={8 / 8} // Sesuaikan dengan rasio aspek yang Anda inginkan
-                  guides={true}
-                  zoomable={false} // Mencegah zoom
-                />
-                <ConfirmButton
-                  confirmType="confirm"
-                  type="button"
-                  onClick={cropImage}
-                />
-                {/* <button onClick={cropImage}>Crop</button> */}
-              </div>
-            </div>
-            <form method="dialog" className="modal-backdrop">
-              <button>close</button>
+          <div className="modal-box w-12/12 max-w-3xl ">
+            <form method="dialog">
+              <button
+                // onClick={() => setImage(null)}
+                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              >
+                ✕
+              </button>
             </form>
-          </>
+
+            <h3 className="font-bold text-lg">Hello!</h3>
+            <div className={`p-4 `}>
+              <Cropper
+                ref={cropperRef}
+                src={image}
+                aspectRatio={8 / 8} // Sesuaikan dengan rasio aspek yang Anda inginkan
+                guides={true}
+                zoomable={false} // Mencegah zoom
+              />
+            </div>
+            <ConfirmButton
+              confirmType="confirm"
+              onClick={() => {
+                applyCroppedImage();
+              }}
+            />
+            <div className="modal-action">
+              <form method="dialog"></form>
+            </div>
+          </div>
         )}
       </dialog>
     </div>

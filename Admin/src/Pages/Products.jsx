@@ -80,7 +80,7 @@ export default function Products() {
       const response = await fetch(url);
       const data = await response.json();
       // console.table(data.data);
-      console.table(`fetching`, table);
+      // console.table(`fetching`, table);
       setLoading(false);
       if (table === "products") {
         setProducts(data.data);
@@ -290,9 +290,9 @@ export default function Products() {
   //   console.info(table_styling);
   // }, [table_styling]);
 
-  useEffect(() => {
-    console.log(categories);
-  }, [categories]);
+  // useEffect(() => {
+  //   console.log(categories);
+  // }, [categories]);
 
   return (
     <>

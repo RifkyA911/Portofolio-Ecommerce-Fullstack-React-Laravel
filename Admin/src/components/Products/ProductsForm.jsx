@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useForm, Controller } from "react-hook-form";
 // Components
 import Skeleton from "@mui/material/Skeleton";
 import ModalContext, { CropperModal } from "../Modal";
@@ -20,7 +19,7 @@ import {
   SelectInput,
   NumberInput,
   TextArea,
-  FileInput,
+  FilePictureInput,
   DropByIdForm,
   DropBySelectedForm,
 } from "../Form";
@@ -64,13 +63,12 @@ export const ProductsInputForm = (props) => {
         </div>
         {/* Images */}
         <div className="flex flex-col justify-center items-center w-6/12 p-12">
-          <FileInput
+          <FilePictureInput
             type="picture"
             // className={`flex gap-4 flex-col w-full`}
             label="Product Picture"
             name="pict"
           />
-          <CropperModal />
         </div>
         {/* Form */}
         <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium">

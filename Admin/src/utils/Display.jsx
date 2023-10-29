@@ -20,14 +20,14 @@ export const ImageDisplay = (props) => {
 
   useEffect(() => {
     decodeAndDisplayImage();
-    // console.log("ImageDisplay", base64ImageData);
+    console.log("ImageDisplay", base64ImageData);
   }, [base64ImageData]);
 
   return (
     <div>
       {imageType && (
         <img
-          src={imageSrc}
+          src={`${imageSrc}`}
           alt="Avatar Tailwind CSS Component"
           className="w-96 rounded-full max-w-3xl shadow-lg"
           loading="lazy"

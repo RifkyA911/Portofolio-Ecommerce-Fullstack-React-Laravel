@@ -66,7 +66,8 @@ export const ConfirmButton = (props) => {
         )}
         {confirmType === "add" && (
           <button
-            type="submit"
+            onClick={onClick}
+            type={type}
             className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
           >
             <MuiIcon iconName="AddBoxRounded" /> Add New Data
@@ -75,7 +76,8 @@ export const ConfirmButton = (props) => {
         )}
         {confirmType === "alter" && (
           <button
-            type="submit"
+            onClick={onClick}
+            type={type}
             className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-violet-500 transition-all duration-500 from-blue-500 to-violet-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
           >
             <MuiIcon iconName="EditRounded" /> Save Changes
@@ -83,7 +85,8 @@ export const ConfirmButton = (props) => {
         )}
         {confirmType === "drop" && (
           <button
-            type="submit"
+            onClick={onClick}
+            type={type}
             // onClick={handleSubmit(onSubmit)}
             className="btn transition-all duration-500 bg-gradient-to-tl from-pink-500 via-red-500 to-red-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
           >

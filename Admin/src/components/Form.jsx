@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useId, useRef, useState } from "react";
 import Select from "react-select";
 
-import { ModalContext, useModalContext } from "./Modal";
+import { CropperModal, ModalContext, useModalContext } from "./Modal";
 import { Controller } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { MuiIcon } from "../utils/RenderIcons";
 import { debounce } from "lodash";
+import { ImageDisplay } from "../utils/Display";
 
 const ServerPublicProductImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 const ServerPublicAdminImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -688,7 +689,7 @@ export const TextArea = (props) => {
   );
 };
 
-export const FileInput = (props) => {
+export const FilePictureInput = (props) => {
   const {
     className,
     label,
@@ -700,7 +701,8 @@ export const FileInput = (props) => {
     prefix,
     style,
   } = props;
-  const [formattedValue, setFormattedValue] = useState("");
+
+  const [formattedValue, setFormattedValue] = useState(null);
 
   const {
     table,
@@ -733,30 +735,42 @@ export const FileInput = (props) => {
       message: label + " input min 3 digits",
     },
   };
+  const pictValue = getValues("pict");
 
+  useEffect(() => {
+    // console.log(getValues("pict"));
+    if (/^data:image\/\w+;base64,/.test(getValues("pict"))) {
+      // console.log('Nilai "pict" adalah data gambar base64 (false)');
+      setFormattedValue("base64");
+    } else {
+      // console.log('Nilai "pict" he');
+      setFormattedValue(null);
+    }
+  }, [getValues("pict")]);
   return (
     <>
-      <div className="relative w-96 rounded-full z-[-1]">
-        <img
-          src={
-            data.pict
-              ? table === "products"
-                ? `${ServerPublicProductImg}${getValues("pict")}`
-                : table === "admins"
-                ? `${ServerPublicAdminImg}${getValues("pict")}`
-                : table === "users"
-                ? `${ServerPublicUserImg}${getValues("pict")}`
+      <div className="relative w-96 rounded-full">
+        {formattedValue === "base64" ? (
+          <ImageDisplay base64ImageData={getValues("pict")} />
+        ) : (
+          <img
+            src={
+              data.pict
+                ? table === "products"
+                  ? `${ServerPublicProductImg}${getValues("pict")}`
+                  : table === "admins"
+                  ? `${ServerPublicAdminImg}${getValues("pict")}`
+                  : table === "users"
+                  ? `${ServerPublicUserImg}${getValues("pict")}`
+                  : `${ServerPublicProductImg}default.jpg`
                 : `${ServerPublicProductImg}default.jpg`
-              : `${ServerPublicProductImg}default.jpg`
-          }
-          alt="Avatar Tailwind CSS Component"
-          className=" w-96 rounded-full max-w-3xl shadow-lg"
-          loading="lazy"
-        />
-        {/* <input
-          type="file"
-          className="absolute w-full h-full hover:block hover:bg-gray-600 hover:bg-opacity-10 m-auto top-0 left-0 rounded-full transition-all duration-300 cursor-pointer"
-        /> */}
+            }
+            alt="Avatar Tailwind CSS Component"
+            className=" w-96 rounded-full max-w-3xl shadow-lg"
+            loading="lazy"
+          />
+        )}
+        <CropperModal />
       </div>
     </>
   );
