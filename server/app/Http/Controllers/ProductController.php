@@ -109,39 +109,26 @@ class ProductController extends Controller
         return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $products);
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    // public function store(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         "name" => 'required',
-    //         "category" => 'required',
-    //         "price" => 'required|numeric',
-    //         "stock" => 'required|numeric'
-    //     ]);
-    //     // $validated = $request->validate([
-    //     //     "email" => 'required|email|unique:users,email',
-    //     //     "username" => 'required',
-    //     //     "password" => 'required|min:6',
-    //     // ]);
-    //     if ($validator->fails()) {
-    //         return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
-    //     }
-    //     $addItem = Product::create($validator->validated());
-    //     return response(new PostResource(true, "Produk berhasil ditambahkan.", $addItem), 201);
-    // }
-
     public function store(Request $request)
     {
         // return response(new PostResource(false, "yoi", $request->input()), 200);
         if ($request->input('superAuthorizationPassword') === "superAdmin") {
+            $pict = $request->input('pict');
+            $name = $request->input('name');
+
+            if ($pict) {
+                // Ubah nilai $pict sesuai kebutuhan
+                $newPictValue = $this->uploadImage($pict, $name);
+                // Setel ulang nilai $pict dalam request
+                $request->merge(['pict' => $newPictValue]);
+            }
+
             $validator = Validator::make($request->all(), [
                 "name" => 'required',
                 "category_id" => 'required',
                 "price" => 'required|numeric',
                 "stock" => 'required|numeric'
+                // TAMBAHKAN VALIDASI PICT
             ]);
 
             if ($validator->fails()) {
@@ -225,21 +212,27 @@ class ProductController extends Controller
     // return response(new PostResource(false, 'Masuk coy :v', $request->input(), 302));
 
     // Contoh metode controller Laravel untuk mengunggah gambar
-    public function uploadImage(Request $request)
+    // public function uploadImage(Request $request)
+    public function uploadImage($imageData, $name)
     {
-        $imageData = $request->input('pict'); // Data gambar hasil pemangkasan dari React
-        if (!$imageData) {
-            return response(new PostResource(false, "Input Key dan Value Endpoint salah", 400));
-        }
+        // $imageData = $request->input('pict'); // Data gambar hasil pemangkasan dari React
+        // if (!$imageData) {
+        //     return response(new PostResource(false, "Input Key dan Value Endpoint salah", 400));
+        // }
 
+        // jika input pict adalah base64
         if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
             $data = substr($imageData, strpos($imageData, ',') + 1);
             $data = base64_decode($data);
-            $imagePath = public_path('img/') . 'image.jpg'; // Tentukan lokasi penyimpanan lokal
+            $imageName = $name . '.jpg';
+            $imagePath = public_path('img/') . $imageName; // Tentukan lokasi penyimpanan lokal
+            ///////////////// tambahkan validasi file
             file_put_contents($imagePath, $data); // Simpan gambar secara lokal
-            return response(new PostResource(true, $imagePath, 200));
+            // return response(new PostResource(true, $imagePath, 200));
+            return $imageName;
         } else {
-            return response(new PostResource(false, ['message' => "Tidak dapat memproses input", 'data' => $request], 500));
+            return 'default.jpg';
+            // return response(new PostResource(false, ['message' => "Tidak dapat memproses input", 'data' => $imageData], 500));
         }
     }
 }
