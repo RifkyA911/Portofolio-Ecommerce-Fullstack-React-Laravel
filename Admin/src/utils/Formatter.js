@@ -115,3 +115,11 @@ export function separateMyWords(input) {
 
   return separatedString;
 }
+
+export function formatToRupiah(number) {
+  // Format angka menjadi mata uang Rupiah
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(number);
+}
