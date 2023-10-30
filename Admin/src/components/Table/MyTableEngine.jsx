@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 // Components
 import {
   MyTableHeaderDelete,
+  MyTableHeaderFilter,
   MyTableHeaderMenu,
   MyTableHeaderPrint,
 } from "./MyTableComponents";
@@ -141,6 +142,7 @@ export const MyTableHeader = (props) => {
     refresh,
   } = useContext(TableContext);
   const [isDialogOpen, setDialogOpen] = useState({
+    filter: false,
     print: false,
     select: false,
   });
@@ -154,66 +156,24 @@ export const MyTableHeader = (props) => {
         // ref={targetRef}
         className="print:hidden flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-scroll focus:touch-pan-x"
       >
-        <div className="relative flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
-          <button
-            className="px-2 mr-2 bg-gray-200 text-black rounded-md"
-            onClick={() =>
-              setDialogOpen({ ...isDialogOpen, select: !isDialogOpen.select })
-            }
-          >
-            <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
-          </button>
+        {/* ====================== Header Area ====================== */}
+        {/* left */}
+        <div className="flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
+          {hideHeaderBtn !== "filterBtn" && (
+            <MyTableHeaderFilter
+              inputData={inputData}
+              isDialogOpen={isDialogOpen}
+              closeFunction={() => {
+                setDialogOpen({
+                  ...isDialogOpen,
+                  filter: !isDialogOpen.filter,
+                });
+              }}
+            />
+          )}
           <SearchInput func={setSearchTerm} />
         </div>
-        {/*  FIXED AREA */}
-        {toggleSelect && showFixedBtn && (
-          <div className=" drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
-            {showFixedBtn === "DELETE" && (
-              <button
-                disabled={selectedRows.length === 0}
-                onClick={setDeleteBatchModal}
-                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
-                  selectedRows.length === 0
-                    ? "from-red-400 to-pink-400 btn-disable"
-                    : "from-red-500 to-pink-500"
-                } hover:from-red-600 hover:to-pink-600 border-none`}
-              >
-                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-                <span id="showDelete" className="options px-[4px]">
-                  Delete
-                </span>
-              </button>
-            )}
-            {showFixedBtn === "PRINT" && (
-              <button
-                disabled={selectedRows.length === 0}
-                onClick={setPrintBatchModal}
-                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
-                  selectedRows.length === 0
-                    ? "from-orange-300 to-red-300 btn-disable"
-                    : "from-orange-500 to-red-500"
-                } hover:from-amber-600 hover:to-pink-600 border-none`}
-              >
-                <MuiIcon iconName={"PrintSharp"} fontSize={20} />
-                <span id="showDelete" className="options px-[4px]">
-                  Print
-                </span>
-              </button>
-            )}
-            <button
-              onClick={() => {
-                setToggleSelect(false);
-                setSelectedRows([]);
-              }}
-              className="flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
-            >
-              <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-              <span id="showCancelDelete" className="options px-[4px]">
-                Cancel
-              </span>
-            </button>
-          </div>
-        )}
+        {/* right */}
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
           {hideHeaderBtn !== "printBtn" && (
             <MyTableHeaderPrint
@@ -282,6 +242,55 @@ export const MyTableHeader = (props) => {
             />
           )}
         </div>
+        {/* ====================== FIXED AREA ====================== */}
+        {toggleSelect && showFixedBtn && (
+          <div className=" drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
+            {showFixedBtn === "DELETE" && (
+              <button
+                disabled={selectedRows.length === 0}
+                onClick={setDeleteBatchModal}
+                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
+                  selectedRows.length === 0
+                    ? "from-red-400 to-pink-400 btn-disable"
+                    : "from-red-500 to-pink-500"
+                } hover:from-red-600 hover:to-pink-600 border-none`}
+              >
+                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
+                <span id="showDelete" className="options px-[4px]">
+                  Delete
+                </span>
+              </button>
+            )}
+            {showFixedBtn === "PRINT" && (
+              <button
+                disabled={selectedRows.length === 0}
+                onClick={setPrintBatchModal}
+                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
+                  selectedRows.length === 0
+                    ? "from-orange-300 to-red-300 btn-disable"
+                    : "from-orange-500 to-red-500"
+                } hover:from-amber-600 hover:to-pink-600 border-none`}
+              >
+                <MuiIcon iconName={"PrintSharp"} fontSize={20} />
+                <span id="showDelete" className="options px-[4px]">
+                  Print
+                </span>
+              </button>
+            )}
+            <button
+              onClick={() => {
+                setToggleSelect(false);
+                setSelectedRows([]);
+              }}
+              className="flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
+            >
+              <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
+              <span id="showCancelDelete" className="options px-[4px]">
+                Cancel
+              </span>
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
