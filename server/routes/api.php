@@ -83,7 +83,7 @@ Route::controller(ProductController::class)->group(function () {
     // table utility
     Route::get('/products/paginate/{page}/{perPage}', 'showLimit');
     Route::post('/products/print', 'print');     // parameter id
-    Route::post('/products/pict', 'uploadImage');     // parameter id
+    Route::post('/products/filter', 'filter');     // parameter id
     Route::post('/products/search', 'search');   // parameter name, category, price(numeric), stok(numeric)
     // create product
     Route::post('/product/store', 'store');   // parameter name, category, price(numeric), stok(numeric)

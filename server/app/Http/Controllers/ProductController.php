@@ -70,6 +70,21 @@ class ProductController extends Controller
             return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $products);
         }
     }
+    public function filter(Request $request)
+    {
+        $minHarga = $request->input('minHarga');
+        $maxHarga = $request->input('maxHarga');
+
+        if(!$maxHarga){
+            return response(['message' => 'validasi data error', 'error' => 'Something went wrong with the DB :('], 222);
+        }
+
+        $products = Product::where('price', '>=', $minHarga)->where('price', '<=', $maxHarga)->get();
+        $length = $products->count();
+
+        
+        return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $products);
+    }
 
     public function getAll()
     {
