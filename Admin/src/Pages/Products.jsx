@@ -5,7 +5,10 @@ import Barcode from "react-jsbarcode";
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { ActionModalForm, InfoModal, PrintModal } from "../components/Modal";
-import { ProductImage } from "../components/Products/ProductsTableBody";
+import {
+  ProductDetail,
+  ProductImage,
+} from "../components/Products/ProductsTableBody";
 import { ActionButton } from "../components/Button";
 import { NumberSpan } from "../components/Span";
 import {
@@ -22,7 +25,6 @@ import { Container, Content } from "../Layout";
 import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../utils/RenderIcons";
-import { ReactToPrint } from "../components/Print/Print";
 import { useReactToPrint } from "react-to-print";
 
 // define fetch data URL_PRODUCT by products
@@ -323,7 +325,7 @@ export default function Products() {
                   <PrintModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
                   {/* ================ Table ================ */}
-                  <ReactToPrint inputData={products} />
+                  <ProductDetail inputData={products} />
                   <div className="divider">Product List</div>
                   <MyTableEngine
                     {...MyTableEngineProps}
