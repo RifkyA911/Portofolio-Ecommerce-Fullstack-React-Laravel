@@ -28,7 +28,35 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function search(Request $request)
+    
+    private function notFound() {
+        return response([
+        'message' => [
+            'Message' => 'No Data Found',
+            'length' => 0,
+        ], 
+        'data' => [array(
+            'id' => null,
+            'barcode' => null,
+            'name' => 'tidak ada',
+            'category_id' => null,
+            'price' => null,
+            'stock' => null,
+            'discount' => null,
+            'pict' => 'not_found.jpg',
+            'description' => null,
+            'admin_id' => null,
+            'created_at' => null,
+            'updated_at' => null,
+            'category' =>
+            array(
+                'id' => null,
+                'name' => null,
+                'type' => null,
+            ),
+        )]], 200);
+    }
+     public function search(Request $request)
     {
         $searchTerm = $request->input('search'); // Ambil parameter pencarian dari input form
 
@@ -72,17 +100,19 @@ class ProductController extends Controller
     }
     public function filter(Request $request)
     {
-        $minHarga = $request->input('minHarga');
-        $maxHarga = $request->input('maxHarga');
+        $minPrice = $request->input('minPrice');
+        $maxPrice = $request->input('maxPrice');
 
-        if(!$maxHarga){
+        if(!$maxPrice){
             return response(['message' => 'validasi data error', 'error' => 'Something went wrong with the DB :('], 222);
         }
 
-        $products = Product::where('price', '>=', $minHarga)->where('price', '<=', $maxHarga)->get();
+        $products = Product::where('price', '>=', $minPrice)->where('price', '<=', $maxPrice)->get();
         $length = $products->count();
 
-        
+        if(!$length){
+            return $this->notFound();
+        }
         return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $products);
     }
 
