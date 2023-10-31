@@ -1,10 +1,20 @@
-import { useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { MuiIcon } from "../../utils/RenderIcons";
 import { ConfirmButton } from "../Button";
 import Slider, { SliderThumb } from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
 import ReactSlider from "react-slider";
 import { formatToRupiah } from "../../utils/Formatter";
+import { useForm } from "react-hook-form";
+import { NumberInput, NumberInput2 } from "../Form";
+import { TableContext } from "./MyTableEngine";
 
 const PrettoSlider = styled(Slider)({
   color: "#52af77",
@@ -45,22 +55,65 @@ const PrettoSlider = styled(Slider)({
   },
 });
 
-export const MyTableHeaderFilter = (props) => {
-  const { inputData, isDialogOpen, closeFunction } = props;
+export const MyTableFilterContext = createContext();
 
-  const [rangeValue, setRangeValue] = useState(40);
+const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
+const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
+
+export const MyTableHeaderFilter = (props) => {
+  const { inputData, applyFilter, isDialogOpen, closeFunction } = props;
 
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const [maxPrice, setMaxPrice] = useState(100000);
 
-  const handleRangeChange = (e) => {
-    setRangeValue(e.target.value);
-  };
+  const [isHovered, setIsHovered] = useState(false);
+  const MenuBoxRef = useRef(null);
+
+  const MaxLimit = 1000000; //1 jt
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    setFocus,
+    setError,
+    control,
+    formState: { errors, isValid, dirtyFields },
+    watch,
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      superAuthorizationPassword: SuperAdminKey,
+    },
+  });
 
   useEffect(() => {
-    // console.log(rangeValue);
-  }, [rangeValue]);
+    setValue("minPrice", minPrice);
+    setValue("maxPrice", maxPrice);
+  }, []);
 
+  const MyTableFilterContextValue = {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    setFocus,
+    setError,
+    control,
+    errors,
+    isValid,
+    dirtyFields,
+    watch,
+  };
+  const onSubmit = async (form) => {
+    console.info("data form:", form);
+    if (!form) {
+      alert("there is no form to send");
+    }
+    await applyFilter(form);
+    closeFunction();
+  };
   return (
     <>
       {/* BTN HEADER */}
@@ -70,21 +123,23 @@ export const MyTableHeaderFilter = (props) => {
       >
         <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
       </button>
-      <>
-        <div
+      <MyTableFilterContext.Provider value={MyTableFilterContextValue}>
+        {/* <div
           className={`${
-            !isDialogOpen.print ? "hidden" : "block"
+            !isDialogOpen.filter ? "hidden" : "block"
           } absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.5px] p-20`}
           onClick={closeFunction}
-        ></div>
-        {inputData && inputData.length > 1 && inputData !== undefined ? (
+        ></div> */}
+        {inputData && inputData.length > 0 && inputData !== undefined ? (
           <div
+            ref={MenuBoxRef}
             className={`${
               !isDialogOpen.filter ? "hidden" : "block"
             } absolute p-4 bg-white w-[600px] min-h-[300px] top-11 left-0 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
           >
             <div className="relative h-8 bg-slate-50 flex flex-row items-center">
-              <h1 className="text-center">Filter</h1>
+              <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
+              <h1 className="text-center mx-2 font-roboto-bold">Filter</h1>
               <button
                 // onClick={closeFunction}
                 onClick={() => {
@@ -92,59 +147,101 @@ export const MyTableHeaderFilter = (props) => {
                 }}
                 className="absolute right-0 top-0 py-2 px-4 hover:bg-red-200 text-left"
               >
-                X
+                <MuiIcon iconName={"CloseRounded"} fontSize={20} />
               </button>
             </div>
-            <h1 className="py-2 text-left">Rentang Harga</h1>
-            <PrettoSlider
-              valueLabelDisplay="auto"
-              aria-label="pretto slider"
-              defaultValue={20}
-            />
-            <ReactSlider
-              className="horizontal-slider py-4"
-              thumbClassName="example-thumb"
-              trackClassName="example-track"
-              defaultValue={[minPrice, maxPrice]}
-              min={0}
-              max={100000000} //100 jt
-              pearling
-              minDistance={10}
-              ariaLabel={["Lower thumb", "Upper thumb"]}
-              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-              renderThumb={(props, state) => (
-                <div
-                  {...props}
-                  style={{ ...props.style, zIndex: 20 }}
-                  className="relative flex flex-col items-center -mt-2 xhover:-my-3 outline-none"
-                >
-                  <div className="w-6 h-6 hover:w-8 hover:h-8 transition-all delay-50 bg-white border-teal-500 border-[2px] rounded-full shadow-lg cursor-pointer"></div>
-                  <div className="absolute top-0 hover:inline-block px-2 py-1 mb-2 -mt-8 text-xs text-white bg-gray-900 rounded-sm whitespace-nowrap">
-                    {formatToRupiah(state.valueNow)}
+            <form
+              autoComplete="off"
+              className="flex flex-col gap-4"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <h1 className="pt-2 text-left text-base">Rentang Harga</h1>
+              {/* <PrettoSlider
+                valueLabelDisplay="auto"
+                aria-label="pretto slider"
+                defaultValue={20}
+              /> */}
+
+              <ReactSlider
+                className="horizontal-slider py-4"
+                thumbClassName="example-thumb"
+                trackClassName="example-track"
+                defaultValue={[0, 500000]}
+                value={[minPrice, maxPrice]}
+                min={0}
+                max={MaxLimit}
+                pearling
+                minDistance={100000}
+                ariaLabel={["Lower thumb", "Upper thumb"]}
+                ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+                renderThumb={(props, state) => (
+                  <div
+                    {...props}
+                    style={{ ...props.style, zIndex: 20 }}
+                    className="relative flex flex-col items-center -mt-2 xhover:-my-3 outline-none bg-opacity-30 "
+                  >
+                    <div
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                      className="w-6 h-6 hover:w-8 hover:h-8 transition-all delay-50 bg-white border-teal-500 border-[2px] rounded-full shadow-lg cursor-pointer"
+                    ></div>
+                    {isHovered && (
+                      <div className="absolute top-0 hover:block px-2 py-1 mb-2 -mt-8 text-xs text-white bg-gray-900 rounded-sm whitespace-nowrap">
+                        {formatToRupiah(state.valueNow)}
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
-              renderTrack={(props, state) => (
-                <div
-                  {...props}
-                  className={`h-2 rounded-full cursor-pointer ${
-                    state.index === 1
-                      ? "bg-gradient-to-r from-green-500 via-lime-500 to-green-500 "
-                      : "bg-indigo-100 z-10"
-                  }`}
+                )}
+                renderTrack={(props, state) => (
+                  <div
+                    {...props}
+                    className={`h-2 rounded-full cursor-pointer ${
+                      state.index === 1
+                        ? "bg-gradient-to-r from-green-500 via-lime-500 to-green-500 "
+                        : "bg-green-100 z-10"
+                    }`}
+                  />
+                )}
+                onChange={(newValue) => {
+                  setMinPrice(newValue[0]);
+                  setMaxPrice(newValue[1]);
+                  setValue("minPrice", newValue[0]);
+                  setValue("maxPrice", newValue[1]);
+                }}
+                // onChange={(props, state) => {
+                //   // console.log(props);
+                //   // console.log(state);
+                // }}
+              />
+              <div className="flex flex-row justify-between ">
+                <NumberInput2
+                  formContext={MyTableFilterContext}
+                  className={`flex gap-4 flex-col  w-full max-w-[250px]`}
+                  prefix="Rp. "
+                  label="Min. Price (IDR)"
+                  name="minPrice"
+                  limitDigits={MaxLimit}
+                  placeholder="Masukkan Harga"
+                  onInputChange={(value) => setMinPrice(value)}
                 />
-              )}
-              onChange={(props, state) => {
-                // console.log(props);
-                // console.log(state);
-              }}
-            />
-            {/* <ConfirmButton confirmType="confirm" /> */}
+                <NumberInput2
+                  formContext={MyTableFilterContext}
+                  className={`flex gap-4 flex-col  w-full max-w-[250px]`}
+                  prefix="Rp. "
+                  label="Max. Price (IDR)"
+                  name="maxPrice"
+                  limitDigits={MaxLimit}
+                  placeholder="Masukkan Harga"
+                  onInputChange={(value) => setMaxPrice(value)}
+                />
+              </div>
+              <ConfirmButton className={"btn-sm my-4 "} confirmType="confirm" />
+            </form>
           </div>
         ) : (
           <p>Loading</p>
         )}
-      </>
+      </MyTableFilterContext.Provider>
       {/* )} */}
     </>
   );
@@ -184,7 +281,7 @@ export const MyTableHeaderPrint = (props) => {
           } absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.5px] p-20`}
           onClick={closeFunction}
         ></div>
-        {inputData && inputData.length > 1 && inputData !== undefined ? (
+        {inputData && inputData.length > 0 && inputData !== undefined ? (
           <div
             className={`${
               !isDialogOpen.print ? "hidden" : "block"

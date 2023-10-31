@@ -45,7 +45,6 @@ export default function Products() {
   const [rows, setRows] = useState(10);
 
   // ---- MyTableEngine Header ----
-  const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   // ---- MyTableEngine Body ----
@@ -71,15 +70,22 @@ export default function Products() {
   } = useSelector((state) => state.UI);
 
   const URL_PRODUCT = `${initUrlProduct}/paginate/${paginate}/${rows}`;
+  const URL_PRODUCT_SEARCH = `${initUrlProduct}/search?search=`;
+  const URL_PRODUCT_FILTER = `${initUrlProduct}/filter`;
   const URL_CATEGORIES = `${initUrlCategories}/paginate/${paginate}/${rows}`;
   const URL_ALL_CATEGORIES = `${initUrlCategories}`;
-  const URL_SEARCH = `${initUrlProduct}/search?search=`;
 
-  const fetchData = async (url, table) => {
+  const fetchData = async (url, table, form = null) => {
     try {
-      const response = await fetch(url);
-      const data = await response.json();
-      // console.table(data.data);
+      const controller = new AbortController();
+      const config = {
+        method: form ? "post" : "get", // Metode permintaan yang dinamis
+        url: url, // URL yang akan diakses
+        data: form, // Menggunakan 'data' untuk mengirim data dalam permintaan POST
+        signal: controller.signal,
+      };
+      const { data } = await axios(config);
+      // console.log(data);
       // console.table(`fetching`, table);
       setLoading(false);
       if (table === "products") {
@@ -137,26 +143,12 @@ export default function Products() {
   //   console.info(selectedRows);
   // }, [selectedRows]);
 
-  const searchProducts = async (url, form) => {
-    const controller = new AbortController();
-    try {
-      const response = await axios.post(`${url}${form}`, {
-        signal: controller.signal,
-      });
-      setProducts(response.data.data);
-      setLengthData(response.data.message.length);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   // ---- MyTableEngine Search Filter ----
   useEffect(() => {
     // console.log("sd", searchTerm);
     if (products !== null && products.length > 0) {
       if (searchTerm.length > 1 || searchTerm !== "") {
-        // searchProducts(URL_SEARCH, searchTerm);
-        searchProducts(URL_SEARCH, searchTerm);
+        fetchData(URL_PRODUCT_SEARCH, "products", { search: searchTerm });
       } else if (searchTerm == "") {
         fetchData(URL_PRODUCT, "products");
       }
@@ -173,17 +165,21 @@ export default function Products() {
     // ------------- Table Header Menu -------------
     TabHeader: true,
     hideHeaderBtn: "",
+    searchTerm: searchTerm,
+    applyFilter: (form) => {
+      fetchData(URL_PRODUCT_FILTER, "products", form);
+      // console.log(form);
+    },
+    setSearchTerm: (e) => {
+      setSearchTerm(e.target.value);
+      // setTimeout(setSearchTerm(e.target.value), 2000);
+    },
     printBtn: useReactToPrint({
       content: () => componentRef.current,
       // documentTitle: `${employee.name.replace(/\s/g, "-")}-Payslip`,
       documentTitle: `Payslip`,
       onPrintError: () => alert("there is an error when printing"),
     }),
-    searchTerm: searchTerm,
-    setSearchTerm: (e) => {
-      setSearchTerm(e.target.value);
-      // setTimeout(setSearchTerm(e.target.value), 2000);
-    },
     setPrintBatchModal: () => {
       document.getElementById("PrintModal").showModal();
       handleActionButton(selectedRows, "PRINT_BATCH");
@@ -282,7 +278,7 @@ export default function Products() {
           : null,
         style: `capitalize px-4`,
       })),
-      td: `border-2 py-2 px-2 `,
+      td: `xborder-2 py-2 px-2 `,
     };
   }
 
@@ -365,7 +361,7 @@ export default function Products() {
                           key={index}
                           customKey={index}
                           className={
-                            "divide-y font-roboto-medium capitalize text-gray-900"
+                            "divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50"
                           }
                         >
                           {toggleSelect ? (
@@ -509,6 +505,13 @@ export default function Products() {
                     </Tbody>
                   </MyTableEngine>
                   <div className="divider">Category List</div>
+                  {categories && (
+                    <>
+                      {categories.map((cat, index) => (
+                        <p key={index}>{cat.name}</p>
+                      ))}
+                    </>
+                  )}
                 </div>
               ) : (
                 // </ProductsContext.Provider>

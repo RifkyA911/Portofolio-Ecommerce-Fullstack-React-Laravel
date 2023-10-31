@@ -1,8 +1,15 @@
-import React, { useContext, useEffect, useId, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import Select from "react-select";
 
 import { CropperModal, ModalContext, useModalContext } from "./Modal";
-import { Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { MuiIcon } from "../utils/RenderIcons";
 import { debounce } from "lodash";
@@ -229,6 +236,111 @@ export const NumberInput = (props) => {
           setValue(name, e.target.value);
         }}
       /> */}
+    </div>
+  );
+};
+
+export const NumberInput2 = (props) => {
+  const {
+    className,
+    label,
+    name,
+    placeholder,
+    type = name,
+    decimalOptions = 0,
+    limitDigits,
+    prefix,
+    suffix,
+    style,
+    onInputChange,
+    formContext,
+  } = props;
+  const [formattedValue, setFormattedValue] = useState("");
+
+  // react-hook-form
+  const {
+    // data,
+    // formType,
+    getValues,
+    register,
+    setValue,
+    setFocus,
+    errors,
+    setError,
+    control,
+    isValid,
+    dirtyFields,
+    watch,
+  } = useContext(formContext);
+
+  const validationRules = {
+    required: `This ${label} field is required`,
+    pattern: {
+      value: /\d+/,
+      message: label + " input is number only.",
+    },
+    maxLength: {
+      value: 11,
+      message: label + " input must exceed 16 digits",
+    },
+    minLength: {
+      value: 3,
+      message: label + " input min 3 digits",
+    },
+  };
+  const ref = useRef();
+
+  // useLayoutEffect(() => {
+  //   console.log(getValues(name));
+  // }, [getValues(name)]);
+
+  return (
+    <div
+      onClick={() => {
+        setFocus(name);
+        // console.log(name);
+      }}
+      className={className}
+    >
+      <label
+        htmlFor={name}
+        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1] "
+      >
+        {label}
+        {errors[name] && (
+          <span className="absolute right-0 text-red-500">
+            {errors[name].message}
+          </span>
+        )}
+      </label>
+      <Controller
+        control={control}
+        name={name}
+        render={({ field: { onChange, name, value, ref } }) => (
+          <NumericFormat
+            name={name}
+            value={value}
+            className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl focus:outline-none`}
+            displayType={"input"}
+            thousandSeparator
+            getInputRef={ref}
+            prefix={prefix}
+            suffix={suffix}
+            allowNegative={false} // Untuk menghindari nilai negatif
+            decimalScale={decimalOptions} // Untuk menghindari desimal
+            isAllowed={(values) => {
+              // console.log(values);
+              const { floatValue } = values;
+              return floatValue < limitDigits;
+            }}
+            onValueChange={(values) => {
+              setValue(name, values.floatValue || 0);
+              // console.log(name, values);
+              onInputChange(values.floatValue);
+            }}
+          />
+        )}
+      />
     </div>
   );
 };

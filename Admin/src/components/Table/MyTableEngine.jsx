@@ -14,7 +14,7 @@ import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
 import { useReactToPrint } from "react-to-print";
 import { SearchInput } from "../Form";
 
-const TableContext = createContext();
+export const TableContext = createContext();
 
 export const MyTableEngine = (props) => {
   const {
@@ -25,9 +25,10 @@ export const MyTableEngine = (props) => {
     // Tab Header Table Component
     TabHeader = false,
     hideHeaderBtn = null,
-    printBtn,
+    applyFilter,
     searchTerm,
     setSearchTerm,
+    printBtn,
     setPrintBatchModal,
     setAddModal,
     setDeleteBatchModal,
@@ -128,10 +129,11 @@ export const MyTableHeader = (props) => {
   const {
     inputData,
     length,
-    handlePrint,
-    hideHeaderBtn,
+    applyFilter,
     searchTerm,
     setSearchTerm,
+    handlePrint,
+    hideHeaderBtn,
     setPrintBatchModal,
     setAddModal,
     setDeleteBatchModal,
@@ -161,6 +163,7 @@ export const MyTableHeader = (props) => {
         <div className="flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
           {hideHeaderBtn !== "filterBtn" && (
             <MyTableHeaderFilter
+              applyFilter={applyFilter}
               inputData={inputData}
               isDialogOpen={isDialogOpen}
               closeFunction={() => {

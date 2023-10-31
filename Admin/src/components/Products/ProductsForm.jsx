@@ -138,11 +138,18 @@ export const ProductsInputForm = (props) => {
       </div>
       {formType === "INSERT" && (
         <ConfirmButton
-          onClick={() => console.log("sd", register)}
+          onClick={() => console.log("insert=>", register)}
+          stickyContainer
           confirmType="add"
         />
       )}
-      {formType === "ALTER_BY_ID" && <ConfirmButton confirmType="alter" />}
+      {formType === "ALTER_BY_ID" && (
+        <ConfirmButton
+          onClick={() => console.log("alter=>", register)}
+          stickyContainer
+          confirmType="alter"
+        />
+      )}
     </>
   );
 };
