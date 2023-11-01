@@ -26,6 +26,7 @@ import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../utils/RenderIcons";
 import { useReactToPrint } from "react-to-print";
+import { formatToRupiah } from "../utils/Formatter";
 
 // define fetch data URL_PRODUCT by products
 const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCT;
@@ -92,11 +93,11 @@ export default function Products() {
       setLoading(false);
       if (table === "products") {
         setProducts(data.data);
+        setLengthData(data.message.length);
       } else if (table === "categories") {
         setCategories(data.data);
       }
       setErrorMessage(null);
-      setLengthData(data.message.length);
     } catch (error) {
       setLoading(false);
       let message = `Gagal Fetching '${table}'`;
@@ -280,7 +281,7 @@ export default function Products() {
           : null,
         style: `capitalize px-4`,
       })),
-      td: `xborder-2 py-2 px-2 `,
+      td: `xborder-2 py-2 px-4 `,
     };
   }
 
@@ -362,9 +363,7 @@ export default function Products() {
                         <Tr
                           key={index}
                           customKey={index}
-                          className={
-                            "divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50"
-                          }
+                          className={`${table_styling.tr} divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50`}
                         >
                           {toggleSelect ? (
                             <>
@@ -430,7 +429,7 @@ export default function Products() {
                             </>
                           )}
                           <Td
-                            className={`${table_styling.td} w-1/12 cursor-pointer`}
+                            className={`py-2 px-2 w-1/12 cursor-pointer`}
                             onClick={() => {
                               handleInfoButton(row, "SHOW_PRODUCT_BARCODE");
                             }}
@@ -443,7 +442,7 @@ export default function Products() {
                               />
                             )}
                           </Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
+                          <Td className={` w-1/12`}>
                             {row.id && (
                               <ProductImage
                                 data={row}
@@ -459,11 +458,11 @@ export default function Products() {
                           <Td className={`${table_styling.td} w-1/12`}>
                             {row.category?.name}
                           </Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
+                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
                             {row.stock}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
-                            {row.price}
+                            {formatToRupiah(row.price)}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
                             <span className="flex flex-row gap-2 justify-center items-center">
