@@ -53,7 +53,7 @@ export const ConfirmButton = (props) => {
     className,
     confirmType,
     type = "submit",
-    onClick,
+    onClick = null,
     children,
   } = props;
   return (

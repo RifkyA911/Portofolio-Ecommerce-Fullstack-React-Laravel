@@ -110,7 +110,7 @@ export const ProductsInputForm = (props) => {
           <div className="w-full flex flex-row justify-between">
             <NumberInput
               formContext={ModalContext}
-              className={`flex gap-4 flex-col `}
+              className={`flex gap-4 flex-col w-1/2 mr-2`}
               prefix="Rp. "
               label="Price (IDR)"
               name="price"
@@ -120,7 +120,7 @@ export const ProductsInputForm = (props) => {
             />
             <NumberInput
               formContext={ModalContext}
-              className={`flex gap-4 flex-col `}
+              className={`flex gap-4 flex-col w-1/2 ml-2`}
               suffix=" %"
               label="Discount %"
               name="discount"
@@ -140,19 +140,11 @@ export const ProductsInputForm = (props) => {
         </div>
       </div>
       {formType === "INSERT" && (
-        <ConfirmButton
-          onClick={() => console.log("insert=>", register)}
-          stickyContainer
-          confirmType="add"
-        />
+        <ConfirmButton stickyContainer confirmType="add" />
       )}
       {formType === "ALTER_BY_ID" && (
         <>
-          <ConfirmButton
-            onClick={() => console.log("alter=>", register)}
-            stickyContainer
-            confirmType="alter"
-          />
+          <ConfirmButton stickyContainer confirmType="alter" />
         </>
       )}
     </>

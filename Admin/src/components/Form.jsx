@@ -197,7 +197,7 @@ export const NumberInput = (props) => {
       >
         {label}
         {errors[name] && (
-          <span className="absolute right-0 text-red-500">
+          <span className="absolute right-0 text-red-500 bg-slate-50 px-2">
             {errors[name].message}
           </span>
         )}
