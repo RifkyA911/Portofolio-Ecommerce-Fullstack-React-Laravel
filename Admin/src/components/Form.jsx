@@ -13,7 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { MuiIcon } from "../utils/RenderIcons";
 import { debounce } from "lodash";
-import { ImageDisplay } from "../utils/Display";
+import { IsThisAnImage } from "../utils/Solver";
 
 const ServerPublicProductImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 const ServerPublicAdminImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -815,6 +815,10 @@ export const FilePictureInput = (props) => {
   } = props;
 
   const [formattedValue, setFormattedValue] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [working, setWorking] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const [base64, setBase64] = useState(null);
 
   const {
     table,
@@ -851,38 +855,78 @@ export const FilePictureInput = (props) => {
 
   useEffect(() => {
     // console.log(getValues("pict"));
-    if (/^data:image\/\w+;base64,/.test(getValues("pict"))) {
+    if (!pictValue) {
+      setValue("pict", "default.jpg");
+    }
+    if (IsThisAnImage(pictValue)) {
       // console.log('Nilai "pict" adalah data gambar base64 (false)');
       setFormattedValue("base64");
     } else {
-      // console.log('Nilai "pict" he');
       setFormattedValue(null);
     }
-  }, [getValues("pict")]);
+  }, [pictValue]);
+
   return (
     <>
-      <div className="relative w-96 rounded-full">
-        {formattedValue === "base64" ? (
-          <ImageDisplay base64ImageData={getValues("pict")} />
+      <div className="relative flex flex-col justify-center items-center w-full rounded-full">
+        {loading ? (
+          <div className="w-96 h-96 rounded-md flex flex-row items-center justify-center">
+            <span className="loading loading-ring loading-lg"></span>
+            <span className="loading loading-ring loading-lg"></span>
+            <span className="loading loading-ring loading-lg"></span>
+            <span className="loading loading-ring loading-lg"></span>
+            <span className="loading loading-ring loading-lg"></span>
+          </div>
         ) : (
-          <img
-            src={
-              data.pict
-                ? table === "products"
-                  ? `${ServerPublicProductImg}${getValues("pict")}`
-                  : table === "admins"
-                  ? `${ServerPublicAdminImg}${getValues("pict")}`
-                  : table === "users"
-                  ? `${ServerPublicUserImg}${getValues("pict")}`
-                  : `${ServerPublicProductImg}default.jpg`
-                : `${ServerPublicProductImg}default.jpg`
-            }
-            alt="Avatar Tailwind CSS Component"
-            className=" w-96 rounded-full max-w-3xl shadow-lg"
-            loading="lazy"
-          />
+          <>
+            {formattedValue === "base64" ? (
+              // <ImageDisplay base64ImageData={pictValue} />
+              <>
+                {base64 && (
+                  <img
+                    src={`${base64}`}
+                    alt="Avatar Tailwind CSS Component"
+                    className="w-96 rounded-md max-w-3xl shadow-lg"
+                  />
+                )}
+              </>
+            ) : (
+              <img
+                src={
+                  data.pict
+                    ? table === "products"
+                      ? `${ServerPublicProductImg}${data.pict}`
+                      : table === "admins"
+                      ? `${ServerPublicAdminImg}${data.pict}`
+                      : table === "users"
+                      ? `${ServerPublicUserImg}${data.pict}`
+                      : `${ServerPublicProductImg}default.jpg`
+                    : `${ServerPublicProductImg}default.jpg`
+                }
+                alt="Avatar Tailwind CSS Component"
+                className="w-96 rounded-md max-w-3xl shadow-lg"
+                loading="lazy"
+              />
+            )}
+          </>
         )}
-        <CropperModal />
+        <CropperModal
+          onLoadingContent={(value) => {
+            setBase64(null);
+            setLoading(value);
+          }}
+          onWorkingContent={(value) => {
+            setFormattedValue("base64");
+            setWorking(value);
+          }}
+          onConfirmContent={(value) => {
+            setConfirm(value);
+          }}
+          setPict={(form) => {
+            setValue("pict", form);
+            setBase64(form);
+          }}
+        />
       </div>
     </>
   );

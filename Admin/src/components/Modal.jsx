@@ -298,7 +298,7 @@ export const ActionModalForm = (props) => {
   useEffect(() => {
     if (formType === "INSERT") {
       setData({
-        pict: "default.png",
+        pict: "default.jpg",
         email: "",
       });
     } else if (formType === "ALTER_BY_ID" || formType === "DROP_BY_ID") {
@@ -407,7 +407,6 @@ export const ActionModalForm = (props) => {
             pict: data.pict,
             newPassword: "123456FF",
             newPassword_confirmation: "123456FF",
-            p: "p",
           };
           break;
         case `products`:
@@ -425,7 +424,6 @@ export const ActionModalForm = (props) => {
             created_at: data.created_at,
             updated_at: data.updated_at,
           };
-
           break;
         default:
           break;
@@ -464,7 +462,7 @@ export const ActionModalForm = (props) => {
 
   async function sendFormDataByMethod(form) {
     setSending(!sending);
-    console.log(formType, table_id);
+    // console.log(formType, table_id);
     try {
       if (formType === "INSERT") {
         axiosResponse = await axios.post(URL_STORE, form);
@@ -595,7 +593,7 @@ export const ActionModalForm = (props) => {
               formType === "ALTER_BY_ID" || formType === "INSERT"
                 ? "max-w-6xl"
                 : "max-w-3xl"
-            } bg-gray-50 overflow-y-scroll cursor-auto p-0`}
+            } bg-gray-50 cursor-auto p-0`}
           >
             <form method="dialog" className={` sticky top-0 z-10`}>
               <button
@@ -609,7 +607,7 @@ export const ActionModalForm = (props) => {
               </button>
             </form>
             <div
-              className={`bg-slate-50 sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
+              className={`bg-slate-50 sticky z-[5] top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
             >
               <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
                 {formType === "INSERT" && `Add New ${table}`}
@@ -648,6 +646,7 @@ export const ActionModalForm = (props) => {
                     {onWorking ? (
                       // =========================== Main Form ========================
                       <form
+                        className=""
                         autoComplete="off"
                         onSubmit={handleSubmit(onSubmit)}
                       >
@@ -927,10 +926,16 @@ export const PrintModal = (props) => {
   );
 };
 
-export const CropperModal = () => {
+export const CropperModal = (props) => {
+  const { onLoadingContent, onWorkingContent, onConfirmContent, setPict } =
+    props;
+  const [filename, setFilename] = useState(null);
   const [image, setImage] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
-  const [modal, setModal] = useState(false);
+  const [onWorking, setOnWorking] = useState(false);
+
+  const inputFileRef = useRef(null);
+  const cropperRef = useRef(null);
 
   const {
     data,
@@ -952,10 +957,22 @@ export const CropperModal = () => {
     watch,
   } = useContext(ModalContext);
 
-  const cropperRef = useRef(null);
-
   const handleFileChange = (e) => {
+    const fileInput = inputFileRef.current;
     const selectedFile = e.target.files[0];
+
+    if (fileInput.files.length > 0) {
+      // Pengguna memilih satu atau lebih file
+      console.log("true");
+    } else {
+      // Pengguna membatalkan pemilihan file
+      console.log("cancel");
+    }
+    if (selectedFile) {
+      // console.log("selectedFile", selectedFile);
+      onWorkingContent(true);
+      onLoadingContent(false);
+    }
     // Maksimal ukuran file dalam byte (512KB)
     // const maxSize = 512 * 1024;
     const maxSize = 10000 * 1024;
@@ -985,7 +1002,7 @@ export const CropperModal = () => {
             } else {
               reader.onload = (event) => {
                 setImage(event.target.result);
-                setModal(true);
+                setOnWorking(true);
               };
 
               reader.readAsDataURL(selectedFile);
@@ -997,10 +1014,6 @@ export const CropperModal = () => {
     }
   };
 
-  // useEffect(() => {
-  //   console.log("pict values :", getValues("pict"));
-  // }, [getValues("pict")]);
-
   const applyCroppedImage = () => {
     if (cropperRef.current) {
       // Pastikan gambar telah dimuat sepenuhnya
@@ -1011,71 +1024,52 @@ export const CropperModal = () => {
           .toDataURL();
         // console.log("Data gambar hasil pemangkasan:", croppedDataUrl);
         setCroppedImage(croppedDataUrl);
-        setValue("pict", croppedDataUrl);
-
-        // Kirim gambar hasil pemangkasan ke server Laravel
-        // fetch("URL_SERVER_LARAVEL/uploadImage", {
-        //   method: "POST",
-        //   body: JSON.stringify({ image: croppedDataUrl }),
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        // })
-        //   .then((response) => response.json())
-        //   .then((data) => {
-        //     const imagePath = data.imagePath;
-        //     // Lakukan sesuatu dengan imagePath, seperti menampilkannya di komponen React
-        //   });
       }
     }
   };
 
+  useEffect(() => {
+    setPict(croppedImage);
+  }, [croppedImage]);
+
   return (
     <div>
+      {onWorking && (
+        <div className={`p-4 `}>
+          <Cropper
+            style={{ height: 400, width: "100%" }}
+            initialAspectRatio={1}
+            // preview=".img-preview"
+            ref={cropperRef}
+            src={image}
+            aspectRatio={8 / 8} // Sesuaikan dengan rasio aspek yang Anda inginkan
+            viewMode={1}
+            guides={true}
+            minCropBoxHeight={10}
+            minCropBoxWidth={10}
+            background={false}
+            responsive={true}
+            checkOrientation={false}
+            zoomable={false} // Mencegah zoom
+          />
+          <ConfirmButton
+            confirmType="confirm"
+            onClick={() => {
+              setOnWorking(false);
+              applyCroppedImage();
+            }}
+          />
+        </div>
+      )}
       <input
-        className="file-input file-input-bordered file-input-md w-64 text-sm mt-6"
+        ref={inputFileRef}
+        className={`${
+          onWorking ? "hidden" : ""
+        } file-input file-input-bordered file-input-md w-64 text-sm mt-6`}
         type="file"
         accept="image/*"
-        {...register("pict", {
-          required: "This pict are required",
-        })}
         onChange={handleFileChange}
-        onClick={() => document.getElementById("croppers").showModal()}
       />
-      <dialog id="croppers" className="modal">
-        {image && (
-          <div className="modal-box w-12/12 max-w-3xl ">
-            <form method="dialog">
-              <button
-                // onClick={() => setImage(null)}
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-              >
-                ✕
-              </button>
-            </form>
-
-            <h3 className="font-bold text-lg">Hello!</h3>
-            <div className={`p-4 `}>
-              <Cropper
-                ref={cropperRef}
-                src={image}
-                aspectRatio={8 / 8} // Sesuaikan dengan rasio aspek yang Anda inginkan
-                guides={true}
-                zoomable={false} // Mencegah zoom
-              />
-            </div>
-            <ConfirmButton
-              confirmType="confirm"
-              onClick={() => {
-                applyCroppedImage();
-              }}
-            />
-            <div className="modal-action">
-              <form method="dialog"></form>
-            </div>
-          </div>
-        )}
-      </dialog>
     </div>
   );
 };

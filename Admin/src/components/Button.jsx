@@ -78,7 +78,7 @@ export const ConfirmButton = (props) => {
           <button
             onClick={onClick}
             type={type}
-            className={`${className} btn px-6 my-4 bg-gradient-to-tl hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 rounded-lg text-white font-roboto-bold font-bold`}
+            className={`${className} btn px-6 bg-gradient-to-tl hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 rounded-lg text-white font-roboto-bold font-bold`}
           >
             <MuiIcon iconName="AddBoxRounde" /> Add New Data
             {children}
@@ -88,7 +88,7 @@ export const ConfirmButton = (props) => {
           <button
             onClick={onClick}
             type={type}
-            className={`${className} btn px-6 my-4 bg-gradient-to-tl hover:from-indigo-500 hover:to-violet-500 transition-all duration-500 bg-size-100 bg-pos-0 hover:bg-pos-100 from-blue-500 to-violet-500 rounded-lg text-white font-roboto-bold font-bold`}
+            className={`${className} btn px-6 bg-gradient-to-tl hover:from-indigo-500 hover:to-violet-500 transition-all duration-500 bg-size-100 bg-pos-0 hover:bg-pos-100 from-blue-500 to-violet-500 rounded-lg text-white font-roboto-bold font-bold`}
           >
             <MuiIcon iconName="EditRounded" /> Save Changes
           </button>
