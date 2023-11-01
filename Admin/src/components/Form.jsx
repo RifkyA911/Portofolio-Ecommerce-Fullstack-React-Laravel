@@ -142,120 +142,9 @@ export const NumberInput = (props) => {
     prefix,
     suffix,
     style,
-  } = props;
-  const [formattedValue, setFormattedValue] = useState("");
-
-  const {
-    data,
-    formType,
-    // react-hook-form
-    getValues,
-    register,
-    setValue,
-    setFocus,
-    setError,
-    control,
-    errors,
-    isValid,
-    dirtyFields,
-    watch,
-  } = useModalContext();
-
-  const validationRules = {
-    required: `This ${label} field is required`,
-    pattern: {
-      value: /\d+/,
-      message: label + " input is number only.",
-    },
-    maxLength: {
-      value: 11,
-      message: label + " input must exceed 16 digits",
-    },
-    minLength: {
-      value: 3,
-      message: label + " input min 3 digits",
-    },
-  };
-  const ref = useRef();
-
-  // console.table(props);
-  return (
-    <div
-      onClick={() => {
-        setFocus(name);
-        console.log(name);
-      }}
-      className={className}
-    >
-      {/* <p>{watch("product")}</p> */}
-      <label
-        htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
-      >
-        {label}
-        {errors[name] && (
-          <span className="absolute right-0 text-red-500">
-            {errors[name].message}
-          </span>
-        )}
-      </label>
-      <Controller
-        control={control}
-        name={name}
-        render={({ field: { onChange, name, value, ref } }) => (
-          <NumericFormat
-            name={name}
-            value={value}
-            className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl focus:outline-none`}
-            displayType={"input"}
-            thousandSeparator
-            getInputRef={ref}
-            prefix={prefix}
-            suffix={suffix}
-            allowNegative={false} // Untuk menghindari nilai negatif
-            decimalScale={decimalOptions} // Untuk menghindari desimal
-            isAllowed={(values) => {
-              // console.log(values);
-              const { floatValue } = values;
-              return floatValue < limitDigits;
-            }}
-            onValueChange={(values) => {
-              setValue(name, values.floatValue || 0);
-            }}
-          />
-        )}
-      />
-      {/* <input
-        type="number"
-        placeholder={placeholder.toLowerCase()}
-        className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-        {...register(name, validationRules)}
-        onChange={(e) => {
-          //   handleInputChange(e);
-          console.log(e.target.value);
-          setValue(name, e.target.value);
-        }}
-      /> */}
-    </div>
-  );
-};
-
-export const NumberInput2 = (props) => {
-  const {
-    className,
-    label,
-    name,
-    placeholder,
-    type = name,
-    decimalOptions = 0,
-    limitDigits,
-    prefix,
-    suffix,
-    style,
-    onInputChange,
+    onInputChange = null,
     formContext,
   } = props;
-  const [formattedValue, setFormattedValue] = useState("");
 
   // react-hook-form
   const {
@@ -316,6 +205,7 @@ export const NumberInput2 = (props) => {
       <Controller
         control={control}
         name={name}
+        rules={validationRules}
         render={({ field: { onChange, name, value, ref } }) => (
           <NumericFormat
             name={name}
@@ -336,7 +226,9 @@ export const NumberInput2 = (props) => {
             onValueChange={(values) => {
               setValue(name, values.floatValue || 0);
               // console.log(name, values);
-              onInputChange(values.floatValue);
+              if (onInputChange) {
+                onInputChange(values.floatValue);
+              }
             }}
           />
         )}
@@ -746,7 +638,7 @@ export const TextArea = (props) => {
   } = useModalContext();
 
   const validationRules = {
-    required: true,
+    required: `This ${label} field is required`,
     maxLength: {
       value: 3000,
       message: label + " input must not exceed 3000 characters",

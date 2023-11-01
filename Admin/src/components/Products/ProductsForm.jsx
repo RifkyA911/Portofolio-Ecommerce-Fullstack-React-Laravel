@@ -46,6 +46,7 @@ export const ProductsInputForm = (props) => {
     dirtyFields,
     watch,
   } = useContext(ModalContext);
+  const MaxLimit = 10000000; //10 jt
 
   return (
     <>
@@ -97,6 +98,7 @@ export const ProductsInputForm = (props) => {
               style="w-full h-[38px]"
             />
             <NumberInput
+              formContext={ModalContext}
               className={`flex gap-4 flex-col `}
               prefix=""
               label="Stock"
@@ -107,15 +109,17 @@ export const ProductsInputForm = (props) => {
           </div>
           <div className="w-full flex flex-row justify-between">
             <NumberInput
+              formContext={ModalContext}
               className={`flex gap-4 flex-col `}
               prefix="Rp. "
               label="Price (IDR)"
               name="price"
-              limitDigits={10000000000}
+              limitDigits={MaxLimit}
               placeholder="Masukkan Harga"
               style="w-full"
             />
             <NumberInput
+              formContext={ModalContext}
               className={`flex gap-4 flex-col `}
               suffix=" %"
               label="Discount %"

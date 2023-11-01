@@ -13,7 +13,7 @@ import { styled } from "@mui/material/styles";
 import ReactSlider from "react-slider";
 import { formatToRupiah } from "../../utils/Formatter";
 import { useForm } from "react-hook-form";
-import { NumberInput, NumberInput2 } from "../Form";
+import { NumberInput } from "../Form";
 import { TableContext } from "./MyTableEngine";
 
 const PrettoSlider = styled(Slider)({
@@ -214,7 +214,7 @@ export const MyTableHeaderFilter = (props) => {
                 // }}
               />
               <div className="flex flex-row justify-between ">
-                <NumberInput2
+                <NumberInput
                   formContext={MyTableFilterContext}
                   className={`flex gap-4 flex-col  w-full max-w-[250px]`}
                   prefix="Rp. "
@@ -224,7 +224,7 @@ export const MyTableHeaderFilter = (props) => {
                   placeholder="Masukkan Harga"
                   onInputChange={(value) => setMinPrice(value)}
                 />
-                <NumberInput2
+                <NumberInput
                   formContext={MyTableFilterContext}
                   className={`flex gap-4 flex-col  w-full max-w-[250px]`}
                   prefix="Rp. "
