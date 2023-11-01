@@ -16,3 +16,16 @@ export function isObjectsEqual(objA, objB) {
 
   return true;
 }
+
+export const IsThisAnImage = (src) => {
+  if (src) {
+    const typeRegex = /^data:image\/([a-zA-Z]+);base64,/;
+    const matches = src.match(typeRegex); // .test
+    if (matches && matches.length > 1) {
+      const extractedType = matches[1];
+      return true;
+    }
+  } else {
+    return false;
+  }
+};
