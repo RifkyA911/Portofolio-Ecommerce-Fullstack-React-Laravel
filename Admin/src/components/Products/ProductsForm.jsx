@@ -49,7 +49,7 @@ export const ProductsInputForm = (props) => {
 
   return (
     <>
-      <div className="flex flex-row">
+      <div className="flex flex-row ">
         <div>
           {/* ALTER */}
           {formType === "ALTER_BY_ID" && (
@@ -62,16 +62,15 @@ export const ProductsInputForm = (props) => {
           )}
         </div>
         {/* Images */}
-        <div className="flex flex-col justify-center items-center w-6/12 p-12">
+        <div className="flex flex-col justify-start items-center w-6/12 p-12">
           <FilePictureInput
             type="picture"
-            // className={`flex gap-4 flex-col w-full`}
             label="Product Picture"
             name="pict"
           />
         </div>
         {/* Form */}
-        <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium">
+        <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium ">
           {/* {console.log(name, ":", getValues(name))}  {setValue("barcode", "HJAHAHA")} */}
           {/* {console.log("form_values", ":", getValues())} */}
           {/* {console.log("data", ":", data)} */}
@@ -133,7 +132,7 @@ export const ProductsInputForm = (props) => {
             name="description"
             placeholder="tamnbahkan deskripsi"
           />
-          <DateRecord data={data} />
+          {formType === "ALTER_BY_ID" && <DateRecord data={data} />}
         </div>
       </div>
       {formType === "INSERT" && (
@@ -144,11 +143,13 @@ export const ProductsInputForm = (props) => {
         />
       )}
       {formType === "ALTER_BY_ID" && (
-        <ConfirmButton
-          onClick={() => console.log("alter=>", register)}
-          stickyContainer
-          confirmType="alter"
-        />
+        <>
+          <ConfirmButton
+            onClick={() => console.log("alter=>", register)}
+            stickyContainer
+            confirmType="alter"
+          />
+        </>
       )}
     </>
   );

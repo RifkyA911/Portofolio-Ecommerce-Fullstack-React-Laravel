@@ -213,16 +213,32 @@ class ProductController extends Controller
         if ($validator->fails()) {
             return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
         }
+        $pict = $request->input('pict');
+        $name = $request->input('name');
+
+        if ($pict) {
+            $pictStatus= 'in';
+            // Ubah nilai $pict sesuai kebutuhan
+            $newPictValue = $this->uploadImage($pict, $name);
+            // Setel ulang nilai $pict dalam request
+            $request->merge(['pict' => $newPictValue]);
+        }
+
         $produk = Product::find($request->input('productId'));
-        $produk->barcode = $request->input('barcode');
-        $produk->name = $request->input('name');
-        $produk->category_id = $request->input('category_id') ?? 'none';
-        $produk->price = $request->input('price') ?? 0;
-        $produk->stock = $request->input('stock') ?? 0;
-        $produk->discount = $request->input('discount') ?? 0;
-        $produk->pict = $request->input('pict');
-        $produk->description = $request->input('description');
-        return new PostResource(true, "Produk ter-update.", $produk->update());
+        if($produk){
+            $produk->barcode = $request->input('barcode');
+            $produk->name = $request->input('name');
+            $produk->category_id = $request->input('category_id') ?? 'none';
+            $produk->price = $request->input('price') ?? 0;
+            $produk->stock = $request->input('stock') ?? 0;
+            $produk->discount = $request->input('discount') ?? 0;
+            $produk->pict = $request->input('pict');
+            $produk->description = $request->input('description');
+            return new PostResource(true, ["Message"=>"Produk ter-update.", "pictStatus"=>$pictStatus], $produk->update());
+        } else{
+            return response(["validasi data error", 'error', 400]);
+
+        }
     }
 
     /**
@@ -260,17 +276,12 @@ class ProductController extends Controller
     // public function uploadImage(Request $request)
     public function uploadImage($imageData, $name)
     {
-        // $imageData = $request->input('pict'); // Data gambar hasil pemangkasan dari React
-        // if (!$imageData) {
-        //     return response(new PostResource(false, "Input Key dan Value Endpoint salah", 400));
-        // }
-
         // jika input pict adalah base64
         if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
             $data = substr($imageData, strpos($imageData, ',') + 1);
             $data = base64_decode($data);
             $imageName = $name . '.jpg';
-            $imagePath = public_path('img/') . $imageName; // Tentukan lokasi penyimpanan lokal
+            $imagePath = public_path('img/product_images/') . $imageName; // Tentukan lokasi penyimpanan lokal
             ///////////////// tambahkan validasi file
             file_put_contents($imagePath, $data); // Simpan gambar secara lokal
             // return response(new PostResource(true, $imagePath, 200));
