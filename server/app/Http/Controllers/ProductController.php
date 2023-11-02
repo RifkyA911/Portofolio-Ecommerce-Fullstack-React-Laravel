@@ -10,6 +10,7 @@ use \App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use stdClass;
 
 class ProductController extends Controller
 {
@@ -163,16 +164,21 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // return response(new PostResource(false, "yoi", $request->input()), 200);
         if ($request->input('superAuthorizationPassword') === "superAdmin") {
-            $pict = $request->input('pict');
-            $name = $request->input('name');
+            $product = new stdClass(); // membuat objek php baru
+            $product->id = Product::max('id') + 1; // mencari nilai id tertinggi lalu ditambah 1 untuk unique
+            $product->name = $request->input('name');
 
-            if ($pict) {
-                // Ubah nilai $pict sesuai kebutuhan
-                $newPictValue = $this->uploadImage($pict, $name);
-                // Setel ulang nilai $pict dalam request
+            $pict = $request->input('pict');
+
+            if ($pict) { // Test: Pass
+                $newPictValue = $this->uploadImage($pict, $product);
+                // if ($oldName === $name) {
+                //     $modifedFileStatus = 'not changed';
+                // }
                 $request->merge(['pict' => $newPictValue]);
+            } else {
+                $request->merge(['pict' => 'default.jpg']);
             }
 
             $validator = Validator::make($request->all(), [
@@ -180,7 +186,7 @@ class ProductController extends Controller
                 "category_id" => 'required',
                 "price" => 'required|numeric',
                 "stock" => 'required|numeric'
-                // TAMBAHKAN VALIDASI PICT
+                ///////////////////////////////////// TAMBAHKAN VALIDASI PICT
             ]);
 
             if ($validator->fails()) {
@@ -188,7 +194,7 @@ class ProductController extends Controller
             }
 
             if (Product::create($request->except(['superAuthorizationPassword'])) !== false) {
-                return new PostResource(true, ['message' => "Product berhasil ditambahkan.", 'status' => 201], $request->only(['name', 'category_id']));
+                return new PostResource(true, ['message' => "Product berhasil ditambahkan.", 'status' => 201,], $request->only(['name', 'category_id']));
             } else {
                 return response(false, "validasi data error", ['errors' => 'gagal create product', 'old_input' => $request->all()], 400);
             }
@@ -222,10 +228,9 @@ class ProductController extends Controller
         }
 
         $product = Product::find($request->input('productId'));
-        $oldName = $product->name;
-        $oldPict = $product->pict;
+        $oldPict = $product->pict; // current data in db
 
-        $pict = $request->input('pict');
+        $pict = $request->input('pict'); // incoming req
 
         if ($pict !== "noChange") { // Test: Pass
             $newPictValue = $this->uploadImage($pict, $product);
@@ -235,11 +240,13 @@ class ProductController extends Controller
             $request->merge(['pict' => $newPictValue]);
             $oldFilePath = public_path('img/product_images/' . $oldPict); // Ganti dengan jalur file lama
             if (file_exists($oldFilePath)) {
-                // Delete old existing pict file
-                if (unlink($oldFilePath)) {
-                    $modifedFileStatus = true;
-                } else {
-                    return response(["Failed to rename file", 'error', 404]);
+                if ($oldPict !== 'default.jpg') { // prevent delete default.jpg
+                    // Delete old existing pict file
+                    if (unlink($oldFilePath)) {
+                        $modifedFileStatus = true;
+                    } else {
+                        return response(["Failed to rename file", 'error', 404]);
+                    }
                 }
             } else {
                 $modifedFileStatus = "Old Pict File is not exist";
@@ -259,7 +266,7 @@ class ProductController extends Controller
             $product->discount = $request->input('discount') ?? 0;
             $product->pict = $request->input('pict') ?? 'default.jpg';
             $product->description = $request->input('description');
-            return new PostResource(true, ["Message" => "product ter-update.", "modifedFileStatus" => $modifedFileStatus ?? null, "oldName" => $oldName], $product->update());
+            return new PostResource(true, ["Message" => "product ter-update.", "modifedFileStatus" => $modifedFileStatus ?? null], $product->update());
         } else {
             return response(["validasi data error", 'error', 400]);
 
