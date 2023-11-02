@@ -243,7 +243,7 @@ class ProductController extends Controller
                     return response(["Failed to rename file", 'error', 404]);
                 }
             } else {
-                return response(["Pict File is not exist", 'error', 404]);
+                $modifedFileStatus = "Old Pict File is not exist";
             }
         } else { // Test: Pass
             $modifedFileStatus = false;
