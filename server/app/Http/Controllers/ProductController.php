@@ -184,16 +184,16 @@ class ProductController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
+                return response(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()], 400);
             }
 
             if (Product::create($request->except(['superAuthorizationPassword'])) !== false) {
                 return new PostResource(true, ['message' => "Product berhasil ditambahkan.", 'status' => 201], $request->only(['name', 'category_id']));
             } else {
-                return response(new PostResource(false, "validasi data error", "Something went wrong with the DB :("), 403);
+                return response(false, "validasi data error", ['errors' => 'gagal create product', 'old_input' => $request->all()], 400);
             }
         }
-        return response(new PostResource(false, "Data Product gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan Product.", $request->input()), 403);
+        return response(false, "Data Product gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan Product.", ['payload' => $request->input()], 403);
     }
 
     /**
@@ -216,9 +216,9 @@ class ProductController extends Controller
             "price" => 'required|numeric',
             "stock" => 'required|numeric'
         ]);
-
+        ///////////////// tambahkan validasi file pict base64
         if ($validator->fails()) {
-            return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
+            return response(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()], 400);
         }
 
         $product = Product::find($request->input('productId'));
@@ -226,7 +226,6 @@ class ProductController extends Controller
         $oldPict = $product->pict;
 
         $pict = $request->input('pict');
-        $name = $request->input('name');
 
         if ($pict !== "noChange") { // Test: Pass
             $newPictValue = $this->uploadImage($pict, $product);
@@ -276,7 +275,7 @@ class ProductController extends Controller
         $productsId = $request->input('productsId');
 
         if ($getSuperAuthorizationPassword !== "superAdmin") {
-            return response(new PostResource(false, "Authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('productsId')]), 401);
+            return response(false, "Authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('productsId')], 401);
         }
 
         if (is_array($productsId)) {
@@ -287,13 +286,13 @@ class ProductController extends Controller
             // Single delete
             $dropProduct = Product::find($productsId);
             if (!$dropProduct) {
-                return response(new PostResource(false, "Product tidak ditemukan.", ['old_input' => $request->except('productsId')]), 401);
+                return response(false, "Product tidak ditemukan.", ['old_input' => $request->except('productsId')], 401);
             }
             $deleted = $dropProduct->delete();
             return new PostResource(true, "Berhasil menghapus Product " . $dropProduct->name, $deleted);
         } else {
             // Invalid input
-            return response(new PostResource(false, "Input productsId tidak valid.", ['old_input' => $request->except('productsId')]), 400);
+            return response(false, "Input productsId tidak valid.", ['old_input' => $request->except('productsId')], 400);
         }
     }
 
@@ -305,10 +304,7 @@ class ProductController extends Controller
         if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
             $data = substr($imageData, strpos($imageData, ',') + 1);
             $data = base64_decode($data);
-            // $imageName = $name . '.jpg';
-            // $imagePath = public_path('img/product_images/') . $imageName; // Tentukan lokasi penyimpanan lokal
             $imagePath = public_path('img/product_images/') . $imageName; // Tentukan lokasi penyimpanan lokal
-            ///////////////// tambahkan validasi file
             file_put_contents($imagePath, $data); // Simpan gambar secara lokal
             return $imageName;
         } else {
