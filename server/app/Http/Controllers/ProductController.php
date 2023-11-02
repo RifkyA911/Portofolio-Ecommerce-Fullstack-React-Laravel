@@ -228,15 +228,19 @@ class ProductController extends Controller
         }
 
         $product = Product::find($request->input('productId'));
+        $oldName = $product->name; // current data in db
         $oldPict = $product->pict; // current data in db
-
+        // ~~~~~~ mutasi update variabel separator ~~~~~~
+        $name = $request->input('name'); // incoming req
         $pict = $request->input('pict'); // incoming req
 
+        // if pict req is not null/noChange
         if ($pict !== "noChange") { // Test: Pass
+            // if oldName!=name, replace property values in $product object
+            if ($oldName !== $name) {
+                $product->update(['name' => $name]);
+            }
             $newPictValue = $this->uploadImage($pict, $product);
-            // if ($oldName === $name) {
-            //     $modifedFileStatus = 'not changed';
-            // }
             $request->merge(['pict' => $newPictValue]);
             $oldFilePath = public_path('img/product_images/' . $oldPict); // Ganti dengan jalur file lama
             if (file_exists($oldFilePath)) {
