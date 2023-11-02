@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use \App\Models\Product;
 use \App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use \App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\File;
@@ -28,35 +29,39 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    
-    private function notFound() {
+
+    private function notFound()
+    {
         return response([
-        'message' => [
-            'Message' => 'No Data Found',
-            'length' => 0,
-        ], 
-        'data' => [array(
-            'id' => null,
-            'barcode' => null,
-            'name' => 'tidak ada',
-            'category_id' => null,
-            'price' => null,
-            'stock' => null,
-            'discount' => null,
-            'pict' => 'not_found.jpg',
-            'description' => null,
-            'admin_id' => null,
-            'created_at' => null,
-            'updated_at' => null,
-            'category' =>
-            array(
-                'id' => null,
-                'name' => null,
-                'type' => null,
-            ),
-        )]], 200);
+            'message' => [
+                'Message' => 'No Data Found',
+                'length' => 0,
+            ],
+            'data' => [
+                array(
+                    'id' => null,
+                    'barcode' => null,
+                    'name' => 'tidak ada',
+                    'category_id' => null,
+                    'price' => null,
+                    'stock' => null,
+                    'discount' => null,
+                    'pict' => 'not_found.jpg',
+                    'description' => null,
+                    'admin_id' => null,
+                    'created_at' => null,
+                    'updated_at' => null,
+                    'category' =>
+                        array(
+                            'id' => null,
+                            'name' => null,
+                            'type' => null,
+                        ),
+                )
+            ]
+        ], 200);
     }
-     public function search(Request $request)
+    public function search(Request $request)
     {
         $searchTerm = $request->input('search'); // Ambil parameter pencarian dari input form
 
@@ -74,26 +79,28 @@ class ProductController extends Controller
         $length = $products->count();
 
         if ($length == null || $length == 0 || $products === null) {
-            return new PostResource(true, ['Message' => 'Tidak ada Data', 'length' => $length], [array(
-                'id' => null,
-                'barcode' => null,
-                'name' => 'tidak ada',
-                'category_id' => null,
-                'price' => null,
-                'stock' => null,
-                'discount' => null,
-                'pict' => 'not_found.jpg',
-                'description' => null,
-                'admin_id' => null,
-                'created_at' => null,
-                'updated_at' => null,
-                'category' =>
+            return new PostResource(true, ['Message' => 'Tidak ada Data', 'length' => $length], [
                 array(
                     'id' => null,
-                    'name' => null,
-                    'type' => null,
-                ),
-            )]);
+                    'barcode' => null,
+                    'name' => 'tidak ada',
+                    'category_id' => null,
+                    'price' => null,
+                    'stock' => null,
+                    'discount' => null,
+                    'pict' => 'not_found.jpg',
+                    'description' => null,
+                    'admin_id' => null,
+                    'created_at' => null,
+                    'updated_at' => null,
+                    'category' =>
+                        array(
+                            'id' => null,
+                            'name' => null,
+                            'type' => null,
+                        ),
+                )
+            ]);
         } else {
             return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $products);
         }
@@ -103,14 +110,14 @@ class ProductController extends Controller
         $minPrice = $request->input('minPrice');
         $maxPrice = $request->input('maxPrice');
 
-        if(!$maxPrice){
+        if (!$maxPrice) {
             return response(['message' => 'validasi data error', 'error' => 'Something went wrong with the DB :('], 222);
         }
 
         $products = Product::where('price', '>=', $minPrice)->where('price', '<=', $maxPrice)->get();
         $length = $products->count();
 
-        if(!$length){
+        if (!$length) {
             return $this->notFound();
         }
         return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $products);
@@ -139,8 +146,8 @@ class ProductController extends Controller
     public function showLimit($page, $perPage)
     {
         // Mengonversi halaman dan perPage yang diterima menjadi integer
-        $page = (int)$page; // halaman
-        $perPage = (int)$perPage; // jumlah data yang akan di kirim
+        $page = (int) $page; // halaman
+        $perPage = (int) $perPage; // jumlah data yang akan di kirim
 
         $length = Product::count();
 
@@ -213,29 +220,48 @@ class ProductController extends Controller
         if ($validator->fails()) {
             return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
         }
+
+        $product = Product::find($request->input('productId'));
+        $oldName = $product->name;
+        $oldPict = $product->pict;
+
         $pict = $request->input('pict');
         $name = $request->input('name');
 
-        if ($pict) {
-            $pictStatus= 'in';
-            // Ubah nilai $pict sesuai kebutuhan
-            $newPictValue = $this->uploadImage($pict, $name);
-            // Setel ulang nilai $pict dalam request
+        if ($pict !== "noChange") { // Test: Pass
+            $newPictValue = $this->uploadImage($pict, $product);
+            // if ($oldName === $name) {
+            //     $modifedFileStatus = 'not changed';
+            // }
             $request->merge(['pict' => $newPictValue]);
+            $oldFilePath = public_path('img/product_images/' . $oldPict); // Ganti dengan jalur file lama
+            if (file_exists($oldFilePath)) {
+                // Delete old existing pict file
+                if (unlink($oldFilePath)) {
+                    $modifedFileStatus = true;
+                } else {
+                    return response(["Failed to rename file", 'error', 404]);
+                }
+            } else {
+                return response(["Pict File is not exist", 'error', 404]);
+            }
+        } else { // Test: Pass
+            $modifedFileStatus = false;
+            $request->merge(['pict' => $product->pict]);
         }
 
-        $produk = Product::find($request->input('productId'));
-        if($produk){
-            $produk->barcode = $request->input('barcode');
-            $produk->name = $request->input('name');
-            $produk->category_id = $request->input('category_id') ?? 'none';
-            $produk->price = $request->input('price') ?? 0;
-            $produk->stock = $request->input('stock') ?? 0;
-            $produk->discount = $request->input('discount') ?? 0;
-            $produk->pict = $request->input('pict');
-            $produk->description = $request->input('description');
-            return new PostResource(true, ["Message"=>"Produk ter-update.", "pictStatus"=>$pictStatus], $produk->update());
-        } else{
+        // update var $product
+        if ($product) {
+            $product->barcode = $request->input('barcode');
+            $product->name = $request->input('name');
+            $product->category_id = $request->input('category_id') ?? 'none';
+            $product->price = $request->input('price') ?? 0;
+            $product->stock = $request->input('stock') ?? 0;
+            $product->discount = $request->input('discount') ?? 0;
+            $product->pict = $request->input('pict') ?? 'default.jpg';
+            $product->description = $request->input('description');
+            return new PostResource(true, ["Message" => "product ter-update.", "modifedFileStatus" => $modifedFileStatus ?? null, "oldName" => $oldName], $product->update());
+        } else {
             return response(["validasi data error", 'error', 400]);
 
         }
@@ -270,25 +296,23 @@ class ProductController extends Controller
             return response(new PostResource(false, "Input productsId tidak valid.", ['old_input' => $request->except('productsId')]), 400);
         }
     }
-    // return response(new PostResource(false, 'Masuk coy :v', $request->input(), 302));
 
-    // Contoh metode controller Laravel untuk mengunggah gambar
     // public function uploadImage(Request $request)
-    public function uploadImage($imageData, $name)
+    public function uploadImage($imageData, $product)
     {
+        $imageName = 'product-' . time() . '-' . $product->id . '-' . Str::slug($product->name) . '.jpg';
         // jika input pict adalah base64
         if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
             $data = substr($imageData, strpos($imageData, ',') + 1);
             $data = base64_decode($data);
-            $imageName = $name . '.jpg';
+            // $imageName = $name . '.jpg';
+            // $imagePath = public_path('img/product_images/') . $imageName; // Tentukan lokasi penyimpanan lokal
             $imagePath = public_path('img/product_images/') . $imageName; // Tentukan lokasi penyimpanan lokal
             ///////////////// tambahkan validasi file
             file_put_contents($imagePath, $data); // Simpan gambar secara lokal
-            // return response(new PostResource(true, $imagePath, 200));
             return $imageName;
         } else {
             return 'default.jpg';
-            // return response(new PostResource(false, ['message' => "Tidak dapat memproses input", 'data' => $imageData], 500));
         }
     }
 }
