@@ -746,9 +746,9 @@ export const FilePictureInput = (props) => {
   const pictValue = getValues("pict");
 
   useEffect(() => {
-    // console.log(getValues("pict"));
+    console.log("pictValue", getValues("pict"));
     if (!pictValue) {
-      setValue("pict", "default.jpg");
+      setValue("pict", "noChange");
     }
     if (IsThisAnImage(pictValue)) {
       // console.log('Nilai "pict" adalah data gambar base64 (false)');

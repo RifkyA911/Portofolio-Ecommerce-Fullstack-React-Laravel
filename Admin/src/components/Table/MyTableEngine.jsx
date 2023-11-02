@@ -19,6 +19,7 @@ export const TableContext = createContext();
 export const MyTableEngine = (props) => {
   const {
     // Main Logic Table Component
+    table,
     inputData,
     refresh,
     className,
@@ -110,7 +111,6 @@ export const MyTableEngine = (props) => {
           </>
         )}
         {/* ------------- TABLE -------------*/}
-
         <div
           ref={printRef}
           className={`${BorderOuterTable} ${className} overflow-x-auto`}
@@ -127,6 +127,7 @@ export const MyTableEngine = (props) => {
 
 export const MyTableHeader = (props) => {
   const {
+    table,
     inputData,
     length,
     applyFilter,
@@ -163,6 +164,7 @@ export const MyTableHeader = (props) => {
         <div className="flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
           {hideHeaderBtn !== "filterBtn" && (
             <MyTableHeaderFilter
+              table={table}
               applyFilter={applyFilter}
               inputData={inputData}
               isDialogOpen={isDialogOpen}

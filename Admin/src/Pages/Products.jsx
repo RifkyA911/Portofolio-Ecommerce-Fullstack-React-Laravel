@@ -159,6 +159,7 @@ export default function Products() {
   }, [searchTerm]);
 
   const MyTableEngineProps = {
+    table: "products",
     context: ProductsContext,
     inputData: products,
     refresh: () => {
@@ -295,7 +296,6 @@ export default function Products() {
 
   return (
     <>
-      {/* <AdminsContext.Provider value={AdminsContextValue}> */}
       <Container>
         <Content pageName={"Products"}>
           {loading == true ? (
@@ -522,7 +522,6 @@ export default function Products() {
           )}
         </Content>
       </Container>
-      {/* </AdminsContext.Provider> */}
     </>
   );
 }
