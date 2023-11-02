@@ -186,7 +186,7 @@ class ProductController extends Controller
                 "category_id" => 'required',
                 "price" => 'required|numeric',
                 "stock" => 'required|numeric'
-                ///////////////////////////////////// TAMBAHKAN VALIDASI PICT
+                ///////////////// tambahkan validasi file pict base64/string 'noChange'
             ]);
 
             if ($validator->fails()) {
@@ -221,8 +221,9 @@ class ProductController extends Controller
             "category_id" => 'required',
             "price" => 'required|numeric',
             "stock" => 'required|numeric'
+            ///////////////// tambahkan validasi file pict base64/string 'noChange'
+
         ]);
-        ///////////////// tambahkan validasi file pict base64
         if ($validator->fails()) {
             return response(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()], 400);
         }
