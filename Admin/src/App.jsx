@@ -76,7 +76,7 @@ function App() {
       {/* Developer Panel */}
       {appMode == "development" && (
         <>
-          <MyDebuggerPanel />
+          {/* <MyDebuggerPanel /> */}
           {/* <MyToDoList /> */}
           <MyJump />
         </>
