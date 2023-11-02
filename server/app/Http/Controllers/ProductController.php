@@ -222,7 +222,6 @@ class ProductController extends Controller
             "price" => 'required|numeric',
             "stock" => 'required|numeric'
             ///////////////// tambahkan validasi file pict base64/string 'noChange'
-
         ]);
         if ($validator->fails()) {
             return response(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()], 400);
