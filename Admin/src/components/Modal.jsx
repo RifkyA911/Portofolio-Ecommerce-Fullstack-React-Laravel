@@ -410,6 +410,7 @@ export const ActionModalForm = (props) => {
           };
           break;
         case `products`:
+          // console.log(data);
           initialFormValue = {
             superAuthorizationPassword: SuperAdminKey,
             productId: data.id,
