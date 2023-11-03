@@ -3,7 +3,7 @@ import Barcode from "react-jsbarcode";
 import Slider, { SliderThumb } from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
 import { MuiIcon } from "../../utils/RenderIcons";
-import { formatToRupiah } from "../../utils/Formatter";
+import { CurrencyFormatter } from "../../utils/Formatter";
 import ReactSlider from "react-slider";
 import { NumberInput } from "../Form";
 import { MyTableFilterContext } from "../Table/MyTableComponents";
@@ -69,7 +69,7 @@ export const ProductDetail = (props) => {
                       <tr className="border-b-2">
                         <th className="bg-slate-300 h-12">Price</th>
                         <td className="bg-white text-left pl-8">
-                          {formatToRupiah(inputData[0].price)}
+                          {CurrencyFormatter(inputData[0].price)}
                         </td>
                       </tr>
                       <tr className="">
@@ -255,7 +255,7 @@ export const ProductFilter = (props) => {
                 ></div>
                 {isHovered && (
                   <div className="absolute top-0 hover:block px-2 py-1 mb-2 -mt-8 text-xs text-white bg-gray-900 rounded-sm whitespace-nowrap">
-                    {formatToRupiah(state.valueNow)}
+                    {CurrencyFormatter(state.valueNow)}
                   </div>
                 )}
               </div>

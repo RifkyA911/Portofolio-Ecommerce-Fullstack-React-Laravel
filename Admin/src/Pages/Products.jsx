@@ -25,7 +25,7 @@ import { Container, Content } from "../Layout";
 import { useSelector } from "react-redux";
 // UTILS
 import { useReactToPrint } from "react-to-print";
-import { formatToRupiah } from "../utils/Formatter";
+import { CurrencyFormatter } from "../utils/Formatter";
 
 // define fetch data URL_PRODUCT by products
 const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCT;
@@ -463,7 +463,7 @@ export default function Products() {
                             {row.stock}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
-                            {formatToRupiah(row.price)}
+                            {CurrencyFormatter(row.price)}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
                             <span className="flex flex-row gap-2 justify-center items-center">

@@ -15,7 +15,7 @@ export function DateFormatter(type, inputDate) {
     // Membentuk tanggal dengan format 'YYYY/MM/DD'
     const formattedDate = `${year}/${month}/${day}`;
 
-    console.log(formattedDate);
+    // console.log(formattedDate);
     return formattedDate;
   } else if (type == "DD/MM") {
     // Array nama bulan
@@ -58,37 +58,18 @@ export function DateFormatter(type, inputDate) {
     const formattedDateTime = `${year}-${month}-${day}~${hours}-${minutes}-${seconds}`;
     return formattedDateTime;
   } else {
-    console.error("Date Formatter conditions not found");
+    console.error("Failed: Date Formatter conditions not matched");
   }
 }
 
-export function LocationFormatter(input) {
-  // Hilangkan karakter "/" jika ada
-  let result = input.replace("/", "");
-
-  // Ubah huruf pertama menjadi huruf besar
-  result = result.charAt(0).toUpperCase() + result.slice(1).toLowerCase();
-  result = separateMyWords(result);
-  console.log(result);
-  return result;
-}
-
-export function separateMyWords(input) {
-  // Gunakan ekspresi reguler untuk menemukan semua kata yang dimulai dengan 'My'
-  const regex = /My[a-z]+/g;
-
-  // Gantikan setiap kata yang cocok dengan kata yang dipisahkan
-  const separatedString = input.replace(regex, (match) => {
-    return match.replace("My", "My ");
-  });
-
-  return separatedString;
-}
-
-export function formatToRupiah(number) {
+export function CurrencyFormatter(
+  number,
+  style = "currency",
+  currency = "IDR"
+) {
   // Format angka menjadi mata uang Rupiah
   return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
+    style: style,
+    currency: currency,
   }).format(number);
 }
