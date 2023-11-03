@@ -13,7 +13,6 @@ import ModalContext, { CropperModal } from "../Modal";
 import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../../utils/RenderIcons";
-import { convertISODateToJSDate } from "../../utils/Formatter";
 import {
   TextInput,
   SelectInput,

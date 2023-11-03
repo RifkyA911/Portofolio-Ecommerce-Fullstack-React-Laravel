@@ -1,4 +1,4 @@
-import { convertISODateToJSDate } from "../utils/Formatter";
+import { DateFormatter } from "../utils/Formatter";
 
 export const DateRecord = (props) => {
   const { data } = props;
@@ -7,12 +7,12 @@ export const DateRecord = (props) => {
       <small className="flex flex-row gap-2">
         <div className="p">
           <span className="font-bold mr-2">Created at:</span>
-          {convertISODateToJSDate(data.created_at).toLocaleString()}
+          {DateFormatter("YYYY-MM-DD-hh-mm-ss", data.created_at)}
         </div>
         |
         <div className="p">
           <span className="font-bold mr-2">Updated at:</span>
-          {convertISODateToJSDate(data.updated_at).toLocaleString()}
+          {DateFormatter("YYYY-MM-DD-hh-mm-ss", data.updated_at)}
         </div>
       </small>
     </>

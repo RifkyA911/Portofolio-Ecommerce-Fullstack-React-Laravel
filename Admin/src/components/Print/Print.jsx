@@ -15,7 +15,7 @@ import {
 
 import { useReactToPrint } from "react-to-print";
 import { PrintProducts } from "./Products";
-import { GetDateTime } from "../../utils/Formatter";
+import { DateFormatter } from "../../utils/Formatter";
 import { MuiIcon } from "../../utils/RenderIcons";
 
 const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;
@@ -33,26 +33,34 @@ export const LookReactPDF = (props) => {
 
 export const DownloadBtnReactPDF = (props) => {
   const { inputData, table, formType } = props;
-
+  // return console.log("inputData", inputData);
   return (
-    <PDFDownloadLink
-      className="mx-auto px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
-      document={<PrintReactPDF inputData={inputData} table={table} />}
-      fileName={`${table}_${inputData.name || inputData.username}${
-        formType === "PRINT_BATCH" ? "_Batch" : ""
-      }#${GetDateTime()}.pdf`}
-    >
-      {({ blob, url, loading, error }) =>
-        loading ? (
-          "Loading..."
-        ) : (
-          <div className="flex flex-row items-end">
-            <MuiIcon iconName="SaveRounded" fontSize={18} className="mr-2" />
-            Save .Pdf
-          </div>
-        )
-      }
-    </PDFDownloadLink>
+    <>
+      {inputData && (
+        <PDFDownloadLink
+          className="mx-auto px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
+          document={<PrintReactPDF inputData={inputData} table={table} />}
+          fileName={`${table}_${inputData.name || inputData.username}${
+            formType === "PRINT_BATCH" ? "_Batch" : ""
+          }#${DateFormatter("YYYY-MM-DD-hh-mm-ss", null)}.pdf`}
+        >
+          {({ blob, url, loading, error }) =>
+            loading ? (
+              "Loading..."
+            ) : (
+              <div className="flex flex-row items-end">
+                <MuiIcon
+                  iconName="SaveRounded"
+                  fontSize={18}
+                  className="mr-2"
+                />
+                Save .Pdf
+              </div>
+            )
+          }
+        </PDFDownloadLink>
+      )}
+    </>
   );
 };
 
@@ -90,14 +98,12 @@ export const PrintReactPDF = (props) => {
             )}
             {table === "transactions" && (
               <>
-                <PrintProducts inputData={data} printType={printType} />
-                //
+                {/* <PrintProducts inputData={data} printType={printType} /> */}
               </>
             )}
             {table === "orders" && (
               <>
-                <PrintProducts inputData={data} printType={printType} />
-                //
+                {/* <PrintProducts inputData={data} printType={printType} /> */}
               </>
             )}
           </Document>

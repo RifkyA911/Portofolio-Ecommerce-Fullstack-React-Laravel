@@ -14,7 +14,7 @@ import ModalContext from "../Modal";
 import { useSelector } from "react-redux";
 // UTILS
 import { MuiIcon } from "../../utils/RenderIcons";
-import { convertISODateToJSDate } from "../../utils/Formatter";
+import { DateFormatter } from "../../utils/Formatter";
 import { ConfirmButton } from "../Button";
 
 // export const BackupForm = (props) => {
@@ -957,12 +957,12 @@ export const AdminsAlterForm = (props) => {
           <small className="flex flex-row gap-2">
             <div className="p">
               <span className="font-bold mr-2">Created at:</span>
-              {convertISODateToJSDate(data.created_at).toLocaleString()}
+              {DateFormatter(data.created_at).toLocaleString()}
             </div>
             |
             <div className="p">
               <span className="font-bold mr-2">Updated at:</span>
-              {convertISODateToJSDate(data.updated_at).toLocaleString()}
+              {DateFormatter(data.updated_at).toLocaleString()}
             </div>
           </small>
         </div>

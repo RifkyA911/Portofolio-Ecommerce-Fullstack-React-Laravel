@@ -34,7 +34,6 @@ import {
 import { ProductsInputForm, ProductsDropForm } from "./Products/ProductsForm";
 import { ConfirmButton, MotionButton } from "./Button";
 import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
-import { GetDateTime } from "../utils/Formatter";
 import { PrintDummies } from "../utils/PlaceHolder";
 import { motionProps } from "../Config/MotionProps";
 
@@ -392,6 +391,7 @@ export const MainModalHandler = (props) => {
   }
 
   const ModalContextValue = {
+    id,
     // MyTable
     table,
     refresh,
@@ -480,6 +480,7 @@ export const MainModalHandler = (props) => {
 
 export const FormModal = (props) => {
   const {
+    id,
     // MyTable
     table,
     refresh,
@@ -674,6 +675,7 @@ export const FormModal = (props) => {
 
 export const PrintModal = (props) => {
   const {
+    id,
     // MyTable
     table,
     refresh,
@@ -707,16 +709,6 @@ export const PrintModal = (props) => {
     onSubmit,
   } = useContext(ModalContext);
 
-  // const [data, setData] = useState();
-  // const [onWorking, setOnWorking] = useState(true);
-
-  // const [errorMessage, setErrorMessage] = useState(null);
-  // const [loading, setLoading] = useState(true);
-
-  const id = useId();
-  // useEffect(() => {
-  //   console.log(props);
-  // }, [table_id]);
   // REDUX
   const {
     BgColor,
@@ -729,86 +721,6 @@ export const PrintModal = (props) => {
     BorderRowTable,
     BorderOuterTable,
   } = useSelector((state) => state.UI);
-  // let URL_BY_ID;
-  // let URL_ALL;
-  // if (table === "admins") {
-  //   URL_BY_ID = import.meta.env.VITE_API_ID_ADMIN + "/" + table_id;
-  //   URL_ALL = import.meta.env.VITE_API_ALL_ADMIN + "/print";
-  // } else if (table === "products") {
-  //   URL_BY_ID = import.meta.env.VITE_API_ID_PRODUCT + "/" + table_id;
-  //   URL_ALL = import.meta.env.VITE_API_ALL_PRODUCT + "/print";
-  // } else if (table === "orders") {
-  //   URL_BY_ID = import.meta.env.VITE_API_ID_TRANSACTION + "/" + table_id;
-  //   URL_ALL = import.meta.env.VITE_API_ALL_TRANSACTION + "/print";
-  // } else {
-  //   console.log(table);
-  // }
-
-  // useEffect(() => {
-  //   if (table_id !== "" && table_id !== null) {
-  //     if (formType === "PRINT_BY_ID") {
-  //       // temp method: ini perlu dilakukan untuk menampilkan update setiap ada data baru
-  //       axios
-  //         .get(URL_BY_ID)
-  //         .then((response) => {
-  //           console.table("fetching:", URL_BY_ID);
-  //           setData(response.data.data);
-  //           setLoading(false);
-  //           setErrorMessage(null);
-  //           setOnWorking(true);
-  //         })
-  //         .catch((error) => {
-  //           if (error.response) {
-  //             console.log("Response error:", error.response.data);
-  //           } else if (error.request) {
-  //             console.log("Request error:", error.request);
-  //           } else {
-  //             console.log("Error:", error.message);
-  //           }
-  //           setLoading(false);
-  //           setErrorMessage(error.message || "An error occurred.");
-  //         });
-  //     } else if (formType === "PRINT_BATCH") {
-  //       const dataArray = Object.values(table_id);
-  //       // return console.log("dataArray", dataArray);
-  //       // Ekstrak seluruh ID dari array dan letakkan dalam array terpisah
-  //       const ids = dataArray.map((item) => item.id);
-  //       //////////////////////////////////////////////////////////////////////////////////////
-  //       axios
-  //         .post(URL_ALL, { ids: ids })
-  //         .then((response) => {
-  //           // return console.log(response.data);
-  //           console.table("fetching:", URL_ALL);
-  //           // setData([response.data.data]);
-  //           setData(response.data.data);
-  //           setOnWorking(true);
-  //           setLoading(false);
-  //           setErrorMessage(null);
-  //         })
-  //         .catch((error) => {
-  //           if (error.response) {
-  //             console.log("Response error:", error.response.data);
-  //           } else if (error.request) {
-  //             console.log("Request error:", error.request);
-  //           } else {
-  //             console.log("Error:", error.message);
-  //           }
-  //           setLoading(false);
-  //           setErrorMessage(error.message || "An error occurred.");
-  //         });
-  //     } else {
-  //       setLoading(false); // Jika table_id null, atur loading menjadi false tanpa menjalankan Axios.
-  //       setOnWorking(false);
-  //     }
-  //   }
-  // }, [table_id, formType]); // Gunakan table_id sebagai dependency untuk useEffect.
-
-  // useEffect(() => {
-  //   console.log(data);
-  // }, [data]);
-  // useEffect(() => {
-  //   console.log(errorMessage);
-  // }, [errorMessage]);
 
   return (
     <>
@@ -904,19 +816,6 @@ export const PrintModal = (props) => {
               inputData={data}
               table={table}
             />
-            {/* {formType === "INSERT" && <MotionButton formType="insert" />}
-            {formType === "ALTER_BY_ID" && <MotionButton formType="alter" />}
-            {(formType === "DROP_BY_ID" || formType === "DROP_BY_SELECTED") && (
-              <MotionButton formType="delete" />
-            )}
-            <MotionButton
-              formType="cancel"
-              onClick={() => {
-                setShowModal(false);
-                refresh();
-                clearData();
-              }}
-            />*/}
           </div>
         </form>
       </Dialog.Panel>

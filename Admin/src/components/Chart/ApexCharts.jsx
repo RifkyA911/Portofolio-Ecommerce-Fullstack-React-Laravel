@@ -2,33 +2,33 @@ import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { format } from "date-fns"; // Import format dari date-fns
 import { ResponsiveContainer } from "recharts";
-import { ConvertToDateMonth } from "../../utils/Formatter";
+import { DateFormatter } from "../../utils/Formatter";
 import { sareaOptions } from "./Options";
 
 const orderData = [
   {
     // x: new Date("2023-09-01").getTime(),
-    x: ConvertToDateMonth("2023-10-17T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-17T09:15:55.000000Z"),
     y: 100,
   },
   {
-    x: ConvertToDateMonth("2023-10-18T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-18T09:15:55.000000Z"),
     y: 400,
   },
   {
-    x: ConvertToDateMonth("2023-10-19T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-19T09:15:55.000000Z"),
     y: 150,
   },
   {
-    x: ConvertToDateMonth("2023-10-20T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-20T09:15:55.000000Z"),
     y: 450,
   },
   {
-    x: ConvertToDateMonth("2023-10-21T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-21T09:15:55.000000Z"),
     y: 350,
   },
   {
-    x: ConvertToDateMonth("2023-10-22T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-22T09:15:55.000000Z"),
     y: 150,
   },
   // ...data order lainnya...
@@ -37,27 +37,27 @@ const orderData = [
 const productData = [
   {
     // x: new Date("2023-09-01").getTime(),
-    x: ConvertToDateMonth("2023-10-17T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-17T09:15:55.000000Z"),
     y: 10,
   },
   {
-    x: ConvertToDateMonth("2023-10-18T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-18T09:15:55.000000Z"),
     y: 60,
   },
   {
-    x: ConvertToDateMonth("2023-10-19T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-19T09:15:55.000000Z"),
     y: 550,
   },
   {
-    x: ConvertToDateMonth("2023-10-20T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-20T09:15:55.000000Z"),
     y: 250,
   },
   {
-    x: ConvertToDateMonth("2023-10-21T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-21T09:15:55.000000Z"),
     y: 450,
   },
   {
-    x: ConvertToDateMonth("2023-10-22T09:15:55.000000Z"),
+    x: DateFormatter("DD/MM", "2023-10-22T09:15:55.000000Z"),
     y: 230,
   },
 ];

@@ -12,8 +12,9 @@ import {
 import { createTw } from "react-pdf-tailwind";
 import { styles } from "./Styles";
 
-import { GetDate, GetDateTime } from "../../utils/Formatter";
+import { DateFormatter } from "../../utils/Formatter";
 import { getUser } from "../../utils/Session/Admin";
+import axios from "axios";
 
 const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
@@ -62,43 +63,54 @@ const tw = createTw({
   },
 });
 
-const fetchImage = async (data) => {
-  url = "http://127.0.0.1:8000/api/image/admin/" + data;
-  response = await axios
-    .post(url)
-    .then((data) => {
-      console.info(data.data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+const fetchImage = async (name) => {
+  let url = ServerProductsImg + name;
+  try {
+    const response = await axios.get(url);
+    console.log(response);
+    // if (response.status === 200) {
+    //   const blob = new Blob([response.data], {
+    //     type: response.headers["content-type"],
+    //   });
+    //   const reader = new FileReader();
+
+    //   reader.onload = () => {
+    //     const base64data = reader.result;
+    //     console.info(base64data); // Ini adalah data gambar dalam format base64
+    //   };
+
+    //   reader.readAsDataURL(blob);
+    // } else {
+    //   console.error("Gagal mengunduh gambar");
+    // }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-const PartOfHeader = () => {
+const PartOfHeader = (props) => {
+  const { inputData } = props;
+
   return (
     <>
       <View
         style={tw(
           "p-4 bg-gray-100 border-b-2 border-slate-200 flex flex-row justify-between items-center max-h-[140px] overflow-hidden w-full"
         )}
-        // style={styles.header}
       >
         {/* Left */}
         <Link
           src={CompanyProfileURL}
           style={tw("order-first flex flex-row w-2/3 justify-start self-start")}
-          // style={styles.headerLeft}
         >
           <Image
             style={tw("h-20 w-20 hidden sm:flex text-center")}
-            // style={styles.headerLeftPict}
             src={"src/assets/logo.png"}
           />
           <View
             style={tw(
               "mx-4 flex flex-col gap-1 items-start capitalize underline text-gray-900 hover:text-gray-800 visited:text-gray-800"
             )}
-            // style={styles.headerLeftText}
           >
             <Text style={tw("font-extrabold")}>Your Company Name</Text>
             <Text style={tw("font-semibold text-base")}>
@@ -113,14 +125,21 @@ const PartOfHeader = () => {
           </View>
         </Link>
         {/* Right */}
-        <View
-          style={tw("order-last flex flex-row w-1/3 justify-end self-end")}
-          // style={styles.headerRight}
-        >
+        <View style={tw("order-last flex flex-row w-1/3 justify-end self-end")}>
           <View style={tw("mx-4 flex flex-col justify-between items-end")}>
-            <Text style={tw("text-base")}>INVOICE : 2021/INV/017</Text>
+            {/* <Text style={tw("text-base")}>INVOICE : 2021/INV/017</Text>
             <View style={tw("flex flex-col justify-between items-end")}>
               <Text style={tw("text-base")}>Date Created : {GetDate()}</Text>
+              <Text style={tw("text-base")}>
+                Admin : {userSession.username}
+              </Text>
+            </View> */}
+            <Text style={tw("text-base")}>Product ID : {inputData.id}</Text>
+            <View style={tw("flex flex-col justify-between items-end")}>
+              <Text style={tw("text-base")}>
+                Date Created :{" "}
+                {DateFormatter("YYYY/MM/DD", inputData.created_at)}
+              </Text>
               <Text style={tw("text-base")}>
                 Admin : {userSession.username}
               </Text>
@@ -141,8 +160,8 @@ const PartOfBody = (props) => {
           <View style={tw("flex w-1/3 justify-start")}>
             <Image
               style={tw("h-80 w-80 sm:flex text-center rounded-lg")}
-              //   src={"./src/assets/user_avatar/84719630_p0.jpg"}
-              src={`${ServerProductsImg}${inputData.pict}`}
+              src={"./src/assets/user_avatar/84719630_p0.jpg"}
+              // src={`${ServerProductsImg}${inputData.pict}`}
             ></Image>
           </View>
           <View style={tw("flex flex-row w-2/3 justify-start")}>
@@ -184,7 +203,9 @@ const PartOfBody = (props) => {
 
 export const PrintProducts = (props) => {
   const { inputData, printType } = props;
-
+  useEffect(() => {
+    fetchImage(inputData.pict);
+  }, [inputData]);
   return (
     <>
       {inputData && (
@@ -193,7 +214,7 @@ export const PrintProducts = (props) => {
             <Page size="LETTER" dpi={96}>
               <View style={styles.page}>
                 {/* =================== HEADER =================== */}
-                <PartOfHeader />
+                <PartOfHeader inputData={inputData} />
                 {/* =================== BODY =================== */}
                 <PartOfBody inputData={inputData} />
               </View>
@@ -279,7 +300,7 @@ export const PrintInvoices = (props) => {
                     <Text style={tw("text-base")}>INVOICE : 2021/INV/017</Text>
                     <View style={tw("flex flex-col justify-between items-end")}>
                       <Text style={tw("text-base")}>
-                        Date Created : {GetDate()}
+                        Date Created : {DateFormatter("YYYY/MM/DD", null)}
                       </Text>
                       <Text style={tw("text-base")}>
                         Admin : {userSession.username}
@@ -399,7 +420,7 @@ export const PrintInvoices = (props) => {
                             )}
                           >
                             <Text style={tw("text-base")}>
-                              Date Created : {GetDate()}
+                              Date Created : {DateFormatter("YYYY/MM/DD", null)}
                             </Text>
                             <Text style={tw("text-base")}>
                               Admin : {userSession.username}
