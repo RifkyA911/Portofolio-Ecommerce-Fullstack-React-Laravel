@@ -12,11 +12,19 @@ import { useForm, Controller } from "react-hook-form";
 import Barcode from "react-jsbarcode";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-
 // Components
+import { Dialog } from "@headlessui/react";
+
+import Backdrop from "@mui/material/Backdrop";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Fade from "@mui/material/Fade";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { MuiIcon } from "../utils/RenderIcons";
+import { motion, AnimatePresence } from "framer-motion";
 // UTILS
 import axios from "axios";
-import { MuiIcon } from "../utils/RenderIcons";
 import { DangerAlert } from "./Alert";
 import {
   AdminsAlterForm,
@@ -24,7 +32,7 @@ import {
   AdminsInsertForm,
 } from "./Admins/AdminsForm";
 import { ProductsInputForm, ProductsDropForm } from "./Products/ProductsForm";
-import { ConfirmButton } from "./Button";
+import { ConfirmButton, MotionButton } from "./Button";
 import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
 import { GetDateTime } from "../utils/Formatter";
 
@@ -594,7 +602,7 @@ export const ActionModalForm = (props) => {
               formType === "ALTER_BY_ID" || formType === "INSERT"
                 ? "max-w-6xl"
                 : "max-w-3xl"
-            } bg-gray-50 cursor-auto p-0`}
+            } bg-gray-50 cursor-auto p-0 min-h-[90%]`}
           >
             <form method="dialog" className={` sticky top-0 z-10`}>
               <button
@@ -641,7 +649,7 @@ export const ActionModalForm = (props) => {
               )}
             </div>
             {data !== undefined && data !== null ? (
-              <div className="content">
+              <div className="content over">
                 {!loading ? (
                   <>
                     {onWorking ? (
@@ -1072,6 +1080,181 @@ export const CropperModal = (props) => {
         onChange={handleFileChange}
       />
     </div>
+  );
+};
+
+export const MuiModal = (props) => {
+  const { showModal, setShowModal } = props;
+  const elements = [];
+
+  for (let i = 1; i <= 120; i++) {
+    elements.push(<div key={i}>Element {i}</div>);
+  }
+  // return (
+  //   <>
+  //     <button
+  //       className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+  //       onClick={() => setShowModal(!showModal)}
+  //     >
+  //       Open modal
+  //     </button>
+  //     <Dialog
+  //       open={showModal}
+  //       onClose={() => setShowModal(false)}
+  //       className="relative z-50"
+  //     >
+  //       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+  //         <Dialog.Overlay />
+  //         <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+  //           <div className="absolute inset-0 bg-gray-950 opacity-40"></div>
+  //         </div>
+  //         <motion.div
+  //           className=" bg-violet-400"
+  //           initial={{
+  //             opacity: 0,
+  //             scale: 0.75,
+  //           }}
+  //           animate={{
+  //             opacity: 1,
+  //             scale: 1,
+  //             transition: {
+  //               ease: "easeOut",
+  //               duration: 0.15,
+  //             },
+  //           }}
+  //           exit={{
+  //             opacity: 0,
+  //             scale: 0.75,
+  //             transition: {
+  //               ease: "easeIn",
+  //               duration: 0.15,
+  //             },
+  //           }}
+  //         >
+  //           <Dialog.Panel className="w-full max-w-sm rounded bg-white">
+  //             <Dialog.Title>Complete your order</Dialog.Title>
+
+  //             {/* ... */}
+  //           </Dialog.Panel>
+  //         </motion.div>
+  //       </div>
+  //     </Dialog>
+  //   </>
+  // );
+  return (
+    <>
+      <button
+        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+        onClick={() => setShowModal(!showModal)}
+      >
+        Open modal
+      </button>
+      <AnimatePresence>
+        {showModal && (
+          <Dialog
+            open={showModal}
+            onClose={setShowModal}
+            as="div"
+            className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-hidden"
+          >
+            <div className="flex flex-col items-center justify-center w-full h-full">
+              <Dialog.Overlay />
+              <div
+                className="fixed inset-0 transition-opacity"
+                aria-hidden="true"
+              >
+                <div className="absolute inset-0 bg-gray-950 opacity-40"></div>
+              </div>
+
+              <motion.div
+                // initial={{
+                //   opacity: 0,
+                //   scale: 0.75,
+                // }}
+                // animate={{
+                //   opacity: 1,
+                //   scale: 1,
+                //   transition: {
+                //     ease: "easeOut",
+                //     duration: 0.15,
+                //   },
+                // }}
+                // layout
+                // transition={{
+                //   type: "spring",
+                //   stiffness: 260,
+                //   damping: 20,
+                // }}
+                // exit={{
+                //   opacity: 0,
+                //   scale: 0.75,
+                //   transition: {
+                //     ease: "easeIn",
+                //     duration: 0.15,
+                //   },
+                // }}
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                }}
+              >
+                <Dialog.Panel
+                  as="div"
+                  className={`flex flex-col w-[1000px] h-full justify-center bg-white rounded-lg overflow-hidden shadow-xl transform transition-all`}
+                  // role="dialog"
+                  // aria-modal="true"
+                  // aria-labelledby="modal-headline"
+                >
+                  <div className="bg-white px-4 py-2">
+                    <div className="card-header pb-4 flex flex-row justify-between w-full items-center">
+                      <div className="w-5/12 font-bold text-lg text-left capitalize ">
+                        <Dialog.Title>Prototype Table</Dialog.Title>
+                      </div>
+                      <div className="w-6/12">
+                        <Dialog.Description
+                          className={`px-2 py-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
+                          as="small"
+                        >
+                          Error: Gagal Melakukan Request Data
+                        </Dialog.Description>
+                      </div>
+                      <div className="w-1/12 text-right">
+                        <button
+                          className="btn btn-sm btn-circle btn-ghost hover:bg-red-300"
+                          onClick={() => setShowModal(false)}
+                        >
+                          <MuiIcon iconName="CloseRounded" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="card-body p-0 max-h-[560px] overflow-y-scroll">
+                      <div className="bg-lime-200">
+                        {elements}
+                        <textarea></textarea>
+                      </div>
+                      <p>We are using cookies for no reason.</p>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <MotionButton
+                      formType="delete"
+                      onClick={() => setShowModal(false)}
+                    />
+                    <MotionButton
+                      formType="cancel"
+                      onClick={() => setShowModal(false)}
+                    />
+                  </div>
+                </Dialog.Panel>
+              </motion.div>
+            </div>
+          </Dialog>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

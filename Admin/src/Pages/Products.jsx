@@ -4,7 +4,12 @@ import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
-import { ActionModalForm, InfoModal, PrintModal } from "../components/Modal";
+import {
+  ActionModalForm,
+  InfoModal,
+  MuiModal,
+  PrintModal,
+} from "../components/Modal";
 import {
   ProductDetail,
   ProductImage,
@@ -322,6 +327,10 @@ export default function Products() {
                     )}
                   </div>
                   {/* ================ Modal ================= */}
+                  <MuiModal
+                    showModal={showModal}
+                    setShowModal={(value) => setShowModal(value)}
+                  />
                   <InfoModal {...ModalProps} />
                   <PrintModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />

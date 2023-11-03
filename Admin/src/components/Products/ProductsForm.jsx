@@ -50,7 +50,7 @@ export const ProductsInputForm = (props) => {
 
   return (
     <>
-      <div className="flex flex-row ">
+      <div className="flex flex-row overflow-y-scroll max-h-[500px]">
         <div>
           {/* ALTER */}
           {formType === "ALTER_BY_ID" && (
