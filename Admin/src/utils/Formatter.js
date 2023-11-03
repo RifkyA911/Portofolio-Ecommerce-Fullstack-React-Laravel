@@ -1,96 +1,65 @@
-export const GetDateTime = () => {
-  const currentDateTime = new Date();
+export function DateFormatter(type, inputDate) {
+  // const inputDate = '2023-10-28T10:20:51.000000Z';
 
-  const year = currentDateTime.getFullYear();
-  const month = String(currentDateTime.getMonth() + 1).padStart(2, "0");
-  const day = String(currentDateTime.getDate()).padStart(2, "0");
-  const hours = String(currentDateTime.getHours()).padStart(2, "0");
-  const minutes = String(currentDateTime.getMinutes()).padStart(2, "0");
-  const seconds = String(currentDateTime.getSeconds()).padStart(2, "0");
+  // Mengonversi tanggal asli ke objek Date
+  const date = inputDate ? new Date(inputDate) : new Date();
 
-  const formattedDateTime = `${year}-${month}-${day}~${hours}-${minutes}-${seconds}`;
+  if (type == null) {
+    return date;
+  } else if (type == "YYYY/MM/DD") {
+    // Mendapatkan tanggal, bulan, dan tahun dari objek Date
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Tambahkan 1 karena bulan dimulai dari 0
+    const day = String(date.getDate()).padStart(2, "0");
 
-  return formattedDateTime;
-};
+    // Membentuk tanggal dengan format 'YYYY/MM/DD'
+    const formattedDate = `${year}/${month}/${day}`;
 
-export const GetDate = () => {
-  const currentDate = new Date();
+    console.log(formattedDate);
+    return formattedDate;
+  } else if (type == "DD/MM") {
+    // Array nama bulan
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "Mei",
+      "Jun",
+      "Jul",
+      "Agu",
+      "Sep",
+      "Okt",
+      "Nov",
+      "Des",
+    ];
 
-  const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-  const day = String(currentDate.getDate()).padStart(2, "0");
+    // Mendapatkan tanggal, bulan, dan tahun dari objek Date
+    const day = date.getDate();
+    const month = date.getMonth(); // Perhatikan bahwa ini dimulai dari 0 (Januari adalah bulan 0)
+    const year = date.getFullYear();
 
-  const formattedDate = `${year}/${month}/${day}`;
+    // Mengonversi bulan menjadi nama bulan
+    const monthName = monthNames[month];
 
-  return formattedDate;
-};
+    // Membuat format tanggal yang diinginkan
+    const formattedDate = `${day} ${monthName}`;
 
-export const ConvertToDateMonth = (input) => {
-  // Membuat objek Date dari tanggal asli
-  const date = new Date(input);
+    // console.log(formattedDate); // Output: "17 Okt"
+    return formattedDate;
+  } else if (type == "YYYY-MM-DD-hh-mm-ss") {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
 
-  // Array nama bulan
-  const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mei",
-    "Jun",
-    "Jul",
-    "Agu",
-    "Sep",
-    "Okt",
-    "Nov",
-    "Des",
-  ];
-
-  // Mendapatkan tanggal, bulan, dan tahun dari objek Date
-  const day = date.getDate();
-  const month = date.getMonth(); // Perhatikan bahwa ini dimulai dari 0 (Januari adalah bulan 0)
-  const year = date.getFullYear();
-
-  // Mengonversi bulan menjadi nama bulan
-  const monthName = monthNames[month];
-
-  // Membuat format tanggal yang diinginkan
-  const formattedDate = `${day} ${monthName}`;
-
-  // console.log(formattedDate); // Output: "17 Okt"
-  return formattedDate;
-};
-
-export function convertISODateToJSDate(isoDate) {
-  const dateObject = new Date(isoDate);
-  return dateObject;
-}
-
-export function DateFormatter(inputDate) {
-  // Daftar nama bulan dalam bahasa Indonesia
-  const namaBulan = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
-
-  const tanggal = new Date(tanggalISO);
-  const tanggalFormatted =
-    tanggal.getDate() +
-    " " +
-    namaBulan[tanggal.getMonth()] +
-    " " +
-    tanggal.getFullYear();
-
-  return tanggalFormatted;
+    const formattedDateTime = `${year}-${month}-${day}~${hours}-${minutes}-${seconds}`;
+    return formattedDateTime;
+  } else {
+    console.error("Date Formatter conditions not found");
+  }
 }
 
 export function LocationFormatter(input) {
