@@ -69,7 +69,9 @@ export const ProductsInputForm = (props) => {
             label="Product Picture"
             name="pict"
           />
-          {formType === "ALTER_BY_ID" && <DateRecord data={data} />}
+          {formType === "ALTER_BY_ID" && (
+            <DateRecord className="py-4" data={data} />
+          )}
         </div>
         {/* Form */}
         <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium ">
@@ -153,7 +155,8 @@ export const ProductsInputForm = (props) => {
 
 export const ProductsDropForm = (props) => {
   // const { data, formType } = props;
-  const { refresh, data, formType, clearData } = useContext(ModalContext);
+  const { table, refresh, data, formType, clearData } =
+    useContext(ModalContext);
 
   return (
     <>
@@ -164,17 +167,13 @@ export const ProductsDropForm = (props) => {
             {formType === "DROP_BY_ID" && (
               <DropByIdForm
                 tableId="productsId"
-                location="products"
+                location={table}
                 thisName={data.name}
                 pict={data.pict}
               />
             )}
             {formType === "DROP_BY_SELECTED" && (
-              <DropBySelectedForm
-                table="Products"
-                location="products"
-                data={data}
-              />
+              <DropBySelectedForm data={data} />
             )}
           </div>
         )}

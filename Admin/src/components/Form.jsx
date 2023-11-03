@@ -865,10 +865,13 @@ export const DropByIdForm = (props) => {
 };
 
 export const DropBySelectedForm = (props) => {
-  const { table, data, location } = props;
-  // const { table } = useContext(ModalContext)
+  const { data } = props;
+  const { table } = useContext(ModalContext);
   const id = useId();
-  // console.log(data);
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
   return (
     <>
       <div
@@ -878,23 +881,23 @@ export const DropBySelectedForm = (props) => {
         {data.map((selected, index) => (
           <div
             key={selected.id}
-            className="flex-col overflow-x-scroll overflow-y-hidden line-clamp-1 py-4"
+            className="flex-col overflow-x-scroll overflow-y-hidden line-clamp-1 py-4 p-[2%]"
           >
             <img
               key={selected.id}
               src={
-                data.pict
+                selected.pict
                   ? table === "products"
-                    ? `${ServerPublicProductImg}${data.pict}`
+                    ? `${ServerPublicProductImg}${selected.pict}`
                     : table === "admins"
-                    ? `${ServerPublicAdminImg}${data.pict}`
+                    ? `${ServerPublicAdminImg}${selected.pict}`
                     : table === "users"
-                    ? `${ServerPublicUserImg}${data.pict}`
+                    ? `${ServerPublicUserImg}${selected.pict}`
                     : `${ServerPublicProductImg}default.jpg`
                   : `${ServerPublicProductImg}default.jpg`
               }
               alt="Avatar Tailwind CSS Component"
-              className={`w-36 rounded-full shadow-lg m-auto`}
+              className={`w-36 h-36 object-cover border-2 border-slate-500 `}
               loading="lazy"
             />
           </div>
@@ -915,9 +918,10 @@ export const DropBySelectedForm = (props) => {
                   <td className="p-0 w-0 bg-slate-100">{index + 1}</td>
                   <td className="px-4 py-1 w-96 font-roboto-light">
                     <p key={selected.id}>
-                      {table === "Admins" && selected.username}
-                      {table === "Products" && selected.name}
+                      {table === "admins" && selected.username}
+                      {table === "products" && selected.name}
                     </p>
+                    <p></p>
                   </td>
                 </tr>
               ))}

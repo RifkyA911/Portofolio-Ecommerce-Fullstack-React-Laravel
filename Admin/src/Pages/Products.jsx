@@ -447,7 +447,7 @@ export default function Products() {
                                   handleOpenModal(
                                     row.id,
                                     "SHOW_PRODUCT_PICTURE",
-                                    "show"
+                                    "info"
                                   );
                                 }}
                               />

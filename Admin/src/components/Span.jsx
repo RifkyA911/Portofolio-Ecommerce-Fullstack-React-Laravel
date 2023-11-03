@@ -1,10 +1,10 @@
 import { DateFormatter } from "../utils/Formatter";
 
 export const DateRecord = (props) => {
-  const { data } = props;
+  const { className, data } = props;
   return (
     <>
-      <small className="flex flex-row gap-2">
+      <small className={`${className} flex flex-row gap-2`}>
         <div className="p">
           <span className="font-bold mr-2">Created at:</span>
           {DateFormatter("YYYY-MM-DD-hh-mm-ss", data.created_at)}

@@ -36,8 +36,10 @@ import { ConfirmButton, MotionButton } from "./Button";
 import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
 import { PrintDummies } from "../utils/PlaceHolder";
 import { motionProps } from "../Config/MotionProps";
+import { DateFormatter } from "../utils/Formatter";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
+const ServerAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 
 export const ModalContext = createContext();
@@ -111,7 +113,10 @@ export const MainModalHandler = (props) => {
     } else if (
       formType === "ALTER_BY_ID" ||
       formType === "DROP_BY_ID" ||
-      formType === "PRINT_BY_ID"
+      formType === "PRINT_BY_ID" ||
+      formType === "SHOW_PRODUCT_BARCODE" ||
+      formType === "SHOW_PRODUCT_PICTURE" ||
+      formType === "TEST_BULK"
     ) {
       // temp method: ini perlu dilakukan untuk menampilkan update setiap ada data baru
       if (table_id !== "" && table_id !== null) {
@@ -454,6 +459,11 @@ export const MainModalHandler = (props) => {
                 <div className="flex flex-col items-center justify-center w-full h-full">
                   <Dialog.Overlay />
                   <div
+                    onClick={() => {
+                      setShowModal(false);
+                      refresh();
+                      clearData();
+                    }}
                     className="fixed inset-0 transition-opacity"
                     aria-hidden="true"
                   >
@@ -463,6 +473,7 @@ export const MainModalHandler = (props) => {
                   <motion.div {...motionProps.modal}>
                     {modalType == "form" && <FormModal />}
                     {modalType == "print" && <PrintModal />}
+                    {modalType == "info" && <InfoModal />}
                   </motion.div>
                 </div>
               </Dialog>
@@ -1057,7 +1068,41 @@ export const TipsModal = (props) => {
 };
 
 export const InfoModal = (props) => {
-  const { showModal, setShowModal, table_id, formType } = props;
+  const {
+    id,
+    // MyTable
+    table,
+    refresh,
+    clearData,
+    // Modal
+    showModal,
+    setShowModal,
+    data,
+    setData,
+    onWorking,
+    sending,
+    errorMessage,
+    loading,
+    select,
+    formType,
+    showPassword,
+    setShowPassword,
+    //react-hook-form
+    passwordRef,
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    setFocus,
+    setError,
+    control,
+    errors,
+    isValid,
+    dirtyFields,
+    watch,
+    onSubmit,
+  } = useContext(ModalContext);
+  const [serverPublic, setServerPublic] = useState(null);
 
   // REDUX
   const {
@@ -1073,13 +1118,12 @@ export const InfoModal = (props) => {
   } = useSelector((state) => state.UI);
 
   useLayoutEffect(() => {
-    if (table_id !== null && formType) {
-      const dialogElement = document.getElementById("ShowPict");
-      if (dialogElement) {
-        dialogElement.showModal();
-      }
+    if (formType === "SHOW_ADMIN_PROFILE_PICTURE") {
+      setServerPublic(ServerAdminsImg);
+    } else if (formType === "SHOW_PRODUCT_PICTURE") {
+      setServerPublic(ServerProductsImg);
     }
-  }, [table_id, formType]);
+  }, [table, formType]);
 
   // useEffect(() => {
   //   console.table(props);
@@ -1087,93 +1131,175 @@ export const InfoModal = (props) => {
 
   return (
     <>
-      {table_id !== null && (
-        <>
-          {showModal === "GANTI INI SETELELELLLLLLLLLLLLLLLLLLL" && (
-            <div className="modal-list">
-              <div className="list-modal">
-                <dialog id="ShowPict" className={`${textColor} modal `}>
-                  <div
-                    className={`modal-box ${BgColor} max-w-[550px] max-h-[600px] overflow-hidden p-0`}
+      <Dialog.Panel
+        as="div"
+        className={`flex flex-col h-full justify-center bg-white rounded-lg overflow-hidden shadow-xl transform transition-all`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-headline"
+      >
+        <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+          <div className="bg-white min-w-[700px] py-2">
+            {formType == "SHOW_PRODUCT_BARCODE" &&
+            (formType != "SHOW_ADMIN_PROFILE_PICTURE" ||
+              formType != "SHOW_PRODUCT_PICTURE") ? (
+              <div
+                className={`card-header pb-4 px-4 flex flex-row justify-between w-full items-center shadow-md`}
+              >
+                <div className="w-5/12 font-bold text-lg text-left capitalize ">
+                  <Dialog.Title>
+                    {formType === "SHOW_PRODUCT_BARCODE" &&
+                      `Barcode Info - ${table}`}
+                  </Dialog.Title>
+                </div>
+                <div className="w-6/12">
+                  {errorMessage && (
+                    <>
+                      <Dialog.Description
+                        key={id}
+                        className={`px-2 py-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
+                        as="small"
+                      >
+                        {console.log(errors)}
+                        {errorMessage}
+                      </Dialog.Description>
+                    </>
+                  )}
+                  {sending && (
+                    <>
+                      <span className="loading loading-dots loading-md"></span>
+                    </>
+                  )}
+                </div>
+                <div className="w-1/12 text-right">
+                  <button
+                    className="btn btn-sm btn-circle btn-ghost hover:bg-red-300"
+                    onClick={() => {
+                      setShowModal(false);
+                      refresh();
+                      clearData();
+                    }}
                   >
-                    {formType === "SHOW_ADMIN_PROFILE_PICTURE" && (
-                      <>
-                        <div className="flex flex-col justify-center items-center">
-                          <h3 className="font-bold text-xl py-4 line-clamp-2">
-                            {table_id?.username || "username?"}
-                          </h3>
-                          <img
-                            src={`./src/assets/admin_avatar/${
-                              table_id?.pict || "default.png"
-                            }`}
-                            alt={`Profile Picture ${
-                              table_id?.username || "username?"
-                            }`}
-                            className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
-                          />
-                        </div>
-                        <div className="py-4">
-                          <small className="">
-                            <span className="font-bold ">Updated At : </span>
-                            {table_id?.updated_at || "NaN"}
-                          </small>
-                        </div>
-                      </>
-                    )}
-                    {formType === "SHOW_PRODUCT_PICTURE" && (
-                      <>
-                        <div className="flex flex-col justify-center items-center">
-                          <h3 className="font-bold text-xl py-4 line-clamp-2">
-                            {table_id?.name || "This Product"}
-                          </h3>
-                          <img
-                            src={`${ServerProductsImg}${
-                              table_id?.pict || "default.png"
-                            }`}
-                            alt={`Profile Picture ${
-                              table_id?.name || "username?"
-                            }`}
-                            className="min-w-[470px] min-h-[470px] max-w-[470px] max-h-[470px] overflow-hidden rounded-lg border-4 border-gray-200"
-                          />
-                        </div>
-                        <div className="py-4">
-                          <small className="">
-                            <span className="font-bold ">Updated At : </span>
-                            {table_id?.updated_at || "NaN"}
-                          </small>
-                        </div>
-                      </>
-                    )}
-                    {formType === "SHOW_PRODUCT_BARCODE" && (
-                      <>
-                        <div className="flex flex-col justify-center items-center">
-                          <h3 className="font-bold text-xl py-4 line-clamp-2">
-                            {table_id?.name || "This Product"}
-                          </h3>
-                          <Barcode
-                            className={`h-[150px] p-0 m-0 max-w-[300px]`}
-                            value={table_id?.barcode}
-                            // options={{ format: "EAN13" }}
-                          />
-                        </div>
-                        <div className="py-4">
-                          <small className="">
-                            <span className="font-bold ">Updated At : </span>
-                            {table_id?.updated_at || "NaN"}
-                          </small>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
-                  </form>
-                </dialog>
+                    <MuiIcon iconName="CloseRounded" />
+                  </button>
+                </div>
               </div>
+            ) : (
+              ""
+            )}
+
+            <div className="card-body py-0 px-2 ">
+              {data !== undefined && data !== null ? (
+                <div className="content over">
+                  {!loading ? (
+                    <>
+                      {onWorking ? (
+                        // =========================== Main Form ========================
+                        <div className="">
+                          {formType === "SHOW_ADMIN_PROFILE_PICTURE" ||
+                            (formType === "SHOW_PRODUCT_PICTURE" && (
+                              <>
+                                <div className="flex flex-col justify-center items-center">
+                                  <Dialog.Description
+                                    as="h3"
+                                    className="font-bold text-xl py-4 line-clamp-2 capitalize"
+                                  >
+                                    {formType ===
+                                      "SHOW_ADMIN_PROFILE_PICTURE" &&
+                                      data.username}
+                                    {formType === "SHOW_PRODUCT_PICTURE" &&
+                                      data.name}
+                                  </Dialog.Description>
+                                  <img
+                                    src={`${serverPublic}${
+                                      data?.pict || "default.png"
+                                    }`}
+                                    alt={`Info Picture ${data.pict}`}
+                                    className="min-w-[300px] min-h-[320px] max-w-[500px] max-h-[520px] overflow-hidden rounded-lg border-4 border-gray-200"
+                                  />
+                                </div>
+                                <div className="py-4 text-center">
+                                  <small className="">
+                                    <span className="font-bold ">
+                                      Updated At :{" "}
+                                    </span>
+                                    {DateFormatter(
+                                      "YYYY-MM-DD-hh-mm-ss",
+                                      data.updated_at
+                                    )}
+                                  </small>
+                                </div>
+                              </>
+                            ))}
+                          {formType === "SHOW_PRODUCT_BARCODE" && (
+                            <>
+                              <div className="flex flex-col justify-center items-center">
+                                <Dialog.Description
+                                  as="h3"
+                                  className="font-bold text-xl py-4 line-clamp-2 capitalize"
+                                >
+                                  {data?.name || "This Product"}
+                                </Dialog.Description>
+                                <Barcode
+                                  className={`h-[150px] p-0 m-0 max-w-[300px]`}
+                                  value={data?.barcode}
+                                  // options={{ format: "EAN13" }}
+                                />
+                              </div>
+                              <div className="py-4 text-center">
+                                <small className="">
+                                  <span className="font-bold ">
+                                    Updated At :{" "}
+                                  </span>
+                                  {DateFormatter(
+                                    "YYYY-MM-DD-hh-mm-ss",
+                                    data.updated_at
+                                  )}
+                                </small>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          <h1 className="font-roboto-bold py-8 text-xl">
+                            Modal Logic Error !
+                          </h1>
+                        </>
+                      )}
+                      {/* end of onWorking */}
+                    </>
+                  ) : (
+                    <>
+                      <p>Loading...</p>
+                    </>
+                  )}
+                  {/* end of loading */}
+                </div>
+              ) : (
+                <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
+                  <h1 className="font-poppins-medium text-xl">
+                    Loading Render Form...
+                  </h1>
+                  <div className="flex-row">
+                    <span className="loading loading-bars loading-lg"></span>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </>
-      )}
+          </div>
+          {/* <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <MotionButton
+              formType="cancel"
+              onClick={() => {
+                setShowModal(false);
+                refresh();
+                clearData();
+              }}
+            />
+          </div> */}
+        </form>
+      </Dialog.Panel>
     </>
   );
 };
