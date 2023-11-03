@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
 import { MuiIcon } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 
@@ -128,15 +130,88 @@ export const ConfirmButton = (props) => {
   );
 };
 
-export const MyButton = (props) => {
-  const { className, color, outline } = props;
+export const MotionButton = (props) => {
+  const {
+    className,
+    formType = "default",
+    icon = "HelpRounded",
+    span = "???",
+    type = "button",
+    onClick,
+    children,
+  } = props;
+
+  const [formButton, setFormButton] = useState(formType ?? null);
+  const [styleButton, setStyleButton] = useState({
+    className: null,
+    icon: null,
+    span: null,
+  });
   // Konten komponen
+
+  useEffect(() => {
+    setFormButton(formType);
+    if (formType == "default") {
+      setStyleButton({
+        ...styleButton,
+        className: `${className} mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`,
+        icon: icon,
+        span: span,
+      });
+    } else if (formType == "confirm") {
+      setStyleButton({
+        ...styleButton,
+        className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
+        icon: "DeleteForeverSharp",
+        span: "Delete",
+      });
+    } else if (formType == "delete") {
+      setStyleButton({
+        ...styleButton,
+        className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
+        icon: "DeleteForeverSharp",
+        span: "Delete",
+      });
+    } else if (formType == "cancel") {
+      setStyleButton({
+        ...styleButton,
+        className: `${className} mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-slate-50 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`,
+        icon: "DisabledByDefaultRounded",
+        span: "Cancel",
+      });
+    }
+  }, [formType]);
+
   return (
     <>
-      <button className="btn btn-info">Info</button>
-      <button className="btn btn-success">Success</button>
-      <button className="btn btn-warning">Warning</button>
-      <button className="btn btn-error">Error</button>
+      {formType && (
+        <motion.button
+          type={type}
+          tabIndex={0}
+          className={styleButton.className}
+          onClick={onClick}
+          initial={{ scale: 0.5 }}
+          animate={{ scale: 1 }}
+          transition={{
+            type: "spring",
+            stiffness: 260,
+            damping: 20,
+          }}
+        >
+          {children ? (
+            children
+          ) : (
+            <>
+              <span id="showDelete" className="options px-[4px]">
+                <i className="font-xs">
+                  <MuiIcon iconName={styleButton.icon} fontSize={20} />
+                </i>
+              </span>
+              <span className=" pr-2">{styleButton.span}</span>
+            </>
+          )}
+        </motion.button>
+      )}
     </>
   );
 };
