@@ -35,6 +35,7 @@ import { ProductsInputForm, ProductsDropForm } from "./Products/ProductsForm";
 import { ConfirmButton, MotionButton } from "./Button";
 import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
 import { GetDateTime } from "../utils/Formatter";
+import { PrintDummies } from "../utils/PlaceHolder";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
@@ -1085,62 +1086,6 @@ export const CropperModal = (props) => {
 
 export const MuiModal = (props) => {
   const { showModal, setShowModal } = props;
-  const elements = [];
-
-  for (let i = 1; i <= 120; i++) {
-    elements.push(<div key={i}>Element {i}</div>);
-  }
-  // return (
-  //   <>
-  //     <button
-  //       className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-  //       onClick={() => setShowModal(!showModal)}
-  //     >
-  //       Open modal
-  //     </button>
-  //     <Dialog
-  //       open={showModal}
-  //       onClose={() => setShowModal(false)}
-  //       className="relative z-50"
-  //     >
-  //       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-  //         <Dialog.Overlay />
-  //         <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-  //           <div className="absolute inset-0 bg-gray-950 opacity-40"></div>
-  //         </div>
-  //         <motion.div
-  //           className=" bg-violet-400"
-  //           initial={{
-  //             opacity: 0,
-  //             scale: 0.75,
-  //           }}
-  //           animate={{
-  //             opacity: 1,
-  //             scale: 1,
-  //             transition: {
-  //               ease: "easeOut",
-  //               duration: 0.15,
-  //             },
-  //           }}
-  //           exit={{
-  //             opacity: 0,
-  //             scale: 0.75,
-  //             transition: {
-  //               ease: "easeIn",
-  //               duration: 0.15,
-  //             },
-  //           }}
-  //         >
-  //           <Dialog.Panel className="w-full max-w-sm rounded bg-white">
-  //             <Dialog.Title>Complete your order</Dialog.Title>
-
-  //             {/* ... */}
-  //           </Dialog.Panel>
-  //         </motion.div>
-  //       </div>
-  //     </Dialog>
-  //   </>
-  // );
   return (
     <>
       <button
@@ -1232,7 +1177,7 @@ export const MuiModal = (props) => {
                     </div>
                     <div className="card-body p-0 max-h-[560px] overflow-y-scroll">
                       <div className="bg-lime-200">
-                        {elements}
+                        <PrintDummies max={50} />
                         <textarea></textarea>
                       </div>
                       <p>We are using cookies for no reason.</p>
