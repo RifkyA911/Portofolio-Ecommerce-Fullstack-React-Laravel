@@ -36,7 +36,7 @@ export const DownloadBtnReactPDF = (props) => {
 
   return (
     <PDFDownloadLink
-      className="absolute right-4 px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
+      className="mx-auto px-3 rounded-md bg-gradient-to-r from-blue-500 to-sky-500 py-2 font-roboto-medium text-white"
       document={<PrintReactPDF inputData={inputData} table={table} />}
       fileName={`${table}_${inputData.name || inputData.username}${
         formType === "PRINT_BATCH" ? "_Batch" : ""
