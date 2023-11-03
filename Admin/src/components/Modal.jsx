@@ -36,6 +36,7 @@ import { ConfirmButton, MotionButton } from "./Button";
 import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
 import { GetDateTime } from "../utils/Formatter";
 import { PrintDummies } from "../utils/PlaceHolder";
+import { motionProps } from "../Config/MotionProps";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
@@ -168,7 +169,7 @@ export const InfoModal = (props) => {
     <>
       {table_id !== null && (
         <>
-          {showModal && (
+          {showModal === "GANTI INI SETELELELLLLLLLLLLLLLLLLLLL" && (
             <div className="modal-list">
               <div className="list-modal">
                 <dialog id="ShowPict" className={`${textColor} modal `}>
@@ -258,7 +259,17 @@ export const InfoModal = (props) => {
 };
 
 export const ActionModalForm = (props) => {
-  const { refresh, table, table_id, select, formType, clearData } = props;
+  const {
+    table,
+    table_id,
+    showModal,
+    setShowModal,
+    modalType,
+    formType,
+    clearData,
+    select,
+    refresh,
+  } = props;
 
   const [data, setData] = useState();
   const [showPassword, setShowPassword] = useState(false);
@@ -546,6 +557,7 @@ export const ActionModalForm = (props) => {
       setErrorMessage(null);
       setLoading(false);
       setOnWorking(false);
+      setShowModal(false);
       clearData(); // parent props
       refresh(); // parent props
     } catch (error) {
@@ -573,8 +585,14 @@ export const ActionModalForm = (props) => {
     refresh,
     clearData,
     // Modal
+    showModal,
+    setShowModal,
     data,
     setData,
+    onWorking,
+    sending,
+    errorMessage,
+    loading,
     select,
     formType,
     showPassword,
@@ -592,150 +610,392 @@ export const ActionModalForm = (props) => {
     isValid,
     dirtyFields,
     watch,
+    onSubmit: async (form) => {
+      console.info("data form:", form);
+      if (errors) {
+        Object.keys(errors).map((fieldName) => {
+          console.log("Kesalahan dalam formulir:", errors[fieldName].message);
+        });
+      }
+      if (!form) {
+        alert("there is no form to send");
+      }
+
+      await sendFormDataByMethod(form);
+    },
   };
 
   return (
     <>
       <ModalContext.Provider value={ModalContextValue}>
-        <dialog id="ModalForms" className="modal">
-          <div
-            className={`modal-box h-auto w-12/12 ${
-              formType === "ALTER_BY_ID" || formType === "INSERT"
-                ? "max-w-6xl"
-                : "max-w-3xl"
-            } bg-gray-50 cursor-auto p-0 min-h-[90%]`}
+        <>
+          {/* <button
+            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+            onClick={() => setShowModal(!showModal)}
           >
-            <form method="dialog" className={` sticky top-0 z-10`}>
-              <button
-                onClick={() => {
-                  refresh();
-                  clearData();
-                }}
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-3 hover:bg-red-300"
+            Open modal
+          </button> */}
+          <AnimatePresence>
+            {showModal && (
+              <Dialog
+                open={showModal}
+                onClose={setShowModal}
+                as="div"
+                className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-hidden"
               >
-                <MuiIcon iconName="CloseRounded" />
-              </button>
-            </form>
-            <div
-              className={`bg-slate-50 sticky z-[5] top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
-            >
-              <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
-                {formType === "INSERT" && `Add New ${table}`}
-                {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
-                {formType === "DROP_BY_ID" && `Delete This ${table}`}
-                {formType === "DROP_BY_SELECTED" && `Delete Multiple ${table}`}
-              </div>
-              {errorMessage ? (
-                <>
+                <div className="flex flex-col items-center justify-center w-full h-full">
+                  <Dialog.Overlay />
                   <div
-                    key={id}
-                    className={`p-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
+                    className="fixed inset-0 transition-opacity"
+                    aria-hidden="true"
                   >
-                    {/* {Object.keys(errors).map((fieldName) => (
-                      <>
-                        <span key={fieldName}>{errors[fieldName].message}</span>
-                      </>
-                    ))} */}
-                    {console.log(errors)}
-                    {errorMessage}
+                    <div className="absolute inset-0 bg-gray-950 opacity-40"></div>
                   </div>
-                </>
-              ) : (
-                <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
-              )}
-              {sending && (
-                <>
-                  <span className="loading loading-dots loading-md"></span>
-                </>
-              )}
-            </div>
-            {data !== undefined && data !== null ? (
-              <div className="content over">
-                {!loading ? (
+
+                  <motion.div {...motionProps.modal}>
+                    {modalType == "form" && <FormModal />}
+                    {modalType == "print" && <PrintModal />}
+                  </motion.div>
+                </div>
+              </Dialog>
+            )}
+          </AnimatePresence>
+        </>
+      </ModalContext.Provider>
+    </>
+  );
+};
+
+export const FormModal = (props) => {
+  const {
+    // MyTable
+    table,
+    refresh,
+    clearData,
+    // Modal
+    showModal,
+    setShowModal,
+    data,
+    setData,
+    onWorking,
+    sending,
+    errorMessage,
+    loading,
+    select,
+    formType,
+    showPassword,
+    setShowPassword,
+    //react-hook-form
+    passwordRef,
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    setFocus,
+    setError,
+    control,
+    errors,
+    isValid,
+    dirtyFields,
+    watch,
+    onSubmit,
+  } = useContext(ModalContext);
+
+  return (
+    <>
+      <Dialog.Panel
+        as="div"
+        className={`flex flex-col w-[1200px] h-full justify-center bg-white rounded-lg overflow-hidden shadow-xl transform transition-all`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-headline"
+      >
+        <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+          <div className="bg-white px-4 py-2">
+            <div className="card-header pb-4 flex flex-row justify-between w-full items-center">
+              <div className="w-5/12 font-bold text-lg text-left capitalize ">
+                <Dialog.Title>
+                  {formType === "INSERT" && `Add New ${table}`}
+                  {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
+                  {formType === "DROP_BY_ID" && `Delete This ${table}`}
+                  {formType === "DROP_BY_SELECTED" &&
+                    `Delete Multiple ${table}`}
+                </Dialog.Title>
+              </div>
+              <div className="w-6/12">
+                {errorMessage && (
                   <>
-                    {onWorking ? (
-                      // =========================== Main Form ========================
-                      <form
-                        className=""
-                        autoComplete="off"
-                        onSubmit={handleSubmit(onSubmit)}
-                      >
-                        <input
-                          type="hidden"
-                          {...register("superAuthorizationPassword", {
-                            required:
-                              "Your Credentials superAuthorizationPassword are required",
-                          })}
-                        />
-                        {setValue("superAuthorizationPassword", SuperAdminKey)}{" "}
-                        {/* Panggilan setValue diluar input */}
-                        {table === "admins" && (
-                          <>
-                            {formType === "INSERT" && (
-                              <>
-                                <AdminsInsertForm />
-                              </>
-                            )}
-                            {formType === "ALTER_BY_ID" && (
-                              <>
-                                <AdminsAlterForm />
-                              </>
-                            )}
-                            {(formType === "DROP_BY_ID" ||
-                              formType === "DROP_BY_SELECTED") && (
-                              <>
-                                <AdminsDropForm />
-                              </>
-                            )}
-                          </>
-                        )}
-                        {table === "products" && (
-                          <>
-                            {(formType === "INSERT" ||
-                              formType === "ALTER_BY_ID") && (
-                              <>
-                                <ProductsInputForm />
-                              </>
-                            )}
-                            {(formType === "DROP_BY_ID" ||
-                              formType === "DROP_BY_SELECTED") && (
-                              <>
-                                <ProductsDropForm />
-                              </>
-                            )}
-                          </>
-                        )}
-                      </form>
-                    ) : (
-                      <>
-                        <h1 className="font-roboto-bold py-8 text-xl">
-                          Modal Logic Error !
-                        </h1>
-                      </>
-                    )}
-                    {/* end of onWorking */}
-                  </>
-                ) : (
-                  <>
-                    <p>Loading...</p>
+                    <Dialog.Description
+                      key={id}
+                      className={`px-2 py-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
+                      as="small"
+                    >
+                      {console.log(errors)}
+                      {errorMessage}
+                    </Dialog.Description>
                   </>
                 )}
-                {/* end of loading */}
+                {sending && (
+                  <>
+                    <span className="loading loading-dots loading-md"></span>
+                  </>
+                )}
               </div>
-            ) : (
-              <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
-                <h1 className="font-poppins-medium text-xl">
-                  Loading Render Form...
-                </h1>
-                <div className="flex-row">
-                  <span className="loading loading-bars loading-lg"></span>
+              <div className="w-1/12 text-right">
+                <button
+                  className="btn btn-sm btn-circle btn-ghost hover:bg-red-300"
+                  onClick={() => {
+                    setShowModal(false);
+                    refresh();
+                    clearData();
+                  }}
+                >
+                  <MuiIcon iconName="CloseRounded" />
+                </button>
+              </div>
+            </div>
+            <div className="card-body p-0 max-h-[560px] overflow-y-scroll">
+              {data !== undefined && data !== null ? (
+                <div className="content over">
+                  {!loading ? (
+                    <>
+                      {onWorking ? (
+                        // =========================== Main Form ========================
+                        <div className="">
+                          <input
+                            type="hidden"
+                            {...register("superAuthorizationPassword", {
+                              required:
+                                "Your Credentials superAuthorizationPassword are required",
+                            })}
+                          />
+                          {setValue(
+                            "superAuthorizationPassword",
+                            SuperAdminKey
+                          )}
+                          {/* Panggilan setValue diluar input */}
+                          {table === "admins" && (
+                            <>
+                              {formType === "INSERT" && (
+                                <>
+                                  <AdminsInsertForm />
+                                </>
+                              )}
+                              {formType === "ALTER_BY_ID" && (
+                                <>
+                                  <AdminsAlterForm />
+                                </>
+                              )}
+                              {(formType === "DROP_BY_ID" ||
+                                formType === "DROP_BY_SELECTED") && (
+                                <>
+                                  <AdminsDropForm />
+                                </>
+                              )}
+                            </>
+                          )}
+                          {table === "products" && (
+                            <>
+                              {(formType === "INSERT" ||
+                                formType === "ALTER_BY_ID") && (
+                                <>
+                                  <ProductsInputForm />
+                                </>
+                              )}
+                              {(formType === "DROP_BY_ID" ||
+                                formType === "DROP_BY_SELECTED") && (
+                                <>
+                                  <ProductsDropForm />
+                                </>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          <h1 className="font-roboto-bold py-8 text-xl">
+                            Modal Logic Error !
+                          </h1>
+                        </>
+                      )}
+                      {/* end of onWorking */}
+                    </>
+                  ) : (
+                    <>
+                      <p>Loading...</p>
+                    </>
+                  )}
+                  {/* end of loading */}
                 </div>
-              </div>
-            )}
-            {/* end of data */}
+              ) : (
+                <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
+                  <h1 className="font-poppins-medium text-xl">
+                    Loading Render Form...
+                  </h1>
+                  <div className="flex-row">
+                    <span className="loading loading-bars loading-lg"></span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </dialog>
-      </ModalContext.Provider>
+          <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            {formType === "INSERT" && <MotionButton formType="insert" />}
+            {formType === "ALTER_BY_ID" && <MotionButton formType="alter" />}
+            {(formType === "DROP_BY_ID" || formType === "DROP_BY_SELECTED") && (
+              <MotionButton formType="delete" />
+            )}
+            <MotionButton
+              formType="cancel"
+              onClick={() => {
+                setShowModal(false);
+                refresh();
+                clearData();
+              }}
+            />
+          </div>
+        </form>
+      </Dialog.Panel>
+    </>
+  );
+};
+
+export const AOKDOK = (props) => {
+  return (
+    <>
+      <dialog id="ModalForms" className="modal">
+        <div
+          className={`modal-box h-auto w-12/12 ${
+            formType === "ALTER_BY_ID" || formType === "INSERT"
+              ? "max-w-6xl"
+              : "max-w-3xl"
+          } bg-gray-50 cursor-auto p-0 min-h-[90%]`}
+        >
+          <form method="dialog" className={` sticky top-0 z-10`}>
+            <button
+              onClick={() => {
+                refresh();
+                clearData();
+              }}
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-3 hover:bg-red-300"
+            >
+              <MuiIcon iconName="CloseRounded" />
+            </button>
+          </form>
+          <div
+            className={`bg-slate-50 sticky z-[5] top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
+          >
+            <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
+              {formType === "INSERT" && `Add New ${table}`}
+              {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
+              {formType === "DROP_BY_ID" && `Delete This ${table}`}
+              {formType === "DROP_BY_SELECTED" && `Delete Multiple ${table}`}
+            </div>
+            {errorMessage ? (
+              <>
+                <div
+                  key={id}
+                  className={`p-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
+                >
+                  {console.log(errors)}
+                  {errorMessage}
+                </div>
+              </>
+            ) : (
+              <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
+            )}
+            {sending && (
+              <>
+                <span className="loading loading-dots loading-md"></span>
+              </>
+            )}
+          </div>
+          {data !== undefined && data !== null ? (
+            <div className="content over">
+              {!loading ? (
+                <>
+                  {onWorking ? (
+                    // =========================== Main Form ========================
+                    <form
+                      className=""
+                      autoComplete="off"
+                      onSubmit={handleSubmit(onSubmit)}
+                    >
+                      <input
+                        type="hidden"
+                        {...register("superAuthorizationPassword", {
+                          required:
+                            "Your Credentials superAuthorizationPassword are required",
+                        })}
+                      />
+                      {setValue("superAuthorizationPassword", SuperAdminKey)}{" "}
+                      {/* Panggilan setValue diluar input */}
+                      {table === "admins" && (
+                        <>
+                          {formType === "INSERT" && (
+                            <>
+                              <AdminsInsertForm />
+                            </>
+                          )}
+                          {formType === "ALTER_BY_ID" && (
+                            <>
+                              <AdminsAlterForm />
+                            </>
+                          )}
+                          {(formType === "DROP_BY_ID" ||
+                            formType === "DROP_BY_SELECTED") && (
+                            <>
+                              <AdminsDropForm />
+                            </>
+                          )}
+                        </>
+                      )}
+                      {table === "products" && (
+                        <>
+                          {(formType === "INSERT" ||
+                            formType === "ALTER_BY_ID") && (
+                            <>
+                              <ProductsInputForm />
+                            </>
+                          )}
+                          {(formType === "DROP_BY_ID" ||
+                            formType === "DROP_BY_SELECTED") && (
+                            <>
+                              <ProductsDropForm />
+                            </>
+                          )}
+                        </>
+                      )}
+                    </form>
+                  ) : (
+                    <>
+                      <h1 className="font-roboto-bold py-8 text-xl">
+                        Modal Logic Error !
+                      </h1>
+                    </>
+                  )}
+                  {/* end of onWorking */}
+                </>
+              ) : (
+                <>
+                  <p>Loading...</p>
+                </>
+              )}
+              {/* end of loading */}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
+              <h1 className="font-poppins-medium text-xl">
+                Loading Render Form...
+              </h1>
+              <div className="flex-row">
+                <span className="loading loading-bars loading-lg"></span>
+              </div>
+            </div>
+          )}
+          {/* end of data */}
+        </div>
+      </dialog>
     </>
   );
 };
@@ -1081,125 +1341,6 @@ export const CropperModal = (props) => {
         onChange={handleFileChange}
       />
     </div>
-  );
-};
-
-export const MuiModal = (props) => {
-  const { showModal, setShowModal } = props;
-  return (
-    <>
-      <button
-        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-        onClick={() => setShowModal(!showModal)}
-      >
-        Open modal
-      </button>
-      <AnimatePresence>
-        {showModal && (
-          <Dialog
-            open={showModal}
-            onClose={setShowModal}
-            as="div"
-            className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-hidden"
-          >
-            <div className="flex flex-col items-center justify-center w-full h-full">
-              <Dialog.Overlay />
-              <div
-                className="fixed inset-0 transition-opacity"
-                aria-hidden="true"
-              >
-                <div className="absolute inset-0 bg-gray-950 opacity-40"></div>
-              </div>
-
-              <motion.div
-                // initial={{
-                //   opacity: 0,
-                //   scale: 0.75,
-                // }}
-                // animate={{
-                //   opacity: 1,
-                //   scale: 1,
-                //   transition: {
-                //     ease: "easeOut",
-                //     duration: 0.15,
-                //   },
-                // }}
-                // layout
-                // transition={{
-                //   type: "spring",
-                //   stiffness: 260,
-                //   damping: 20,
-                // }}
-                // exit={{
-                //   opacity: 0,
-                //   scale: 0.75,
-                //   transition: {
-                //     ease: "easeIn",
-                //     duration: 0.15,
-                //   },
-                // }}
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 20,
-                }}
-              >
-                <Dialog.Panel
-                  as="div"
-                  className={`flex flex-col w-[1000px] h-full justify-center bg-white rounded-lg overflow-hidden shadow-xl transform transition-all`}
-                  // role="dialog"
-                  // aria-modal="true"
-                  // aria-labelledby="modal-headline"
-                >
-                  <div className="bg-white px-4 py-2">
-                    <div className="card-header pb-4 flex flex-row justify-between w-full items-center">
-                      <div className="w-5/12 font-bold text-lg text-left capitalize ">
-                        <Dialog.Title>Prototype Table</Dialog.Title>
-                      </div>
-                      <div className="w-6/12">
-                        <Dialog.Description
-                          className={`px-2 py-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
-                          as="small"
-                        >
-                          Error: Gagal Melakukan Request Data
-                        </Dialog.Description>
-                      </div>
-                      <div className="w-1/12 text-right">
-                        <button
-                          className="btn btn-sm btn-circle btn-ghost hover:bg-red-300"
-                          onClick={() => setShowModal(false)}
-                        >
-                          <MuiIcon iconName="CloseRounded" />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="card-body p-0 max-h-[560px] overflow-y-scroll">
-                      <div className="bg-lime-200">
-                        <PrintDummies max={50} />
-                        <textarea></textarea>
-                      </div>
-                      <p>We are using cookies for no reason.</p>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <MotionButton
-                      formType="delete"
-                      onClick={() => setShowModal(false)}
-                    />
-                    <MotionButton
-                      formType="cancel"
-                      onClick={() => setShowModal(false)}
-                    />
-                  </div>
-                </Dialog.Panel>
-              </motion.div>
-            </div>
-          </Dialog>
-        )}
-      </AnimatePresence>
-    </>
   );
 };
 

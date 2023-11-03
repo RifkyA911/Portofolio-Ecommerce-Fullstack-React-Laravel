@@ -4,12 +4,7 @@ import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
-import {
-  ActionModalForm,
-  InfoModal,
-  MuiModal,
-  PrintModal,
-} from "../components/Modal";
+import { ActionModalForm, InfoModal, PrintModal } from "../components/Modal";
 import {
   ProductDetail,
   ProductImage,
@@ -29,7 +24,6 @@ import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import { MuiIcon } from "../utils/RenderIcons";
 import { useReactToPrint } from "react-to-print";
 import { formatToRupiah } from "../utils/Formatter";
 
@@ -62,6 +56,7 @@ export default function Products() {
   // ---- Modal States ----
   const [product, setProduct] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState(false);
   const [formType, setFormType] = useState(null);
 
   // REDUX
@@ -131,7 +126,8 @@ export default function Products() {
   };
 
   // Handler Ketika mengklik actions button
-  const handleActionButton = (id, formType) => {
+  const handleActionButton = (id, formType, modalType) => {
+    setModalType(modalType);
     setProduct(id);
     setFormType(formType);
   };
@@ -190,17 +186,19 @@ export default function Products() {
       onPrintError: () => alert("there is an error when printing"),
     }),
     setPrintBatchModal: () => {
-      document.getElementById("PrintModal").showModal();
-      handleActionButton(selectedRows, "PRINT_BATCH");
+      // document.getElementById("PrintModal").showModal();
+      setShowModal(true);
+      handleActionButton(selectedRows, "PRINT_BATCH", "print");
     },
     setAddModal: () => {
-      document.getElementById("ModalForms").showModal();
-      handleActionButton(null, "INSERT");
+      // document.getElementById("ModalForms").showModal();
+      setShowModal(true);
+      handleActionButton(null, "INSERT", "form");
     },
     setDeleteBatchModal: () => {
-      // console.table(Object.assign({}, selectedRows));
-      document.getElementById("ModalForms").showModal();
-      handleActionButton(selectedRows, "DROP_BY_SELECTED");
+      // document.getElementById("ModalForms").showModal();
+      setShowModal(true);
+      handleActionButton(selectedRows, "DROP_BY_SELECTED", "form");
     },
     // ------------- Table Body -------------
     toggleSelect: toggleSelect,
@@ -234,16 +232,17 @@ export default function Products() {
   const ModalProps = {
     table: "products",
     table_id: product,
-    select: categories,
     showModal: showModal,
     setShowModal: () => {
       setShowModal(false);
     },
+    modalType: modalType,
+    formType: formType,
     refresh: () => {
       fetchData(URL_PRODUCT, "products");
       setLoading(true);
     },
-    formType: formType,
+    select: categories,
     clearData: () => {
       setProducts(null);
       setToggleSelect(false);
@@ -327,10 +326,6 @@ export default function Products() {
                     )}
                   </div>
                   {/* ================ Modal ================= */}
-                  <MuiModal
-                    showModal={showModal}
-                    setShowModal={(value) => setShowModal(value)}
-                  />
                   <InfoModal {...ModalProps} />
                   <PrintModal {...ModalProps} />
                   <ActionModalForm {...ModalProps} />
@@ -490,22 +485,37 @@ export default function Products() {
                                 key={index}
                                 inputData={row}
                                 onClickPrint={() => {
-                                  document
-                                    .getElementById("PrintModal")
-                                    .showModal();
-                                  handleActionButton(row.id, "PRINT_BY_ID");
+                                  // document
+                                  //   .getElementById("PrintModal")
+                                  //   .showModal();
+                                  setShowModal(true);
+                                  handleActionButton(
+                                    row.id,
+                                    "PRINT_BY_ID",
+                                    "print"
+                                  );
                                 }}
                                 onClickDelete={() => {
-                                  document
-                                    .getElementById("ModalForms")
-                                    .showModal();
-                                  handleActionButton(row.id, "DROP_BY_ID");
+                                  // document
+                                  //   .getElementById("ModalForms")
+                                  //   .showModal();
+                                  setShowModal(true);
+                                  handleActionButton(
+                                    row.id,
+                                    "DROP_BY_ID",
+                                    "form"
+                                  );
                                 }}
                                 onClickEdit={() => {
-                                  document
-                                    .getElementById("ModalForms")
-                                    .showModal();
-                                  handleActionButton(row.id, "ALTER_BY_ID");
+                                  // document
+                                  //   .getElementById("ModalForms")
+                                  //   .showModal();
+                                  setShowModal(true);
+                                  handleActionButton(
+                                    row.id,
+                                    "ALTER_BY_ID",
+                                    "form"
+                                  );
                                 }}
                               />
                             )}

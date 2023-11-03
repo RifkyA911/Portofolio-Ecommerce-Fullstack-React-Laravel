@@ -50,7 +50,7 @@ export const ProductsInputForm = (props) => {
 
   return (
     <>
-      <div className="flex flex-row overflow-y-scroll max-h-[500px]">
+      <div className="flex flex-row ">
         <div>
           {/* ALTER */}
           {formType === "ALTER_BY_ID" && (
@@ -139,14 +139,14 @@ export const ProductsInputForm = (props) => {
           {formType === "ALTER_BY_ID" && <DateRecord data={data} />}
         </div>
       </div>
-      {formType === "INSERT" && (
+      {/* {formType === "INSERT" && (
         <ConfirmButton stickyContainer confirmType="add" />
       )}
       {formType === "ALTER_BY_ID" && (
         <>
           <ConfirmButton stickyContainer confirmType="alter" />
         </>
-      )}
+      )} */}
     </>
   );
 };
@@ -178,7 +178,7 @@ export const ProductsDropForm = (props) => {
             )}
           </div>
         )}
-        {/* Confirm Button */}
+        {/* Confirm Button
         <div className="flex gap-12 py-2 justify-center shadow-inner shadow-slate-50 bg-slate-100">
           <ConfirmButton confirmType="drop" />
           <ConfirmButton
@@ -188,7 +188,7 @@ export const ProductsDropForm = (props) => {
               clearData();
             }}
           />
-        </div>
+        </div> */}
       </div>
     </>
   );

@@ -854,9 +854,15 @@ export const DropByIdForm = (props) => {
       {/* Images */}
       <img
         src={
-          pict
-            ? `./src/assets/${location}/${pict}`
-            : `./src/assets/${location}/blank.jpg`
+          data.pict
+            ? table === "products"
+              ? `${ServerPublicProductImg}${data.pict}`
+              : table === "admins"
+              ? `${ServerPublicAdminImg}${data.pict}`
+              : table === "users"
+              ? `${ServerPublicUserImg}${data.pict}`
+              : `${ServerPublicProductImg}default.jpg`
+            : `${ServerPublicProductImg}default.jpg`
         }
         alt="Avatar Tailwind CSS Component"
         className="w-72 rounded-full max-w-3xl shadow-lg m-auto"
@@ -888,9 +894,15 @@ export const DropBySelectedForm = (props) => {
             <img
               key={selected.id}
               src={
-                selected.pict
-                  ? `./src/assets/${location}/${selected.pict}`
-                  : `./src/assets/${location}/blank.jpg`
+                data.pict
+                  ? table === "products"
+                    ? `${ServerPublicProductImg}${data.pict}`
+                    : table === "admins"
+                    ? `${ServerPublicAdminImg}${data.pict}`
+                    : table === "users"
+                    ? `${ServerPublicUserImg}${data.pict}`
+                    : `${ServerPublicProductImg}default.jpg`
+                  : `${ServerPublicProductImg}default.jpg`
               }
               alt="Avatar Tailwind CSS Component"
               className={`w-36 rounded-full shadow-lg m-auto`}
