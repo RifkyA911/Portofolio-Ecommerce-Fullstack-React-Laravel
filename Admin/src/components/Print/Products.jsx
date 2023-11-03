@@ -141,6 +141,10 @@ const PartOfHeader = (props) => {
                 {DateFormatter("YYYY/MM/DD", inputData.created_at)}
               </Text>
               <Text style={tw("text-base")}>
+                Date Updated :{" "}
+                {DateFormatter("YYYY/MM/DD", inputData.updated_at)}
+              </Text>
+              <Text style={tw("text-base")}>
                 Admin : {userSession.username}
               </Text>
             </View>
@@ -204,7 +208,8 @@ const PartOfBody = (props) => {
 export const PrintProducts = (props) => {
   const { inputData, printType } = props;
   useEffect(() => {
-    fetchImage(inputData.pict);
+    // fetchImage(inputData.pict);
+    // console.log(inputData);
   }, [inputData]);
   return (
     <>
@@ -226,7 +231,7 @@ export const PrintProducts = (props) => {
                 <Page key={row.id} size="LETTER" dpi={96}>
                   <View style={styles.page}>
                     {/* =================== HEADER =================== */}
-                    <PartOfHeader />
+                    <PartOfHeader inputData={row} />
                     {/* =================== BODY =================== */}
                     <PartOfBody inputData={row} />
                   </View>

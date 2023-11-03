@@ -118,15 +118,9 @@ export default function Products() {
     }
   }, [paginate, rows]);
 
-  // Handler Ketika mengklik info button
-  const handleInfoButton = (id, formType) => {
+  // Handler Ketika mengklik modal handler button
+  const handleOpenModal = (id, formType, modalType) => {
     setShowModal(true);
-    setProduct(id);
-    setFormType(formType);
-  };
-
-  // Handler Ketika mengklik actions button
-  const handleActionButton = (id, formType, modalType) => {
     setModalType(modalType);
     setProduct(id);
     setFormType(formType);
@@ -187,15 +181,15 @@ export default function Products() {
     }),
     setPrintBatchModal: () => {
       setShowModal(true);
-      handleActionButton(selectedRows, "PRINT_BATCH", "print");
+      handleOpenModal(selectedRows, "PRINT_BATCH", "print");
     },
     setAddModal: () => {
       setShowModal(true);
-      handleActionButton(null, "INSERT", "form");
+      handleOpenModal(null, "INSERT", "form");
     },
     setDeleteBatchModal: () => {
       setShowModal(true);
-      handleActionButton(selectedRows, "DROP_BY_SELECTED", "form");
+      handleOpenModal(selectedRows, "DROP_BY_SELECTED", "form");
     },
     // ------------- Table Body -------------
     toggleSelect: toggleSelect,
@@ -323,8 +317,6 @@ export default function Products() {
                     )}
                   </div>
                   {/* ================ Modal ================= */}
-                  {/* <InfoModal {...ModalProps} /> */}
-                  {/* <PrintModal {...ModalProps} /> */}
                   <MainModalHandler {...ModalProps} />
                   {/* ================ Table ================ */}
                   <ProductDetail inputData={products} />
@@ -432,7 +424,11 @@ export default function Products() {
                           <Td
                             className={`py-2 px-2 w-1/12 cursor-pointer`}
                             onClick={() => {
-                              handleInfoButton(row, "SHOW_PRODUCT_BARCODE");
+                              handleOpenModal(
+                                row.id,
+                                "SHOW_PRODUCT_BARCODE",
+                                "info"
+                              );
                             }}
                           >
                             {row.id && (
@@ -448,7 +444,11 @@ export default function Products() {
                               <ProductImage
                                 data={row}
                                 onProductPictureClick={() => {
-                                  handleInfoButton(row, "SHOW_PRODUCT_PICTURE");
+                                  handleOpenModal(
+                                    row.id,
+                                    "SHOW_PRODUCT_PICTURE",
+                                    "show"
+                                  );
                                 }}
                               />
                             )}
@@ -482,24 +482,17 @@ export default function Products() {
                                 key={index}
                                 inputData={row}
                                 onClickPrint={() => {
-                                  setShowModal(true);
-                                  handleActionButton(
+                                  handleOpenModal(
                                     row.id,
                                     "PRINT_BY_ID",
                                     "print"
                                   );
                                 }}
                                 onClickDelete={() => {
-                                  setShowModal(true);
-                                  handleActionButton(
-                                    row.id,
-                                    "DROP_BY_ID",
-                                    "form"
-                                  );
+                                  handleOpenModal(row.id, "DROP_BY_ID", "form");
                                 }}
                                 onClickEdit={() => {
-                                  setShowModal(true);
-                                  handleActionButton(
+                                  handleOpenModal(
                                     row.id,
                                     "ALTER_BY_ID",
                                     "form"

@@ -42,10 +42,6 @@ const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 
 export const ModalContext = createContext();
 
-export const useModalContext = () => {
-  return useContext(ModalContext);
-};
-
 export const MainModalHandler = (props) => {
   const {
     table,
@@ -524,8 +520,8 @@ export const FormModal = (props) => {
         aria-labelledby="modal-headline"
       >
         <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-          <div className="bg-white px-4 py-2">
-            <div className="card-header pb-4 flex flex-row justify-between w-full items-center">
+          <div className="bg-white  py-2">
+            <div className="card-header pb-4 px-4 flex flex-row justify-between w-full items-center shadow-md">
               <div className="w-5/12 font-bold text-lg text-left capitalize ">
                 <Dialog.Title>
                   {formType === "INSERT" && `Add New ${table}`}
@@ -567,7 +563,7 @@ export const FormModal = (props) => {
                 </button>
               </div>
             </div>
-            <div className="card-body p-0 max-h-[560px] overflow-y-scroll">
+            <div className="card-body px-2 max-h-[560px] overflow-y-scroll">
               {data !== undefined && data !== null ? (
                 <div className="content over">
                   {!loading ? (

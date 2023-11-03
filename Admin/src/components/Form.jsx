@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import Select from "react-select";
 
-import { CropperModal, ModalContext, useModalContext } from "./Modal";
+import { CropperModal, ModalContext } from "./Modal";
 import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { MuiIcon } from "../utils/RenderIcons";
@@ -269,7 +269,7 @@ export const SelectInput = (props) => {
     isValid,
     dirtyFields,
     watch,
-  } = useModalContext();
+  } = useContext(ModalContext);
 
   const validationRules = {
     required: `This ${label} field is required`,
@@ -635,7 +635,7 @@ export const TextArea = (props) => {
     isValid,
     dirtyFields,
     watch,
-  } = useModalContext();
+  } = useContext(ModalContext);
 
   const validationRules = {
     required: `This ${label} field is required`,
@@ -715,7 +715,7 @@ export const FilePictureInput = (props) => {
     isValid,
     dirtyFields,
     watch,
-  } = useModalContext();
+  } = useContext(ModalContext);
 
   const validationRules = {
     required: `This ${label} field is required`,
@@ -735,7 +735,7 @@ export const FilePictureInput = (props) => {
   const pictValue = getValues("pict");
 
   useEffect(() => {
-    console.log("pictValue", getValues("pict"));
+    // console.log("pictValue", getValues("pict"));
     if (!pictValue) {
       setValue("pict", "noChange");
     }
@@ -830,7 +830,7 @@ export const DropByIdForm = (props) => {
     isValid,
     dirtyFields,
     watch,
-  } = useModalContext();
+  } = useContext(ModalContext);
   return (
     <>
       <input
@@ -866,7 +866,7 @@ export const DropByIdForm = (props) => {
 
 export const DropBySelectedForm = (props) => {
   const { table, data, location } = props;
-  // const { table } = useModalContext();
+  // const { table } = useContext(ModalContext)
   const id = useId();
   // console.log(data);
   return (
