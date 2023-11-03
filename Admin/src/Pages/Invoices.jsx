@@ -18,7 +18,7 @@ import {
   Td,
 } from "../components/Table/MyTableEngine";
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
-import { ActionModalForm, InfoModal } from "../components/Modal";
+import { MainModalHandler, InfoModal } from "../components/Modal";
 
 // Custom Const
 const APIGetTransaction = import.meta.env.VITE_API_ALL_TRANSACTION;

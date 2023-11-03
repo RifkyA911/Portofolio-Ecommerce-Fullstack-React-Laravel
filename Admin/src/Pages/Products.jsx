@@ -4,7 +4,7 @@ import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
-import { ActionModalForm, InfoModal, PrintModal } from "../components/Modal";
+import { MainModalHandler, InfoModal, PrintModal } from "../components/Modal";
 import {
   ProductDetail,
   ProductImage,
@@ -186,17 +186,14 @@ export default function Products() {
       onPrintError: () => alert("there is an error when printing"),
     }),
     setPrintBatchModal: () => {
-      // document.getElementById("PrintModal").showModal();
       setShowModal(true);
       handleActionButton(selectedRows, "PRINT_BATCH", "print");
     },
     setAddModal: () => {
-      // document.getElementById("ModalForms").showModal();
       setShowModal(true);
       handleActionButton(null, "INSERT", "form");
     },
     setDeleteBatchModal: () => {
-      // document.getElementById("ModalForms").showModal();
       setShowModal(true);
       handleActionButton(selectedRows, "DROP_BY_SELECTED", "form");
     },
@@ -326,9 +323,9 @@ export default function Products() {
                     )}
                   </div>
                   {/* ================ Modal ================= */}
-                  <InfoModal {...ModalProps} />
-                  <PrintModal {...ModalProps} />
-                  <ActionModalForm {...ModalProps} />
+                  {/* <InfoModal {...ModalProps} /> */}
+                  {/* <PrintModal {...ModalProps} /> */}
+                  <MainModalHandler {...ModalProps} />
                   {/* ================ Table ================ */}
                   <ProductDetail inputData={products} />
                   <div className="divider">Product List</div>
@@ -485,9 +482,6 @@ export default function Products() {
                                 key={index}
                                 inputData={row}
                                 onClickPrint={() => {
-                                  // document
-                                  //   .getElementById("PrintModal")
-                                  //   .showModal();
                                   setShowModal(true);
                                   handleActionButton(
                                     row.id,
@@ -496,9 +490,6 @@ export default function Products() {
                                   );
                                 }}
                                 onClickDelete={() => {
-                                  // document
-                                  //   .getElementById("ModalForms")
-                                  //   .showModal();
                                   setShowModal(true);
                                   handleActionButton(
                                     row.id,
@@ -507,9 +498,6 @@ export default function Products() {
                                   );
                                 }}
                                 onClickEdit={() => {
-                                  // document
-                                  //   .getElementById("ModalForms")
-                                  //   .showModal();
                                   setShowModal(true);
                                   handleActionButton(
                                     row.id,

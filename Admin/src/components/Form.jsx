@@ -193,7 +193,7 @@ export const NumberInput = (props) => {
     >
       <label
         htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1] "
+        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 "
       >
         {label}
         {errors[name] && (
@@ -312,7 +312,7 @@ export const SelectInput = (props) => {
           {/* Role */}
           <label
             htmlFor={name}
-            className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
+            className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 "
           >
             {label}
             {errors[name] && (
@@ -658,7 +658,7 @@ export const TextArea = (props) => {
       {/* <p>{watch("product")}</p> */}
       <label
         htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 z-[-1]"
+        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500"
       >
         {label}
         {errors[name] && (
@@ -667,19 +667,8 @@ export const TextArea = (props) => {
           </span>
         )}
       </label>
-      {/* <input
-        type={type}
-        placeholder={placeholder.toLowerCase()}
-        className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-        {...register(name, validationRules)}
-        onChange={(e) => {
-          console.log(e.target.value);
-          setValue(name, e.target.value);
-        }}
-        // onClick={console.log(name, ":", getValues(name))}
-      /> */}
       <textarea
-        className="textarea textarea-info resize-y border rounded-md p-2 w-full h-32 focus:outline-none focus:ring focus:border-blue-300"
+        className="textarea textarea-info resize-y border rounded-md p-2 w-full h-60 focus:outline-none focus:ring focus:border-blue-300"
         placeholder={placeholder}
         {...register(name, validationRules)}
         onChange={(e) => {

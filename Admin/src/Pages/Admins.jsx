@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 // Components
-import { ActionModalForm, InfoModal, TipsModal } from "./../components/Modal";
+import { MainModalHandler, InfoModal, TipsModal } from "./../components/Modal";
 import {
   ShowAdminName,
   ShowRole,

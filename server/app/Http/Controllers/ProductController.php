@@ -138,7 +138,7 @@ class ProductController extends Controller
         // Ambil daftar ID dari request
         $ids = $request->input('ids');
 
-        // Cari product berdasarkan ID yang diberikan
+        // Cari product berdasarkan array [] ID yang diberikan
         $products = Product::whereIn('id', $ids)->get();
 
         return new PostResource(true, "Data products:", $products);
@@ -207,7 +207,8 @@ class ProductController extends Controller
      */
     public function getById($id)
     {
-        return new PostResource(true, "data Produk :", Product::find($id)->makeHidden('category_id'));
+        // return new PostResource(true, "data Produk :", Product::find($id)->makeHidden('category_id'));
+        return new PostResource(true, "data Produk :", Product::find($id));
     }
 
     /**

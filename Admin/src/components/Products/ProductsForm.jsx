@@ -62,6 +62,7 @@ export const ProductsInputForm = (props) => {
             />
           )}
         </div>
+
         {/* Images */}
         <div className="flex flex-col justify-start items-center w-6/12 p-12">
           <FilePictureInput
@@ -69,6 +70,7 @@ export const ProductsInputForm = (props) => {
             label="Product Picture"
             name="pict"
           />
+          {formType === "ALTER_BY_ID" && <DateRecord data={data} />}
         </div>
         {/* Form */}
         <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium ">
@@ -136,7 +138,6 @@ export const ProductsInputForm = (props) => {
             name="description"
             placeholder="tamnbahkan deskripsi"
           />
-          {formType === "ALTER_BY_ID" && <DateRecord data={data} />}
         </div>
       </div>
       {/* {formType === "INSERT" && (
