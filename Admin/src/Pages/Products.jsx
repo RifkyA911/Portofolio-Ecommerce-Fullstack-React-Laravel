@@ -268,7 +268,7 @@ export default function Products() {
           "id",
           "barcode",
           "name",
-          "category",
+          // "category",
           "price",
           "stock",
           "discount",
@@ -457,7 +457,7 @@ export default function Products() {
                             {row.name}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
-                            {row.category?.name}
+                            {row.category.name}
                           </Td>
                           <Td className={`px-6 ${table_styling.td} w-1/12`}>
                             {row.stock}

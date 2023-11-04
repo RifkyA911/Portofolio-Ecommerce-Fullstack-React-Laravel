@@ -164,8 +164,8 @@ const PartOfBody = (props) => {
           <View style={tw("flex w-1/3 justify-start")}>
             <Image
               style={tw("h-80 w-80 sm:flex text-center rounded-lg")}
-              src={"./src/assets/user_avatar/84719630_p0.jpg"}
-              // src={`${ServerProductsImg}${inputData.pict}`}
+              // src={"./src/assets/user_avatar/84719630_p0.jpg"}
+              src={`${ServerProductsImg}${inputData.pict}`}
             ></Image>
           </View>
           <View style={tw("flex flex-row w-2/3 justify-start")}>
