@@ -33,66 +33,67 @@ use App\Models\Message;
 
 // Endpoint Images for image's stuff
 Route::controller(ImagesController::class)->group(function () {
-    Route::post('image/{type}/{filename}', 'show');     // type = choose between product, admin, or user
+    Route::post('image/{type}/{filename}', 'show'); // type = choose between product, admin, or user
 });
 
 // Endpoint Admin
 Route::controller(AdminsController::class)->group(function () {
     Route::get('/admins', 'index');
     Route::get('/admins/paginate/{page}/{perPage}', 'showLimit');
-    Route::get('/admin/{id}', 'find');     // parameter id
+    Route::get('/admin/{id}', 'find'); // parameter id
     // search admin
-    Route::post('/admins/search', 'search');   // parameter name, category, price(numeric), stok(numeric)
+    Route::post('/admins/search', 'search'); // parameter name, category, price(numeric), stok(numeric)
     //  create admin
-    Route::post('/admin', 'store');    // parameter role_admin == 0; data => email, username, password, role
+    Route::post('/admin', 'store'); // parameter role_admin == 0; data => email, username, password, role
     // update admin
-    Route::put('/admins', 'update');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    Route::put('/admins', 'update'); // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     Route::post('admin/login', 'login'); // parameter email, password
     Route::post('admin/logout', 'logout');
-    Route::post('admin/refresh', 'refresh');    // parameter 'token' with value jwt token
-    Route::post('admin/cek', 'me');     // uji coba, DELETE when deployed
+    Route::post('admin/refresh', 'refresh'); // parameter 'token' with value jwt token
+    Route::post('admin/cek', 'me'); // uji coba, DELETE when deployed
     // patch admin
-    Route::patch('/admins', 'patch');    // parameter spasial
+    Route::patch('/admins', 'patch'); // parameter spasial
     // delete admin
-    Route::delete('/admins', 'drop');    // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    Route::delete('/admins', 'drop'); // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
 });
 
 // Endpoint User
 Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'index');
     Route::get('/users/paginate/{page}/{perPage}', 'showLimit');
-    Route::get('/user/{id}', 'show');   // parameter id
+    Route::get('/user/{id}', 'show'); // parameter id
     // create user
-    Route::post('/user', 'store');  // parameter email, username, password(min:6)
+    Route::post('/user', 'store'); // parameter email, username, password(min:6)
     // update user
-    Route::put('/user', 'update');  // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    Route::put('/user', 'update'); // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     // optional : address, pict;
     // patch user
-    Route::patch('/users', 'patch');    // parameter spasial
+    Route::patch('/users', 'patch'); // parameter spasial
     // login user
     Route::post('/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
     Route::post('/logout', 'logout');
-    Route::post('user/refresh', 'refresh');    // parameter 'token' with value jwt token
-    Route::post('user/cek', 'me');  // uji coba, DELETE when deployed
+    Route::post('user/refresh', 'refresh'); // parameter 'token' with value jwt token
+    Route::post('user/cek', 'me'); // uji coba, DELETE when deployed
 });
 
 // Endpoint Product
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'getAll');
     Route::get('/product/{id}', 'getById'); // parameter id
+    Route::get('/product/image/{id}', 'getImage'); // parameter id
     // table utility
     Route::get('/products/paginate/{page}/{perPage}', 'showLimit');
-    Route::post('/products/print', 'print');     // parameter id
-    Route::post('/products/filter', 'filter');     // parameter id
-    Route::post('/products/search', 'search');   // parameter name, category, price(numeric), stok(numeric)
+    Route::post('/products/print', 'print'); // parameter id
+    Route::post('/products/filter', 'filter'); // parameter id
+    Route::post('/products/search', 'search'); // parameter name, category, price(numeric), stok(numeric)
     // create product
-    Route::post('/product/store', 'store');   // parameter name, category, price(numeric), stok(numeric)
+    Route::post('/product/store', 'store'); // parameter name, category, price(numeric), stok(numeric)
     // update product
-    Route::put('/products', 'update');   // parameter id, name, category, price(numeric), stok(numeric)
+    Route::put('/products', 'update'); // parameter id, name, category, price(numeric), stok(numeric)
     // patch products
-    Route::patch('/products', 'patch');    // parameter spasial
+    Route::patch('/products', 'patch'); // parameter spasial
     // delete products
-    Route::delete('/products', 'drop');    // parameter superAdmin, id)
+    Route::delete('/products', 'drop'); // parameter superAdmin, id)
 });
 
 // Endpoint Categories
@@ -101,45 +102,45 @@ Route::controller(CategoriesController::class)->group(function () {
     Route::get('/category/{id}', 'getById'); // parameter id
     // table utility
     Route::get('/categories/paginate/{page}/{perPage}', 'showLimit');
-    Route::post('/categories/print', 'print');     // parameter id
-    Route::post('/categories/search', 'search');   // parameter name, category, price(numeric), stok(numeric)
+    Route::post('/categories/print', 'print'); // parameter id
+    Route::post('/categories/search', 'search'); // parameter name, category, price(numeric), stok(numeric)
     // create category
-    Route::post('/category/store', 'store');   // parameter name, category, price(numeric), stok(numeric)
+    Route::post('/category/store', 'store'); // parameter name, category, price(numeric), stok(numeric)
     // update category
-    Route::put('/categories', 'update');   // parameter id, name, category, price(numeric), stok(numeric)
+    Route::put('/categories', 'update'); // parameter id, name, category, price(numeric), stok(numeric)
     // patch categories
-    Route::patch('/categories', 'patch');    // parameter spasial
+    Route::patch('/categories', 'patch'); // parameter spasial
     // delete categories
-    Route::delete('/categories', 'drop');    // parameter superAdmin, id)
+    Route::delete('/categories', 'drop'); // parameter superAdmin, id)
 });
 
 // Endpoint Cart/keranjang (user-only feature)
 Route::controller(CartController::class)->group(function () {
-    Route::get('/carts/{user_id}', 'showByUser');   // parameter user_id
-    Route::get('/cart/{id}', 'showById');   // parameter id
-    Route::post('/cart', 'store');     // parameter user_id, product_id, count(optional)
-    Route::post('/cart/delete', 'destroy');    // parameter id
-    Route::post('/cart/update', 'update');     // parameter id, count
+    Route::get('/carts/{user_id}', 'showByUser'); // parameter user_id
+    Route::get('/cart/{id}', 'showById'); // parameter id
+    Route::post('/cart', 'store'); // parameter user_id, product_id, count(optional)
+    Route::post('/cart/delete', 'destroy'); // parameter id
+    Route::post('/cart/update', 'update'); // parameter id, count
     // patch cart
-    Route::patch('/cart', 'patch');    // parameter spasial
+    Route::patch('/cart', 'patch'); // parameter spasial
 });
 
 // Endpoint Wishlist (user-only feature)
 Route::controller(WishlistController::class)->group(function () {
-    Route::get('/wishlist/{user_id}', 'showByUser');    // parameter user_id
-    Route::post('/wishlist', 'store');     // parameter user_id, product_id
-    Route::post('/wishlist/delete', 'destroy');    // parameter id
+    Route::get('/wishlist/{user_id}', 'showByUser'); // parameter user_id
+    Route::post('/wishlist', 'store'); // parameter user_id, product_id
+    Route::post('/wishlist/delete', 'destroy'); // parameter id
 });
 
 // Endpoint Transaction
 Route::controller(TransactionController::class)->group(function () {
     Route::get('/transactions', 'index');
     Route::get('/transactions/paginate/{page}/{perPage}', 'showLimit');
-    Route::get('/transaction/{id}', 'show');    // parameter id
-    Route::post('/transaction/buy', 'store');   // parameter user_id, products_id(in array/json form), total_price. all required
-    Route::post('/transaction/checkout', 'checkout');   // parameter id, user_id(same as trans' user)
-    Route::post('/transaction/sent', 'sent');       // parameter id, admin_id, role_admin
-    Route::post('/transaction/done', 'done');       // parameter id. user_id OR (admin_id & role_admin)
+    Route::get('/transaction/{id}', 'show'); // parameter id
+    Route::post('/transaction/buy', 'store'); // parameter user_id, products_id(in array/json form), total_price. all required
+    Route::post('/transaction/checkout', 'checkout'); // parameter id, user_id(same as trans' user)
+    Route::post('/transaction/sent', 'sent'); // parameter id, admin_id, role_admin
+    Route::post('/transaction/done', 'done'); // parameter id. user_id OR (admin_id & role_admin)
     // Endpoint tahap Transaction by user
     // parameter tahap berisi null, checkedout, sent, atau done
     // tahap = null -> user belum bayar/checkout (tiga kolom pada tabel berisi null)
@@ -179,7 +180,7 @@ Route::controller(MessageController::class)->group(function () {
     // parameter : user_id
     Route::post('/messages/getByAdmin', 'getByAdmin'); // return dialog and first message where admin is involved
     // parameter : admin_id
-    Route::post('/messages/getByDialog', 'getByDialog');    // return messages based on dialog_id
+    Route::post('/messages/getByDialog', 'getByDialog'); // return messages based on dialog_id
     // parameter : dialog_id
 });
 

@@ -62,6 +62,26 @@ class ProductController extends Controller
             ]
         ], 200);
     }
+
+    public function getImage($id)
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['error' => 'ID tidak ditemukan'], 404);
+        }
+
+        $pict = $product->pict;
+        $imagePath = public_path('img/product_images/' . $pict);
+
+        if (file_exists($imagePath)) {
+            return response()->file($imagePath);
+        } else {
+            return response()->json(['error' => 'File gambar tidak ditemukan'], 404);
+        }
+    }
+
+
     public function search(Request $request)
     {
         $searchTerm = $request->input('search'); // Ambil parameter pencarian dari input form
