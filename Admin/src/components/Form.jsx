@@ -8,12 +8,13 @@ import React, {
 } from "react";
 import Select from "react-select";
 
-import { CropperModal, ModalContext } from "./Modal";
+import { CropperModal, Dropzone, ModalContext } from "./Modal";
 import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { MuiIcon } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 import { IsThisAnImage } from "../utils/Solver";
+import { useSelector } from "react-redux";
 
 const ServerPublicProductImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 const ServerPublicAdminImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -49,6 +50,7 @@ export const TextInput = (props) => {
   const {
     className,
     label,
+    labelSize = "text-sm",
     name,
     autoFocus = false,
     placeholder,
@@ -61,7 +63,20 @@ export const TextInput = (props) => {
     // errors,
   } = props;
 
-  // react-hook-form
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  // parent context react-hook-form
   const {
     // data,
     // formType,
@@ -80,7 +95,7 @@ export const TextInput = (props) => {
   const id = useId();
 
   const validationRules = {
-    required: `This ${label} field is required`,
+    required: `This ${label} field is required `,
     maxLength: {
       value: 200,
       message: label + " input must not exceed 200 characters",
@@ -103,10 +118,18 @@ export const TextInput = (props) => {
           className={className}
         >
           {/* <p>{watch("product")}</p> */}
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 sz-[-1]">
+          <label
+            className={`relative w-full font-roboto-bold ${labelSize} text-left ${
+              validationRules.required
+                ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+                : ""
+            }`}
+          >
             {label}
             {errors[name] && (
-              <span className="absolute right-0 text-red-500">
+              <span
+                className={`absolute right-0 top-0 text-red-500 ${BgColor} line-clamp-1`}
+              >
                 {errors[name].message}
               </span>
             )}
@@ -116,7 +139,9 @@ export const TextInput = (props) => {
             autoFocus={autoFocus}
             type={type}
             placeholder={placeholder.toLowerCase()}
-            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+            className={`input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none ${
+              errors[name] ? "border-pink-500" : "border-sky-500"
+            }`}
             {...register(name, validationRules)}
             onChange={(e) => {
               // console.log(name, ":", e.target.value);
@@ -132,8 +157,10 @@ export const TextInput = (props) => {
 
 export const NumberInput = (props) => {
   const {
+    inputRef,
     className,
     label,
+    labelSize = "text-sm",
     name,
     placeholder,
     type = name,
@@ -179,25 +206,25 @@ export const NumberInput = (props) => {
   };
   const ref = useRef();
 
-  // useLayoutEffect(() => {
-  //   console.log(getValues(name));
-  // }, [getValues(name)]);
-
   return (
     <div
       onClick={() => {
         setFocus(name);
-        // console.log(name);
       }}
       className={className}
     >
       <label
-        htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 "
+        className={`relative w-full font-roboto-bold ${labelSize} text-left ${
+          validationRules.required
+            ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+            : ""
+        }`}
       >
         {label}
         {errors[name] && (
-          <span className="absolute right-0 text-red-500 bg-slate-50 px-2">
+          <span
+            className={`absolute right-0 top-0 text-red-500 ${BgColor} line-clamp-1`}
+          >
             {errors[name].message}
           </span>
         )}
@@ -210,7 +237,9 @@ export const NumberInput = (props) => {
           <NumericFormat
             name={name}
             value={value}
-            className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl focus:outline-none`}
+            className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl focus:outline-none ${
+              errors[name] ? "border-pink-500" : "border-sky-500"
+            }`}
             displayType={"input"}
             thousandSeparator
             getInputRef={ref}
@@ -242,6 +271,7 @@ export const SelectInput = (props) => {
     className,
     style,
     label,
+    labelSize = "text-sm",
     name,
     options,
     type = name,
@@ -284,61 +314,40 @@ export const SelectInput = (props) => {
         color: "#00B8D9",
         isFixed: true,
       }));
-
-      // Gunakan setOptionsList untuk mengubah nilai optionsList
       setOptionsList(newOptions);
     }
   };
-
-  // useEffect(() => {
-  //   console.log(select);
-  // }, []);
 
   useEffect(() => {
     selectOptions(select);
     // console.log(optionsList);
   }, [name]);
-  // console.log(select);
+
   return (
     <>
       {optionsList !== null && (
         <div
           onClick={() => {
             setFocus(name);
-            // console.log(setFocus(name));
           }}
           className={className}
         >
-          {/* Role */}
           <label
-            htmlFor={name}
-            className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 "
+            className={`relative w-full font-roboto-bold ${labelSize} text-left ${
+              validationRules.required
+                ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+                : ""
+            }`}
           >
             {label}
             {errors[name] && (
-              <span className="absolute right-0 text-red-500">
+              <span
+                className={`absolute right-0 top-0 text-red-500 ${BgColor} line-clamp-1`}
+              >
                 {errors[name].message}
               </span>
             )}
           </label>
-          {/* <select
-        id={name}
-        className={`${style} select select-info select-sm max-w-3xl focus:outline-none self-start font-roboto-medium`}
-        {...register(name, { required: "select one" })}
-        defaultValue={getValues(name)}
-      >
-        {select.map((option, index) => (
-          <option
-            className="capitalize indent-5 text-lg cursor-pointer"
-            key={index}
-            value={option}
-            // selected={getValues(name) !== null && true}
-          >
-            {option}
-          </option>
-        ))}
-      </select> */}
-
           <Controller
             name={name}
             control={control}
@@ -348,13 +357,15 @@ export const SelectInput = (props) => {
                 options={optionsList}
                 value={optionsList.find((c) => c.value === value)}
                 onChange={(select) => onChange(select.value)}
-                className={`${style}  max-w-3xl focus:outline-none text-left font-roboto-medium basic-single capitalize`}
+                className={`${style} max-w-3xl focus:outline-none text-left ${labelSize}  font-roboto-medium basic-single capitalize ${
+                  errors[name] ? "border-pink-500" : "border-sky-500"
+                }`}
                 classNamePrefix="select"
                 isSearchable={isSearchable}
-                // isDisabled={isDisabled}
-                // isLoading={isLoading}
-                // isClearable={isClearable}
-                // isRtl={isRtl}
+                isDisabled={isDisabled}
+                isLoading={isLoading}
+                isClearable={isClearable}
+                isRtl={isRtl}
                 theme={(theme) => ({
                   ...theme,
                   borderRadius: 8,
@@ -377,8 +388,10 @@ export const SelectInput = (props) => {
 
 export const PasswordInput = (props) => {
   const {
+    inputRef,
     className,
     label,
+    labelSize = "text-sm",
     name,
     autoFocus = false,
     placeholder,
@@ -392,6 +405,19 @@ export const PasswordInput = (props) => {
   } = props;
 
   const [showPassword, setShowPassword] = useState(false);
+
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
 
   // react-hook-form
   const {
@@ -437,10 +463,18 @@ export const PasswordInput = (props) => {
           }}
           className={`relative ${className}`}
         >
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500 sz-[-1]">
+          <label
+            className={`relative w-full font-roboto-bold ${labelSize} text-left ${
+              validationRules.required
+                ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+                : ""
+            }`}
+          >
             {label}
             {errors[name] && (
-              <span className="absolute right-0 text-red-500">
+              <span
+                className={`absolute right-0 top-0 text-red-500 ${BgColor} line-clamp-1`}
+              >
                 {errors[name].message}
               </span>
             )}
@@ -469,6 +503,7 @@ export const PasswordInput = (props) => {
 
 export const ToggleInput = (props) => {
   const {
+    inputRef,
     className,
     label,
     name,
@@ -619,7 +654,16 @@ export const ToggleInput = (props) => {
 };
 
 export const TextArea = (props) => {
-  const { className, label, name, placeholder, type = name, onChange } = props;
+  const {
+    inputRef,
+    className,
+    label,
+    labelSize = "text-sm",
+    name,
+    placeholder,
+    type = name,
+    onChange,
+  } = props;
 
   const {
     data,
@@ -636,6 +680,19 @@ export const TextArea = (props) => {
     dirtyFields,
     watch,
   } = useContext(ModalContext);
+
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
 
   const validationRules = {
     required: `This ${label} field is required`,
@@ -657,35 +714,44 @@ export const TextArea = (props) => {
     >
       {/* <p>{watch("product")}</p> */}
       <label
-        htmlFor={name}
-        className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500"
+        className={`relative w-full font-roboto-bold ${labelSize} text-left ${
+          validationRules.required
+            ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+            : ""
+        }`}
       >
         {label}
         {errors[name] && (
-          <span className="absolute right-0 text-red-500">
+          <span
+            className={`absolute right-0 top-0 text-red-500 ${BgColor} line-clamp-1`}
+          >
             {errors[name].message}
           </span>
         )}
       </label>
-      <textarea
-        className="textarea textarea-info resize-y border rounded-md p-2 w-full h-60 focus:outline-none focus:ring focus:border-blue-300"
-        placeholder={placeholder}
-        {...register(name, validationRules)}
-        onChange={(e) => {
-          // console.log(name, ":", e.target.value);
-          setValue(name, e.target.value);
-        }}
-      >
-        {/* {console.log(name, ":", getValues(name))} */}
-      </textarea>
+      <div className="relative">
+        <textarea
+          ref={inputRef}
+          className={`textarea textarea-info resize-y border rounded-md p-2 w-full h-60 focus:outline-none 
+        ${errors[name] ? "border-pink-500" : "border-sky-500"}`}
+          placeholder={placeholder}
+          {...register(name, validationRules)}
+          onChange={(e) => {
+            // console.log(name, ":", e.target.value);
+            setValue(name, e.target.value);
+          }}
+        ></textarea>
+      </div>
     </div>
   );
 };
 
 export const FilePictureInput = (props) => {
   const {
+    inputRef,
     className,
     label,
+    labelSize = "text-sm",
     name,
     placeholder,
     type = name,
@@ -697,9 +763,27 @@ export const FilePictureInput = (props) => {
 
   const [formattedValue, setFormattedValue] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const [onDrag, setOnDrag] = useState(false);
+
   const [working, setWorking] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [base64, setBase64] = useState(null);
+
+  const inputFileRef = useRef(null);
+
+  // REDUX
+  const {
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
 
   const {
     table,
@@ -718,7 +802,6 @@ export const FilePictureInput = (props) => {
   } = useContext(ModalContext);
 
   const validationRules = {
-    required: `This ${label} field is required`,
     pattern: {
       value: /\d+/,
       message: label + " input is number only.",
@@ -750,48 +833,130 @@ export const FilePictureInput = (props) => {
   return (
     <>
       <div className="relative flex flex-col justify-center items-center w-full rounded-full">
+        <label
+          className={`relative w-full font-roboto-bold ${labelSize} text-center ${
+            validationRules.required
+              ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+              : ""
+          }`}
+        >
+          {label}
+          {errors[name] && (
+            <span
+              className={`absolute right-0 top-0 text-red-500 ${BgColor} line-clamp-1`}
+            >
+              {errors[name].message}
+            </span>
+          )}
+        </label>
         {loading ? (
           <div className="w-96 h-96 rounded-md flex flex-row items-center justify-center">
-            <span className="loading loading-ring loading-lg"></span>
-            <span className="loading loading-ring loading-lg"></span>
-            <span className="loading loading-ring loading-lg"></span>
-            <span className="loading loading-ring loading-lg"></span>
-            <span className="loading loading-ring loading-lg"></span>
+            none
           </div>
         ) : (
-          <>
-            {formattedValue === "base64" ? (
-              // <ImageDisplay base64ImageData={pictValue} />
-              <>
-                {base64 && (
-                  <img
-                    src={`${base64}`}
-                    alt="Avatar Tailwind CSS Component"
-                    className="w-96 rounded-md max-w-3xl shadow-lg"
-                  />
-                )}
-              </>
+          <div
+            onDragEnter={(e) => {
+              e.preventDefault();
+              setOnDrag(true);
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setOnDrag(true);
+            }}
+            onDragLeave={() => {
+              setOnDrag(false);
+            }}
+            onDrop={() => {
+              setOnDrag(false);
+            }}
+            className="relative"
+          >
+            {onDrag ? (
+              // <Dropzone
+              //   onFileDrop={(file) => {
+              //     console.log("File yang diunggah:", file);
+              //   }}
+              // />
+              <p>s</p>
             ) : (
-              <img
-                src={
-                  data.pict
-                    ? table === "products"
-                      ? `${ServerPublicProductImg}${data.pict}`
-                      : table === "admins"
-                      ? `${ServerPublicAdminImg}${data.pict}`
-                      : table === "users"
-                      ? `${ServerPublicUserImg}${data.pict}`
-                      : `${ServerPublicProductImg}default.jpg`
-                    : `${ServerPublicProductImg}default.jpg`
-                }
-                alt="Avatar Tailwind CSS Component"
-                className="w-96 rounded-md max-w-3xl shadow-lg"
-                loading="lazy"
-              />
+              <div className="relative pt-4">
+                {formattedValue === "base64" ? (
+                  <div className="relative group">
+                    <div
+                      onClick={() => {
+                        if (inputFileRef.current) {
+                          inputFileRef.current.click();
+                        }
+                      }}
+                      id="holder-upload"
+                      className="absolute flex flex-col items-center justify-center bg-black w-full h-full opacity-0 group-hover:opacity-50 transition-all delay-100 cursor-pointer"
+                    >
+                      <MuiIcon
+                        iconName="AddAPhotoRounded"
+                        className="text-white"
+                        fontSize={48}
+                      />
+                      <span className=" capitalize font-roboto-bold text-gray-100">
+                        Upload new Picture
+                      </span>
+                    </div>
+                    {base64 && (
+                      <img
+                        src={`${base64}`}
+                        alt="Avatar Tailwind CSS Component"
+                        className="w-96 rounded-md max-w-3xl shadow-lg"
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <div className="relative group">
+                    <div
+                      onClick={() => {
+                        if (inputFileRef.current) {
+                          inputFileRef.current.click();
+                        }
+                      }}
+                      id="holder-upload"
+                      className="absolute flex flex-col items-center justify-center bg-black w-full h-full opacity-0 group-hover:opacity-50 transition-all delay-100 cursor-pointer"
+                    >
+                      <MuiIcon
+                        iconName="AddAPhotoRounded"
+                        className="text-white"
+                        fontSize={48}
+                      />
+                      <span className=" capitalize font-roboto-bold text-gray-100">
+                        Upload new Picture
+                      </span>
+                    </div>
+                    <img
+                      src={
+                        data.pict
+                          ? table === "products"
+                            ? `${ServerPublicProductImg}${data.pict}`
+                            : table === "admins"
+                            ? `${ServerPublicAdminImg}${data.pict}`
+                            : table === "users"
+                            ? `${ServerPublicUserImg}${data.pict}`
+                            : `${ServerPublicProductImg}default.jpg`
+                          : `${ServerPublicProductImg}default.jpg`
+                      }
+                      alt="Avatar Tailwind CSS Component"
+                      className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] rounded-md shadow-lg"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+              </div>
             )}
-          </>
+          </div>
         )}
+
         <CropperModal
+          inputFileRef={inputFileRef}
+          onFileDrop={(file) => {
+            // Lakukan sesuatu dengan file yang diunggah di sini
+            console.log("File yang diunggah:", file);
+          }}
           onLoadingContent={(value) => {
             setBase64(null);
             setLoading(value);
