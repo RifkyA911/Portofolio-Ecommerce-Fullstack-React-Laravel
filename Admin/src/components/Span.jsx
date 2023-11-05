@@ -4,17 +4,19 @@ export const DateRecord = (props) => {
   const { className, data } = props;
   return (
     <>
-      <small className={`${className} flex flex-row gap-2`}>
-        <div className="p">
-          <span className="font-bold mr-2">Created at:</span>
-          {DateFormatter("YYYY-MM-DD-hh-mm-ss", data.created_at)}
-        </div>
-        |
-        <div className="p">
-          <span className="font-bold mr-2">Updated at:</span>
-          {DateFormatter("YYYY-MM-DD-hh-mm-ss", data.updated_at)}
-        </div>
-      </small>
+      {data && (
+        <small className={`${className} flex flex-row gap-2 p-0`}>
+          <div className="p">
+            <span className="font-bold mr-2">Created at:</span>
+            {DateFormatter("YYYY-MM-DD-hh-mm-ss", data.created_at)}
+          </div>
+          |
+          <div className="p">
+            <span className="font-bold mr-2">Updated at:</span>
+            {DateFormatter("YYYY-MM-DD-hh-mm-ss", data.updated_at)}
+          </div>
+        </small>
+      )}
     </>
   );
 };

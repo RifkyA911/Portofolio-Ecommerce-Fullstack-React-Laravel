@@ -99,64 +99,58 @@ export const MyTableHeaderPrint = (props) => {
   } = props;
   return (
     <>
-      {!toggleSelect && (
-        <>
-          {/* BTN HEADER */}
-          <button
-            onClick={closeFunction}
-            className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
+      {/* BTN HEADER */}
+      <button
+        onClick={closeFunction}
+        className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
+      >
+        <i className="font-xs">
+          <MuiIcon iconName={"PrintSharp"} fontSize={20} />
+        </i>
+        <span className="font-base px-2">Print</span>
+      </button>
+
+      {/* {isDialogOpen.print && (  ERROR, REACT PDF WONT WORK*/}
+
+      <>
+        <div
+          className={`${
+            !isDialogOpen.print ? "hidden" : "block"
+          } absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.5px] p-20`}
+          onClick={closeFunction}
+        ></div>
+        {inputData && inputData.length > 0 && inputData !== undefined ? (
+          <div
+            className={`${
+              !isDialogOpen.print ? "hidden" : "block"
+            } absolute bg-white w-[140px] top-11 right-[235px] shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
           >
-            <i className="font-xs">
-              <MuiIcon iconName={"PrintSharp"} fontSize={20} />
-            </i>
-            <span className="font-base px-2">Print</span>
-          </button>
-
-          {/* {isDialogOpen.print && (  ERROR, REACT PDF WONT WORK*/}
-
-          <>
-            <div
-              className={`${
-                !isDialogOpen.print ? "hidden" : "block"
-              } absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.5px] p-20`}
-              onClick={closeFunction}
-            ></div>
-            {inputData && inputData.length > 0 && inputData !== undefined ? (
-              <div
-                className={`${
-                  !isDialogOpen.print ? "hidden" : "block"
-                } absolute bg-white w-[140px] top-11 right-[235px] shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
-              >
-                <button
-                  // onClick={closeFunction}
-                  onClick={() => {
-                    setShowFixedBtn("PRINT");
-                    closeFunction();
-                    setToggleSelect(true);
-                    setSelectedRows([]);
-                  }}
-                  className="py-2 px-4 w-full hover:bg-slate-200 text-left"
-                >
-                  Print Batch
-                </button>
-                <button
-                  className="py-2 px-4 w-full hover:bg-slate-200 text-left"
-                  onClick={() => {
-                    handlePrint();
-                    closeFunction();
-                  }}
-                >
-                  Print Table
-                </button>
-              </div>
-            ) : (
-              <p>Loading</p>
-            )}
-          </>
-
-          {/* )} */}
-        </>
-      )}
+            <button
+              // onClick={closeFunction}
+              onClick={() => {
+                setShowFixedBtn("PRINT");
+                closeFunction();
+                setToggleSelect(true);
+                setSelectedRows([]);
+              }}
+              className="py-2 px-4 w-full hover:bg-slate-200 text-left"
+            >
+              Print Batch
+            </button>
+            <button
+              className="py-2 px-4 w-full hover:bg-slate-200 text-left"
+              onClick={() => {
+                handlePrint();
+                closeFunction();
+              }}
+            >
+              Print Table
+            </button>
+          </div>
+        ) : (
+          <p>Loading</p>
+        )}
+      </>
     </>
   );
 };
@@ -191,7 +185,7 @@ export const MyTableHeaderDelete = (props) => {
               }
         }
       >
-        {!toggleSelect ? (
+        {!toggleSelect && (
           <>
             <span id="showDelete" className="options  py-[6px] px-[4px]">
               <i className="font-xs">
@@ -199,15 +193,6 @@ export const MyTableHeaderDelete = (props) => {
               </i>
             </span>
             <span className="font-base pr-2">Delete</span>
-          </>
-        ) : (
-          <>
-            <span id="showCancelDelete" className="options py-[6px] px-[4px]">
-              <i className="font-xs px-[4px]">
-                <MuiIcon iconName={"DeselectRounded"} fontSize={20} />
-              </i>
-              <span className="font-medium pr-2">Select None</span>
-            </span>
           </>
         )}
       </button>

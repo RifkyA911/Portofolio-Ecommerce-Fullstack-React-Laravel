@@ -22,34 +22,32 @@ import {
   DropByIdForm,
   DropBySelectedForm,
 } from "../Form";
-import { ConfirmButton } from "../Button";
-import { DateRecord } from "../Span";
 
 export const ProductsInputForm = (props) => {
   const {
-    data,
-    setData,
+    // data,
+    // setData,
     formType,
-    showPassword,
-    setShowPassword,
-    // react-hook-form
-    newPasswordRef,
+    // showPassword,
+    // setShowPassword,
+    // // react-hook-form
+    // newPasswordRef,
     register,
-    getValues,
-    setValue,
-    setFocus,
-    setError,
-    control,
-    errors,
-    isValid,
-    dirtyFields,
-    watch,
+    // getValues,
+    // setValue,
+    // setFocus,
+    // setError,
+    // control,
+    // errors,
+    // isValid,
+    // dirtyFields,
+    // watch,
   } = useContext(ModalContext);
   const MaxLimit = 10000000; //10 jt
 
   return (
     <>
-      <div className="flex flex-row ">
+      <div className="flex flex-row py-2 px-6">
         <div>
           {/* ALTER */}
           {formType === "ALTER_BY_ID" && (
@@ -63,18 +61,15 @@ export const ProductsInputForm = (props) => {
         </div>
 
         {/* Images */}
-        <div className="flex flex-col justify-start items-center w-6/12 p-12">
+        <div className="flex flex-col justify-start items-center w-6/12">
           <FilePictureInput
             type="picture"
             label="Product Picture"
             name="pict"
           />
-          {formType === "ALTER_BY_ID" && (
-            <DateRecord className="py-4" data={data} />
-          )}
         </div>
         {/* Form */}
-        <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-2 px-6 font-roboto-medium ">
+        <div className="flex flex-col gap-3 justify-start items-center w-6/12 font-roboto-medium ">
           {/* {console.log(name, ":", getValues(name))}  {setValue("barcode", "HJAHAHA")} */}
           {/* {console.log("form_values", ":", getValues())} */}
           {/* {console.log("data", ":", data)} */}

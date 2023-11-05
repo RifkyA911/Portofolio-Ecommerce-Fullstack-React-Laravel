@@ -133,10 +133,11 @@ export const ConfirmButton = (props) => {
 export const MotionButton = (props) => {
   const {
     className,
-    formType = "default",
-    icon = "HelpRounded",
-    span = "???",
+    formType,
+    icon,
+    span,
     type = "submit",
+    size,
     onClick,
     children,
   } = props;
@@ -162,70 +163,84 @@ export const MotionButton = (props) => {
       setStyleButton({
         ...styleButton,
         className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-lime-600 text-base font-medium text-white hover:bg-lime-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: "DeleteForeverSharp",
-        span: "Apply",
+        icon: icon ?? "DeleteForeverSharp",
+        span: span ?? "Apply",
       });
     } else if (formType == "insert") {
       setStyleButton({
         ...styleButton,
         className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-sky-600 text-base font-medium text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: "AddBoxRounded",
-        span: "Insert",
+        icon: icon ?? "AddBoxRounded",
+        span: span ?? "Insert",
       });
     } else if (formType == "alter") {
       setStyleButton({
         ...styleButton,
         className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: "EditRounded",
-        span: "Save Changes",
+        icon: icon ?? "EditRounded",
+        span: span ?? "Save Changes",
       });
     } else if (formType == "delete") {
       setStyleButton({
         ...styleButton,
         className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: "DeleteForeverSharp",
-        span: "Delete",
+        icon: icon ?? "DeleteForeverSharp",
+        span: span ?? "Delete",
+      });
+    } else if (formType == "confirm") {
+      setStyleButton({
+        ...styleButton,
+        className: `${className} mt-3 w-full inline-flex justify-center rounded-md border border-lime-300 shadow-sm px-4 py-2 bg-gradient-to-r from-green-500 via-green-500 to-green-500 text-base font-roboto-medium text-white hover:bg-lime-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`,
+        icon: icon ?? "CheckRounded",
+        span: span ?? "Confirm",
       });
     } else if (formType == "cancel") {
       setStyleButton({
         ...styleButton,
-        className: `${className} mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-slate-50 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: "DisabledByDefaultRounded",
-        span: "Cancel",
+        className: `${className} mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 hover:border-orange-300 shadow-sm px-4 py-2 bg-slate-50 hover:bg-amber-500 text-base font-medium text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`,
+        icon: icon ?? "DisabledByDefaultRounded",
+        span: span ?? "Cancel",
+      });
+    } else {
+      setStyleButton({
+        ...styleButton,
+        className: `${className}`,
+        icon: icon,
+        span: span,
       });
     }
-  }, [formType]);
+  }, [formType, onClick]);
 
   return (
     <>
-      {formType && (
-        <motion.button
-          type={type}
-          tabIndex={0}
-          className={styleButton.className}
-          onClick={onClick}
-          initial={{ scale: 0.5 }}
-          animate={{ scale: 1 }}
-          transition={{
-            type: "spring",
-            stiffness: 260,
-            damping: 20,
-          }}
-        >
-          {children ? (
-            children
-          ) : (
-            <>
-              <span id="showDelete" className="options px-[4px]">
-                <i className="font-xs">
-                  <MuiIcon iconName={styleButton.icon} fontSize={20} />
-                </i>
-              </span>
-              <span className=" pr-2">{styleButton.span}</span>
-            </>
-          )}
-        </motion.button>
-      )}
+      {/* {formType && ( */}
+      <motion.button
+        type={type}
+        tabIndex={0}
+        className={styleButton.className}
+        onClick={onClick}
+        initial={{ scale: 0.5 }}
+        animate={{ scale: 1 }}
+        transition={{
+          type: "spring",
+          stiffness: 260,
+          damping: 20,
+        }}
+      >
+        {children ? (
+          children
+        ) : (
+          <>
+            <span id="showDelete" className="options px-[4px]">
+              <i className="font-xs">
+                <MuiIcon iconName={styleButton.icon} fontSize={20} />
+              </i>
+            </span>
+            <span className=" pr-2">{styleButton.span}</span>
+          </>
+        )}
+      </motion.button>
+      {/* )} */}
     </>
   );
 };

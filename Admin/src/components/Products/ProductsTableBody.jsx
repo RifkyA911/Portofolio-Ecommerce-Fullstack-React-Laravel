@@ -7,10 +7,11 @@ import { CurrencyFormatter } from "../../utils/Formatter";
 import ReactSlider from "react-slider";
 import { NumberInput } from "../Form";
 import { MyTableFilterContext } from "../Table/MyTableComponents";
-import { ConfirmButton } from "../Button";
+import { ConfirmButton, MotionButton } from "../Button";
 
-const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
+const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
+const ServerAPIProductsImg = import.meta.env.VITE_API_ID_PRODUCT + "/image/";
 
 export const ProductDetail = (props) => {
   const { inputData } = props;
@@ -32,7 +33,7 @@ export const ProductDetail = (props) => {
               <div className="body flex flex-row justify-between items-start m-8">
                 <div className="flex w-1/2 justify-start">
                   <img
-                    src={`${ServerProductsImg}${inputData[0].pict}`}
+                    src={`${ServerAPIProductsImg}${inputData[0].id}`}
                     alt="logo"
                     className="w-60 sm:flex text-center shadow-lg rounded-md"
                   />
@@ -110,6 +111,7 @@ export const ProductImage = (props) => {
         onClick={onProductPictureClick}
       >
         <img
+          // src={`${ServerAPIProductsImg}${data.id ? data.id : "not_found.jpg"}`} // will cause too many req issue
           src={`${ServerProductsImg}${data.pict ? data.pict : "not_found.jpg"}`}
           className={`${height} h-full text-center`}
         />
@@ -117,45 +119,6 @@ export const ProductImage = (props) => {
     </>
   );
 };
-
-const PrettoSlider = styled(Slider)({
-  color: "#52af77",
-  height: 6,
-  "& .MuiSlider-track": {
-    border: "none",
-  },
-  "& .MuiSlider-thumb": {
-    height: 24,
-    width: 24,
-    backgroundColor: "#fff",
-    border: "2px solid currentColor",
-    "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible": {
-      boxShadow: "inherit",
-    },
-    "&:before": {
-      display: "none",
-    },
-  },
-  "& .MuiSlider-valueLabel": {
-    lineHeight: 1.2,
-    fontSize: 12,
-    background: "unset",
-    padding: 0,
-    width: 32,
-    height: 32,
-    borderRadius: "50% 50% 50% 0",
-    backgroundColor: "#52af77",
-    transformOrigin: "bottom left",
-    transform: "translate(50%, -100%) rotate(-45deg) scale(0)",
-    "&:before": { display: "none" },
-    "&.MuiSlider-valueLabelOpen": {
-      transform: "translate(50%, -100%) rotate(-45deg) scale(1)",
-    },
-    "& > *": {
-      transform: "rotate(45deg)",
-    },
-  },
-});
 
 export const ProductFilter = (props) => {
   const [minPrice, setMinPrice] = useState(0);
@@ -220,90 +183,101 @@ export const ProductFilter = (props) => {
         </div>
         <form
           autoComplete="off"
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-4 "
           onSubmit={handleSubmit(onSubmit)}
         >
-          <h1 className="pt-2 text-left text-base">Rentang Harga</h1>
-          {/* <PrettoSlider
-                valueLabelDisplay="auto"
-                aria-label="pretto slider"
-                defaultValue={20}
-              /> */}
-
-          <ReactSlider
-            className="horizontal-slider py-4"
-            thumbClassName="example-thumb"
-            trackClassName="example-track"
-            defaultValue={[0, 500000]}
-            value={[minPrice, maxPrice]}
-            min={0}
-            max={MaxLimit}
-            pearling
-            minDistance={100000}
-            ariaLabel={["Lower thumb", "Upper thumb"]}
-            ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-            renderThumb={(props, state) => (
-              <div
-                {...props}
-                style={{ ...props.style, zIndex: 20 }}
-                className="relative flex flex-col items-center -mt-2 xhover:-my-3 outline-none bg-opacity-30 "
-              >
+          <div className="price-filter flex flex-col gap-4 border-b-2 pb-4">
+            <label className="pt-2 text-left text-base">
+              <MuiIcon iconName="SellRounded" fontSize={16} /> Rentang Harga
+            </label>
+            <ReactSlider
+              className="horizontal-slider py-4"
+              thumbClassName="example-thumb"
+              trackClassName="example-track"
+              defaultValue={[0, 500000]}
+              value={[minPrice, maxPrice]}
+              min={0}
+              max={MaxLimit}
+              pearling
+              minDistance={100000}
+              ariaLabel={["Lower thumb", "Upper thumb"]}
+              ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
+              renderThumb={(props, state) => (
                 <div
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                  className="w-6 h-6 hover:w-8 hover:h-8 transition-all delay-50 bg-white border-teal-500 border-[2px] rounded-full shadow-lg cursor-pointer"
-                ></div>
-                {isHovered && (
-                  <div className="absolute top-0 hover:block px-2 py-1 mb-2 -mt-8 text-xs text-white bg-gray-900 rounded-sm whitespace-nowrap">
-                    {CurrencyFormatter(state.valueNow)}
-                  </div>
-                )}
-              </div>
-            )}
-            renderTrack={(props, state) => (
-              <div
-                {...props}
-                className={`h-2 rounded-full cursor-pointer ${
-                  state.index === 1
-                    ? "bg-gradient-to-r from-green-500 via-lime-500 to-green-500 "
-                    : "bg-green-100 z-10"
-                }`}
+                  {...props}
+                  style={{ ...props.style, zIndex: 20 }}
+                  className="relative flex flex-col items-center -mt-2 xhover:-my-3 outline-none bg-opacity-30 "
+                >
+                  <div
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                    className="w-6 h-6 hover:w-8 hover:h-8 transition-all delay-50 bg-white border-teal-500 border-[2px] rounded-full shadow-lg cursor-pointer"
+                  ></div>
+                  {isHovered && (
+                    <div className="absolute top-0 hover:block px-2 py-1 mb-2 -mt-8 text-xs text-white bg-gray-900 rounded-sm whitespace-nowrap">
+                      {CurrencyFormatter(state.valueNow)}
+                    </div>
+                  )}
+                </div>
+              )}
+              renderTrack={(props, state) => (
+                <div
+                  {...props}
+                  className={`h-2 rounded-full cursor-pointer ${
+                    state.index === 1
+                      ? "bg-gradient-to-r from-green-500 via-lime-500 to-green-500 "
+                      : "bg-green-100 z-10"
+                  }`}
+                />
+              )}
+              onChange={(newValue) => {
+                setMinPrice(newValue[0]);
+                setMaxPrice(newValue[1]);
+                setValue("minPrice", newValue[0]);
+                setValue("maxPrice", newValue[1]);
+              }}
+              // onChange={(props, state) => {
+              //   // console.log(props);
+              //   // console.log(state);
+              // }}
+            />
+            <div className="flex flex-row justify-between ">
+              <NumberInput
+                formContext={MyTableFilterContext}
+                className={`flex gap-4 flex-col  w-full max-w-[250px]`}
+                prefix="Rp. "
+                label="Min. Price (IDR)"
+                name="minPrice"
+                limitDigits={MaxLimit}
+                placeholder="Masukkan Harga"
+                onInputChange={(value) => setMinPrice(value)}
               />
-            )}
-            onChange={(newValue) => {
-              setMinPrice(newValue[0]);
-              setMaxPrice(newValue[1]);
-              setValue("minPrice", newValue[0]);
-              setValue("maxPrice", newValue[1]);
-            }}
-            // onChange={(props, state) => {
-            //   // console.log(props);
-            //   // console.log(state);
-            // }}
-          />
-          <div className="flex flex-row justify-between ">
-            <NumberInput
-              formContext={MyTableFilterContext}
-              className={`flex gap-4 flex-col  w-full max-w-[250px]`}
-              prefix="Rp. "
-              label="Min. Price (IDR)"
-              name="minPrice"
-              limitDigits={MaxLimit}
-              placeholder="Masukkan Harga"
-              onInputChange={(value) => setMinPrice(value)}
-            />
-            <NumberInput
-              formContext={MyTableFilterContext}
-              className={`flex gap-4 flex-col  w-full max-w-[250px]`}
-              prefix="Rp. "
-              label="Max. Price (IDR)"
-              name="maxPrice"
-              limitDigits={MaxLimit}
-              placeholder="Masukkan Harga"
-              onInputChange={(value) => setMaxPrice(value)}
-            />
+              <NumberInput
+                formContext={MyTableFilterContext}
+                className={`flex gap-4 flex-col  w-full max-w-[250px]`}
+                prefix="Rp. "
+                label="Max. Price (IDR)"
+                name="maxPrice"
+                limitDigits={MaxLimit}
+                placeholder="Masukkan Harga"
+                onInputChange={(value) => setMaxPrice(value)}
+              />
+            </div>
           </div>
-          <ConfirmButton className={"btn-sm my-4 "} confirmType="confirm" />
+          <div className="category-filter flex flex-col gap-4 border-b-2 pb-2">
+            <label className="pt-2 text-left text-base">
+              <MuiIcon iconName="AutoAwesomeMosaicRounded" fontSize={16} />{" "}
+              Category
+            </label>
+          </div>
+          <MotionButton
+            formType="confirm"
+            onClick={() => {
+              setShowModal(false);
+              refresh();
+              clearData();
+            }}
+          />
         </form>
       </div>
     </>

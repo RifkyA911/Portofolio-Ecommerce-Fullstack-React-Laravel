@@ -18,9 +18,6 @@ import { PrintProducts } from "./Products";
 import { DateFormatter } from "../../utils/Formatter";
 import { MuiIcon } from "../../utils/RenderIcons";
 
-const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;
-const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
-
 export const LookReactPDF = (props) => {
   const { inputData, table } = props;
 
@@ -83,7 +80,10 @@ export const PrintReactPDF = (props) => {
   }, [inputData]);
 
   // useEffect(() => {
-  //   console.log(data);
+  //   if (data) {
+  //     console.log(data.id);
+  //     fetchData(`${import.meta.env.VITE_API_ID_PRODUCT}/${data.id}`);
+  //   }
   // }, [data]);
 
   return (

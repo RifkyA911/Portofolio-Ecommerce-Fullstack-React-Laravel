@@ -13,6 +13,7 @@ import {
 import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
 import { useReactToPrint } from "react-to-print";
 import { SearchInput } from "../Form";
+import { MotionButton } from "../Button";
 
 export const TableContext = createContext();
 
@@ -180,7 +181,7 @@ export const MyTableHeader = (props) => {
         </div>
         {/* right */}
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
-          {hideHeaderBtn !== "printBtn" && (
+          {hideHeaderBtn !== "printBtn" && !toggleSelect && (
             <MyTableHeaderPrint
               btnType="PRINT"
               showFixedBtn={showFixedBtn}
@@ -228,7 +229,7 @@ export const MyTableHeader = (props) => {
               </button>
             </>
           )}
-          {hideHeaderBtn !== "refreshBtn" && (
+          {hideHeaderBtn !== "refreshBtn" && !toggleSelect && (
             <>
               <button
                 onClick={refresh}
@@ -238,13 +239,27 @@ export const MyTableHeader = (props) => {
               </button>
             </>
           )}
-          {hideHeaderBtn !== "menuBtn" && (
+          {hideHeaderBtn !== "menuBtn" && !toggleSelect && (
             <MyTableHeaderMenu
               setDialogOpen={setDialogOpen}
               isDialogOpen={isDialogOpen}
               toggleSelect={toggleSelect}
               setToggleSelect={setToggleSelect}
             />
+          )}
+          {toggleSelect && (
+            <>
+              <MotionButton
+                onClick={() => {
+                  // setToggleSelect(false);
+                  setSelectedRows([]);
+                }}
+                className="mx-1 grow-0 shrink-0 focus:outline-none text-white py-2 px-2 hover:bg-gradient-to-r bg-gray-500 hover:from-yellow-500 hover:to-orange-400 rounded-md font-roboto-medium items-center transition-colors duration-200"
+                icon="DeselectRounded"
+                span="Select None"
+                type="button"
+              ></MotionButton>
+            </>
           )}
         </div>
         {/* ====================== FIXED AREA ====================== */}
