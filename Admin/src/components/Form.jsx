@@ -139,7 +139,7 @@ export const TextInput = (props) => {
             autoFocus={autoFocus}
             type={type}
             placeholder={placeholder.toLowerCase()}
-            className={`input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none ${
+            className={`input input-bordered input-info w-full input-md h-[38px] max-w-3xl text-gray-900 focus:outline-none ${
               errors[name] ? "border-pink-500" : "border-sky-500"
             }`}
             {...register(name, validationRules)}
@@ -237,7 +237,7 @@ export const NumberInput = (props) => {
           <NumericFormat
             name={name}
             value={value}
-            className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl focus:outline-none ${
+            className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl text-gray-900 focus:outline-none ${
               errors[name] ? "border-pink-500" : "border-sky-500"
             }`}
             displayType={"input"}
@@ -482,7 +482,7 @@ export const PasswordInput = (props) => {
           <input
             type={showPassword ? "text" : name}
             placeholder={placeholder}
-            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
+            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl text-gray-900 focus:outline-none"
             {...register(name, validationRules)}
           />
           <span
@@ -732,7 +732,7 @@ export const TextArea = (props) => {
       <div className="relative">
         <textarea
           ref={inputRef}
-          className={`textarea textarea-info resize-y border rounded-md p-2 w-full h-60 focus:outline-none 
+          className={`textarea textarea-info resize-y border rounded-md p-2 w-full h-60 text-gray-900 focus:outline-none 
         ${errors[name] ? "border-pink-500" : "border-sky-500"}`}
           placeholder={placeholder}
           {...register(name, validationRules)}
@@ -830,9 +830,48 @@ export const FilePictureInput = (props) => {
     }
   }, [pictValue]);
 
+  const hoverImpact = () => {
+    return (
+      <div
+        onClick={() => {
+          if (inputFileRef.current) {
+            inputFileRef.current.click();
+          }
+        }}
+        id="holder-upload"
+        className="absolute rounded-lg flex flex-col items-center justify-center bg-black w-full h-full opacity-0 group-hover:opacity-50 transition-all delay-100 cursor-pointer"
+      >
+        <MuiIcon
+          iconName="AddAPhotoRounded"
+          className="text-white"
+          fontSize={48}
+        />
+        <span className=" capitalize font-roboto-bold text-gray-100">
+          Upload new Picture
+        </span>
+      </div>
+    );
+  };
+
   return (
     <>
-      <div className="relative flex flex-col justify-center items-center w-full rounded-full">
+      <div
+        onDragEnter={(e) => {
+          e.preventDefault();
+          setOnDrag(true);
+        }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setOnDrag(true);
+        }}
+        onDragLeave={() => {
+          setOnDrag(false);
+        }}
+        onDrop={() => {
+          setOnDrag(false);
+        }}
+        className="relative flex flex-col justify-start items-center w-full xbg-indigo-300 min-h-[560px]"
+      >
         <label
           className={`relative w-full font-roboto-bold ${labelSize} text-center ${
             validationRules.required
@@ -849,110 +888,49 @@ export const FilePictureInput = (props) => {
             </span>
           )}
         </label>
-        {loading ? (
-          <div className="w-96 h-96 rounded-md flex flex-row items-center justify-center">
-            none
-          </div>
-        ) : (
-          <div
-            onDragEnter={(e) => {
-              e.preventDefault();
-              setOnDrag(true);
-            }}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setOnDrag(true);
-            }}
-            onDragLeave={() => {
-              setOnDrag(false);
-            }}
-            onDrop={() => {
-              setOnDrag(false);
-            }}
-            className="relative"
-          >
-            {onDrag ? (
-              // <Dropzone
-              //   onFileDrop={(file) => {
-              //     console.log("File yang diunggah:", file);
-              //   }}
-              // />
-              <p>s</p>
-            ) : (
-              <div className="relative pt-4">
-                {formattedValue === "base64" ? (
-                  <div className="relative group">
-                    <div
-                      onClick={() => {
-                        if (inputFileRef.current) {
-                          inputFileRef.current.click();
-                        }
-                      }}
-                      id="holder-upload"
-                      className="absolute flex flex-col items-center justify-center bg-black w-full h-full opacity-0 group-hover:opacity-50 transition-all delay-100 cursor-pointer"
-                    >
-                      <MuiIcon
-                        iconName="AddAPhotoRounded"
-                        className="text-white"
-                        fontSize={48}
-                      />
-                      <span className=" capitalize font-roboto-bold text-gray-100">
-                        Upload new Picture
-                      </span>
-                    </div>
-                    {base64 && (
-                      <img
-                        src={`${base64}`}
-                        alt="Avatar Tailwind CSS Component"
-                        className="w-96 rounded-md max-w-3xl shadow-lg"
-                      />
-                    )}
-                  </div>
-                ) : (
-                  <div className="relative group">
-                    <div
-                      onClick={() => {
-                        if (inputFileRef.current) {
-                          inputFileRef.current.click();
-                        }
-                      }}
-                      id="holder-upload"
-                      className="absolute flex flex-col items-center justify-center bg-black w-full h-full opacity-0 group-hover:opacity-50 transition-all delay-100 cursor-pointer"
-                    >
-                      <MuiIcon
-                        iconName="AddAPhotoRounded"
-                        className="text-white"
-                        fontSize={48}
-                      />
-                      <span className=" capitalize font-roboto-bold text-gray-100">
-                        Upload new Picture
-                      </span>
-                    </div>
-                    <img
-                      src={
-                        data.pict
-                          ? table === "products"
-                            ? `${ServerPublicProductImg}${data.pict}`
-                            : table === "admins"
-                            ? `${ServerPublicAdminImg}${data.pict}`
-                            : table === "users"
-                            ? `${ServerPublicUserImg}${data.pict}`
-                            : `${ServerPublicProductImg}default.jpg`
-                          : `${ServerPublicProductImg}default.jpg`
-                      }
-                      alt="Avatar Tailwind CSS Component"
-                      className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] rounded-md shadow-lg"
-                      loading="lazy"
-                    />
-                  </div>
+        {!loading && !onDrag ? (
+          <div className="relative pt-4">
+            {formattedValue === "base64" ? (
+              <div className="relative group">
+                {hoverImpact()}
+                {base64 && (
+                  <img
+                    src={`${base64}`}
+                    alt="Avatar Tailwind CSS Component"
+                    className="w-96 rounded-md max-w-3xl shadow-lg"
+                  />
                 )}
+              </div>
+            ) : (
+              <div className="relative group">
+                {hoverImpact()}
+                <img
+                  src={
+                    data.pict
+                      ? table === "products"
+                        ? `${ServerPublicProductImg}${data.pict}`
+                        : table === "admins"
+                        ? `${ServerPublicAdminImg}${data.pict}`
+                        : table === "users"
+                        ? `${ServerPublicUserImg}${data.pict}`
+                        : `${ServerPublicProductImg}default.jpg`
+                      : `${ServerPublicProductImg}default.jpg`
+                  }
+                  alt="Avatar Tailwind CSS Component"
+                  className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] rounded-md shadow-lg"
+                  loading="lazy"
+                />
               </div>
             )}
           </div>
+        ) : (
+          <></>
         )}
 
         <CropperModal
           inputFileRef={inputFileRef}
+          onDrag={onDrag}
+          setOnDrag={(value) => setOnDrag(value)}
           onFileDrop={(file) => {
             // Lakukan sesuatu dengan file yang diunggah di sini
             console.log("File yang diunggah:", file);

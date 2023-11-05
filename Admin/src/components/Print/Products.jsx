@@ -12,12 +12,12 @@ import {
 import { createTw } from "react-pdf-tailwind";
 import { styles } from "./Styles";
 
-import { DateFormatter } from "../../utils/Formatter";
+import { CurrencyFormatter, DateFormatter } from "../../utils/Formatter";
 import { getUser } from "../../utils/Session/Admin";
 import axios from "axios";
 
 const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;
-const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
+const ServerAPIProductsImg = import.meta.env.VITE_API_ID_PRODUCT + "/image/";
 const userSession = getUser();
 
 const loremIpsum = `Lorem Ipsum adalah contoh teks atau dummy dalam industri
@@ -62,31 +62,6 @@ const tw = createTw({
     },
   },
 });
-
-const fetchImage = async (name) => {
-  let url = ServerProductsImg + name;
-  try {
-    const response = await axios.get(url);
-    console.log(response);
-    // if (response.status === 200) {
-    //   const blob = new Blob([response.data], {
-    //     type: response.headers["content-type"],
-    //   });
-    //   const reader = new FileReader();
-
-    //   reader.onload = () => {
-    //     const base64data = reader.result;
-    //     console.info(base64data); // Ini adalah data gambar dalam format base64
-    //   };
-
-    //   reader.readAsDataURL(blob);
-    // } else {
-    //   console.error("Gagal mengunduh gambar");
-    // }
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const PartOfHeader = (props) => {
   const { inputData } = props;
@@ -164,8 +139,8 @@ const PartOfBody = (props) => {
           <View style={tw("flex w-1/3 justify-start")}>
             <Image
               style={tw("h-80 w-80 sm:flex text-center rounded-lg")}
-              // src={"./src/assets/user_avatar/84719630_p0.jpg"}
-              src={`${ServerProductsImg}${inputData.pict}`}
+              // src={`${ServerProductsImg}${inputData.pict}`}//reactpdf CORS s SCK
+              src={`${ServerAPIProductsImg}${inputData.id}`}
             ></Image>
           </View>
           <View style={tw("flex flex-row w-2/3 justify-start")}>
@@ -186,10 +161,14 @@ const PartOfBody = (props) => {
               <Text>{inputData.barcode}</Text>
               <Text>{inputData.name}</Text>
               <Text>{inputData.category.name}</Text>
-              <Text>Rp. {inputData.price}</Text>
+              <Text>{CurrencyFormatter(inputData.price)}</Text>
               <Text>{inputData.discount} %</Text>
-              <Text>{inputData.created_at}</Text>
-              <Text>{inputData.updated_at}</Text>
+              <Text>
+                {DateFormatter("YYYY-MM-DD-hh-mm-ss", inputData.created_at)}
+              </Text>
+              <Text>
+                {DateFormatter("YYYY-MM-DD-hh-mm-ss", inputData.updated_at)}
+              </Text>
             </View>
           </View>
         </View>

@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -7,40 +8,38 @@ import React, {
   useRef,
   useState,
 } from "react";
+import axios from "axios";
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import Barcode from "react-jsbarcode";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-// Components
-import { Dialog } from "@headlessui/react";
-
-import Backdrop from "@mui/material/Backdrop";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Fade from "@mui/material/Fade";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { MuiIcon } from "../utils/RenderIcons";
+import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
-// UTILS
-import axios from "axios";
+import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
+import { Dialog } from "@headlessui/react";
+// Components
 import { DangerAlert } from "./Alert";
+import { FormToast } from "./Toast";
+import { DateRecord } from "./Span";
 import {
   AdminsAlterForm,
   AdminsDropForm,
   AdminsInsertForm,
 } from "./Admins/AdminsForm";
 import { ProductsInputForm, ProductsDropForm } from "./Products/ProductsForm";
-import { ConfirmButton, MotionButton } from "./Button";
-import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
+import { MotionButton } from "./Button";
+// UTILS
+import { MuiIcon } from "../utils/RenderIcons";
 import { PrintDummies } from "../utils/PlaceHolder";
-import { motionProps } from "../Config/MotionProps";
 import { DateFormatter } from "../utils/Formatter";
+//CONFIG
+import { motionProps } from "../Config/MotionProps";
+import { AreaDropZone } from "./Area";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
-const ServerAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
-const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
+const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
+const ServerAPIProductsImg = import.meta.env.VITE_API_ID_PRODUCT + "/image/";
 
 export const ModalContext = createContext();
 
@@ -68,18 +67,6 @@ export const MainModalHandler = (props) => {
 
   const id = useId();
   // console.log(props);
-  // REDUX
-  const {
-    BgColor,
-    textTable,
-    textColor,
-    screenHeigth,
-    screenWidth,
-    BgTable,
-    BgOuterTable,
-    BorderRowTable,
-    BorderOuterTable,
-  } = useSelector((state) => state.UI);
 
   let URL_BY_ID;
   let URL_STORE;
@@ -440,6 +427,8 @@ export const MainModalHandler = (props) => {
 
   return (
     <>
+      <FormToast formType="apply" />
+
       <ModalContext.Provider value={ModalContextValue}>
         <>
           {/* <button
@@ -521,18 +510,26 @@ export const FormModal = (props) => {
     onSubmit,
   } = useContext(ModalContext);
 
+  // REDUX
+  const { BgColor, ContainerBgColor, textColor, screenHeigth, screenWidth } =
+    useSelector((state) => state.UI);
+
   return (
     <>
       <Dialog.Panel
         as="div"
-        className={`flex flex-col w-[1200px] h-full justify-center bg-white rounded-lg overflow-hidden shadow-xl transform transition-all`}
+        className={`flex flex-col w-[1200px] h-full justify-center ${
+          BgColor ?? "bg-white"
+        } ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-headline"
       >
         <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-          <div className="bg-white  py-2">
-            <div className="card-header pb-4 px-4 flex flex-row justify-between w-full items-center shadow-md">
+          <div className={` `}>
+            <div
+              className={`${BgColor} py-2 card-header pb-4 px-4 flex flex-row justify-between w-full items-center shadow-md`}
+            >
               <div className="w-5/12 font-bold text-lg text-left capitalize ">
                 <Dialog.Title>
                   {formType === "INSERT" && `Add New ${table}`}
@@ -542,8 +539,8 @@ export const FormModal = (props) => {
                     `Delete Multiple ${table}`}
                 </Dialog.Title>
               </div>
-              <div className="w-6/12">
-                {errorMessage && (
+              <div className="w-6/12 flex flex-row justify-end items-center">
+                {errorMessage ? (
                   <>
                     <Dialog.Description
                       key={id}
@@ -554,12 +551,20 @@ export const FormModal = (props) => {
                       {errorMessage}
                     </Dialog.Description>
                   </>
-                )}
-                {sending && (
+                ) : (
                   <>
-                    <span className="loading loading-dots loading-md"></span>
+                    {formType === "ALTER_BY_ID" && (
+                      <DateRecord className="" data={data} />
+                    )}
                   </>
                 )}
+                <div className="w-12 text-right text-indigo-500">
+                  {sending && (
+                    <>
+                      <span className="self-end loading loading-dots loading-md"></span>
+                    </>
+                  )}
+                </div>
               </div>
               <div className="w-1/12 text-right">
                 <button
@@ -659,7 +664,9 @@ export const FormModal = (props) => {
               )}
             </div>
           </div>
-          <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div
+            className={`${BgColor} px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse shadow-inner`}
+          >
             {formType === "INSERT" && <MotionButton formType="insert" />}
             {formType === "ALTER_BY_ID" && <MotionButton formType="alter" />}
             {(formType === "DROP_BY_ID" || formType === "DROP_BY_SELECTED") && (
@@ -719,6 +726,7 @@ export const PrintModal = (props) => {
   // REDUX
   const {
     BgColor,
+    ContainerBgColor,
     textTable,
     textColor,
     screenHeigth,
@@ -831,15 +839,28 @@ export const PrintModal = (props) => {
 };
 
 export const CropperModal = (props) => {
-  const { onLoadingContent, onWorkingContent, onConfirmContent, setPict } =
-    props;
+  const {
+    inputFileRef,
+    onDrag,
+    setOnDrag,
+    onFileDrop,
+    onLoadingContent,
+    onWorkingContent,
+    onConfirmContent,
+    setPict,
+  } = props;
+
   const [filename, setFilename] = useState(null);
   const [image, setImage] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
   const [onWorking, setOnWorking] = useState(false);
 
-  const inputFileRef = useRef(null);
   const cropperRef = useRef(null);
+  const fileInput = inputFileRef.current;
+
+  // REDUX
+  const { BgColor, ContainerBgColor, textColor, screenHeigth, screenWidth } =
+    useSelector((state) => state.UI);
 
   const {
     data,
@@ -862,16 +883,8 @@ export const CropperModal = (props) => {
   } = useContext(ModalContext);
 
   const handleFileChange = (e) => {
-    const fileInput = inputFileRef.current;
     const selectedFile = e.target.files[0];
 
-    if (fileInput.files.length > 0) {
-      // Pengguna memilih satu atau lebih file
-      console.log("true");
-    } else {
-      // Pengguna membatalkan pemilihan file
-      console.log("cancel");
-    }
     if (selectedFile) {
       // console.log("selectedFile", selectedFile);
       onWorkingContent(true);
@@ -936,8 +949,40 @@ export const CropperModal = (props) => {
     setPict(croppedImage);
   }, [croppedImage]);
 
+  // dropzone
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      // Mengambil data URL dari file yang diunggah
+      const file = acceptedFiles[0]; // Mengambil file pertama (jika ada)
+      if (file) {
+        onWorkingContent(true);
+        onLoadingContent(false);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const dataURL = event.target.result;
+          console.log("Data URL dari file yang diunggah:", dataURL);
+          setImage(dataURL);
+          setOnWorking(true);
+        };
+        reader.readAsDataURL(file);
+      }
+      if (acceptedFiles.length > 0) {
+        onFileDrop(acceptedFiles[0]);
+      }
+    },
+    [onFileDrop]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/jpeg": [],
+      "image/png": [],
+    },
+  });
+
   return (
-    <div>
+    <>
       {onWorking && (
         <div className={`p-4 `}>
           <Cropper
@@ -956,25 +1001,97 @@ export const CropperModal = (props) => {
             checkOrientation={false}
             zoomable={false} // Mencegah zoom
           />
-          <ConfirmButton
-            confirmType="confirm"
-            onClick={() => {
-              setOnWorking(false);
-              applyCroppedImage();
-            }}
-          />
+          <div className="py-4 text-center">
+            <MotionButton
+              onClick={() => {
+                setOnWorking(false);
+                applyCroppedImage();
+              }}
+              formType="confirm"
+            />
+            <MotionButton
+              type="button"
+              onClick={() => {
+                setOnWorking(false);
+              }}
+              formType="cancel"
+            />
+          </div>
         </div>
       )}
-      <input
-        ref={inputFileRef}
-        className={`${
-          onWorking ? "hidden" : ""
-        } file-input file-input-bordered file-input-md w-64 text-sm mt-6`}
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-      />
-    </div>
+      {!onDrag ? (
+        <>
+          <input
+            // {...getInputProps()}
+            ref={inputFileRef}
+            className={`${
+              onWorking ? "hidden" : ""
+            } file-input file-input-bordered file-input-md w-64 text-sm mt-6 text-gray-900`}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+        </>
+      ) : (
+        <>
+          <motion.div
+            // <motion.div
+            {...getRootProps()}
+            initial={{ scale: 1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`dropzone ${isDragActive ? "active" : ""} `}
+          >
+            <AreaDropZone />
+          </motion.div>
+        </>
+      )}
+    </>
+  );
+};
+
+export const Dropzone = (props) => {
+  const { onFileDrop } = props;
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        onFileDrop(acceptedFiles[0]);
+      }
+    },
+    [onFileDrop]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  return (
+    <motion.div
+      {...getRootProps()}
+      initial={{ scale: 1 }}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className={`dropzone ${isDragActive ? "active" : ""}`}
+    >
+      <input {...getInputProps()} />
+      <div className="flex flex-col justify-center items-center my-4 text-center ">
+        <div className="flex flex-col justify-center items-center border-dashed border-2 border-indigo-300 h-96 w-96">
+          Drag & drop a file picture on here
+          <motion.span
+            transition={{
+              y: {
+                duration: 0.4,
+                yoyo: Infinity,
+                ease: "easeOut",
+              },
+            }}
+            animate={{
+              y: 10, // Nilai y saat animasi dimulai
+            }}
+          >
+            <MuiIcon iconName="CloudUploadRounded" fontSize={48} />
+          </motion.span>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
@@ -1119,9 +1236,9 @@ export const InfoModal = (props) => {
 
   useLayoutEffect(() => {
     if (formType === "SHOW_ADMIN_PROFILE_PICTURE") {
-      setServerPublic(ServerAdminsImg);
+      setServerPublic(ServerAPIAdminsImg);
     } else if (formType === "SHOW_PRODUCT_PICTURE") {
-      setServerPublic(ServerProductsImg);
+      setServerPublic(ServerAPIProductsImg);
     }
   }, [table, formType]);
 
@@ -1133,7 +1250,7 @@ export const InfoModal = (props) => {
     <>
       <Dialog.Panel
         as="div"
-        className={`flex flex-col h-full justify-center bg-white rounded-lg overflow-hidden shadow-xl transform transition-all`}
+        className={`flex flex-col h-full justify-center bg-transparent rounded-lg overflow-hidden shadow-xl transform transition-all`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-headline"
@@ -1212,10 +1329,10 @@ export const InfoModal = (props) => {
                                   </Dialog.Description>
                                   <img
                                     src={`${serverPublic}${
-                                      data?.pict || "default.png"
+                                      data.id || "default.png"
                                     }`}
                                     alt={`Info Picture ${data.pict}`}
-                                    className="min-w-[300px] min-h-[320px] max-w-[500px] max-h-[520px] overflow-hidden rounded-lg border-4 border-gray-200"
+                                    className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] overflow-hidden rounded-lg shadow-md"
                                   />
                                 </div>
                                 <div className="py-4 text-center">
@@ -1300,231 +1417,6 @@ export const InfoModal = (props) => {
           </div> */}
         </form>
       </Dialog.Panel>
-    </>
-  );
-};
-
-export const OLD_MODAL = (props) => {
-  return (
-    <>
-      <dialog id="ModalForms" className="modal">
-        <div
-          className={`modal-box h-auto w-12/12 ${
-            formType === "ALTER_BY_ID" || formType === "INSERT"
-              ? "max-w-6xl"
-              : "max-w-3xl"
-          } bg-gray-50 cursor-auto p-0 min-h-[90%]`}
-        >
-          <form method="dialog" className={` sticky top-0 z-10`}>
-            <button
-              onClick={() => {
-                refresh();
-                clearData();
-              }}
-              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-3 hover:bg-red-300"
-            >
-              <MuiIcon iconName="CloseRounded" />
-            </button>
-          </form>
-          <div
-            className={`bg-slate-50 sticky z-[5] top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
-          >
-            <div className="p-4 w-5/12 font-bold text-lg text-left capitalize ">
-              {formType === "INSERT" && `Add New ${table}`}
-              {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
-              {formType === "DROP_BY_ID" && `Delete This ${table}`}
-              {formType === "DROP_BY_SELECTED" && `Delete Multiple ${table}`}
-            </div>
-            {errorMessage ? (
-              <>
-                <div
-                  key={id}
-                  className={`p-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
-                >
-                  {console.log(errors)}
-                  {errorMessage}
-                </div>
-              </>
-            ) : (
-              <div className="block p-4 bg-slate-50 font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
-            )}
-            {sending && (
-              <>
-                <span className="loading loading-dots loading-md"></span>
-              </>
-            )}
-          </div>
-          {data !== undefined && data !== null ? (
-            <div className="content over">
-              {!loading ? (
-                <>
-                  {onWorking ? (
-                    // =========================== Main Form ========================
-                    <form
-                      className=""
-                      autoComplete="off"
-                      onSubmit={handleSubmit(onSubmit)}
-                    >
-                      <input
-                        type="hidden"
-                        {...register("superAuthorizationPassword", {
-                          required:
-                            "Your Credentials superAuthorizationPassword are required",
-                        })}
-                      />
-                      {setValue("superAuthorizationPassword", SuperAdminKey)}{" "}
-                      {/* Panggilan setValue diluar input */}
-                      {table === "admins" && (
-                        <>
-                          {formType === "INSERT" && (
-                            <>
-                              <AdminsInsertForm />
-                            </>
-                          )}
-                          {formType === "ALTER_BY_ID" && (
-                            <>
-                              <AdminsAlterForm />
-                            </>
-                          )}
-                          {(formType === "DROP_BY_ID" ||
-                            formType === "DROP_BY_SELECTED") && (
-                            <>
-                              <AdminsDropForm />
-                            </>
-                          )}
-                        </>
-                      )}
-                      {table === "products" && (
-                        <>
-                          {(formType === "INSERT" ||
-                            formType === "ALTER_BY_ID") && (
-                            <>
-                              <ProductsInputForm />
-                            </>
-                          )}
-                          {(formType === "DROP_BY_ID" ||
-                            formType === "DROP_BY_SELECTED") && (
-                            <>
-                              <ProductsDropForm />
-                            </>
-                          )}
-                        </>
-                      )}
-                    </form>
-                  ) : (
-                    <>
-                      <h1 className="font-roboto-bold py-8 text-xl">
-                        Modal Logic Error !
-                      </h1>
-                    </>
-                  )}
-                  {/* end of onWorking */}
-                </>
-              ) : (
-                <>
-                  <p>Loading...</p>
-                </>
-              )}
-              {/* end of loading */}
-            </div>
-          ) : (
-            <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
-              <h1 className="font-poppins-medium text-xl">
-                Loading Render Form...
-              </h1>
-              <div className="flex-row">
-                <span className="loading loading-bars loading-lg"></span>
-              </div>
-            </div>
-          )}
-          {/* end of data */}
-        </div>
-      </dialog>
-      <dialog id="PrintModal" className="modal">
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-        <div
-          className={`modal-box h-full w-11/12 max-w-7xl bg-transparent backdrop-blur-sm overflow-y-auto cursor-auto p-0`}
-        >
-          <div className="bg-white bg-opacity-40 backdrop-blur-xl">
-            <form method="dialog" className={` sticky top-0 z-10`}>
-              <button
-                onClick={() => {
-                  refresh();
-                  clearData();
-                }}
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-3 hover:bg-red-300"
-              >
-                <MuiIcon iconName="CloseRounded" />
-              </button>
-            </form>
-            <div
-              className={`bg-transparent sticky top-0 flex flex-row justify-between items-center gap-2 pr-16 max-h-[60px]`}
-            >
-              <div className="p-4 w-5/12 font-bold text-lg text-left capitalize">
-                {formType === "PRINT_BATCH" && `Print Multiple ${table}`}
-                {formType === "PRINT_BY_ID" && `Print a ${table}`}
-              </div>
-              {errorMessage ? (
-                <>
-                  <div
-                    key={id}
-                    className={`p-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
-                  >
-                    {errorMessage}
-                  </div>
-                </>
-              ) : (
-                <div className="block p-4 bg-transparent font-roboto-bold w-8/12 overflow-scroll h-full z-[70]"></div>
-              )}
-            </div>
-          </div>
-          {data !== undefined && data !== null ? (
-            <div className="content">
-              {!loading ? (
-                <>
-                  {onWorking ? (
-                    // =========================== Main Form ========================
-                    <form autoComplete="off">
-                      <div className="relative flex flex-row p-4">
-                        <LookReactPDF inputData={data} table={table} />
-                        <DownloadBtnReactPDF
-                          formType={formType}
-                          inputData={data}
-                          table={table}
-                        />
-                      </div>
-                    </form>
-                  ) : (
-                    <>
-                      <h1 className="font-roboto-bold py-8 text-xl">
-                        Modal Logic Error !
-                      </h1>
-                    </>
-                  )}
-                  {/* end of onWorking */}
-                </>
-              ) : (
-                <>
-                  <p>Loading...</p>
-                </>
-              )}
-              {/* end of loading */}
-            </div>
-          ) : (
-            <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
-              <h1 className="font-poppins-medium text-xl">
-                Loading Render Form...
-              </h1>
-              <div className="flex-row">
-                <span className="loading loading-bars loading-lg"></span>
-              </div>
-            </div>
-          )}
-          {/* end of data */}
-        </div>
-      </dialog>
     </>
   );
 };
