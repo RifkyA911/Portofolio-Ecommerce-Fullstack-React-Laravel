@@ -132,6 +132,7 @@ export const ConfirmButton = (props) => {
 
 export const MotionButton = (props) => {
   const {
+    disabled,
     className,
     formType,
     icon,
@@ -144,80 +145,122 @@ export const MotionButton = (props) => {
 
   const [formButton, setFormButton] = useState(formType ?? null);
   const [styleButton, setStyleButton] = useState({
-    className: null,
+    Bg: null,
+    text: null,
+    size: null,
     icon: null,
     span: null,
   });
   // Konten komponen
 
   useEffect(() => {
+    console.log("disabled", disabled);
+  }, [disabled]);
+
+  useEffect(() => {
     setFormButton(formType);
     if (formType == "default") {
       setStyleButton({
         ...styleButton,
-        className: `${className} mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`,
+        Bg: !disabled
+          ? `bg-white hover:bg-slate-50 border border-gray-300`
+          : `bg-white hover:bg-red-100 border border-gray-300`,
+        text: !disabled ? `text-black` : `text-gray-500`,
+        size: null,
         icon: icon,
         span: span,
       });
     } else if (formType == "apply") {
       setStyleButton({
         ...styleButton,
-        className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-lime-600 text-base font-medium text-white hover:bg-lime-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: icon ?? "DeleteForeverSharp",
-        span: span ?? "Apply",
+        Bg: !disabled
+          ? `bg-teal-500 hover:bg-teal-600`
+          : `bg-teal-300 hover:bg-teal-400`,
+        text: `text-white`,
+        size: null,
+        icon: icon ?? `DeleteForeverSharp`,
+        span: span ?? `Apply`,
       });
     } else if (formType == "insert") {
       setStyleButton({
         ...styleButton,
-        className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-sky-600 text-base font-medium text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: icon ?? "AddBoxRounded",
-        span: span ?? "Insert",
+        Bg: !disabled
+          ? `bg-sky-500 hover:bg-sky-600`
+          : `bg-sky-300 hover:bg-sky-400`,
+        text: `text-white`,
+        size: null,
+        icon: icon ?? `AddBoxRounded`,
+        span: span ?? `Insert`,
       });
     } else if (formType == "alter") {
       setStyleButton({
         ...styleButton,
-        className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: icon ?? "EditRounded",
-        span: span ?? "Save Changes",
+        Bg: !disabled
+          ? `bg-indigo-500 hover:bg-violet-600`
+          : `bg-indigo-300 hover:bg-violet-400`,
+        text: `text-white`,
+        size: null,
+        icon: icon ?? `EditRounded`,
+        span: span ?? `Save Changes`,
       });
     } else if (formType == "delete") {
       setStyleButton({
         ...styleButton,
-        className: `${className} w-full outline-none inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: icon ?? "DeleteForeverSharp",
-        span: span ?? "Delete",
+        Bg: !disabled
+          ? `bg-red-500 hover:bg-red-600`
+          : `bg-red-300 hover:bg-red-400`,
+        text: `text-white`,
+        size: null,
+        icon: icon ?? `DeleteForeverSharp`,
+        span: span ?? `Delete`,
       });
     } else if (formType == "confirm") {
       setStyleButton({
         ...styleButton,
-        className: `${className} mt-3 w-full inline-flex justify-center rounded-md border border-lime-300 shadow-sm px-4 py-2 bg-gradient-to-r from-green-500 via-green-500 to-green-500 text-base font-roboto-medium text-white hover:bg-lime-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: icon ?? "CheckRounded",
-        span: span ?? "Confirm",
+        Bg: !disabled
+          ? `bg-lime-500 hover:bg-lime-600`
+          : `bg-lime-300 hover:bg-lime-400`,
+        text: `text-white`,
+        size: null,
+        icon: icon ?? `CheckRounded`,
+        span: span ?? `Confirm`,
       });
     } else if (formType == "cancel") {
       setStyleButton({
         ...styleButton,
-        className: `${className} mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 hover:border-orange-300 shadow-sm px-4 py-2 bg-slate-50 hover:bg-amber-500 text-base font-medium text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm`,
-        icon: icon ?? "DisabledByDefaultRounded",
-        span: span ?? "Cancel",
+        Bg: !disabled
+          ? `bg-slate-50 hover:bg-amber-500 border border-gray-300`
+          : `bg-slate-50 hover:bg-amber-400`,
+        text: !disabled
+          ? `text-black hover:text-white hover:border-orange-300`
+          : `text-gray-500 hover:text-gray-700 hover:border-orange-100`,
+        size: null,
+        icon: icon ?? `DisabledByDefaultRounded`,
+        span: span ?? `Cancel`,
       });
     } else {
       setStyleButton({
         ...styleButton,
-        className: `${className}`,
+        Bg: null,
+        text: null,
+        size: null,
         icon: icon,
         span: span,
       });
     }
-  }, [formType, onClick]);
+  }, [formType, onClick, disabled]);
 
   return (
     <>
       {/* {formType && ( */}
       <motion.button
+        disabled={disabled}
         type={type}
         tabIndex={0}
-        className={styleButton.className}
+        className={
+          className ??
+          `${styleButton.Bg} ${styleButton.text} ${styleButton.size} w-full outline-none inline-flex justify-center rounded-md shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:ml-3 sm:w-auto sm:text-sm `
+        }
         onClick={onClick}
         initial={{ scale: 0.5 }}
         animate={{ scale: 1 }}
