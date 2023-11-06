@@ -1,5 +1,5 @@
-export const LoadingRing = (props) => {
-  const { fontSize, max } = props;
+export const LoadingDaisyUI = (props) => {
+  const { type = "loading-ring", size = "loading-lg", max = 5 } = props;
 
   // Membuat array dengan nomor dari 0 hingga max - 1
   const elements = Array.from({ length: max }, (_, index) => index);
@@ -7,7 +7,7 @@ export const LoadingRing = (props) => {
   return (
     <>
       {elements.map((index) => (
-        <span key={index} className="loading loading-ring loading-lg"></span>
+        <span key={index} className={`loading ${type} ${size}`}></span>
       ))}
     </>
   );
