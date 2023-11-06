@@ -53,6 +53,7 @@ export const MainModalHandler = (props) => {
     modalType,
     formType,
     clearData,
+    setResultStatus,
     select,
     refresh,
   } = props;
@@ -63,10 +64,10 @@ export const MainModalHandler = (props) => {
   const [onWorking, setOnWorking] = useState(true);
   const [sending, setSending] = useState(false);
 
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [ready, setReady] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const [ready, setReady] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const id = useId();
   // console.log(props);
@@ -294,16 +295,19 @@ export const MainModalHandler = (props) => {
   // jika submit, lakukan req ke server
   let axiosResponse;
 
+  // ============================================ Execute Backend QUERY ============================================
   async function sendFormDataByMethod(form) {
     setSending(!sending);
     // console.log(formType, table_id);
     try {
       if (formType === "INSERT") {
         axiosResponse = await axios.post(URL_STORE, form);
-        console.log("Input data baru berhasil :", axiosResponse);
+        // console.log("Input data baru berhasil :", axiosResponse);
+        setResultStatus("insert", true, `Input ${table} berhasil !`);
       } else if (formType === "ALTER_BY_ID") {
         axiosResponse = await axios.put(URL_ALL, form);
-        console.log("Update data berhasil :", axiosResponse);
+        // console.log("Update data berhasil :", axiosResponse);
+        setResultStatus("alter", true, `Update ${table} berhasil !`);
       } else if (formType === "DROP_BY_ID") {
         switch (table) {
           case `admins`:
@@ -325,7 +329,8 @@ export const MainModalHandler = (props) => {
           default:
             break;
         }
-        console.log("Data berhasil di drop:", axiosResponse);
+        // console.log("Data berhasil di drop:", axiosResponse);
+        setResultStatus("drop", true, `Drop ${table} berhasil !`);
       } else if (formType === "DROP_BY_SELECTED") {
         // Loop melalui data dan buat permintaan DELETE untuk setiap elemen
         const deleteRequests = []; // Deklarasikan sebagai array
@@ -357,13 +362,16 @@ export const MainModalHandler = (props) => {
         try {
           // Kirim semua permintaan DELETE secara bersamaan
           const responses = await axios.all(deleteRequests);
-          console.log("Batch data berhasil dihapus:", responses);
+          // console.log("Batch data berhasil dihapus:", responses);
+          setResultStatus("drop", true, `Drop Batch ${table} berhasil !`);
           setData([]);
         } catch (error) {
           setData([]);
           console.error("Terjadi kesalahan saat menghapus batch data:", error);
         }
       }
+      // ------------------------- if success send data to server
+      // setResultStatus(null, false, null);
       setData([]);
       // console.table(data);
       setSending(false);
@@ -374,6 +382,7 @@ export const MainModalHandler = (props) => {
       clearData(); // parent props
       refresh(); // parent props
     } catch (error) {
+      setResultStatus("error", false, error.response.data.message);
       setSending(false);
       setErrorMessage(error.response.data.message);
       console.info(error);
@@ -400,6 +409,7 @@ export const MainModalHandler = (props) => {
     setReady: (value) => {
       setReady(value);
     },
+    setResultStatus,
     select,
     formType,
     showPassword,
@@ -434,16 +444,8 @@ export const MainModalHandler = (props) => {
 
   return (
     <>
-      <FormToast formType="apply" />
-
       <ModalContext.Provider value={ModalContextValue}>
         <>
-          {/* <button
-            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-            onClick={() => setShowModal(!showModal)}
-          >
-            Open modal
-          </button> */}
           <AnimatePresence>
             {showModal && (
               <Dialog
@@ -463,7 +465,10 @@ export const MainModalHandler = (props) => {
                     className="fixed inset-0 transition-opacity"
                     aria-hidden="true"
                   >
-                    <div className="absolute inset-0 bg-gray-950 opacity-40"></div>
+                    <div
+                      onClick={() => setResultStatus(null, false, null)}
+                      className="absolute inset-0 bg-gray-950 opacity-40"
+                    ></div>
                   </div>
 
                   <motion.div {...motionProps.modal}>
@@ -499,6 +504,7 @@ export const FormModal = (props) => {
     setReady,
     errorMessage,
     loading,
+    setResultStatus,
     select,
     formType,
     showPassword,
@@ -869,7 +875,7 @@ export const CropperModal = (props) => {
     onDrag,
     setOnDrag,
     onFileDrop,
-    // setLoading,
+    setLoading,
     setWorking,
     setBase64,
     setConfirm,
@@ -914,6 +920,7 @@ export const CropperModal = (props) => {
       setReady(false); // form modal btn
       setBase64(null);
       setWorking(true);
+      setLoading(false);
       // setLoading(false);
     }
     // Maksimal ukuran file dalam byte (512KB)
@@ -923,6 +930,10 @@ export const CropperModal = (props) => {
     if (selectedFile) {
       if (selectedFile.size > maxSize) {
         alert("File terlalu besar. Maksimal 512KB diperbolehkan.");
+        console.log("failed upload");
+        setBase64(null);
+        setWorking(false);
+        setLoading(true);
         e.target.value = ""; // Menghapus pilihan file yang tidak valid
       } else {
         const reader = new FileReader(); // Baca file gambar
@@ -940,6 +951,9 @@ export const CropperModal = (props) => {
               alert(
                 "Dimensi gambar terlalu besar. Maksimal 512px x 512px diperbolehkan."
               );
+              setBase64(null);
+              setWorking(false);
+              setLoading(true);
               e.target.value = ""; // Menghapus pilihan file yang tidak valid
             } else {
               reader.onload = (event) => {
@@ -990,7 +1004,7 @@ export const CropperModal = (props) => {
         const reader = new FileReader();
         reader.onload = (event) => {
           const dataURL = event.target.result;
-          console.log("Data URL dari file yang diunggah:", dataURL);
+          // console.log("Data URL dari file yang diunggah:", dataURL);
           setImage(dataURL);
           setOnWorking(true);
         };

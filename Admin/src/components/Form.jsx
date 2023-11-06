@@ -16,6 +16,7 @@ import { debounce } from "lodash";
 import { IsThisAnImage } from "../utils/Solver";
 import { useSelector } from "react-redux";
 import { LoadingDaisyUI } from "./Loading";
+import { ReportSpan } from "./Span";
 
 const ServerPublicProductImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 const ServerPublicAdminImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -904,28 +905,47 @@ export const FilePictureInput = (props) => {
             ) : (
               <div className="relative group">
                 {hoverImpact()}
-                <img
-                  src={
-                    data.pict
-                      ? table === "products"
-                        ? `${ServerPublicProductImg}${data.pict}`
-                        : table === "admins"
-                        ? `${ServerPublicAdminImg}${data.pict}`
-                        : table === "users"
-                        ? `${ServerPublicUserImg}${data.pict}`
+                {!loading ? (
+                  <img
+                    src={
+                      data.pict
+                        ? table === "products"
+                          ? `${ServerPublicProductImg}${data.pict}`
+                          : table === "admins"
+                          ? `${ServerPublicAdminImg}${data.pict}`
+                          : table === "users"
+                          ? `${ServerPublicUserImg}${data.pict}`
+                          : `${ServerPublicProductImg}default.jpg`
                         : `${ServerPublicProductImg}default.jpg`
-                      : `${ServerPublicProductImg}default.jpg`
-                  }
-                  alt="Avatar Tailwind CSS Component"
-                  className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] rounded-md shadow-lg"
-                  loading="lazy"
-                />
+                    }
+                    alt="Avatar Tailwind CSS Component"
+                    className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] rounded-md shadow-lg"
+                    loading="lazy"
+                  />
+                ) : (
+                  <ReportSpan>
+                    <h3 className="capitalize font-poppins-bold">
+                      😓 failed to load an image
+                      <br />
+                    </h3>
+                    try again or pick another file
+                  </ReportSpan>
+                )}
               </div>
             )}
           </div>
         ) : (
           <>{/* <LoadingDaisyUI /> */}</>
         )}
+        {/* {loading && (
+          <ReportSpan>
+            <h3 className="capitalize font-poppins-bold">
+              😓 failed to load an image
+              <br />
+            </h3>
+            try again or pick another file
+          </ReportSpan>
+        )} */}
         <CropperModal
           inputFileRef={inputFileRef}
           onDrag={onDrag}
@@ -935,10 +955,9 @@ export const FilePictureInput = (props) => {
             setBase64(null);
             // console.log("File yang diunggah:", file);
           }}
-          // setLoading={(value) => {
-          //   setBase64(null);
-          //   setLoading(value);
-          // }}
+          setLoading={(value) => {
+            setLoading(value);
+          }}
           setWorking={(value) => {
             setWorking(value);
           }}
