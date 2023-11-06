@@ -10,7 +10,7 @@ import {
   YAxis,
 } from "recharts";
 import { useSelector } from "react-redux";
-import { RenderAreaChart } from "../components/Recharts";
+import { RenderAreaChart } from "../components/Chart/Recharts";
 
 const data = [
   {

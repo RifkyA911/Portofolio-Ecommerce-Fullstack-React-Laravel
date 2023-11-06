@@ -519,7 +519,7 @@ export const ApexCharts = ({ type, inputData }) => {
               // options={areaOptions}
               options={sareaOptions}
               type={type} // Menggunakan tipe "area" untuk line chart dengan area diisi
-              series={[67]}
+              series={[74]}
               width="100%" // Atur lebar menjadi 100%
               height={400}
             />

@@ -7,7 +7,7 @@ import DashboardHeader from "../components/Dashboard/DashboardHeader";
 import { MuiIcon } from "./../utils/RenderIcons.jsx";
 import fetchData from "./../utils/API/AsyncFetch.js";
 // Data
-import { RenderAreaChart } from "./../components/Recharts.jsx";
+import { RenderAreaChart } from "./../components/Chart/Recharts.jsx";
 import { useSelector } from "react-redux";
 import { ApexCharts } from "../components/Chart/ApexCharts";
 
