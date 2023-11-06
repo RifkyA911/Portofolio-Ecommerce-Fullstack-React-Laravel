@@ -764,12 +764,12 @@ export const FilePictureInput = (props) => {
   } = props;
 
   const [onDrag, setOnDrag] = useState(false);
-  const [formattedValue, setFormattedValue] = useState(null);
+  // const [formattedValue, setFormattedValue] = useState(null);
   const [base64, setBase64] = useState(null);
 
   const [working, setWorking] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [confirm, setConfirm] = useState(false);
+  const [loadImage, setLoadImage] = useState(false);
+  // const [confirm, setConfirm] = useState(false);
 
   const inputFileRef = useRef(null);
 
@@ -894,7 +894,7 @@ export const FilePictureInput = (props) => {
             {working ? (
               <div className="relative group">
                 {hoverImpact()}
-                {base64 && (
+                {base64 && ( // new image preview
                   <img
                     src={`${base64}`}
                     alt="Avatar Tailwind CSS Component"
@@ -905,7 +905,7 @@ export const FilePictureInput = (props) => {
             ) : (
               <div className="relative group">
                 {hoverImpact()}
-                {!loading ? (
+                {!loadImage ? ( // old image preview
                   <img
                     src={
                       data.pict
@@ -923,6 +923,7 @@ export const FilePictureInput = (props) => {
                     loading="lazy"
                   />
                 ) : (
+                  // error upload image
                   <ReportSpan>
                     <h3 className="capitalize font-poppins-bold">
                       😓 failed to load an image
@@ -937,15 +938,6 @@ export const FilePictureInput = (props) => {
         ) : (
           <>{/* <LoadingDaisyUI /> */}</>
         )}
-        {/* {loading && (
-          <ReportSpan>
-            <h3 className="capitalize font-poppins-bold">
-              😓 failed to load an image
-              <br />
-            </h3>
-            try again or pick another file
-          </ReportSpan>
-        )} */}
         <CropperModal
           inputFileRef={inputFileRef}
           onDrag={onDrag}
@@ -955,8 +947,8 @@ export const FilePictureInput = (props) => {
             setBase64(null);
             // console.log("File yang diunggah:", file);
           }}
-          setLoading={(value) => {
-            setLoading(value);
+          setLoadImage={(value) => {
+            setLoadImage(value);
           }}
           setWorking={(value) => {
             setWorking(value);
@@ -964,9 +956,9 @@ export const FilePictureInput = (props) => {
           setBase64={(value) => {
             setBase64(value);
           }}
-          setConfirm={(value) => {
-            setConfirm(value);
-          }}
+          // setConfirm={(value) => {
+          //   setConfirm(value);
+          // }}
           // setFormattedValue={(value) => {
           //   setFormattedValue(value);
           // }}

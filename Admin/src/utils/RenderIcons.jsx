@@ -11,6 +11,9 @@ import * as ReactIconsPi from "react-icons/pi";
 
 export const MuiIcon = (props) => {
   const { iconName, fontSize, className } = props;
+  if (!iconName) {
+    return <small>invalid name</small>;
+  }
   const IconComponent = GetMuiIcons[iconName]; // Ganti nama variabel
 
   // useEffect(() => {

@@ -875,7 +875,7 @@ export const CropperModal = (props) => {
     onDrag,
     setOnDrag,
     onFileDrop,
-    setLoading,
+    setLoadImage,
     setWorking,
     setBase64,
     setConfirm,
@@ -920,8 +920,7 @@ export const CropperModal = (props) => {
       setReady(false); // form modal btn
       setBase64(null);
       setWorking(true);
-      setLoading(false);
-      // setLoading(false);
+      setLoadImage(false);
     }
     // Maksimal ukuran file dalam byte (512KB)
     // const maxSize = 512 * 1024;
@@ -933,7 +932,7 @@ export const CropperModal = (props) => {
         console.log("failed upload");
         setBase64(null);
         setWorking(false);
-        setLoading(true);
+        setLoadImage(true);
         e.target.value = ""; // Menghapus pilihan file yang tidak valid
       } else {
         const reader = new FileReader(); // Baca file gambar
@@ -953,7 +952,7 @@ export const CropperModal = (props) => {
               );
               setBase64(null);
               setWorking(false);
-              setLoading(true);
+              setLoadImage(true);
               e.target.value = ""; // Menghapus pilihan file yang tidak valid
             } else {
               reader.onload = (event) => {
@@ -1000,7 +999,7 @@ export const CropperModal = (props) => {
       const file = acceptedFiles[0]; // Mengambil file pertama (jika ada)
       if (file) {
         setWorking(true);
-        // setLoading(false);
+        // setLoadImage(false);
         const reader = new FileReader();
         reader.onload = (event) => {
           const dataURL = event.target.result;

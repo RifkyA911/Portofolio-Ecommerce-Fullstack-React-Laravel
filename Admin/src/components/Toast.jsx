@@ -175,12 +175,12 @@ export const FormToast = (props) => {
         >
           <MuiIcon
             className={styleToast.icon.color}
-            iconName={styleToast.icon.name}
-            // iconName="WarningAmberRounded"
+            iconName={styleToast.icon.name ?? "CheckCircleRounded"}
+            // iconName="CheckCircleRounded"
             fontSize={24}
           />
           <h3 className={`font-roboto-medium capitalize w-full`}>
-            {}
+            {styleToast.icon.name}
             {styleToast.span}
           </h3>
         </div>

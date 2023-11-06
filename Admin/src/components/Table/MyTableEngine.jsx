@@ -239,14 +239,14 @@ export const MyTableHeader = (props) => {
               </button>
             </>
           )}
-          {hideHeaderBtn !== "menuBtn" && !toggleSelect && (
+          {/* {hideHeaderBtn !== "menuBtn" && !toggleSelect && (
             <MyTableHeaderMenu
               setDialogOpen={setDialogOpen}
               isDialogOpen={isDialogOpen}
               toggleSelect={toggleSelect}
               setToggleSelect={setToggleSelect}
             />
-          )}
+          )} */}
           {toggleSelect && (
             <>
               <MotionButton

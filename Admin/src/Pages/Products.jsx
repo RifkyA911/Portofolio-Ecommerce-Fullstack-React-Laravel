@@ -294,16 +294,6 @@ export default function Products() {
     };
   }
 
-  // useEffect(() => {
-  //   console.info(table_styling);
-  // }, [table_styling]);
-
-  // useEffect(() => {
-  //   console.log(categories);
-  // }, [categories]);
-  useEffect(() => {
-    console.log("resultStatus", resultStatus);
-  }, [resultStatus]);
   return (
     <>
       <Container>
@@ -338,18 +328,6 @@ export default function Products() {
                       formType={resultStatus.type}
                       span={resultStatus.message}
                     />
-                    // <>
-                    //   {formType === "INSERT" && (
-                    //     <FormToast formType="success" span="Berhasil Update" />
-                    //   )}
-                    //   {formType === "ALTER_BY_ID" && (
-                    //     <FormToast formType="success" span="Berhasil Update" />
-                    //   )}
-                    //   {(formType === "DROP_BY_ID" ||
-                    //     formType === "DROP_BY_SELECTED") && (
-                    //     <FormToast formType="success" span="Berhasil Update" />
-                    //   )}
-                    // </>
                   )}
                   {/* ================ Table ================ */}
                   <ProductDetail inputData={products} />
