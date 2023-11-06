@@ -933,7 +933,7 @@ export const FilePictureInput = (props) => {
           onFileDrop={(file) => {
             setWorking(true);
             setBase64(null);
-            console.log("File yang diunggah:", file);
+            // console.log("File yang diunggah:", file);
           }}
           // setLoading={(value) => {
           //   setBase64(null);

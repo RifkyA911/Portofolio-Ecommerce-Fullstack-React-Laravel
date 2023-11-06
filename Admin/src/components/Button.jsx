@@ -154,10 +154,6 @@ export const MotionButton = (props) => {
   // Konten komponen
 
   useEffect(() => {
-    console.log("disabled", disabled);
-  }, [disabled]);
-
-  useEffect(() => {
     setFormButton(formType);
     if (formType == "default") {
       setStyleButton({

@@ -398,7 +398,6 @@ export const MainModalHandler = (props) => {
     loading,
     ready,
     setReady: (value) => {
-      console.log("setReady", value);
       setReady(value);
     },
     select,
