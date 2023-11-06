@@ -1056,6 +1056,7 @@ export const CropperModal = (props) => {
             <MotionButton
               type="button"
               onClick={() => {
+                setValue("pict", "noChange");
                 setReady(true);
                 setOnWorking(false);
                 setWorking(false);
