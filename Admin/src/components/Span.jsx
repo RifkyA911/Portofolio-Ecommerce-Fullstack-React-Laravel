@@ -40,3 +40,12 @@ export const NumberSpan = (props) => {
     </>
   );
 };
+
+export const ReportSpan = (props) => {
+  const { className, span, children } = props;
+  return (
+    <div className="flex flex-col justify-center items-center object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] rounded-md shadow-lg-h">
+      {span ? <h3>{span}</h3> : children}
+    </div>
+  );
+};
