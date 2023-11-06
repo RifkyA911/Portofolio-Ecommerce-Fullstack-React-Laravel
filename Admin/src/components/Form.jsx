@@ -15,6 +15,7 @@ import { MuiIcon } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 import { IsThisAnImage } from "../utils/Solver";
 import { useSelector } from "react-redux";
+import { LoadingDaisyUI } from "./Loading";
 
 const ServerPublicProductImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 const ServerPublicAdminImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -761,14 +762,13 @@ export const FilePictureInput = (props) => {
     style,
   } = props;
 
-  const [formattedValue, setFormattedValue] = useState(null);
-  const [loading, setLoading] = useState(false);
-
   const [onDrag, setOnDrag] = useState(false);
+  const [formattedValue, setFormattedValue] = useState(null);
+  const [base64, setBase64] = useState(null);
 
   const [working, setWorking] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const [base64, setBase64] = useState(null);
 
   const inputFileRef = useRef(null);
 
@@ -789,6 +789,7 @@ export const FilePictureInput = (props) => {
     table,
     data,
     formType,
+    ready,
     // react-hook-form
     getValues,
     register,
@@ -822,12 +823,11 @@ export const FilePictureInput = (props) => {
     if (!pictValue) {
       setValue("pict", "noChange");
     }
-    if (IsThisAnImage(pictValue)) {
-      // console.log('Nilai "pict" adalah data gambar base64 (false)');
-      setFormattedValue("base64");
-    } else {
-      setFormattedValue(null);
-    }
+    // if (IsThisAnImage(pictValue)) {
+    //   setFormattedValue("base64");
+    // } else {
+    //   setFormattedValue(null);
+    // }
   }, [pictValue]);
 
   const hoverImpact = () => {
@@ -888,9 +888,9 @@ export const FilePictureInput = (props) => {
             </span>
           )}
         </label>
-        {!loading && !onDrag ? (
+        {!onDrag ? (
           <div className="relative pt-4">
-            {formattedValue === "base64" ? (
+            {working ? (
               <div className="relative group">
                 {hoverImpact()}
                 {base64 && (
@@ -924,31 +924,40 @@ export const FilePictureInput = (props) => {
             )}
           </div>
         ) : (
-          <></>
+          <>{/* <LoadingDaisyUI /> */}</>
         )}
-
         <CropperModal
           inputFileRef={inputFileRef}
           onDrag={onDrag}
           setOnDrag={(value) => setOnDrag(value)}
           onFileDrop={(file) => {
-            // Lakukan sesuatu dengan file yang diunggah di sini
+            setWorking(true);
+            setBase64(null);
             console.log("File yang diunggah:", file);
           }}
-          onLoadingContent={(value) => {
-            setBase64(null);
-            setLoading(value);
-          }}
-          onWorkingContent={(value) => {
-            setFormattedValue("base64");
+          // setLoading={(value) => {
+          //   setBase64(null);
+          //   setLoading(value);
+          // }}
+          setWorking={(value) => {
             setWorking(value);
           }}
-          onConfirmContent={(value) => {
+          setBase64={(value) => {
+            setBase64(value);
+          }}
+          setConfirm={(value) => {
             setConfirm(value);
           }}
+          // setFormattedValue={(value) => {
+          //   setFormattedValue(value);
+          // }}
           setPict={(form) => {
             setValue("pict", form);
-            setBase64(form);
+            if (IsThisAnImage(form)) {
+              setBase64(form);
+            } else {
+              setBase64(null);
+            }
           }}
         />
       </div>

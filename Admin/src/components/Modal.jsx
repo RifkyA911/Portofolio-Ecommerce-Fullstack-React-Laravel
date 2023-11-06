@@ -40,6 +40,7 @@ import { AreaDropZone } from "./Area";
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
 const ServerAPIProductsImg = import.meta.env.VITE_API_ID_PRODUCT + "/image/";
+const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 
 export const ModalContext = createContext();
 
@@ -64,6 +65,8 @@ export const MainModalHandler = (props) => {
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [ready, setReady] = useState(true);
 
   const id = useId();
   // console.log(props);
@@ -393,6 +396,11 @@ export const MainModalHandler = (props) => {
     sending,
     errorMessage,
     loading,
+    ready,
+    setReady: (value) => {
+      console.log("setReady", value);
+      setReady(value);
+    },
     select,
     formType,
     showPassword,
@@ -488,6 +496,8 @@ export const FormModal = (props) => {
     setData,
     onWorking,
     sending,
+    ready,
+    setReady,
     errorMessage,
     loading,
     select,
@@ -513,6 +523,16 @@ export const FormModal = (props) => {
   // REDUX
   const { BgColor, ContainerBgColor, textColor, screenHeigth, screenWidth } =
     useSelector((state) => state.UI);
+
+  const [proceed, setProceed] = useState(false);
+
+  useEffect(() => {
+    if (ready) {
+      setProceed(false);
+    } else {
+      setProceed(true);
+    }
+  }, [ready]);
 
   return (
     <>
@@ -667,10 +687,14 @@ export const FormModal = (props) => {
           <div
             className={`${BgColor} px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse shadow-inner`}
           >
-            {formType === "INSERT" && <MotionButton formType="insert" />}
-            {formType === "ALTER_BY_ID" && <MotionButton formType="alter" />}
+            {formType === "INSERT" && (
+              <MotionButton formType="insert" disabled={proceed} />
+            )}
+            {formType === "ALTER_BY_ID" && (
+              <MotionButton formType="alter" disabled={proceed} />
+            )}
             {(formType === "DROP_BY_ID" || formType === "DROP_BY_SELECTED") && (
-              <MotionButton formType="delete" />
+              <MotionButton formType="delete" disabled={proceed} />
             )}
             <MotionButton
               formType="cancel"
@@ -741,13 +765,13 @@ export const PrintModal = (props) => {
     <>
       <Dialog.Panel
         as="div"
-        className={`flex flex-col w-[1200px] h-full justify-center bg-white rounded-lg overflow-hidden shadow-xl transform transition-all`}
+        className={`flex flex-col w-[1200px] h-full justify-center ${BgColor} ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-headline"
       >
         <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-          <div className="bg-white px-4 py-2">
+          <div className="px-4 py-2">
             <div className="card-header pb-4 flex flex-row justify-between w-full items-center">
               <div className="w-5/12 font-bold text-lg text-left capitalize ">
                 <Dialog.Title>
@@ -825,7 +849,9 @@ export const PrintModal = (props) => {
               )}
             </div>
           </div>
-          <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div
+            className={`${BgColor} px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse`}
+          >
             <DownloadBtnReactPDF
               formType={formType}
               inputData={data}
@@ -844,30 +870,29 @@ export const CropperModal = (props) => {
     onDrag,
     setOnDrag,
     onFileDrop,
-    onLoadingContent,
-    onWorkingContent,
-    onConfirmContent,
+    // setLoading,
+    setWorking,
+    setBase64,
+    setConfirm,
+    // setFormattedValue,
     setPict,
   } = props;
+
+  const [onWorking, setOnWorking] = useState(false);
 
   const [filename, setFilename] = useState(null);
   const [image, setImage] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
-  const [onWorking, setOnWorking] = useState(false);
 
   const cropperRef = useRef(null);
   const fileInput = inputFileRef.current;
-
-  // REDUX
-  const { BgColor, ContainerBgColor, textColor, screenHeigth, screenWidth } =
-    useSelector((state) => state.UI);
 
   const {
     data,
     setData,
     formType,
-    showPassword,
-    setShowPassword,
+    ready,
+    setReady,
     // react-hook-form
     newPasswordRef,
     register,
@@ -887,8 +912,10 @@ export const CropperModal = (props) => {
 
     if (selectedFile) {
       // console.log("selectedFile", selectedFile);
-      onWorkingContent(true);
-      onLoadingContent(false);
+      setReady(false); // form modal btn
+      setBase64(null);
+      setWorking(true);
+      // setLoading(false);
     }
     // Maksimal ukuran file dalam byte (512KB)
     // const maxSize = 512 * 1024;
@@ -899,8 +926,7 @@ export const CropperModal = (props) => {
         alert("File terlalu besar. Maksimal 512KB diperbolehkan.");
         e.target.value = ""; // Menghapus pilihan file yang tidak valid
       } else {
-        // Baca file gambar
-        const reader = new FileReader();
+        const reader = new FileReader(); // Baca file gambar
         reader.onload = (event) => {
           const img = new Image();
           img.src = event.target.result;
@@ -941,12 +967,17 @@ export const CropperModal = (props) => {
           .toDataURL();
         // console.log("Data gambar hasil pemangkasan:", croppedDataUrl);
         setCroppedImage(croppedDataUrl);
+        setReady(true); // form modal btn
       }
     }
   };
 
   useEffect(() => {
-    setPict(croppedImage);
+    if (croppedImage) {
+      setPict(croppedImage);
+    }
+    setImage(null);
+    setCroppedImage(null);
   }, [croppedImage]);
 
   // dropzone
@@ -955,8 +986,8 @@ export const CropperModal = (props) => {
       // Mengambil data URL dari file yang diunggah
       const file = acceptedFiles[0]; // Mengambil file pertama (jika ada)
       if (file) {
-        onWorkingContent(true);
-        onLoadingContent(false);
+        setWorking(true);
+        // setLoading(false);
         const reader = new FileReader();
         reader.onload = (event) => {
           const dataURL = event.target.result;
@@ -984,7 +1015,7 @@ export const CropperModal = (props) => {
   return (
     <>
       {onWorking && (
-        <div className={`p-4 `}>
+        <div className={`p-4`}>
           <Cropper
             style={{ height: 400, width: "100%" }}
             initialAspectRatio={1}
@@ -1012,7 +1043,11 @@ export const CropperModal = (props) => {
             <MotionButton
               type="button"
               onClick={() => {
+                setReady(true);
                 setOnWorking(false);
+                setWorking(false);
+                setImage(null);
+                setCroppedImage(null);
               }}
               formType="cancel"
             />
@@ -1035,7 +1070,6 @@ export const CropperModal = (props) => {
       ) : (
         <>
           <motion.div
-            // <motion.div
             {...getRootProps()}
             initial={{ scale: 1 }}
             whileHover={{ scale: 1.05 }}
@@ -1328,9 +1362,12 @@ export const InfoModal = (props) => {
                                       data.name}
                                   </Dialog.Description>
                                   <img
-                                    src={`${serverPublic}${
-                                      data.id || "default.png"
-                                    }`}
+                                    src={`${ServerProductsImg}${
+                                      data.pict || "default.png"
+                                    }`} // temporary
+                                    // src={`${serverPublic}${
+                                    //   data.id || "default.png"
+                                    // }`} why not sync???
                                     alt={`Info Picture ${data.pict}`}
                                     className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] overflow-hidden rounded-lg shadow-md"
                                   />
