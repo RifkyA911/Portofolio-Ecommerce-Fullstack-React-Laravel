@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import * as GetMuiIcons from "@mui/icons-material";
 // import * as ReactIconsFa from "react-icons/fa";
 // import * as ReactIconsFi from "react-icons/fi";
@@ -12,10 +13,15 @@ export const MuiIcon = (props) => {
   const { iconName, fontSize, className } = props;
   const IconComponent = GetMuiIcons[iconName]; // Ganti nama variabel
 
+  // useEffect(() => {
+  //   console.log("iconName", iconName);
+  //   // console.log("IconComponent", IconComponent);
+  // }, [iconName]);
+
   if (IconComponent) {
     return <IconComponent className={className} sx={{ fontSize: fontSize }} />;
   }
-  return null;
+  return <small>Failed Load Icon</small>;
 };
 
 export const IconsBs = (props) => {
@@ -24,7 +30,7 @@ export const IconsBs = (props) => {
   if (IconComponent) {
     return <IconComponent className={className} />;
   }
-  return null;
+  return <small>Failed Load Icon</small>;
 };
 
 export const IconsHi2 = (props) => {
@@ -33,7 +39,7 @@ export const IconsHi2 = (props) => {
   if (IconComponent) {
     return <IconComponent className={className} />;
   }
-  return null;
+  return <small>Failed Load Icon</small>;
 };
 
 export const IconsIo = (props) => {
@@ -42,7 +48,7 @@ export const IconsIo = (props) => {
   if (IconComponent) {
     return <IconComponent className={className} />;
   }
-  return null;
+  return <small>Failed Load Icon</small>;
 };
 
 export const IconsTb = (props) => {
@@ -51,7 +57,7 @@ export const IconsTb = (props) => {
   if (IconComponent) {
     return <IconComponent className={className} />;
   }
-  return null;
+  return <small>Failed Load Icon</small>;
 };
 
 export const IconsPi = (props) => {
@@ -60,5 +66,5 @@ export const IconsPi = (props) => {
   if (IconComponent) {
     return <IconComponent className={className} />;
   }
-  return null;
+  return <small>Failed Load Icon</small>;
 };
