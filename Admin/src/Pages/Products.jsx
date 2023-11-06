@@ -26,6 +26,7 @@ import { useSelector } from "react-redux";
 // UTILS
 import { useReactToPrint } from "react-to-print";
 import { CurrencyFormatter } from "../utils/Formatter";
+import { FormToast } from "../components/Toast";
 
 // define fetch data URL_PRODUCT by products
 const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCT;
@@ -58,6 +59,11 @@ export default function Products() {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(false);
   const [formType, setFormType] = useState(null);
+  const [resultStatus, setResultStatus] = useState({
+    type: null,
+    state: false,
+    message: null,
+  });
 
   // REDUX
   const {
@@ -233,6 +239,13 @@ export default function Products() {
       fetchData(URL_PRODUCT, "products");
       setLoading(true);
     },
+    setResultStatus: (type, state, message) =>
+      setResultStatus({
+        ...resultStatus,
+        type: type,
+        state: state,
+        message: message,
+      }),
     select: categories,
     clearData: () => {
       setProducts(null);
@@ -288,7 +301,9 @@ export default function Products() {
   // useEffect(() => {
   //   console.log(categories);
   // }, [categories]);
-
+  useEffect(() => {
+    console.log("resultStatus", resultStatus);
+  }, [resultStatus]);
   return (
     <>
       <Container>
@@ -318,6 +333,24 @@ export default function Products() {
                   </div>
                   {/* ================ Modal ================= */}
                   <MainModalHandler {...ModalProps} />
+                  {resultStatus.type && resultStatus.state == true && (
+                    <FormToast
+                      formType={resultStatus.type}
+                      span={resultStatus.message}
+                    />
+                    // <>
+                    //   {formType === "INSERT" && (
+                    //     <FormToast formType="success" span="Berhasil Update" />
+                    //   )}
+                    //   {formType === "ALTER_BY_ID" && (
+                    //     <FormToast formType="success" span="Berhasil Update" />
+                    //   )}
+                    //   {(formType === "DROP_BY_ID" ||
+                    //     formType === "DROP_BY_SELECTED") && (
+                    //     <FormToast formType="success" span="Berhasil Update" />
+                    //   )}
+                    // </>
+                  )}
                   {/* ================ Table ================ */}
                   <ProductDetail inputData={products} />
                   <div className="divider">Product List</div>
