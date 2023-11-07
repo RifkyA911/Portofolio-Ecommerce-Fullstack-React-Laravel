@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import { useReactToPrint } from "react-to-print";
 import { CurrencyFormatter } from "../utils/Formatter";
 import { FormToast } from "../components/Toast";
+import { ReactIcons } from "../utils/RenderIcons";
 
 // define fetch data URL_PRODUCT by products
 const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCT;
@@ -167,6 +168,13 @@ export default function Products() {
       fetchData(URL_PRODUCT, "products");
       setLoading(true);
     },
+    setResultStatus: (type, state, message) =>
+      setResultStatus({
+        ...resultStatus,
+        type: type,
+        state: state,
+        message: message,
+      }),
     // ------------- Table Header Menu -------------
     TabHeader: true,
     hideHeaderBtn: "",

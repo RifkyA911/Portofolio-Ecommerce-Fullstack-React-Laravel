@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-import { MuiIcon } from "../utils/RenderIcons";
+import { ReactIcons } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 import { Transition } from "@headlessui/react";
 import { useSelector } from "react-redux";
@@ -28,6 +28,7 @@ export const MainToastHandler = (props) => {
 
 export const FormToast = (props) => {
   const {
+    setResultStatus,
     className,
     bg,
     color,
@@ -69,71 +70,45 @@ export const FormToast = (props) => {
     const timeout = setTimeout(() => {
       setIsVisible(false);
     }, 3000);
-
+    setTimeout(() => {
+      setResultStatus(null, false, null);
+    }, 3100);
     return () => clearTimeout(timeout);
   }, []);
 
   useEffect(() => {
-    // if (formType == "default") {
-    //   setStyleToast({
-    //     ...styleToast,
-    //     bg: bg ?? `${BgColor} border-gray-300`,
-    //     text: color ?? textColor,
-    //     icon: {
-    //       name: icon ?? "CheckCircleRounded",
-    //       color: "text-green-600",
-    //     },
-    //     span: span ?? "default toast",
-    //   });
-    // } else if (formType == "success") {
-    //   setStyleToast({
-    //     ...styleToast,
-    //     bg: bg ?? `${BgColor} border-gray-300`,
-    //     text: color ?? textColor,
-    //     icon: {
-    //       name: icon ?? "CheckCircleRounded",
-    //       color: "text-green-600",
-    //     },
-    //     span: span ?? "Success Toast",
-    //   });
-    // }
-
     setStyleToast({
       ...styleToast,
       bg: bg ?? `${BgColor} border-gray-300`,
       text: color ?? textColor,
       icon:
         formType === "default"
-          ? { name: icon ?? "CheckCircleRounded", color: "text-green-600" }
+          ? { name: icon ?? "BiSolidCheckCircle", color: "text-green-600" }
           : formType === "success"
-          ? { name: icon ?? "SuccessIcon", color: "text-green-600" }
+          ? { name: icon ?? "BiSolidCheckCircle", color: "text-green-600" }
           : formType === "error"
-          ? { name: icon ?? "ReportProblemRounded", color: "text-red-500" }
+          ? { name: icon ?? "BiSolidError", color: "text-red-500" }
           : formType === "warning"
-          ? { name: icon ?? "WarningAmberRounded", color: "text-amber-600" }
+          ? { name: icon ?? "IoWarningOutline", color: "text-amber-600" }
           : formType === "info"
-          ? { name: icon ?? "ErrorRounded", color: "text-blue-600" }
+          ? { name: icon ?? "MdInfo", color: "text-blue-600" }
           : formType === "session"
-          ? { name: icon ?? "SyncProblemRounded", color: "text-lime-600" }
-          : formType === "tools"
-          ? { name: icon ?? "AutoFixHighRounded", color: "text-indigo-600" }
+          ? { name: icon ?? "AiOutlineFieldTime", color: "text-lime-600" }
+          : formType === "fixed"
+          ? { name: icon ?? "AiFillTool", color: "text-orange-600" }
           : formType === "insert"
-          ? { name: icon ?? "AddTaskRounded", color: "text-sky-600" }
+          ? { name: icon ?? "BiSolidCheckCircle", color: "text-sky-600" }
           : formType === "alter"
-          ? { name: icon ?? "SuccessIcon", color: "text-sky-600" }
+          ? { name: icon ?? "BiSolidCheckCircle", color: "text-indigo-600" }
           : formType === "drop"
-          ? { name: icon ?? "SuccessIcon", color: "text-red-600" }
+          ? { name: icon ?? "BiSolidCheckCircle", color: "text-red-600" }
           : {
-              name: "NotListedLocationRounded",
+              name: "BsQuestionCircleFill",
               color: "text-teal-600",
             },
       span: span ?? "Default Toast",
     });
   }, [formType, onClick, BgColor, span]);
-
-  useEffect(() => {
-    console.log("styleToast", styleToast);
-  }, [styleToast]);
 
   return (
     <>
@@ -173,14 +148,18 @@ export const FormToast = (props) => {
         <div
           className={`${styleToast.bg} flex flex-row justify-between py-2 px-3 gap-2 rounded-md shadow-lg border`}
         >
-          <MuiIcon
+          {/* <MuiIcon
             className={styleToast.icon.color}
             iconName={styleToast.icon.name ?? "CheckCircleRounded"}
             // iconName="CheckCircleRounded"
             fontSize={24}
+          /> */}
+          <ReactIcons
+            className={styleToast.icon.color}
+            iconName={styleToast.icon.name ?? "FiGithub"}
+            fontSize={24}
           />
           <h3 className={`font-roboto-medium capitalize w-full`}>
-            {styleToast.icon.name}
             {styleToast.span}
           </h3>
         </div>

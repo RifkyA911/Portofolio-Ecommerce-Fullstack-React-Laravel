@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utils
 import { getCurrentEndpoint } from "../utils/Navigation";
-import { MuiIcon, IconsBs } from "../utils/RenderIcons";
+import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 // Config
 
 export const Content = (props) => {
@@ -24,7 +24,9 @@ export const Content = (props) => {
         <div className="pages-title flex flex-row items-end justify-start text-xl font-roboto-medium mb-3 px-2">
           <i className="pr-2 text-md">
             {pageName == "Dashboard" && <MuiIcon iconName={"Home"} />}
-            {pageName == "Notifications" && <IconsBs iconName="BsBellFill" />}
+            {pageName == "Notifications" && (
+              <ReactIcons iconName="BsBellFill" />
+            )}
             {pageName == "Statistic" && <MuiIcon iconName={"BarChart"} />}
             {pageName == "Chat" && <MuiIcon iconName={"Sms"} />}
             {pageName == "Products" && <MuiIcon iconName={"Store"} />}

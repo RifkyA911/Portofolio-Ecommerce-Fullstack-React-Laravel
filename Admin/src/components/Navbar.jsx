@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 // UTILS
 import { getUser, logOutUser } from "../utils/Session/Admin";
-import { MuiIcon, IconsIo } from "../utils/RenderIcons";
+import { MuiIcon } from "../utils/RenderIcons";
 
 export const NavbarComponent = () => {
   // REDUX
@@ -352,7 +352,7 @@ export const NavbarComponent = () => {
                         <div className="divider lg:divider-horizontal"></div>
                         <div className="flex flex-row justify-center items-center p-0 text-yellow-500 ">
                           <i className="text-2xl">
-                            {<IconsIo iconName="IoMdPartlySunny" />}
+                            {/* {<IconsIo iconName="IoMdPartlySunny" />} */}
                           </i>
                           <span className="text-black font-roboto-medium text-md">
                             36°

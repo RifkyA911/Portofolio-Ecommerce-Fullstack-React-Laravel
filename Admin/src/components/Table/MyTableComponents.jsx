@@ -248,7 +248,7 @@ export const MyTableHeaderMenu = (props) => {
                 });
               }}
             >
-              Export CSV
+              Export Excel .xlsx
             </button>
           </div>
         </>

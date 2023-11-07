@@ -10,7 +10,7 @@ import {
   MyTableHeaderPrint,
 } from "./MyTableComponents";
 // UTILS
-import { MuiIcon, IconsHi2 } from "../../utils/RenderIcons";
+import { MuiIcon, ReactIcons } from "../../utils/RenderIcons";
 import { useReactToPrint } from "react-to-print";
 import { SearchInput } from "../Form";
 import { MotionButton } from "../Button";
@@ -24,6 +24,7 @@ export const MyTableEngine = (props) => {
     inputData,
     refresh,
     className,
+    setResultStatus,
     // Tab Header Table Component
     TabHeader = false,
     hideHeaderBtn = null,
@@ -239,14 +240,14 @@ export const MyTableHeader = (props) => {
               </button>
             </>
           )}
-          {/* {hideHeaderBtn !== "menuBtn" && !toggleSelect && (
+          {hideHeaderBtn !== "menuBtn" && !toggleSelect && (
             <MyTableHeaderMenu
               setDialogOpen={setDialogOpen}
               isDialogOpen={isDialogOpen}
               toggleSelect={toggleSelect}
               setToggleSelect={setToggleSelect}
             />
-          )} */}
+          )}
           {toggleSelect && (
             <>
               <MotionButton
@@ -402,9 +403,9 @@ export const Th = (props) => {
                 <i className="print:hidden absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
                   {sortBy === column &&
                     (sortOrder === "asc" ? (
-                      <IconsHi2 iconName="HiArrowLongDown" className="" />
+                      <ReactIcons iconName="HiArrowLongDown" className="" />
                     ) : (
-                      <IconsHi2 iconName="HiArrowLongUp" className="" />
+                      <ReactIcons iconName="HiArrowLongUp" className="" />
                     ))}
                 </i>
               </div>
