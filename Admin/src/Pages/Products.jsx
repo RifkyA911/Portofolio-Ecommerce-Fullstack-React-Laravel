@@ -178,11 +178,12 @@ export default function Products() {
     // ------------- Table Header Menu -------------
     TabHeader: true,
     hideHeaderBtn: "",
-    searchTerm: searchTerm,
+    selectFilter: categories,
     applyFilter: (form) => {
       fetchData(URL_PRODUCT_FILTER, "products", form);
       // console.log(form);
     },
+    searchTerm: searchTerm,
     setSearchTerm: (e) => {
       setSearchTerm(e.target.value);
       // setTimeout(setSearchTerm(e.target.value), 2000);
@@ -207,8 +208,10 @@ export default function Products() {
     },
     // ------------- Table Body -------------
     toggleSelect: toggleSelect,
-    setToggleSelect: () => {
-      setToggleSelect((toggleSelectProps) => !toggleSelectProps);
+    setToggleSelect: (value) => {
+      ////////////////////////////////////////////////////////// fix this
+      // console.log("value", value);
+      setToggleSelect((toggleSelectProps) => value || !toggleSelectProps);
     },
     selectedRows: selectedRows,
     setSelectedRows: (propsValue) => setSelectedRows(propsValue),

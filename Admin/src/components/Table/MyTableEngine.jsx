@@ -28,6 +28,7 @@ export const MyTableEngine = (props) => {
     // Tab Header Table Component
     TabHeader = false,
     hideHeaderBtn = null,
+    selectFilter,
     applyFilter,
     searchTerm,
     setSearchTerm,
@@ -132,6 +133,7 @@ export const MyTableHeader = (props) => {
     table,
     inputData,
     length,
+    selectFilter,
     applyFilter,
     searchTerm,
     setSearchTerm,
@@ -167,6 +169,7 @@ export const MyTableHeader = (props) => {
           {hideHeaderBtn !== "filterBtn" && (
             <MyTableHeaderFilter
               table={table}
+              selectFilter={selectFilter}
               applyFilter={applyFilter}
               inputData={inputData}
               isDialogOpen={isDialogOpen}
@@ -486,8 +489,15 @@ export const Td = (props) => {
 };
 
 export const MyTablePagination = (props) => {
-  const { colSpan, paginate, onChangePaginate, rows, onRowsChange, length } =
-    useContext(TableContext);
+  const {
+    setToggleSelect,
+    colSpan,
+    paginate,
+    onChangePaginate,
+    rows,
+    onRowsChange,
+    length,
+  } = useContext(TableContext);
 
   const [currentPage, setCurrentPage] = useState(paginate);
   // const [headPage, setHeadPage] = useState(1);

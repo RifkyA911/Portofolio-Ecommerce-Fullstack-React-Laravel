@@ -8,6 +8,7 @@ import { MuiIcon } from "../../utils/RenderIcons";
 import { CurrencyFormatter } from "../../utils/Formatter";
 import ReactSlider from "react-slider";
 import { NumberInput } from "../Form";
+import { isClickedOutside } from "../../utils/Solver";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
@@ -156,25 +157,10 @@ export const ProductImage = (props) => {
 export const ProductFilter = (props) => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const [isHovered, setIsHovered] = useState(false);
   const MenuBoxRef = useRef(null);
-
-  const MaxLimit = 1000000; //1 jt
-
-  useEffect(() => {
-    setValue("minPrice", minPrice);
-    setValue("maxPrice", maxPrice);
-  }, []);
-
-  const onSubmit = async (form) => {
-    // console.info("data form:", form);
-    if (!form) {
-      alert("there is no form to send");
-    }
-    await applyFilter(form);
-    closeFunction();
-  };
 
   const {
     register,
@@ -190,18 +176,51 @@ export const ProductFilter = (props) => {
     watch,
     closeFunction,
     inputData,
+    selectFilter,
     applyFilter,
     isDialogOpen,
   } = useContext(MyTableFilterContext);
+
+  const MaxLimit = 1000000; //1 jt
+
+  useEffect(() => {
+    setValue("minPrice", minPrice);
+    setValue("maxPrice", maxPrice);
+  }, []);
+
+  const onSubmit = async (form) => {
+    // console.info("data form:", form);
+    if (!form) {
+      alert("there is no form to send");
+    }
+    setValue("superAuthorizationPassword", SuperAdminKey);
+    await applyFilter(form);
+    closeFunction();
+  };
+
+  useEffect(() => {
+    setValue("selectedFilter", selectedItems);
+    // console.log(getValues("selectedFilter"));
+  }, [selectedItems]);
+
   return (
     <>
+      {isDialogOpen.filter && (
+        <div
+          className="absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.1px]"
+          onClick={() => {
+            closeFunction;
+            setValue("superAuthorizationPassword", null);
+          }}
+        ></div>
+      )}
       <div
         ref={MenuBoxRef}
         className={`${
           !isDialogOpen.filter ? "hidden" : "block"
-        } absolute p-4 bg-white w-[600px] min-h-[300px] top-11 left-0 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
+        } absolute bg-white w-[600px] min-h-[300px] top-11 left-0 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
       >
-        <div className="relative h-8 bg-slate-50 flex flex-row items-center">
+        <div className="relative px-4 py-2 h-8 bg-slate-50 flex flex-row items-center">
           <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
           <h1 className="text-center mx-2 font-roboto-bold">Filter</h1>
           <button
@@ -216,10 +235,10 @@ export const ProductFilter = (props) => {
         </div>
         <form
           autoComplete="off"
-          className="flex flex-col gap-4 "
+          className="flex flex-col px-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="price-filter flex flex-col gap-4 border-b-2 pb-4">
+          <div className="price-filter flex flex-col gap-4 border-b pb-4">
             <label className="pt-2 text-left text-base">
               <MuiIcon iconName="SellRounded" fontSize={16} /> Rentang Harga
             </label>
@@ -297,20 +316,48 @@ export const ProductFilter = (props) => {
               />
             </div>
           </div>
-          <div className="category-filter flex flex-col gap-4 border-b-2 pb-2">
+          <div className="category-filter flex flex-col gap-2 border-b pb-2">
             <label className="pt-2 text-left text-base">
               <MuiIcon iconName="AutoAwesomeMosaicRounded" fontSize={16} />{" "}
               Category
             </label>
+            {selectFilter ? (
+              <div className="inline-flex justify-start flex-wrap gap-2">
+                {selectFilter.map((select, index) => (
+                  <MotionButton
+                    key={select.id}
+                    className={`p-2 ${
+                      selectedItems.some((id) => id === select.id)
+                        ? "bg-green-500 text-white"
+                        : "bg-slate-200 "
+                    } rounded-lg hover:bg-green-600 capitalize hover:text-white transition-all delay-100`}
+                    type="button"
+                    onClick={() => {
+                      !selectedItems.some((id) => id === select.id)
+                        ? setSelectedItems([...selectedItems, select.id]) // add new value
+                        : setSelectedItems(
+                            selectedItems.filter((item) => item !== select.id) // remove by value
+                          );
+                    }}
+                  >
+                    {select.name}
+                  </MotionButton>
+                ))}
+              </div>
+            ) : (
+              "skelton"
+            )}
           </div>
-          <MotionButton
-            formType="confirm"
-            onClick={() => {
-              setShowModal(false);
-              refresh();
-              clearData();
-            }}
-          />
+          <div className="py-2">
+            <MotionButton
+              formType="confirm"
+              onClick={() => {
+                setShowModal(false);
+                refresh();
+                clearData();
+              }}
+            />
+          </div>
         </form>
       </div>
     </>

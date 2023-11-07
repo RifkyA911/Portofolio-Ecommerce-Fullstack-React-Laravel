@@ -128,14 +128,20 @@ class ProductController extends Controller
     }
     public function filter(Request $request)
     {
+        $SuperAdminKey = $request->input('superAuthorizationPassword');
         $minPrice = $request->input('minPrice');
         $maxPrice = $request->input('maxPrice');
+        $categories = $request->input('selectedFilter');
 
-        if (!$maxPrice) {
-            return response(['message' => 'validasi data error', 'error' => 'Something went wrong with the DB :('], 222);
+        if (!$SuperAdminKey == 'superAdmin') {
+            return response(['message' => 'validasi kredensial data error', 'error' => 'bad request client :('], 400);
         }
 
-        $products = Product::where('price', '>=', $minPrice)->where('price', '<=', $maxPrice)->get();
+        if (!is_array($categories)) {
+            return response(['message' => 'categories field type of data are not array', 'error' => 'bad request client :(', 'failed payload' => $request], 400);
+        }
+
+        $products = Product::where('price', '>=', $minPrice)->where('price', '<=', $maxPrice)->whereIn('category_id', $categories)->get();
         $length = $products->count();
 
         if (!$length) {

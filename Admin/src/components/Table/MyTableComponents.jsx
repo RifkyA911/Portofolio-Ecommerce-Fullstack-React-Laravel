@@ -17,7 +17,14 @@ const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 
 export const MyTableHeaderFilter = (props) => {
-  const { table, inputData, applyFilter, isDialogOpen, closeFunction } = props;
+  const {
+    table,
+    inputData,
+    selectFilter,
+    applyFilter,
+    isDialogOpen,
+    closeFunction,
+  } = props;
 
   const {
     register,
@@ -50,6 +57,7 @@ export const MyTableHeaderFilter = (props) => {
     watch,
     closeFunction,
     inputData,
+    selectFilter,
     applyFilter,
     isDialogOpen,
   };
