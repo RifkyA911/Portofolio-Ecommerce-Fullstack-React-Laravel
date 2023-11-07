@@ -1,13 +1,13 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import Barcode from "react-jsbarcode";
-import Slider, { SliderThumb } from "@mui/material/Slider";
-import { styled } from "@mui/material/styles";
+import { motion } from "framer-motion";
+import { MotionButton } from "../Button";
+import { Resizer } from "react-image-file-resizer";
+import { MyTableFilterContext } from "../Table/MyTableComponents";
 import { MuiIcon } from "../../utils/RenderIcons";
 import { CurrencyFormatter } from "../../utils/Formatter";
 import ReactSlider from "react-slider";
 import { NumberInput } from "../Form";
-import { MyTableFilterContext } from "../Table/MyTableComponents";
-import { ConfirmButton, MotionButton } from "../Button";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
@@ -101,19 +101,52 @@ export const ProductDetail = (props) => {
 export const ProductImage = (props) => {
   const { data, onProductPictureClick } = props;
   // console.table();
+  const [resizedImages, setResizedImages] = useState([]);
 
-  const height = "w-[50px]";
-  const maxHeight = "max-h-[50px]";
+  const resizeImages = (imageUrls) => {
+    const resizedImagePromises = imageUrls.map((imageUrl) => {
+      return new Promise((resolve) => {
+        Resizer.imageFileResizer(
+          imageUrl,
+          300, // Lebar yang diinginkan
+          300, // Tinggi yang diinginkan
+          "JPEG", // Format gambar yang diinginkan (misalnya, JPEG)
+          100, // Kualitas gambar (0-100)
+          0, // Rotasi (0 untuk tidak merotasi)
+          (uri) => {
+            resolve(uri);
+          },
+          "base64"
+        );
+      });
+    });
+
+    useEffect(() => {
+      resizeImages(
+        `${ServerProductsImg}${data.pict ? data.pict : "not_found.jpg"}`
+      );
+    }, []);
+
+    Promise.all(resizedImagePromises)
+      .then((resizedImages) => {
+        setResizedImages(resizedImages);
+      })
+      .catch((error) => {
+        console.error("Error resizing images:", error);
+      });
+  };
+
   return (
     <>
       <div
-        className={`flex justify-center items-center ${maxHeight} overflow-hidden cursor-pointer`}
+        className={`flex justify-center items-center max-h-[50px] overflow-hidden cursor-pointer`}
         onClick={onProductPictureClick}
       >
         <img
           // src={`${ServerAPIProductsImg}${data.id ? data.id : "not_found.jpg"}`} // will cause too many req issue
+          // src={`${ServerProductsImg}${data.pict ? data.pict : "not_found.jpg"}`}
           src={`${ServerProductsImg}${data.pict ? data.pict : "not_found.jpg"}`}
-          className={`${height} h-full text-center`}
+          className={`w-[50px] h-full text-center`}
         />
       </div>
     </>

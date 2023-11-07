@@ -34,6 +34,7 @@
     "react-hook-form": "^7.46.2",
     "react-icons": "^4.10.1",
     "react-image-crop": "^10.1.8",
+    "react-image-file-resizer": "^0.4.8",
     "react-jsbarcode": "^0.4.2",
     "react-jwt": "^1.2.0",
     "react-number-format": "^5.3.1",
