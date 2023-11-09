@@ -4,7 +4,7 @@ import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
-import { MainModalHandler, InfoModal, PrintModal } from "../components/Modal";
+import { MainModalHandler } from "../components/Modal";
 import {
   ProductDetail,
   ProductImage,
@@ -24,7 +24,6 @@ import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import { useReactToPrint } from "react-to-print";
 import { CurrencyFormatter } from "../utils/Formatter";
 import { FormToast } from "../components/Toast";
 import { ReactIcons } from "../utils/RenderIcons";
@@ -115,10 +114,7 @@ export default function Products() {
     }
   };
 
-  // useEffect(() => {
-  //   console.log(products);
-  // }, [products]);
-
+  // ===================== MyTableEngine =====================
   useEffect(() => {
     fetchData(URL_PRODUCT, "products");
     fetchData(URL_ALL_CATEGORIES, "categories");
@@ -127,7 +123,6 @@ export default function Products() {
     }
   }, [paginate, rows]);
 
-  // ===================== MyTableEngine =====================
   // Fungsi handler saat checkbox di klik
   const handleCheckboxChange = (id, name, pict) => {
     const isSelected = selectedRows.some((item) => item.id === id);
@@ -158,6 +153,7 @@ export default function Products() {
     refresh: () => {
       fetchData(URL_PRODUCT, "products");
       setLoading(true);
+      setTabPagination(true);
     },
     setResultStatus: (type, state, message) =>
       setResultStatus({
@@ -177,9 +173,6 @@ export default function Products() {
     showFixedBtn: showFixedBtn,
     setShowFixedBtn: setShowFixedBtn,
     searchTerm: searchTerm,
-    // setSearchTerm: (e) => {
-    //   setSearchTerm(e.target.value);
-    // },
     setSearchTerm: setSearchTerm,
     setPrintBatchModal: () => {
       setShowModal(true);
@@ -195,14 +188,8 @@ export default function Products() {
     },
     // ------------- Table Body -------------
     toggleSelect: toggleSelect,
-    // setToggleSelect: (value) => {
-    //   // console.log("value", value);
-    //   // setToggleSelect((toggleSelectProps) => value || !toggleSelectProps);
-    //   setToggleSelect(value);
-    // },
     setToggleSelect: setToggleSelect,
     selectedRows: selectedRows,
-    // setSelectedRows: (propsValue) => setSelectedRows(propsValue),
     setSelectedRows: setSelectedRows,
     // Sorting Filter
     sortData: (newSortedData) => {
@@ -210,6 +197,7 @@ export default function Products() {
     },
     // ------------ Table Pagination-------------
     tabPagination: tabPagination,
+    setTabPagination: setTabPagination,
     colSpan: colspan == null ? 5 : colspan,
     paginate: paginate,
     onChangePaginate: (newPaginate) => {
@@ -237,9 +225,6 @@ export default function Products() {
     table: "products",
     table_id: product,
     showModal: showModal,
-    // setShowModal: () => {
-    //   setShowModal(false);
-    // },
     setShowModal: setShowModal,
     modalType: modalType,
     formType: formType,

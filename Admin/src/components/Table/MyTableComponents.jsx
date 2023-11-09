@@ -25,6 +25,7 @@ export const MyTableHeaderFilter = (props) => {
     applyFilter,
     isDialogOpen,
     closeFunction,
+    setTabPagination,
   } = props;
 
   const {
@@ -61,6 +62,7 @@ export const MyTableHeaderFilter = (props) => {
     selectFilter,
     applyFilter,
     isDialogOpen,
+    setTabPagination,
   };
 
   return (

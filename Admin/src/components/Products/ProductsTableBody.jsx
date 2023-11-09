@@ -179,6 +179,7 @@ export const ProductFilter = (props) => {
     selectFilter,
     applyFilter,
     isDialogOpen,
+    setTabPagination,
   } = useContext(MyTableFilterContext);
 
   const MaxLimit = 1000000; //1 jt
@@ -401,7 +402,8 @@ export const ProductFilter = (props) => {
             <MotionButton
               formType="confirm"
               onClick={() => {
-                setShowModal(false);
+                // setShowModal(false);
+                setTabPagination(false);
                 refresh();
                 clearData();
               }}

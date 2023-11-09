@@ -48,6 +48,7 @@ export const MyTableEngine = (props) => {
     setSelectedRows,
     // Table Pagination
     tabPagination = false,
+    setTabPagination,
     colSpan = 2,
     paginate,
     onChangePaginate,
@@ -122,7 +123,20 @@ export const MyTableEngine = (props) => {
         >
           <Table className={`text-sm w-full `}>
             {children}
-            {tabPagination && <MyTablePagination />}
+            {tabPagination ? (
+              <MyTablePagination />
+            ) : (
+              <tfoot className="print:hidden ">
+                <tr>
+                  <td
+                    key={9999}
+                    align="center"
+                    colSpan={colSpan}
+                    className={``}
+                  ></td>
+                </tr>
+              </tfoot>
+            )}
           </Table>
         </div>
       </TableContext.Provider>
@@ -151,6 +165,7 @@ export const MyTableHeader = (props) => {
     selectedRows,
     setSelectedRows,
     refresh,
+    setTabPagination,
   } = useContext(TableContext);
   const [isDialogOpen, setDialogOpen] = useState({
     filter: false,
@@ -181,6 +196,7 @@ export const MyTableHeader = (props) => {
                   filter: !isDialogOpen.filter,
                 });
               }}
+              setTabPagination={setTabPagination}
             />
           )}
           <SearchInput
