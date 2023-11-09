@@ -132,6 +132,9 @@ class ProductController extends Controller
         $minPrice = $request->input('minPrice');
         $maxPrice = $request->input('maxPrice');
         $categories = $request->input('selectedFilter');
+        $getDateType = $request->input('date_type');
+        $startDate = $request->input('date_start');
+        $endDate = $request->input('date_end');
 
         if (!$SuperAdminKey == 'superAdmin') {
             return response(['message' => 'validasi kredensial data error', 'error' => 'bad request client :('], 400);
@@ -141,7 +144,24 @@ class ProductController extends Controller
             return response(['message' => 'categories field type of data are not array', 'error' => 'bad request client :(', 'failed payload' => $request], 400);
         }
 
-        $products = Product::where('price', '>=', $minPrice)->where('price', '<=', $maxPrice)->whereIn('category_id', $categories)->get();
+        $dateType = '';
+        if ($getDateType) {
+            if ($getDateType == 'created_at') {
+                $dateType = 'created_at';
+            } else if ($getDateType == 'updated_at') {
+                $dateType = 'updated_at';
+            } else {
+                return response(['message' => 'payload->date_type not match', 'error' => 'bad request client :('], 404);
+            }
+        } else {
+            return response(['message' => 'payload->date_type null/error', 'error' => 'bad request client :('], 404);
+        }
+
+        $products = Product::where('price', '>=', $minPrice)
+            ->where('price', '<=', $maxPrice)
+            ->whereIn('category_id', $categories)
+            ->whereBetween($dateType, [$startDate, $endDate])
+            ->get();
         $length = $products->count();
 
         if (!$length) {
