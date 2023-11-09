@@ -137,6 +137,7 @@ export const MotionButton = (props) => {
     formType,
     icon,
     span,
+    noSpan = false,
     type = "submit",
     size,
     onClick,
@@ -185,7 +186,7 @@ export const MotionButton = (props) => {
           : `bg-sky-300 hover:bg-sky-400`,
         text: `text-white`,
         size: null,
-        icon: icon ?? `AddBoxRounded`,
+        icon: icon ?? `LibraryAddRounded`,
         span: span ?? `Insert`,
       });
     } else if (formType == "alter") {
@@ -209,6 +210,17 @@ export const MotionButton = (props) => {
         size: null,
         icon: icon ?? `DeleteForeverSharp`,
         span: span ?? `Delete`,
+      });
+    } else if (formType == "print") {
+      setStyleButton({
+        ...styleButton,
+        Bg: !disabled
+          ? `bg-lime-500 hover:bg-lime-600`
+          : `bg-lime-300 hover:bg-lime-400`,
+        text: `text-white`,
+        size: null,
+        icon: icon ?? `PrintSharp`,
+        span: span ?? `Print`,
       });
     } else if (formType == "confirm") {
       setStyleButton({
@@ -275,7 +287,7 @@ export const MotionButton = (props) => {
                 <MuiIcon iconName={styleButton.icon} fontSize={20} />
               </i>
             </span>
-            <span className=" pr-2">{styleButton.span}</span>
+            {!noSpan && <span className=" pr-2">{styleButton.span}</span>}
           </>
         )}
       </motion.button>
