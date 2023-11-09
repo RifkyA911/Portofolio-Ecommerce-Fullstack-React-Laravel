@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 // Fungsi untuk membandingkan objek secara mendalam
 export function isObjectsEqual(objA, objB) {
   if (objA === objB) {
@@ -28,4 +30,24 @@ export const IsThisAnImage = (src) => {
   } else {
     return false;
   }
+};
+
+export const isClickedOutside = (divRef) => {
+  function handleClick(event) {
+    if (divRef.current && divRef.current.contains(event.target)) {
+      // Tangani klik di dalam elemen div
+      console.log("ya");
+    } else {
+      // Tangani klik di luar elemen div
+      console.log("luar");
+    }
+  }
+
+  // Tambahkan event listener untuk mendengarkan semua klik
+  document.addEventListener("click", handleClick);
+
+  return () => {
+    // Hapus event listener saat komponen unmount
+    document.removeEventListener("click", handleClick);
+  };
 };

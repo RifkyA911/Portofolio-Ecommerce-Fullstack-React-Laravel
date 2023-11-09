@@ -50,6 +50,7 @@ export const SearchInput = (props) => {
 
 export const TextInput = (props) => {
   const {
+    formContext,
     className,
     label,
     labelSize = "text-sm",
@@ -57,7 +58,6 @@ export const TextInput = (props) => {
     autoFocus = false,
     placeholder,
     type = name,
-    formContext,
     onChange,
     // register,
     // setValue,
@@ -159,6 +159,7 @@ export const TextInput = (props) => {
 
 export const NumberInput = (props) => {
   const {
+    formContext,
     inputRef,
     className,
     label,
@@ -172,7 +173,6 @@ export const NumberInput = (props) => {
     suffix,
     style,
     onInputChange = null,
-    formContext,
   } = props;
 
   // react-hook-form
@@ -270,11 +270,13 @@ export const NumberInput = (props) => {
 
 export const SelectInput = (props) => {
   const {
+    formContext,
     className,
     style,
     label,
     labelSize = "text-sm",
     name,
+    defaultValue = null,
     options,
     type = name,
     onChange,
@@ -285,7 +287,10 @@ export const SelectInput = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRtl, setIsRtl] = useState(false);
   const [optionsList, setOptionsList] = useState([]);
-
+  // REDUX
+  const { BgColor, textColor, ContentBgColor } = useSelector(
+    (state) => state.UI
+  );
   const {
     data,
     select,
@@ -301,7 +306,7 @@ export const SelectInput = (props) => {
     isValid,
     dirtyFields,
     watch,
-  } = useContext(ModalContext);
+  } = useContext(formContext);
 
   const validationRules = {
     required: `This ${label} field is required`,
@@ -321,9 +326,14 @@ export const SelectInput = (props) => {
   };
 
   useEffect(() => {
-    selectOptions(select);
-    // console.log(optionsList);
-  }, [name]);
+    if (options) {
+      selectOptions(options);
+    } else {
+      // console.log(select);
+      selectOptions(select);
+    }
+    // setValue(name, defaultValue);
+  }, [name, defaultValue]);
 
   return (
     <>
@@ -337,11 +347,13 @@ export const SelectInput = (props) => {
           <label
             className={`relative w-full font-roboto-bold ${labelSize} text-left ${
               validationRules.required
-                ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+                ? label
+                  ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+                  : ""
                 : ""
             }`}
           >
-            {label}
+            {label ? label : ""}
             {errors[name] && (
               <span
                 className={`absolute right-0 top-0 text-red-500 ${BgColor} line-clamp-1`}
@@ -350,38 +362,53 @@ export const SelectInput = (props) => {
               </span>
             )}
           </label>
-          <Controller
-            name={name}
-            control={control}
-            render={({ field: { onChange, name, value, ref } }) => (
-              <Select
-                ref={ref}
-                options={optionsList}
-                value={optionsList.find((c) => c.value === value)}
-                onChange={(select) => onChange(select.value)}
-                className={`${style} max-w-3xl focus:outline-none text-left ${labelSize}  font-roboto-medium basic-single capitalize ${
-                  errors[name] ? "border-pink-500" : "border-sky-500"
-                }`}
-                classNamePrefix="select"
-                isSearchable={isSearchable}
-                isDisabled={isDisabled}
-                isLoading={isLoading}
-                isClearable={isClearable}
-                isRtl={isRtl}
-                theme={(theme) => ({
-                  ...theme,
-                  borderRadius: 8,
-                  colors: {
-                    ...theme.colors,
-                    text: "blue", // Change text color to blue
-                    primary25: "skyblue", // Change the background color of the selected option to skyblue
-                    primary: "skyblue", // Change the border color to blue
-                  },
-                })}
-              />
-            )}
-            rules={{ required: "select one" }}
-          />
+          {type == "date" ? (
+            <input
+              type="date"
+              className={`${style} bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-text outline-none`}
+              {...register(name, {
+                valueAsDate: true,
+              })}
+              onChange={(e) => {
+                setValue(name, e.target.value);
+                // console.log(name, ":", e.target.value);
+                console.log(name, ":", getValues(name));
+              }}
+            />
+          ) : (
+            <Controller
+              name={name}
+              control={control}
+              render={({ field: { onChange, name, value, ref } }) => (
+                <Select
+                  ref={ref}
+                  options={optionsList}
+                  value={optionsList.find((c) => c.value === value)}
+                  onChange={(select) => onChange(select.value)}
+                  className={`${style} max-w-3xl focus:outline-none text-left ${labelSize}  font-roboto-medium basic-single capitalize ${
+                    errors[name] ? "border-pink-500" : "border-sky-500"
+                  }`}
+                  classNamePrefix="select"
+                  isSearchable={isSearchable}
+                  isDisabled={isDisabled}
+                  isLoading={isLoading}
+                  isClearable={isClearable}
+                  isRtl={isRtl}
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: 8,
+                    colors: {
+                      ...theme.colors,
+                      text: "blue", // Change text color to blue
+                      primary25: "skyblue", // Change the background color of the selected option to skyblue
+                      primary: "skyblue", // Change the border color to blue
+                    },
+                  })}
+                />
+              )}
+              rules={{ required: "select one" }}
+            />
+          )}
         </div>
       )}
     </>
@@ -390,6 +417,7 @@ export const SelectInput = (props) => {
 
 export const PasswordInput = (props) => {
   const {
+    formContext,
     inputRef,
     className,
     label,
@@ -398,7 +426,6 @@ export const PasswordInput = (props) => {
     autoFocus = false,
     placeholder,
     type = name,
-    formContext,
     onChange,
     // register,
     // setValue,
@@ -657,6 +684,7 @@ export const ToggleInput = (props) => {
 
 export const TextArea = (props) => {
   const {
+    formContext,
     inputRef,
     className,
     label,
@@ -681,7 +709,7 @@ export const TextArea = (props) => {
     isValid,
     dirtyFields,
     watch,
-  } = useContext(ModalContext);
+  } = useContext(formContext);
 
   // REDUX
   const {
@@ -750,6 +778,7 @@ export const TextArea = (props) => {
 
 export const FilePictureInput = (props) => {
   const {
+    formContext,
     inputRef,
     className,
     label,
@@ -801,7 +830,7 @@ export const FilePictureInput = (props) => {
     isValid,
     dirtyFields,
     watch,
-  } = useContext(ModalContext);
+  } = useContext(formContext);
 
   const validationRules = {
     pattern: {
@@ -977,7 +1006,7 @@ export const FilePictureInput = (props) => {
 };
 
 export const DropByIdForm = (props) => {
-  const { tableId, productsId, location, thisName, pict } = props;
+  const { formContext, tableId, productsId, location, thisName, pict } = props;
 
   const {
     table,
@@ -993,7 +1022,7 @@ export const DropByIdForm = (props) => {
     isValid,
     dirtyFields,
     watch,
-  } = useContext(ModalContext);
+  } = useContext(formContext);
   return (
     <>
       <input
@@ -1028,8 +1057,8 @@ export const DropByIdForm = (props) => {
 };
 
 export const DropBySelectedForm = (props) => {
-  const { data } = props;
-  const { table } = useContext(ModalContext);
+  const { formContext, data } = props;
+  const { table } = useContext(formContext);
   const id = useId();
 
   useEffect(() => {

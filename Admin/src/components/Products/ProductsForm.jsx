@@ -12,7 +12,6 @@ import ModalContext, { CropperModal } from "../Modal";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import { MuiIcon } from "../../utils/RenderIcons";
 import {
   TextInput,
   SelectInput,
@@ -63,6 +62,7 @@ export const ProductsInputForm = (props) => {
         {/* Images */}
         <div className="flex flex-col justify-start items-center w-6/12">
           <FilePictureInput
+            formContext={ModalContext}
             type="picture"
             label="Product Picture"
             name="pict"
@@ -74,21 +74,22 @@ export const ProductsInputForm = (props) => {
           {/* {console.log("form_values", ":", getValues())} */}
           {/* {console.log("data", ":", data)} */}
           <TextInput
+            formContext={ModalContext}
             className={`flex gap-4 flex-col w-full`}
             label="Barcode/No. Product"
             name="barcode"
             placeholder="Masukkan Kode Barcode/No. Product"
-            formContext={ModalContext}
           />
           <TextInput
+            formContext={ModalContext}
             className={`flex gap-4 flex-col w-full`}
             label="Product Name"
             name="name"
             placeholder="Masukkan Nama Product"
-            formContext={ModalContext}
           />
           <div className="w-full flex flex-row gap-4 justify-between items-center">
             <SelectInput
+              formContext={ModalContext}
               className={`w-full flex gap-4 flex-col `}
               label="Category"
               name="category_id"
@@ -129,6 +130,7 @@ export const ProductsInputForm = (props) => {
             />
           </div>
           <TextArea
+            formContext={ModalContext}
             className={`flex gap-4 flex-col w-full`}
             label="Description"
             name="description"
@@ -136,14 +138,6 @@ export const ProductsInputForm = (props) => {
           />
         </div>
       </div>
-      {/* {formType === "INSERT" && (
-        <ConfirmButton stickyContainer confirmType="add" />
-      )}
-      {formType === "ALTER_BY_ID" && (
-        <>
-          <ConfirmButton stickyContainer confirmType="alter" />
-        </>
-      )} */}
     </>
   );
 };
@@ -161,6 +155,7 @@ export const ProductsDropForm = (props) => {
             {/* Images */}
             {formType === "DROP_BY_ID" && (
               <DropByIdForm
+                formContext={ModalContext}
                 tableId="productsId"
                 location={table}
                 thisName={data.name}
@@ -168,7 +163,7 @@ export const ProductsDropForm = (props) => {
               />
             )}
             {formType === "DROP_BY_SELECTED" && (
-              <DropBySelectedForm data={data} />
+              <DropBySelectedForm formContext={ModalContext} data={data} />
             )}
           </div>
         )}

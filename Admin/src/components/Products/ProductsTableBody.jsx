@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import { MotionButton } from "../Button";
 import { Resizer } from "react-image-file-resizer";
 import { MyTableFilterContext } from "../Table/MyTableComponents";
-import { MuiIcon } from "../../utils/RenderIcons";
+import { MuiIcon, ReactIcons } from "../../utils/RenderIcons";
 import { CurrencyFormatter } from "../../utils/Formatter";
 import ReactSlider from "react-slider";
-import { NumberInput } from "../Form";
+import { NumberInput, SelectInput } from "../Form";
 import { isClickedOutside } from "../../utils/Solver";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -160,7 +160,7 @@ export const ProductFilter = (props) => {
   const [selectedItems, setSelectedItems] = useState([]);
 
   const [isHovered, setIsHovered] = useState(false);
-  const MenuBoxRef = useRef(null);
+  const { MenuBoxRef, labelRef } = useRef(null);
 
   const {
     register,
@@ -209,8 +209,8 @@ export const ProductFilter = (props) => {
         <div
           className="absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.1px]"
           onClick={() => {
-            closeFunction;
-            setValue("superAuthorizationPassword", null);
+            closeFunction();
+            // setValue("superAuthorizationPassword", null);
           }}
         ></div>
       )}
@@ -238,8 +238,8 @@ export const ProductFilter = (props) => {
           className="flex flex-col px-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="price-filter flex flex-col gap-4 border-b pb-4">
-            <label className="pt-2 text-left text-base">
+          <div className="price-filter flex flex-col gap-4 pb-2">
+            <label className="pt-2 text-left text-sm">
               <MuiIcon iconName="SellRounded" fontSize={16} /> Rentang Harga
             </label>
             <ReactSlider
@@ -258,12 +258,12 @@ export const ProductFilter = (props) => {
                 <div
                   {...props}
                   style={{ ...props.style, zIndex: 20 }}
-                  className="relative flex flex-col items-center -mt-2 xhover:-my-3 outline-none bg-opacity-30 "
+                  className="relative flex flex-col items-center -mt-2 outline-none bg-opacity-30 p-0"
                 >
                   <div
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
-                    className="w-6 h-6 hover:w-8 hover:h-8 transition-all delay-50 bg-white border-teal-500 border-[2px] rounded-full shadow-lg cursor-pointer"
+                    className="p-0 w-5 h-5 transition-all delay-50 bg-white border-teal-500 border-[2px] rounded-full shadow-lg cursor-pointer"
                   ></div>
                   {isHovered && (
                     <div className="absolute top-0 hover:block px-2 py-1 mb-2 -mt-8 text-xs text-white bg-gray-900 rounded-sm whitespace-nowrap">
@@ -275,7 +275,7 @@ export const ProductFilter = (props) => {
               renderTrack={(props, state) => (
                 <div
                   {...props}
-                  className={`h-2 rounded-full cursor-pointer ${
+                  className={`h-[4px] rounded-full cursor-pointer ${
                     state.index === 1
                       ? "bg-gradient-to-r from-green-500 via-lime-500 to-green-500 "
                       : "bg-green-100 z-10"
@@ -299,9 +299,11 @@ export const ProductFilter = (props) => {
                 className={`flex gap-4 flex-col  w-full max-w-[250px]`}
                 prefix="Rp. "
                 label="Min. Price (IDR)"
+                labelSize="text-xs"
                 name="minPrice"
                 limitDigits={MaxLimit}
                 placeholder="Masukkan Harga"
+                style="h-[28px]"
                 onInputChange={(value) => setMinPrice(value)}
               />
               <NumberInput
@@ -309,46 +311,93 @@ export const ProductFilter = (props) => {
                 className={`flex gap-4 flex-col  w-full max-w-[250px]`}
                 prefix="Rp. "
                 label="Max. Price (IDR)"
+                labelSize="text-xs"
                 name="maxPrice"
                 limitDigits={MaxLimit}
                 placeholder="Masukkan Harga"
+                style="h-[28px]"
                 onInputChange={(value) => setMaxPrice(value)}
               />
             </div>
           </div>
-          <div className="category-filter flex flex-col gap-2 border-b pb-2">
-            <label className="pt-2 text-left text-base">
+          <div className="category-filter flex flex-col gap-4 pb-2">
+            <label className="pt-2 text-left text-sm">
               <MuiIcon iconName="AutoAwesomeMosaicRounded" fontSize={16} />{" "}
               Category
             </label>
             {selectFilter ? (
               <div className="inline-flex justify-start flex-wrap gap-2">
-                {selectFilter.map((select, index) => (
-                  <MotionButton
-                    key={select.id}
-                    className={`p-2 ${
-                      selectedItems.some((id) => id === select.id)
-                        ? "bg-green-500 text-white"
-                        : "bg-slate-200 "
-                    } rounded-lg hover:bg-green-600 capitalize hover:text-white transition-all delay-100`}
-                    type="button"
-                    onClick={() => {
-                      !selectedItems.some((id) => id === select.id)
-                        ? setSelectedItems([...selectedItems, select.id]) // add new value
-                        : setSelectedItems(
-                            selectedItems.filter((item) => item !== select.id) // remove by value
-                          );
-                    }}
-                  >
-                    {select.name}
-                  </MotionButton>
-                ))}
+                {selectFilter
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((select, index) => (
+                    <MotionButton
+                      key={select.id}
+                      className={`p-2 ${
+                        selectedItems.some((id) => id === select.id)
+                          ? "bg-green-500 text-white"
+                          : "bg-slate-200 "
+                      } rounded-lg hover:bg-green-600 capitalize hover:text-white transition-all delay-100`}
+                      type="button"
+                      onClick={() => {
+                        !selectedItems.some((id) => id === select.id)
+                          ? setSelectedItems([...selectedItems, select.id]) // add new value
+                          : setSelectedItems(
+                              selectedItems.filter((item) => item !== select.id) // remove by value
+                            );
+                      }}
+                    >
+                      {select.name}
+                    </MotionButton>
+                  ))}
               </div>
             ) : (
               "skelton"
             )}
           </div>
-          <div className="py-2">
+          <div className="date-filter flex flex-col gap-4 pt-2 pb-2">
+            <div className="text-sm inline-flex justify-start items-center w-full gap-4">
+              <label
+                onClick={() => setFocus("selected_date")}
+                className=" text-left  inline-flex items-center gap-2"
+              >
+                <ReactIcons iconName="newIoCalendarSharp" fontSize={16} />{" "}
+                Rentang Waktu :
+              </label>
+              <select
+                className="focus:outline-none cursor-pointer"
+                {...register("date_type", {
+                  required: "select date type",
+                })}
+                onChange={(e) => {
+                  setValue("date_type", e.target.value);
+                  // console.log("selected_date", ":", getValues("selected_date"));
+                }}
+              >
+                <option value="created_at">Created Date</option>
+                <option value="updated_at">Updated Date</option>
+              </select>
+            </div>
+            <div className="inline-flex items-center gap-4">
+              <SelectInput
+                formContext={MyTableFilterContext}
+                className={`w-full flex gap-4 flex-col `}
+                label="Start"
+                labelSize="text-xs"
+                name="date_start"
+                type="date"
+                defaultValue=""
+              />
+              <SelectInput
+                formContext={MyTableFilterContext}
+                className={`w-full flex gap-4 flex-col `}
+                label="End"
+                labelSize="text-xs"
+                name="date_end"
+                type="date"
+              />
+            </div>
+          </div>
+          <div className="py-2 mt-2 border-t ">
             <MotionButton
               formType="confirm"
               onClick={() => {
