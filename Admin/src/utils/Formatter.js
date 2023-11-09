@@ -6,6 +6,15 @@ export function DateFormatter(type, inputDate) {
 
   if (type == null) {
     return date;
+  } else if (type == "dateTimeLocale") {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    return formattedDateTime;
   } else if (type == "YYYY/MM/DD") {
     // Mendapatkan tanggal, bulan, dan tahun dari objek Date
     const year = date.getFullYear();
