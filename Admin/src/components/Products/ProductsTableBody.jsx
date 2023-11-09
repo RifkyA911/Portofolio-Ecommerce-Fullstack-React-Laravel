@@ -5,7 +5,7 @@ import { MotionButton } from "../Button";
 import { Resizer } from "react-image-file-resizer";
 import { MyTableFilterContext } from "../Table/MyTableComponents";
 import { MuiIcon, ReactIcons } from "../../utils/RenderIcons";
-import { CurrencyFormatter } from "../../utils/Formatter";
+import { CurrencyFormatter, DateFormatter } from "../../utils/Formatter";
 import ReactSlider from "react-slider";
 import { NumberInput, SelectInput } from "../Form";
 import { isClickedOutside } from "../../utils/Solver";
@@ -155,11 +155,15 @@ export const ProductImage = (props) => {
 };
 
 export const ProductFilter = (props) => {
+  const [isHovered, setIsHovered] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
+  const [date, setDate] = useState({
+    start: "2000-01-01T01:00",
+    end: DateFormatter("dateTimeLocale", null),
+  });
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const [isHovered, setIsHovered] = useState(false);
   const { MenuBoxRef, labelRef } = useRef(null);
 
   const {
@@ -174,6 +178,7 @@ export const ProductFilter = (props) => {
     isValid,
     dirtyFields,
     watch,
+    refresh,
     closeFunction,
     inputData,
     selectFilter,
@@ -221,18 +226,41 @@ export const ProductFilter = (props) => {
           !isDialogOpen.filter ? "hidden" : "block"
         } absolute bg-white w-[600px] min-h-[300px] top-11 left-0 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
       >
-        <div className="relative px-4 py-2 h-8 bg-slate-50 flex flex-row items-center">
-          <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
-          <h1 className="text-center mx-2 font-roboto-bold">Filter</h1>
-          <button
-            // onClick={closeFunction}
-            onClick={() => {
-              closeFunction();
-            }}
-            className="absolute right-0 top-0 py-2 px-4 hover:bg-red-200 text-left"
-          >
-            <MuiIcon iconName={"CloseRounded"} fontSize={20} />
-          </button>
+        <div className="relative pl-4 py-2 h-8 bg-slate-50 flex flex-row justify-between items-center">
+          <div className="inline-flex items-center">
+            <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
+            <h1 className="text-center mx-2 font-roboto-bold">Filter</h1>
+          </div>
+          <div className="inline-flex items-center">
+            <button
+              onClick={() => {
+                setMinPrice(0);
+                setMaxPrice(100000);
+                setSelectedItems([]);
+                setDate({
+                  start: "2000-01-01T01:00",
+                  end: DateFormatter("dateTimeLocale", null),
+                });
+                setValue("minPrice", 0);
+                setValue("maxPrice", 100000);
+                setValue("date_start", "2000-01-01T01:00");
+                setValue("date_end", DateFormatter("dateTimeLocale", null));
+              }}
+              className=" py-2 px-4 hover:bg-sky-200 text-left transition-all delay-50"
+            >
+              <ReactIcons iconName={"MdRefresh"} fontSize={20} />
+            </button>
+            <button
+              onClick={() => {
+                closeFunction();
+                refresh();
+                clearData();
+              }}
+              className=" py-2 px-4 hover:bg-red-200 text-left transition-all delay-50"
+            >
+              <MuiIcon iconName={"CloseRounded"} fontSize={20} />
+            </button>
+          </div>
         </div>
         <form
           autoComplete="off"
@@ -385,8 +413,8 @@ export const ProductFilter = (props) => {
                 label="Start"
                 labelSize="text-xs"
                 name="date_start"
-                type="date"
-                defaultValue=""
+                type="datetime-local"
+                defaultValue={date.start}
               />
               <SelectInput
                 formContext={MyTableFilterContext}
@@ -394,7 +422,8 @@ export const ProductFilter = (props) => {
                 label="End"
                 labelSize="text-xs"
                 name="date_end"
-                type="date"
+                type="datetime-local"
+                defaultValue={date.end}
               />
             </div>
           </div>

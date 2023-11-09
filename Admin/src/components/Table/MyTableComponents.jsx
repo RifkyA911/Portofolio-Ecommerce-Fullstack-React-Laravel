@@ -19,6 +19,7 @@ const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 
 export const MyTableHeaderFilter = (props) => {
   const {
+    refresh,
     table,
     inputData,
     selectFilter,
@@ -57,6 +58,7 @@ export const MyTableHeaderFilter = (props) => {
     isValid,
     dirtyFields,
     watch,
+    refresh,
     closeFunction,
     inputData,
     selectFilter,

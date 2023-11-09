@@ -185,6 +185,7 @@ export const MyTableHeader = (props) => {
         <div className="flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
           {hideHeaderBtn !== "filterBtn" && (
             <MyTableHeaderFilter
+              refresh={refresh}
               table={table}
               selectFilter={selectFilter}
               applyFilter={applyFilter}
