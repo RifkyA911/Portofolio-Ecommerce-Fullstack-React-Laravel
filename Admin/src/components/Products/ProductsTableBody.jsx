@@ -433,7 +433,6 @@ export const ProductFilter = (props) => {
               onClick={() => {
                 // setShowModal(false);
                 setTabPagination(false);
-                refresh();
                 clearData();
               }}
             />
