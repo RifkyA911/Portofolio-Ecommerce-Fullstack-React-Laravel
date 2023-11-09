@@ -17,6 +17,7 @@ import { IsThisAnImage } from "../utils/Solver";
 import { useSelector } from "react-redux";
 import { LoadingDaisyUI } from "./Loading";
 import { ReportSpan } from "./Span";
+import { DateFormatter } from "../utils/Formatter";
 
 const ServerPublicProductImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 const ServerPublicAdminImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -333,6 +334,7 @@ export const SelectInput = (props) => {
       selectOptions(select);
     }
     // setValue(name, defaultValue);
+    console.log(name);
   }, [name, defaultValue]);
 
   return (
@@ -362,13 +364,14 @@ export const SelectInput = (props) => {
               </span>
             )}
           </label>
-          {type == "date" ? (
+          {type == "date" || type == "datetime-local" ? (
             <input
-              type="date"
+              type={type}
               className={`${style} bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-text outline-none`}
               {...register(name, {
                 valueAsDate: true,
               })}
+              defaultValue={defaultValue ?? "2000-01-01T01:00"}
               onChange={(e) => {
                 setValue(name, e.target.value);
                 // console.log(name, ":", e.target.value);
