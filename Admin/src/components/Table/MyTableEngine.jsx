@@ -30,6 +30,8 @@ export const MyTableEngine = (props) => {
     hideHeaderBtn = null,
     selectFilter,
     applyFilter,
+    showFixedBtn,
+    setShowFixedBtn,
     searchTerm,
     setSearchTerm,
     printBtn,
@@ -45,7 +47,7 @@ export const MyTableEngine = (props) => {
     setToggleSelect,
     setSelectedRows,
     // Table Pagination
-    TabPagination = false,
+    tabPagination = false,
     colSpan = 2,
     paginate,
     onChangePaginate,
@@ -120,7 +122,7 @@ export const MyTableEngine = (props) => {
         >
           <Table className={`text-sm w-full `}>
             {children}
-            {TabPagination && <MyTablePagination />}
+            {tabPagination && <MyTablePagination />}
           </Table>
         </div>
       </TableContext.Provider>
@@ -135,6 +137,8 @@ export const MyTableHeader = (props) => {
     length,
     selectFilter,
     applyFilter,
+    showFixedBtn,
+    setShowFixedBtn,
     searchTerm,
     setSearchTerm,
     handlePrint,
@@ -153,10 +157,8 @@ export const MyTableHeader = (props) => {
     print: false,
     select: false,
   });
-  const [showFixedBtn, setShowFixedBtn] = useState(null);
-  // useEffect(() => {
-  //   console.info(selectedRows.length);
-  // }, [selectedRows]);
+  // const [showFixedBtn, setShowFixedBtn] = useState(null);
+
   return (
     <>
       <div
@@ -181,7 +183,11 @@ export const MyTableHeader = (props) => {
               }}
             />
           )}
-          <SearchInput func={setSearchTerm} />
+          <SearchInput
+            func={(e) => {
+              setSearchTerm(e.target.value);
+            }}
+          />
         </div>
         {/* right */}
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
@@ -209,7 +215,7 @@ export const MyTableHeader = (props) => {
             <MyTableHeaderDelete
               btnType="DELETE"
               showFixedBtn={showFixedBtn}
-              setShowFixedBtn={setShowFixedBtn}
+              setShowFixedBtn={(value) => setShowFixedBtn(value)}
               setDeleteBatchModal={setDeleteBatchModal}
               toggleSelect={toggleSelect}
               setToggleSelect={setToggleSelect}
@@ -218,19 +224,13 @@ export const MyTableHeader = (props) => {
           )}
           {hideHeaderBtn !== "addBtn" && !toggleSelect && (
             <>
-              <button
-                className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
+              <MotionButton
+                type="button"
+                formType="insert"
+                className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center"
                 onClick={setAddModal}
-              >
-                <i className="font-xs">
-                  <MuiIcon
-                    iconName={"LibraryAddRounded"}
-                    className="  --transform-scale-x: -1"
-                    fontSize={20}
-                  />
-                </i>
-                <span className="font-base px-2">Add</span>
-              </button>
+                span="Add"
+              />
             </>
           )}
           {hideHeaderBtn !== "refreshBtn" && !toggleSelect && (

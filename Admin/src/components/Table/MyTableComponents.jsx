@@ -10,6 +10,7 @@ import { MuiIcon } from "../../utils/RenderIcons";
 import { useForm } from "react-hook-form";
 import { TableContext } from "./MyTableEngine";
 import { ProductFilter } from "../Products/ProductsTableBody";
+import { MotionButton } from "../Button";
 
 export const MyTableFilterContext = createContext();
 
@@ -65,6 +66,7 @@ export const MyTableHeaderFilter = (props) => {
   return (
     <>
       {/* BTN HEADER */}
+
       <button
         onClick={closeFunction}
         className="px-2 mr-2 bg-gray-200 text-black rounded-md"
@@ -108,16 +110,12 @@ export const MyTableHeaderPrint = (props) => {
   return (
     <>
       {/* BTN HEADER */}
-      <button
+      <MotionButton
+        formType="print"
+        type="button"
         onClick={closeFunction}
-        className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center transition-all duration-200 "
-      >
-        <i className="font-xs">
-          <MuiIcon iconName={"PrintSharp"} fontSize={20} />
-        </i>
-        <span className="font-base px-2">Print</span>
-      </button>
-
+        className="mx-1 grow-0 shrink-0 focus:outline-none bg-orange-500 hover:bg-gradient-to-r hover:from-orange-500 hover:to-amber-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center"
+      />
       {/* {isDialogOpen.print && (  ERROR, REACT PDF WONT WORK*/}
 
       <>
@@ -175,35 +173,28 @@ export const MyTableHeaderDelete = (props) => {
   return (
     <>
       {/* BTN HEADER */}
-      <button
-        className={`mx-1 grow-0 shrink-0 focus:outline-none ${
-          !toggleSelect
-            ? "bg-red-500 hover:from-rose-500 hover:to-pink-500"
-            : "bg-gray-500 hover:from-yellow-500 hover:to-orange-400"
-        } hover:bg-gradient-to-r  rounded-md font-roboto-medium text-white items-center transition-all duration-200`}
-        onClick={
-          !toggleSelect
-            ? () => {
-                setShowFixedBtn("DELETE");
-                setToggleSelect(true);
-              }
-            : () => {
-                // setToggleSelect(false);
-                setSelectedRows([]);
-              }
-        }
-      >
-        {!toggleSelect && (
-          <>
-            <span id="showDelete" className="options  py-[6px] px-[4px]">
-              <i className="font-xs">
-                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-              </i>
-            </span>
-            <span className="font-base pr-2">Delete</span>
-          </>
-        )}
-      </button>
+      {!toggleSelect && (
+        <MotionButton
+          type="button"
+          formType="delete"
+          className={`mx-1 grow-0 shrink-0 focus:outline-none ${
+            !toggleSelect
+              ? "bg-red-500 hover:from-rose-500 hover:to-pink-500"
+              : "bg-gray-500 hover:from-yellow-500 hover:to-orange-400"
+          } hover:bg-gradient-to-r  rounded-md font-roboto-medium text-white items-center `}
+          onClick={
+            !toggleSelect
+              ? () => {
+                  setShowFixedBtn("DELETE");
+                  setToggleSelect(true);
+                }
+              : () => {
+                  // setToggleSelect(false);
+                  setSelectedRows([]);
+                }
+          }
+        />
+      )}
     </>
   );
 };

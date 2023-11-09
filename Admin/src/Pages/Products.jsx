@@ -43,6 +43,7 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
 
   // ---- MyTableEngine Pagination ----
+  const [tabPagination, setTabPagination] = useState(true);
   const [colspan, setColspan] = useState();
   const [length, setLengthData] = useState();
   const [paginate, setPaginate] = useState(1);
@@ -50,6 +51,7 @@ export default function Products() {
 
   // ---- MyTableEngine Header ----
   const [searchTerm, setSearchTerm] = useState("");
+  const [showFixedBtn, setShowFixedBtn] = useState(null);
 
   // ---- MyTableEngine Body ----
   const [toggleSelect, setToggleSelect] = useState(false);
@@ -125,14 +127,6 @@ export default function Products() {
     }
   }, [paginate, rows]);
 
-  // Handler Ketika mengklik modal handler button
-  const handleOpenModal = (id, formType, modalType) => {
-    setShowModal(true);
-    setModalType(modalType);
-    setProduct(id);
-    setFormType(formType);
-  };
-
   // ===================== MyTableEngine =====================
   // Fungsi handler saat checkbox di klik
   const handleCheckboxChange = (id, name, pict) => {
@@ -144,9 +138,6 @@ export default function Products() {
       setSelectedRows(selectedRows.filter((item) => item.id !== id));
     }
   };
-  // useEffect(() => {
-  //   console.info(selectedRows);
-  // }, [selectedRows]);
 
   // ---- MyTableEngine Search Filter ----
   useEffect(() => {
@@ -170,6 +161,7 @@ export default function Products() {
     },
     setResultStatus: (type, state, message) =>
       setResultStatus({
+        //  for toast
         ...resultStatus,
         type: type,
         state: state,
@@ -181,52 +173,48 @@ export default function Products() {
     selectFilter: categories,
     applyFilter: (form) => {
       fetchData(URL_PRODUCT_FILTER, "products", form);
-      // console.log(form);
     },
+    showFixedBtn: showFixedBtn,
+    setShowFixedBtn: setShowFixedBtn,
     searchTerm: searchTerm,
-    setSearchTerm: (e) => {
-      setSearchTerm(e.target.value);
-      // setTimeout(setSearchTerm(e.target.value), 2000);
-    },
-    printBtn: useReactToPrint({
-      content: () => componentRef.current,
-      // documentTitle: `${employee.name.replace(/\s/g, "-")}-Payslip`,
-      documentTitle: `Payslip`,
-      onPrintError: () => alert("there is an error when printing"),
-    }),
+    // setSearchTerm: (e) => {
+    //   setSearchTerm(e.target.value);
+    // },
+    setSearchTerm: setSearchTerm,
     setPrintBatchModal: () => {
       setShowModal(true);
       handleOpenModal(selectedRows, "PRINT_BATCH", "print");
-    },
-    setAddModal: () => {
-      setShowModal(true);
-      handleOpenModal(null, "INSERT", "form");
     },
     setDeleteBatchModal: () => {
       setShowModal(true);
       handleOpenModal(selectedRows, "DROP_BY_SELECTED", "form");
     },
+    setAddModal: () => {
+      setShowModal(true);
+      handleOpenModal(null, "INSERT", "form");
+    },
     // ------------- Table Body -------------
     toggleSelect: toggleSelect,
-    setToggleSelect: (value) => {
-      ////////////////////////////////////////////////////////// fix this
-      // console.log("value", value);
-      setToggleSelect((toggleSelectProps) => value || !toggleSelectProps);
-    },
+    // setToggleSelect: (value) => {
+    //   // console.log("value", value);
+    //   // setToggleSelect((toggleSelectProps) => value || !toggleSelectProps);
+    //   setToggleSelect(value);
+    // },
+    setToggleSelect: setToggleSelect,
     selectedRows: selectedRows,
-    setSelectedRows: (propsValue) => setSelectedRows(propsValue),
+    // setSelectedRows: (propsValue) => setSelectedRows(propsValue),
+    setSelectedRows: setSelectedRows,
     // Sorting Filter
     sortData: (newSortedData) => {
       setProducts(newSortedData);
     },
     // ------------ Table Pagination-------------
-    TabPagination: true,
+    tabPagination: tabPagination,
     colSpan: colspan == null ? 5 : colspan,
     paginate: paginate,
     onChangePaginate: (newPaginate) => {
       setLoading(true);
       setPaginate(newPaginate);
-      // console.log("paginate-", newPaginate);
     },
     rows: rows,
     onRowsChange: (newRows) => {
@@ -237,13 +225,22 @@ export default function Products() {
   };
 
   // ===================== Modal =====================
+  // Handler Ketika mengklik modal handler button
+  const handleOpenModal = (id, formType, modalType) => {
+    setShowModal(true);
+    setModalType(modalType);
+    setProduct(id);
+    setFormType(formType);
+  };
+
   const ModalProps = {
     table: "products",
     table_id: product,
     showModal: showModal,
-    setShowModal: () => {
-      setShowModal(false);
-    },
+    // setShowModal: () => {
+    //   setShowModal(false);
+    // },
+    setShowModal: setShowModal,
     modalType: modalType,
     formType: formType,
     refresh: () => {

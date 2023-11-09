@@ -450,7 +450,7 @@ export const MainModalHandler = (props) => {
             {showModal && (
               <Dialog
                 open={showModal}
-                onClose={setShowModal}
+                onClose={() => setShowModal(false)}
                 as="div"
                 className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-hidden"
               >
