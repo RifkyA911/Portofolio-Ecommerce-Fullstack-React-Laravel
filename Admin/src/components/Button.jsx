@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-import { MuiIcon } from "../utils/RenderIcons";
+import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 
 export const ActionButton = (props) => {
@@ -137,6 +137,7 @@ export const MotionButton = (props) => {
     formType,
     icon,
     span,
+    style,
     noSpan = false,
     type = "submit",
     size,
@@ -186,7 +187,7 @@ export const MotionButton = (props) => {
           : `bg-sky-300 hover:bg-sky-400`,
         text: `text-white`,
         size: null,
-        icon: icon ?? `LibraryAddRounded`,
+        icon: icon ?? `BiSolidAddToQueue`,
         span: span ?? `Insert`,
       });
     } else if (formType == "alter") {
@@ -197,7 +198,7 @@ export const MotionButton = (props) => {
           : `bg-indigo-300 hover:bg-violet-400`,
         text: `text-white`,
         size: null,
-        icon: icon ?? `EditRounded`,
+        icon: icon ?? `RiEdit2Fill`,
         span: span ?? `Save Changes`,
       });
     } else if (formType == "delete") {
@@ -208,7 +209,7 @@ export const MotionButton = (props) => {
           : `bg-red-300 hover:bg-red-400`,
         text: `text-white`,
         size: null,
-        icon: icon ?? `DeleteForeverSharp`,
+        icon: icon ?? `MdDeleteForever`,
         span: span ?? `Delete`,
       });
     } else if (formType == "print") {
@@ -219,7 +220,7 @@ export const MotionButton = (props) => {
           : `bg-lime-300 hover:bg-lime-400`,
         text: `text-white`,
         size: null,
-        icon: icon ?? `PrintSharp`,
+        icon: icon ?? `PiPrinterFill`,
         span: span ?? `Print`,
       });
     } else if (formType == "confirm") {
@@ -230,7 +231,7 @@ export const MotionButton = (props) => {
           : `bg-lime-300 hover:bg-lime-400`,
         text: `text-white`,
         size: null,
-        icon: icon ?? `CheckRounded`,
+        icon: icon ?? `FiCheck`,
         span: span ?? `Confirm`,
       });
     } else if (formType == "cancel") {
@@ -243,7 +244,7 @@ export const MotionButton = (props) => {
           ? `text-black hover:text-white hover:border-orange-300`
           : `text-gray-500 hover:text-gray-700 hover:border-orange-100`,
         size: null,
-        icon: icon ?? `DisabledByDefaultRounded`,
+        icon: icon ?? `CgClose`,
         span: span ?? `Cancel`,
       });
     } else {
@@ -267,7 +268,7 @@ export const MotionButton = (props) => {
         tabIndex={0}
         className={
           className ??
-          `${styleButton.Bg} ${styleButton.text} ${styleButton.size} w-full outline-none inline-flex justify-center rounded-md shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:ml-3 sm:w-auto sm:text-sm `
+          `${styleButton.Bg} ${styleButton.text} ${styleButton.size} w-full outline-none flex flex-row justify-center items-center rounded-md shadow-sm px-4 py-3 text-base font-medium focus:outline-none sm:ml-3 sm:w-auto sm:text-sm `
         }
         onClick={onClick}
         initial={{ scale: 0.5 }}
@@ -282,12 +283,12 @@ export const MotionButton = (props) => {
           children
         ) : (
           <>
-            <span id="showDelete" className="options px-[4px]">
-              <i className="font-xs">
-                <MuiIcon iconName={styleButton.icon} fontSize={20} />
-              </i>
+            <span
+              className={`${style} flex flex-row items-center justify-between px-1`}
+            >
+              <ReactIcons iconName={styleButton.icon} fontSize={20} />
+              {!noSpan && <span className="px-1">{styleButton.span}</span>}
             </span>
-            {!noSpan && <span className=" pr-2">{styleButton.span}</span>}
           </>
         )}
       </motion.button>

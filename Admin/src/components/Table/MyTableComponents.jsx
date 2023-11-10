@@ -70,13 +70,14 @@ export const MyTableHeaderFilter = (props) => {
   return (
     <>
       {/* BTN HEADER */}
-
-      <button
+      <MotionButton
+        type="button"
+        className="mr-2 grow-0 shrink-0 focus:outline-none bg-gray-200 text-black py-[6px] px-[4px] rounded-md font-roboto-medium items-center "
         onClick={closeFunction}
-        className="px-2 mr-2 bg-gray-200 text-black rounded-md"
-      >
-        <MuiIcon iconName={"FilterListRounded"} fontSize={20} />
-      </button>
+        icon="MdFilterList"
+        noSpan
+        style="p-0"
+      />
       <MyTableFilterContext.Provider value={MyTableFilterContextValue}>
         {/* <div
           className={`${

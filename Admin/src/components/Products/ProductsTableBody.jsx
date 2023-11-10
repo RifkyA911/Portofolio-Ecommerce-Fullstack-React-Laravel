@@ -427,7 +427,7 @@ export const ProductFilter = (props) => {
               />
             </div>
           </div>
-          <div className="py-2 mt-2 border-t ">
+          <div className="py-2 mt-2 border-t flex flex-row justify-center">
             <MotionButton
               formType="confirm"
               onClick={() => {

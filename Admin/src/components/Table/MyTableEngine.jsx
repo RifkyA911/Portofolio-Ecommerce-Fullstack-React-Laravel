@@ -14,6 +14,7 @@ import { MuiIcon, ReactIcons } from "../../utils/RenderIcons";
 import { useReactToPrint } from "react-to-print";
 import { SearchInput } from "../Form";
 import { MotionButton } from "../Button";
+import { ExportData } from "../Export/Excel";
 
 export const TableContext = createContext();
 
@@ -178,7 +179,7 @@ export const MyTableHeader = (props) => {
     <>
       <div
         // ref={targetRef}
-        className="print:hidden flex flex-col lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-scroll focus:touch-pan-x"
+        className="print:hidden flex flex-col h-[48px] lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-scroll focus:touch-pan-x"
       >
         {/* ====================== Header Area ====================== */}
         {/* left */}
@@ -201,13 +202,20 @@ export const MyTableHeader = (props) => {
             />
           )}
           <SearchInput
-            func={(e) => {
-              setSearchTerm(e.target.value);
-            }}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            // func={(e) => {
+            //   setSearchTerm(e.target.value);
+            // }}
           />
         </div>
         {/* right */}
         <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
+          {hideHeaderBtn !== "excelBtn" && !toggleSelect && (
+            <>
+              <ExportData data={inputData} />
+            </>
+          )}
           {hideHeaderBtn !== "printBtn" && !toggleSelect && (
             <MyTableHeaderPrint
               btnType="PRINT"
@@ -252,12 +260,14 @@ export const MyTableHeader = (props) => {
           )}
           {hideHeaderBtn !== "refreshBtn" && !toggleSelect && (
             <>
-              <button
+              <MotionButton
+                type="button"
+                className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 py-[6px] px-[4px] rounded-md font-roboto-medium text-white items-center "
                 onClick={refresh}
-                className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center "
-              >
-                <MuiIcon iconName={"RefreshRounded"} fontSize={20} />
-              </button>
+                icon="MdOutlineRefresh"
+                noSpan
+                style="p-0"
+              />
             </>
           )}
           {hideHeaderBtn !== "menuBtn" && !toggleSelect && (

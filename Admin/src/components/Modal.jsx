@@ -1044,7 +1044,7 @@ export const CropperModal = (props) => {
             checkOrientation={false}
             zoomable={false} // Mencegah zoom
           />
-          <div className="py-4 text-center">
+          <div className="flex flex-row justify-center items-center py-4 text-center">
             <MotionButton
               onClick={() => {
                 setOnWorking(false);

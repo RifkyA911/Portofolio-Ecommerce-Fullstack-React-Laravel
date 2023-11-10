@@ -8,10 +8,10 @@ import React, {
 } from "react";
 import Select from "react-select";
 
-import { CropperModal, Dropzone, ModalContext } from "./Modal";
+import { CropperModal, ModalContext } from "./Modal";
 import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
-import { MuiIcon } from "../utils/RenderIcons";
+import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 import { IsThisAnImage } from "../utils/Solver";
 import { useSelector } from "react-redux";
@@ -24,28 +24,43 @@ const ServerPublicAdminImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
 const ServerPublicUserImg = import.meta.env.VITE_SERVER_PUBLIC_USER;
 
 export const SearchInput = (props) => {
-  const { func } = props;
+  const { searchTerm, setSearchTerm } = props;
   const [loading, setLoading] = useState(false);
-  // const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
+  const [reset, setReset] = useState(null);
 
   const searchInput = useRef(null);
 
+  const func = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   const debouncedOnChange = debounce(func, 1000);
   return (
-    <>
+    <div className="relative">
       <input
         ref={searchInput}
         name="search"
         type="text"
         placeholder="Find inputData in this pagination"
-        className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none"
+        className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none cursor-text"
         // value={setSearchTerm} this is useless
         onChange={debouncedOnChange}
       />
+      {searchTerm.length > 0 && (
+        <button
+          onClick={() => {
+            setSearchTerm("");
+            searchInput.current.value = "";
+          }}
+          className="absolute top-0 right-4 p-2 rounded-full bg-opacity-20"
+        >
+          <ReactIcons iconName="CgClose" />
+        </button>
+      )}
       {loading && (
         <span className="absolute right-12 bottom-2 loading loading-dots loading-sm"></span>
       )}
-    </>
+    </div>
   );
 };
 
@@ -334,7 +349,7 @@ export const SelectInput = (props) => {
       selectOptions(select);
     }
     // setValue(name, defaultValue);
-    console.log(name);
+    // console.log(name);
   }, [name, defaultValue]);
 
   return (
