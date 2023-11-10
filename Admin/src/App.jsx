@@ -26,6 +26,7 @@ import {
   updateCredentials,
   updateSession,
 } from "./Redux/Slices/UserSlice";
+import { IsScreenResize } from "./utils/Solver";
 // import Summary from "./utils/Summary";
 
 function App() {
@@ -73,6 +74,7 @@ function App() {
           <LoginRouter />
         </>
       )}
+      <IsScreenResize monitoring={false} />
       {/* Developer Panel */}
       {appMode == "development" && (
         <>

@@ -454,7 +454,7 @@ export const MainModalHandler = (props) => {
                 as="div"
                 className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-hidden"
               >
-                <div className="flex flex-col items-center justify-center w-full h-full">
+                <div className="flex flex-col items-center justify-center w-full">
                   <Dialog.Overlay />
                   <div
                     onClick={() => {
@@ -526,7 +526,7 @@ export const FormModal = (props) => {
   } = useContext(ModalContext);
 
   // REDUX
-  const { BgColor, ContainerBgColor, textColor, screenHeigth, screenWidth } =
+  const { BgColor, ContainerBgColor, textColor, screenWidth, screenHeight } =
     useSelector((state) => state.UI);
 
   const [proceed, setProceed] = useState(false);
@@ -543,9 +543,9 @@ export const FormModal = (props) => {
     <>
       <Dialog.Panel
         as="div"
-        className={`flex flex-col w-[1200px] h-full justify-center ${
+        className={`flex flex-col w-[400px] md:w-[1200px] h-full justify-center ${
           BgColor ?? "bg-white"
-        } ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all`}
+        } ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all `}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-headline"
@@ -564,7 +564,7 @@ export const FormModal = (props) => {
                     `Delete Multiple ${table}`}
                 </Dialog.Title>
               </div>
-              <div className="w-6/12 flex flex-row justify-end items-center">
+              <div className="w-6/12 flex flex-col md:flex-row justify-end items-center">
                 {errorMessage ? (
                   <>
                     <Dialog.Description
@@ -770,7 +770,7 @@ export const PrintModal = (props) => {
     <>
       <Dialog.Panel
         as="div"
-        className={`flex flex-col w-[1200px] h-full justify-center ${BgColor} ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all`}
+        className={`flex flex-col w-[400px] md:w-[1200px] h-full justify-center ${BgColor} ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-headline"
@@ -854,9 +854,7 @@ export const PrintModal = (props) => {
               )}
             </div>
           </div>
-          <div
-            className={`${BgColor} px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse`}
-          >
+          <div className={`${BgColor} px-4 py-3`}>
             <DownloadBtnReactPDF
               formType={formType}
               inputData={data}
@@ -1303,7 +1301,7 @@ export const InfoModal = (props) => {
         aria-labelledby="modal-headline"
       >
         <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-          <div className="bg-white min-w-[700px] py-2">
+          <div className="bg-white w-[400px] md:min-w-[700px] py-2">
             {formType == "SHOW_PRODUCT_BARCODE" &&
             (formType != "SHOW_ADMIN_PROFILE_PICTURE" ||
               formType != "SHOW_PRODUCT_PICTURE") ? (

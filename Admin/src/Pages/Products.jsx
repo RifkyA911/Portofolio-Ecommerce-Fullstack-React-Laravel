@@ -5,10 +5,7 @@ import Barcode from "react-jsbarcode";
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { MainModalHandler } from "../components/Modal";
-import {
-  ProductDetail,
-  ProductImage,
-} from "../components/Products/ProductsTableBody";
+import { ProductImage } from "../components/Products/ProductsTableBody";
 import { ActionButton } from "../components/Button";
 import { NumberSpan } from "../components/Span";
 import {
@@ -323,8 +320,8 @@ export default function Products() {
                     />
                   )}
                   {/* ================ Table ================ */}
-                  <ProductDetail inputData={products} />
                   <div className="divider">Product List</div>
+
                   <MyTableEngine
                     {...MyTableEngineProps}
                     className="rounded-sm mx-auto"
@@ -359,7 +356,6 @@ export default function Products() {
                       {products.map((row, index) => (
                         <Tr
                           key={index}
-                          customKey={index}
                           className={`${table_styling.tr} divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50`}
                         >
                           {toggleSelect ? (

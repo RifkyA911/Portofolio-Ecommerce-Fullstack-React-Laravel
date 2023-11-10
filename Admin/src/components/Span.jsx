@@ -27,7 +27,7 @@ export const NumberSpan = (props) => {
   return (
     <>
       <div
-        className={`${className} lg:flex-col font-roboto-medium shadow-sm xl:line-clamp-1`}
+        className={`${className} inline-flex font-roboto-medium shadow-sm whitespace-nowrap md:line-clamp-1`}
       >
         <span
           className={`

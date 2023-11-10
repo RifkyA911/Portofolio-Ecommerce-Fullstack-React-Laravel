@@ -179,11 +179,11 @@ export const MyTableHeader = (props) => {
     <>
       <div
         // ref={targetRef}
-        className="print:hidden flex flex-col h-[48px] lg:flex-row my-2 lg:my-b w-full justify-between items-end overflow-x-scroll focus:touch-pan-x"
+        className="print:hidden flex flex-col min-h-[48px] w-full lg:flex-row my-2 lg:my-b justify-between items-center overflow-x-scroll focus:touch-pan-x"
       >
         {/* ====================== Header Area ====================== */}
         {/* left */}
-        <div className="flex justify-center lg:justify-start lg:w-6/12 mb-4 lg:mb-0">
+        <div className="flex justify-center lg:justify-start w-full lg:w-6/12 mb-4 lg:mb-0">
           {hideHeaderBtn !== "filterBtn" && (
             <MyTableHeaderFilter
               refresh={refresh}
@@ -210,7 +210,7 @@ export const MyTableHeader = (props) => {
           />
         </div>
         {/* right */}
-        <div className="flex justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
+        <div className="flex flex-row gap-2 md:gap-0 flex-wrap justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
           {hideHeaderBtn !== "excelBtn" && !toggleSelect && (
             <>
               <ExportData data={inputData} />
@@ -270,14 +270,14 @@ export const MyTableHeader = (props) => {
               />
             </>
           )}
-          {hideHeaderBtn !== "menuBtn" && !toggleSelect && (
+          {/* {hideHeaderBtn !== "menuBtn" && !toggleSelect && (
             <MyTableHeaderMenu
               setDialogOpen={setDialogOpen}
               isDialogOpen={isDialogOpen}
               toggleSelect={toggleSelect}
               setToggleSelect={setToggleSelect}
             />
-          )}
+          )} */}
           {toggleSelect && (
             <>
               <MotionButton
@@ -488,11 +488,20 @@ export const Tbody = (props) => {
 export const Tr = (props) => {
   const { errorMessage, toggleSelect, selectedRows, updateMyTableState } =
     useContext(TableContext);
-  const { element, customKey, className, onClick, event } = props;
+  const {
+    onMouseEnter,
+    onMouseLeave,
+    element,
+    customKey,
+    className,
+    onClick,
+    event,
+  } = props;
   return (
     <>
       <tr
-        key={customKey}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
         className={`relative ${className} ${
           toggleSelect
             ? "hover:bg-gray-200 transition-colors duration-75 cursor-pointer"

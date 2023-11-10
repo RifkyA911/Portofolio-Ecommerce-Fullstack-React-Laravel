@@ -46,21 +46,18 @@ export const ProductsInputForm = (props) => {
 
   return (
     <>
-      <div className="flex flex-row py-2 px-6">
-        <div>
-          {/* ALTER */}
-          {formType === "ALTER_BY_ID" && (
-            <input
-              type="hidden"
-              {...register("productId", {
-                required: "This productId Credentials ID are required",
-              })}
-            />
-          )}
-        </div>
-
+      {/* ALTER */}
+      {formType === "ALTER_BY_ID" && (
+        <input
+          type="hidden"
+          {...register("productId", {
+            required: "This productId Credentials ID are required",
+          })}
+        />
+      )}
+      <div className="flex flex-col md:flex-row justify-center items-center py-2 px-6">
         {/* Images */}
-        <div className="flex flex-col justify-start items-center w-6/12">
+        <div className="flex flex-col justify-start items-center self-start w-full md:w-6/12">
           <FilePictureInput
             formContext={ModalContext}
             type="picture"
@@ -69,10 +66,7 @@ export const ProductsInputForm = (props) => {
           />
         </div>
         {/* Form */}
-        <div className="flex flex-col gap-3 justify-start items-center w-6/12 font-roboto-medium ">
-          {/* {console.log(name, ":", getValues(name))}  {setValue("barcode", "HJAHAHA")} */}
-          {/* {console.log("form_values", ":", getValues())} */}
-          {/* {console.log("data", ":", data)} */}
+        <div className="flex flex-col gap-3 justify-start items-center w-full md:w-6/12 font-roboto-medium ">
           <TextInput
             formContext={ModalContext}
             className={`flex gap-4 flex-col w-full`}

@@ -14,90 +14,73 @@ const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 const ServerAPIProductsImg = import.meta.env.VITE_API_ID_PRODUCT + "/image/";
 
-export const ProductDetail = (props) => {
-  const { inputData } = props;
-  let componentRef = useRef(null);
+// export const ProductDetail = (props) => {
+//   const { inputData, onMouseEnter, onMouseLeave } = props;
+//   let componentRef = useRef(null);
 
-  // console.log(props);
-  return (
-    <>
-      {/* Ukuran kertas F4 dalam pixel (72 DPI) = 595 x 935 pixel 
-      Ukuran kertas F4 dalam pixel (96 DPI) = 793 x 1247 pixel 
-      Ukuran kertas F4 dalam pixel (150 DPI) = 1240 x 1948 pixel 
-      Ukuran kertas F4 dalam pixel (300 DPI) = 2481 x 3897 pixel */}
-      <div className="collapse bg-base-200">
-        <input type="checkbox" />
-        <div className="collapse-title text-xl font-medium">Product Detail</div>
-        <div className="collapse-content">
-          <main className=" bg-white shadow-lg mx-auto max-h-[600px] w-full overflow-scroll">
-            <section className="w-full p-4 lg:p-8 " ref={componentRef}>
-              <div className="body flex flex-row justify-between items-start m-8">
-                <div className="flex w-1/2 justify-start">
-                  <img
-                    src={`${ServerAPIProductsImg}${inputData[0].id}`}
-                    alt="logo"
-                    className="w-60 sm:flex text-center shadow-lg rounded-md"
-                  />
-                </div>
-                <div className="flex w-1/2 justify-end">
-                  <table className="w-full border-gray-600 font-roboto">
-                    <tbody>
-                      <tr className="border-b-2">
-                        <th className="bg-slate-300 h-12 w-36">Barcode</th>
-                        <td className="bg-white text-center">
-                          <Barcode
-                            className={`p-0 m-0 mx-auto`}
-                            value={23232323}
-                            options={{
-                              displayValue: false,
-                              height: 30,
-                              fontSize: 12,
-                            }}
-                          />
-                        </td>
-                      </tr>
-                      <tr className="border-b-2">
-                        <th className="bg-slate-300 h-12">Name</th>
-                        <td className="bg-white text-left pl-8">
-                          {inputData[0].name}
-                        </td>
-                      </tr>
-                      <tr className="border-b-2">
-                        <th className="bg-slate-300 h-12">Category</th>
-                        <td className="bg-white text-left pl-8">
-                          {inputData[0].category.name}
-                        </td>
-                      </tr>
-                      <tr className="border-b-2">
-                        <th className="bg-slate-300 h-12">Price</th>
-                        <td className="bg-white text-left pl-8">
-                          {CurrencyFormatter(inputData[0].price)}
-                        </td>
-                      </tr>
-                      <tr className="">
-                        <th className="bg-slate-300 h-12">Discount</th>
-                        <td className="bg-white text-left pl-8">
-                          {inputData[0].discount}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div className="text-left p-12">
-                <h4 className="font-poppins-bold">Description : </h4>
-                <p className="font-roboto-regular">
-                  {inputData[0].description}
-                </p>
-              </div>
-              <small>{inputData[0].visible ? "visible" : "invisible"}</small>
-            </section>
-          </main>
-        </div>
-      </div>
-    </>
-  );
-};
+//   return (
+//     <div
+//       onMouseEnter={onMouseEnter}
+//       onMouseLeave={onMouseLeave}
+//       className={`fixed top-20 bg-white shadow-lg mx-auto z-10 max-w-[760px] rounded-lg`}
+//     >
+//       <section className="w-full p-4 lg:p-8 " ref={componentRef}>
+//         <div className="body flex flex-row justify-between items-start m-8">
+//           <div className="flex w-1/2 justify-start">
+//             <img
+//               src={`${ServerAPIProductsImg}${inputData[0].id}`}
+//               alt="logo"
+//               className="w-60 sm:flex text-center shadow-lg rounded-md"
+//             />
+//           </div>
+//           <div className="flex w-1/2 justify-end">
+//             <table className="w-full border-gray-600 font-roboto">
+//               <tbody className="text-center">
+//                 <tr className="border-b-2">
+//                   <th className="bg-slate-300 h-12 w-36">Barcode</th>
+//                   <td className="bg-white text-center">
+//                     <Barcode
+//                       className={`p-0 m-0 mx-auto`}
+//                       value={23232323}
+//                       options={{
+//                         displayValue: true,
+//                         height: 30,
+//                         fontSize: 12,
+//                       }}
+//                     />
+//                   </td>
+//                 </tr>
+//                 <tr className="border-b-2">
+//                   <th className="bg-slate-300 h-12">Name</th>
+//                   <td className="bg-white">{inputData[0].name}</td>
+//                 </tr>
+//                 <tr className="border-b-2">
+//                   <th className="bg-slate-300 h-12">Category</th>
+//                   <td className="bg-white">{inputData[0].category.name}</td>
+//                 </tr>
+//                 <tr className="border-b-2">
+//                   <th className="bg-slate-300 h-12">Price</th>
+//                   <td className="bg-white">
+//                     {CurrencyFormatter(inputData[0].price)}
+//                   </td>
+//                 </tr>
+//                 <tr className="">
+//                   <th className="bg-slate-300 h-12">Discount</th>
+//                   <td className="bg-white">{inputData[0].discount}%</td>
+//                 </tr>
+//               </tbody>
+//             </table>
+//           </div>
+//         </div>
+//         <div className="text-left p-12">
+//           <h4 className="font-poppins-bold">Description : </h4>
+//           <p className="font-roboto-regular">{inputData[0].description}</p>
+//         </div>
+//         <small>{inputData[0].visible ? "visible" : "invisible"}</small>
+//       </section>
+//     </div>
+//   );
+// };
 
 export const ProductImage = (props) => {
   const { data, onProductPictureClick } = props;
@@ -224,7 +207,7 @@ export const ProductFilter = (props) => {
         ref={MenuBoxRef}
         className={`${
           !isDialogOpen.filter ? "hidden" : "block"
-        } absolute bg-white w-[600px] min-h-[300px] top-11 left-0 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
+        } absolute bg-white w-[300px] md:w-[600px] min-h-[300px] top-11 left-0 shadow-lg rounded-md border-[1px] outline-5 outline-offset-1 outline-gray-700 z-10 text-xs font-roboto-medium`}
       >
         <div className="relative pl-4 py-2 h-8 bg-slate-50 flex flex-row justify-between items-center">
           <div className="inline-flex items-center">
@@ -322,7 +305,7 @@ export const ProductFilter = (props) => {
               //   // console.log(state);
               // }}
             />
-            <div className="flex flex-row justify-between ">
+            <div className="flex flex-col md:flex-row justify-between gap-4">
               <NumberInput
                 formContext={MyTableFilterContext}
                 className={`flex gap-4 flex-col  w-full max-w-[250px]`}
@@ -406,7 +389,7 @@ export const ProductFilter = (props) => {
                 <option value="updated_at">Updated Date</option>
               </select>
             </div>
-            <div className="inline-flex items-center gap-4">
+            <div className="flex flex-col md:flex-row items-center gap-4">
               <SelectInput
                 formContext={MyTableFilterContext}
                 className={`w-full flex gap-4 flex-col `}

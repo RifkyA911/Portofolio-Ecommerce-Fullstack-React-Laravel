@@ -42,7 +42,7 @@ export const SearchInput = (props) => {
         name="search"
         type="text"
         placeholder="Find inputData in this pagination"
-        className="input input-bordered input-sm input-info lg:w-[512px] max-w-lg focus:outline-none cursor-text"
+        className={`input input-bordered input-sm input-info w-full lg:w-[512px] lg:max-w-lg focus:outline-none cursor-text`}
         // value={setSearchTerm} this is useless
         onChange={debouncedOnChange}
       />
@@ -871,11 +871,6 @@ export const FilePictureInput = (props) => {
     if (!pictValue) {
       setValue("pict", "noChange");
     }
-    // if (IsThisAnImage(pictValue)) {
-    //   setFormattedValue("base64");
-    // } else {
-    //   setFormattedValue(null);
-    // }
   }, [pictValue]);
 
   const hoverImpact = () => {

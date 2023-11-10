@@ -70,9 +70,6 @@ export const FormToast = (props) => {
     const timeout = setTimeout(() => {
       setIsVisible(false);
     }, 3000);
-    setTimeout(() => {
-      setResultStatus(null, false, null);
-    }, 3100);
     return () => clearTimeout(timeout);
   }, []);
 
