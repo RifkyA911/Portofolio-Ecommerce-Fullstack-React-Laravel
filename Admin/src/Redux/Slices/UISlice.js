@@ -13,7 +13,7 @@ export const UISlice = createSlice({
   name: "UI",
   initialState: {
     screenWidth: window.innerWidth,
-    screenHeigth: window.innerHeight,
+    screenHeight: window.innerHeight,
     // main
     DarkMode: false,
     BgColor: "bg-white",
@@ -81,12 +81,11 @@ export const UISlice = createSlice({
       }
       console.log("Dark Mode:", toggleDark);
     },
-    // changeScreen: (state, action) => {
-    //   window.addEventListener("resize", setWindowWidth(window.innerWidth));
-    //    return () => {
-    //       window.removeEventListener("resize", setWindowWidth(window.innerWidth));
-    //     };
-    // },
+    refreshScreen: (state, action) => {
+      // console.log(action);
+      state.screenWidth = action.payload.screenWidth;
+      state.screenHeight = action.payload.screenHeight;
+    },
     toggleSidebar: (state, action) => {
       if (action.payload != null) {
         console.log("Sidebar Open");
@@ -106,6 +105,7 @@ export const UISlice = createSlice({
 // this is for dispatch
 export const {
   changeBG,
+  refreshScreen,
   changeText,
   changeScreen,
   toggleSidebar,

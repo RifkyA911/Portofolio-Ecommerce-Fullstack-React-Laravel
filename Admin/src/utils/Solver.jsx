@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { refreshScreen } from "./../Redux/Slices/UISlice.js";
 
 // Fungsi untuk membandingkan objek secara mendalam
 export function isObjectsEqual(objA, objB) {
@@ -50,4 +52,44 @@ export const isClickedOutside = (divRef) => {
     // Hapus event listener saat komponen unmount
     document.removeEventListener("click", handleClick);
   };
+};
+
+export const IsScreenResize = (props) => {
+  const { monitoring = false } = props;
+  const dispatch = useDispatch();
+  const { screenWidth, screenHeight } = useSelector((state) => state.refresh);
+  const [screenSize, setScreenSize] = useState({ screenWidth, screenHeight });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const newScreenWidth = window.innerWidth;
+      const newScreenHeight = window.innerHeight;
+
+      // Update local state
+      setScreenSize({
+        screenWidth: newScreenWidth,
+        screenHeight: newScreenHeight,
+      });
+
+      // Dispatch action to update Redux state
+      dispatch(
+        refreshScreen({
+          screenWidth: newScreenWidth,
+          screenHeight: newScreenHeight,
+        })
+      );
+    };
+
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [dispatch]);
+
+  if (monitoring) {
+    console.log(screenSize);
+  }
 };
