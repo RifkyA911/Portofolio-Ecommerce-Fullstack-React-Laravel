@@ -57,7 +57,7 @@ export const ProductsInputForm = (props) => {
       )}
       <div className="flex flex-col md:flex-row justify-center items-center py-2 px-6">
         {/* Images */}
-        <div className="flex flex-col justify-start items-center self-start w-full md:w-6/12">
+        <div className="flex flex-col justify-start items-center self-start w-full md:w-4/12 lg:w-6/12">
           <FilePictureInput
             formContext={ModalContext}
             type="picture"
@@ -66,7 +66,7 @@ export const ProductsInputForm = (props) => {
           />
         </div>
         {/* Form */}
-        <div className="flex flex-col gap-3 justify-start items-center w-full md:w-6/12 font-roboto-medium ">
+        <div className="flex flex-col gap-3 justify-start items-center w-full md:w-8/12 lg:w-6/12 font-roboto-medium ">
           <TextInput
             formContext={ModalContext}
             className={`flex gap-4 flex-col w-full`}
@@ -88,11 +88,11 @@ export const ProductsInputForm = (props) => {
               label="Category"
               name="category_id"
               // options={["topi", "baju", "kerudung"]}
-              style="w-full h-[38px]"
+              style="w-[160px] lg:w-full h-[38px]"
             />
             <NumberInput
               formContext={ModalContext}
-              className={`flex gap-4 flex-col `}
+              className={`flex gap-4 flex-col w-[160px] lg:w-auto`}
               prefix=""
               label="Stock"
               name="stock"

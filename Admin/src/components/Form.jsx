@@ -913,7 +913,7 @@ export const FilePictureInput = (props) => {
         onDrop={() => {
           setOnDrag(false);
         }}
-        className="relative flex flex-col justify-start items-center w-full xbg-indigo-300 min-h-[560px]"
+        className="relative flex flex-col justify-start items-center w-full pb-8 lg:min-h-[560px]"
       >
         <label
           className={`relative w-full font-roboto-bold ${labelSize} text-center ${
@@ -932,7 +932,7 @@ export const FilePictureInput = (props) => {
           )}
         </label>
         {!onDrag ? (
-          <div className="relative pt-4">
+          <div className="relative pt-4 px-4">
             {working ? (
               <div className="relative group">
                 {hoverImpact()}
@@ -961,7 +961,7 @@ export const FilePictureInput = (props) => {
                         : `${ServerPublicProductImg}default.jpg`
                     }
                     alt="Avatar Tailwind CSS Component"
-                    className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] rounded-md shadow-lg"
+                    className="object-contain lg:min-w-[300px] lg:min-h-[320px] lg:h-[420px] lg:w-[420px] lg:max-w-[500px] lg:max-h-[520px] rounded-md shadow-lg"
                     loading="lazy"
                   />
                 ) : (

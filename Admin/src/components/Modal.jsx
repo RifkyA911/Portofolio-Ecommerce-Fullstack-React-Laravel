@@ -1,4 +1,5 @@
 import React, {
+  Fragment,
   createContext,
   useCallback,
   useContext,
@@ -17,7 +18,7 @@ import "cropperjs/dist/cropper.css";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
-import { Dialog } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 // Components
 import { DangerAlert } from "./Alert";
 import { FormToast } from "./Toast";
@@ -487,6 +488,8 @@ export const MainModalHandler = (props) => {
 };
 
 export const FormModal = (props) => {
+  const [proceed, setProceed] = useState(false);
+
   const {
     id,
     // MyTable
@@ -529,8 +532,6 @@ export const FormModal = (props) => {
   const { BgColor, ContainerBgColor, textColor, screenWidth, screenHeight } =
     useSelector((state) => state.UI);
 
-  const [proceed, setProceed] = useState(false);
-
   useEffect(() => {
     if (ready) {
       setProceed(false);
@@ -543,7 +544,7 @@ export const FormModal = (props) => {
     <>
       <Dialog.Panel
         as="div"
-        className={`flex flex-col w-[400px] md:w-[1200px] h-full justify-center ${
+        className={`flex flex-col w-[400px] md:w-[1200px] md:max-w-[200vh] h-full max-h-[95vh] my-8 justify-center ${
           BgColor ?? "bg-white"
         } ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all `}
         role="dialog"
@@ -604,7 +605,7 @@ export const FormModal = (props) => {
                 </button>
               </div>
             </div>
-            <div className="card-body px-2 max-h-[560px] overflow-y-scroll">
+            <div className="card-body py-2 px-2 max-h-[80vh] xmax-h-[560px] overflow-y-scroll">
               {data !== undefined && data !== null ? (
                 <div className="content over">
                   {!loading ? (
@@ -1072,7 +1073,7 @@ export const CropperModal = (props) => {
             ref={inputFileRef}
             className={`${
               onWorking ? "hidden" : ""
-            } file-input file-input-bordered file-input-md w-64 text-sm mt-6 text-gray-900`}
+            } file-input file-input-bordered lg:file-input-md md:w-48 lg:w-64 text-sm mt-6 text-gray-900`}
             type="file"
             accept="image/*"
             onChange={handleFileChange}
@@ -1465,6 +1466,87 @@ export const InfoModal = (props) => {
           </div> */}
         </form>
       </Dialog.Panel>
+    </>
+  );
+};
+
+export const ModalUI = (props) => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  return (
+    <>
+      <Transition show={isOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          id="modal"
+          className="fixed inset-0 z-[999999999] overflow-y-auto"
+          // initialFocus={cancelButtonRef}
+          static
+          open={isOpen}
+          onClose={closeModal}
+        >
+          <div className="min-h-screen h-full px-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-50" />
+            </Transition.Child>
+
+            {/* This element is to trick the browser into centering the modal contents. */}
+            <span
+              className="inline-block h-screen align-middle"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <div className="inline-flex flex-col h-[90vh] w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Title
+                </Dialog.Title>
+
+                <div className="mt-2 flex-grow">
+                  <p className="text-sm text-gray-500">
+                    Your payment has been successfully submitted. We’ve sent
+                    your an email with all of the details of your order.
+                  </p>
+                </div>
+
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                    onClick={closeModal}
+                  >
+                    Got it, thanks!
+                  </button>
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
     </>
   );
 };

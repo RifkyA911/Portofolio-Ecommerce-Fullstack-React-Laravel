@@ -4,7 +4,7 @@ import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
-import { MainModalHandler } from "../components/Modal";
+import { MainModalHandler, ModalUI } from "../components/Modal";
 import { ProductImage } from "../components/Products/ProductsTableBody";
 import { ActionButton } from "../components/Button";
 import { NumberSpan } from "../components/Span";
@@ -321,7 +321,7 @@ export default function Products() {
                   )}
                   {/* ================ Table ================ */}
                   <div className="divider">Product List</div>
-
+                  <ModalUI />
                   <MyTableEngine
                     {...MyTableEngineProps}
                     className="rounded-sm mx-auto"
