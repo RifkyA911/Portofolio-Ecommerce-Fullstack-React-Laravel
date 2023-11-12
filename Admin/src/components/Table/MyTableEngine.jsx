@@ -211,12 +211,12 @@ export const MyTableHeader = (props) => {
         </div>
         {/* right */}
         <div className="flex flex-row gap-2 md:gap-0 flex-wrap justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
-          {hideHeaderBtn !== "excelBtn" && !toggleSelect && (
+          {!hideHeaderBtn.includes("excelBtn") && !toggleSelect && (
             <>
               <ExportData data={inputData} />
             </>
           )}
-          {hideHeaderBtn !== "printBtn" && !toggleSelect && (
+          {!hideHeaderBtn.includes("printBtn") && !toggleSelect && (
             <MyTableHeaderPrint
               btnType="PRINT"
               showFixedBtn={showFixedBtn}
@@ -236,7 +236,7 @@ export const MyTableHeader = (props) => {
               handlePrint={handlePrint}
             />
           )}
-          {hideHeaderBtn !== "deleteBtn" && (
+          {!hideHeaderBtn.includes("deleteBtn") && (
             <MyTableHeaderDelete
               btnType="DELETE"
               showFixedBtn={showFixedBtn}
@@ -247,7 +247,7 @@ export const MyTableHeader = (props) => {
               setSelectedRows={setSelectedRows}
             />
           )}
-          {hideHeaderBtn !== "addBtn" && !toggleSelect && (
+          {!hideHeaderBtn.includes("addBtn") && !toggleSelect && (
             <>
               <MotionButton
                 type="button"
@@ -258,7 +258,7 @@ export const MyTableHeader = (props) => {
               />
             </>
           )}
-          {hideHeaderBtn !== "refreshBtn" && !toggleSelect && (
+          {!hideHeaderBtn.includes("refreshBtn") && !toggleSelect && (
             <>
               <MotionButton
                 type="button"
@@ -270,7 +270,7 @@ export const MyTableHeader = (props) => {
               />
             </>
           )}
-          {/* {hideHeaderBtn !== "menuBtn" && !toggleSelect && (
+          {/* {!hideHeaderBtn.includes("menuBtn") && !toggleSelect && (
             <MyTableHeaderMenu
               setDialogOpen={setDialogOpen}
               isDialogOpen={isDialogOpen}

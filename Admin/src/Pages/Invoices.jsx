@@ -248,13 +248,13 @@ export default function Invoices() {
   // Urutan kolom yang diinginkan
   const columnOrder = [
     "id",
-    "barcode",
-    "pict",
-    "name",
-    "category",
-    "stock",
-    "price",
-    "discount",
+    "total_price",
+    "address",
+    "checked_out",
+    "sent",
+    "done",
+    // "price",
+    // "discount",
     // "description",
     // "created_at",
     // "updated_at",
@@ -269,12 +269,12 @@ export default function Invoices() {
         key,
         feature: [
           "id",
-          "barcode",
-          "name",
+          "total_price",
+          "checked_out",
           // "category",
-          "price",
-          "stock",
-          "discount",
+          "sent",
+          "done",
+          // "discount",
         ].includes(key)
           ? "filter"
           : null,
