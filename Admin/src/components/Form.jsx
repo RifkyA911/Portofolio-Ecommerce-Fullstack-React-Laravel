@@ -1075,9 +1075,9 @@ export const DropBySelectedForm = (props) => {
   const { table } = useContext(formContext);
   const id = useId();
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
   return (
     <>
       <div

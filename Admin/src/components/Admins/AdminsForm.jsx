@@ -896,9 +896,8 @@ export const AdminsAlterForm = (props) => {
 
 export const AdminsDropForm = (props) => {
   // const { data, formType } = props;
-  const { refresh, data, formType, clearData } = useContext(ModalContext);
-
-  const id = useId();
+  const { table, refresh, data, formType, clearData } =
+    useContext(ModalContext);
 
   return (
     <>
@@ -907,112 +906,19 @@ export const AdminsDropForm = (props) => {
           <div className=" w-12/12 p-6">
             {/* Images */}
             {formType === "DROP_BY_ID" && (
-              <>
-                <img
-                  src={
-                    data.pict
-                      ? `./src/assets/admin_avatar/${data.pict}`
-                      : `./src/assets/admin_avatar/blank.jpg`
-                  }
-                  alt="Avatar Tailwind CSS Component"
-                  className="w-72 rounded-full max-w-3xl shadow-lg m-auto"
-                  loading="lazy"
-                />
-                <h1 className="text-xl text-center pt-8 pb-4 line-clamp-2">
-                  Are you sure to delete{" "}
-                  <span className="font-bold">{data.username}"</span> ?
-                </h1>
-              </>
+              <DropByIdForm
+                formContext={ModalContext}
+                tableId="adminsId"
+                location={table}
+                thisName={data.username}
+                pict={data.pict}
+              />
             )}
             {formType === "DROP_BY_SELECTED" && (
-              <div key={id}>
-                <div
-                  key={id}
-                  className="relative flex flex-row items-center justify-center"
-                >
-                  {data.map((selected, index) => (
-                    <>
-                      <span
-                        key={selected.id}
-                        className="flex-col overflow-x-scroll overflow-y-hidden line-clamp-1 py-4"
-                      >
-                        <img
-                          key={selected.id}
-                          src={
-                            selected.pict
-                              ? `./src/assets/admin_avatar/${selected.pict}`
-                              : `./src/assets/admin_avatar/blank.jpg`
-                          }
-                          alt="Avatar Tailwind CSS Component"
-                          className={`w-36 rounded-full shadow-lg m-auto`}
-                          loading="lazy"
-                        />
-                      </span>
-                    </>
-                  ))}
-                </div>
-                <div className="relative  text-xl text-center line-clamp-2 s">
-                  <div className="flex gap-12 flex-row justify-center items-center font-semibold text-sm">
-                    <table className="w-full bg-white">
-                      <thead className={`bg-slate-300 font-roboto-regular`}>
-                        <tr>
-                          <th>No</th>
-                          <th>Nama Admin</th>
-                        </tr>
-                      </thead>
-                      <tbody className="font-roboto-regular max-h-20 overflow-y-scroll">
-                        {data.map((selected, index) => (
-                          <tr key={selected.id} className="divide-y p">
-                            <td className="p-0 w-0 bg-slate-100">
-                              {index + 1}
-                            </td>
-                            <td className="px-4 py-1 w-96">
-                              <p key={selected.id}>{selected.username}</p>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <h1 className="my-4">
-                    Are you sure to delete these selected admins?
-                  </h1>
-                </div>
-              </div>
+              <DropBySelectedForm formContext={ModalContext} data={data} />
             )}
           </div>
         )}
-        {/* Confirm Button */}
-        <div className="flex gap-12 py-2 justify-center shadow-inner shadow-slate-50 bg-slate-100">
-          <button
-            type="submit"
-            // onClick={handleSubmit(onSubmit)}
-            className="btn transition-all duration-500 bg-gradient-to-tl from-pink-500 via-red-500 to-red-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-          >
-            <span id="showDelete" className="options px-[4px]">
-              <i className="font-xs">
-                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-              </i>
-            </span>
-            <span className="font-bold pr-2">Delete</span>
-          </button>
-          <button
-            type="button"
-            // onClick={refresh}
-            onClick={() => {
-              refresh();
-              clearData();
-            }}
-            className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-orange-500 to-amber-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-          >
-            <span className="options px-[4px]">
-              <i className="font-xs ">
-                <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-              </i>
-              <span className="font-bold pr-2">Cancel</span>
-            </span>
-          </button>
-        </div>
       </div>
     </>
   );

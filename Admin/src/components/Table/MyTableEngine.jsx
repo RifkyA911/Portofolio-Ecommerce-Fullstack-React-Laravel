@@ -286,7 +286,7 @@ export const MyTableHeader = (props) => {
                   setSelectedRows([]);
                 }}
                 className="mx-1 grow-0 shrink-0 focus:outline-none text-white py-2 px-2 hover:bg-gradient-to-r bg-gray-500 hover:from-yellow-500 hover:to-orange-400 rounded-md font-roboto-medium items-center transition-colors duration-200"
-                icon="DeselectRounded"
+                icon="MdOutlineDeselect"
                 span="Select None"
                 type="button"
               ></MotionButton>

@@ -161,17 +161,6 @@ export const ProductsDropForm = (props) => {
             )}
           </div>
         )}
-        {/* Confirm Button
-        <div className="flex gap-12 py-2 justify-center shadow-inner shadow-slate-50 bg-slate-100">
-          <ConfirmButton confirmType="drop" />
-          <ConfirmButton
-            confirmType="cancel"
-            onClick={() => {
-              refresh();
-              clearData();
-            }}
-          />
-        </div> */}
       </div>
     </>
   );

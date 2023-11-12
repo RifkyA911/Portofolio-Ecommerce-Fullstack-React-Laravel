@@ -119,9 +119,9 @@ export default function Admins() {
   }, [paginate, rows]);
 
   // Fungsi handler saat checkbox di klik
-  const handleCheckboxChange = (id, name, pict) => {
+  const handleCheckboxChange = (id, username, pict) => {
     const isSelected = selectedRows.some((item) => item.id === id);
-    const newRow = { id, name, pict };
+    const newRow = { id, username, pict };
     if (!isSelected) {
       setSelectedRows([...selectedRows, newRow]);
     } else {
@@ -215,6 +215,10 @@ export default function Admins() {
     setAdmin(id);
     setFormType(formType);
   };
+
+  useEffect(() => {
+    console.log(admin);
+  }, [admin]);
 
   const ModalProps = {
     table: "admins",
@@ -372,7 +376,7 @@ export default function Admins() {
                                             onClick={() =>
                                               handleCheckboxChange(
                                                 row.id,
-                                                row.name,
+                                                row.username,
                                                 row.pict
                                               )
                                             }
@@ -383,7 +387,7 @@ export default function Admins() {
                                             onClick={() =>
                                               handleCheckboxChange(
                                                 row.id,
-                                                row.name,
+                                                row.username,
                                                 row.pict
                                               )
                                             }
