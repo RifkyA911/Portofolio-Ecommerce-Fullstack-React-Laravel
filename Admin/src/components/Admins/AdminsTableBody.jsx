@@ -7,7 +7,7 @@ import { MuiIcon } from "../../utils/RenderIcons";
 
 const URL_PUT = import.meta.env.VITE_API_URL_PUT_ADMIN;
 
-export const ShowAdminName = (props) => {
+export const ShowAdminData = (props) => {
   const { data, onProfilePictureClick } = props;
 
   // console.log(data.id);
