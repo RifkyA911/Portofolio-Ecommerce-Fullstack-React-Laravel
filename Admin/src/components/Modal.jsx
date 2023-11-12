@@ -23,11 +23,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { DangerAlert } from "./Alert";
 import { FormToast } from "./Toast";
 import { DateRecord } from "./Span";
-import {
-  AdminsAlterForm,
-  AdminsDropForm,
-  AdminsInsertForm,
-} from "./Admins/AdminsForm";
+import { AdminsDropForm, AdminsInputForm } from "./Admins/AdminsForm";
 import { ProductsInputForm, ProductsDropForm } from "./Products/ProductsForm";
 import { MotionButton } from "./Button";
 // UTILS
@@ -219,8 +215,8 @@ export const MainModalHandler = (props) => {
             username: "",
             role: 1,
             pict: "default.png",
-            password: "123456f",
-            password_confirmation: "123456f",
+            // password: "123456f",
+            // password_confirmation: "123456f",
           };
           break;
         case `products`:
@@ -242,8 +238,8 @@ export const MainModalHandler = (props) => {
             username: data.username,
             role: data.role,
             pict: data.pict,
-            newPassword: "123456FF",
-            newPassword_confirmation: "123456FF",
+            // newPassword: "123456FF",
+            // newPassword_confirmation: "123456FF",
           };
           break;
         case `products`:
@@ -617,7 +613,7 @@ export const FormModal = (props) => {
                             {(formType === "INSERT" ||
                               formType === "ALTER_BY_ID") && (
                               <>
-                                <AdminsAlterForm />
+                                <AdminsInputForm />
                               </>
                             )}
                             {(formType === "DROP_BY_ID" ||

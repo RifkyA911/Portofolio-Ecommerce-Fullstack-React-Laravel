@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 // import model
 use App\Models\Admin;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -25,6 +26,45 @@ class AdminsController extends Controller
 
         //return collection of posts as a resource
         return new PostResource(true, 'List Data Admin', $admins);
+    }
+
+    private function notFound()
+    {
+        return response([
+            'message' => [
+                'Message' => 'No Data Found',
+                'length' => 0,
+            ],
+            'data' => [
+                array(
+                    'id' => null,
+                    'email' => null,
+                    'username' => 'tidak ada',
+                    'role' => null,
+                    'authority' => null,
+                    'phone' => null,
+                    'pict' => 'not_found.jpg',
+                )
+            ]
+        ], 200);
+    }
+
+    public function getImage($id)
+    {
+        $product = Admin::find($id);
+
+        if (!$product) {
+            return response()->json(['error' => 'ID tidak ditemukan'], 404);
+        }
+
+        $pict = $product->pict;
+        $imagePath = public_path('img/product_images/' . $pict);
+
+        if (file_exists($imagePath)) {
+            return response()->file($imagePath);
+        } else {
+            return response()->json(['error' => 'File gambar tidak ditemukan'], 404);
+        }
     }
 
     public function search(Request $request)
@@ -51,8 +91,8 @@ class AdminsController extends Controller
     public function showLimit($page, $perPage)
     {
         // Mengonversi halaman dan perPage yang diterima menjadi integer
-        $page = (int)$page; // halaman
-        $perPage = (int)$perPage; // jumlah data yang akan di kirim
+        $page = (int) $page; // halaman
+        $perPage = (int) $perPage; // jumlah data yang akan di kirim
 
         $length = Admin::count();
 
@@ -64,6 +104,50 @@ class AdminsController extends Controller
 
         // Mengembalikan hasil dalam bentuk resource
         return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $admins);
+    }
+
+    public function filter(Request $request) //////////////////////////////////////////////////
+    {
+        $SuperAdminKey = $request->input('superAuthorizationPassword');
+        $minPrice = $request->input('minPrice');
+        $maxPrice = $request->input('maxPrice');
+        $categories = $request->input('selectedFilter');
+        $getDateType = $request->input('date_type');
+        $startDate = $request->input('date_start');
+        $endDate = $request->input('date_end');
+
+        if (!$SuperAdminKey == 'superAdmin') {
+            return response(['message' => 'validasi kredensial data error', 'error' => 'bad request client :('], 400);
+        }
+
+        if (!is_array($categories)) {
+            return response(['message' => 'categories field type of data are not array', 'error' => 'bad request client :(', 'failed payload' => $request], 400);
+        }
+
+        $dateType = '';
+        if ($getDateType) {
+            if ($getDateType == 'created_at') {
+                $dateType = 'created_at';
+            } else if ($getDateType == 'updated_at') {
+                $dateType = 'updated_at';
+            } else {
+                return response(['message' => 'payload->date_type not match', 'error' => 'bad request client :('], 404);
+            }
+        } else {
+            return response(['message' => 'payload->date_type null/error', 'error' => 'bad request client :('], 404);
+        }
+
+        $products = Admin::where('price', '>=', $minPrice)
+            ->where('price', '<=', $maxPrice)
+            ->whereIn('category_id', $categories)
+            ->whereBetween($dateType, [$startDate, $endDate])
+            ->get();
+        $length = $products->count();
+
+        if (!$length) {
+            return $this->notFound();
+        }
+        return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $products);
     }
 
     public function login(Request $request)
@@ -149,7 +233,7 @@ class AdminsController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
+                return response(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()], 400);
             }
 
             if (Admin::create($request->except(['superAuthorizationPassword'])) !== false) {
@@ -198,7 +282,41 @@ class AdminsController extends Controller
         if ($getSuperAuthorizationPassword !== 'superAdmin') {
             if (!Hash::check($request->input('password'), $updateAdmin->password)) {
                 return response(new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')]), 401);
-            };
+            }
+            ;
+        }
+
+        $admin = Admin::find($request->input('adminsId'));
+        $oldName = $admin->name; // current data in db
+        $oldPict = $admin->pict; // current data in db
+        // ~~~~~~ mutasi update variabel separator ~~~~~~
+        $name = $request->input('name'); // incoming req
+        $pict = $request->input('pict'); // incoming req
+
+        // if pict req is not null/noChange
+        if ($pict !== "noChange") { // Test: Pass
+            // if oldName!=name, replace property values in $admin object
+            if ($oldName !== $name) {
+                $admin->update(['name' => $name]);
+            }
+            $newPictValue = $this->uploadImage($pict, $admin);
+            $request->merge(['pict' => $newPictValue]);
+            $oldFilePath = public_path('img/admin_avatar/' . $oldPict); // Ganti dengan jalur file lama
+            if (file_exists($oldFilePath)) {
+                if ($oldPict !== 'default.jpg') { // prevent delete default.jpg
+                    // Delete old existing pict file
+                    if (unlink($oldFilePath)) {
+                        $modifedFileStatus = true;
+                    } else {
+                        return response(["Failed to rename file", 'error', 404]);
+                    }
+                }
+            } else {
+                $modifedFileStatus = "Old Pict File is not exist";
+            }
+        } else { // Test: Pass
+            $modifedFileStatus = false;
+            $request->merge(['pict' => $admin->pict]);
         }
 
         // return $request;
@@ -206,6 +324,7 @@ class AdminsController extends Controller
         // isi data baru
         $updateAdmin->username = $request->input('username');
         $updateAdmin->email = $request->input('email');
+        $updateAdmin->pict = $request->input('pict') ?? 'default.jpg';
         if ($request->input('newPassword') !== null) {
             $updateAdmin->password = $request->input('newPassword');
         } else {
@@ -214,8 +333,7 @@ class AdminsController extends Controller
         if ($updateAdmin->role == 1) { // jika admin role = admin
             $updateAdmin->role = $request->input('role');
         }
-        $updateAdmin->pict = $request->input('pict');
-        return new PostResource(true, "User ter-update.", $updateAdmin->update());
+        return new PostResource(true, ["Message" => "product ter-update.", "modifedFileStatus" => $modifedFileStatus ?? null], $updateAdmin->update());
     }
 
     public function patch(Request $request)
@@ -273,14 +391,19 @@ class AdminsController extends Controller
     // return response(new PostResource(false, 'Masuk coy :v', $request->input(), 302));
 
     // Contoh metode controller Laravel untuk mengunggah gambar
-    public function uploadImage(Request $request)
+    // public function uploadImage(Request $request)
+    public function uploadImage($imageData, $product)
     {
-        $imageData = $request->input('image'); // Data gambar hasil pemangkasan dari React
-        $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imageData)); // Konversi data gambar ke binary
-
-        $imagePath = 'path/to/your/image/directory/' . 'image.jpg'; // Tentukan lokasi penyimpanan lokal
-        file_put_contents($imagePath, $imageData); // Simpan gambar secara lokal
-
-        return response()->json(['imagePath' => $imagePath]);
+        $imageName = 'product-' . time() . '-' . $product->id . '-' . Str::slug($product->name) . '.jpg';
+        // jika input pict adalah base64
+        if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
+            $data = substr($imageData, strpos($imageData, ',') + 1);
+            $data = base64_decode($data);
+            $imagePath = public_path('img/admin_avatar/') . $imageName; // Tentukan lokasi penyimpanan lokal
+            file_put_contents($imagePath, $data); // Simpan gambar secara lokal
+            return $imageName;
+        } else {
+            return 'default.jpg';
+        }
     }
 }

@@ -6,16 +6,22 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useForm, Controller } from "react-hook-form";
 // Components
 import Skeleton from "@mui/material/Skeleton";
-import ModalContext from "../Modal";
+import ModalContext, { CropperModal } from "../Modal";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import { MuiIcon } from "../../utils/RenderIcons";
-import { DateFormatter } from "../../utils/Formatter";
-import { ConfirmButton } from "../Button";
+import {
+  TextInput,
+  SelectInput,
+  NumberInput,
+  TextArea,
+  FilePictureInput,
+  DropByIdForm,
+  DropBySelectedForm,
+  PasswordInput,
+} from "../Form";
 
 // export const BackupForm = (props) => {
 //   return (
@@ -532,7 +538,7 @@ import { ConfirmButton } from "../Button";
 //   );
 // };
 
-export const AdminsInsertForm = (props) => {
+export const AdminsInputForm = (props) => {
   const {
     data,
     formType,
@@ -552,188 +558,96 @@ export const AdminsInsertForm = (props) => {
 
   return (
     <>
-      <div className="flex flex-row">
+      {/* ALTER */}
+      {formType === "ALTER_BY_ID" && (
+        <input
+          type="hidden"
+          {...register("adminsId", {
+            required: "This adminsId Credentials ID are required",
+          })}
+        />
+      )}
+      <div className="flex flex-col md:flex-row justify-center items-center py-2 px-6">
         {/* Images */}
-        <div className="flex justify-center items-center w-6/12 p-12">
-          <div className="relative w-96 rounded-full">
-            {console.log(data)}
-            <img
-              src={
-                data.pict
-                  ? `./src/assets/admin_avatar/${data.pict}`
-                  : `./src/assets/admin_avatar/default.jpg`
-              }
-              alt="Avatar Tailwind CSS Component"
-              className=" w-96 rounded-full max-w-3xl shadow-lg"
-              loading="lazy"
-            />
-            <input
-              type="file"
-              className="absolute w-full h-full hover:block hover:bg-gray-600 hover:bg-opacity-10 m-auto top-0 left-0 rounded-full transition-all duration-300 cursor-pointer"
-            />
-          </div>
+        <div className="flex flex-col justify-start items-center self-start w-full md:w-4/12 lg:w-6/12">
+          <FilePictureInput
+            formContext={ModalContext}
+            type="picture"
+            label="Admins Picture"
+            name="pict"
+          />
         </div>
         {/* Form */}
-        <div className="flex flex-col gap-4 justify-center items-center w-6/12 py-6 px-6 font-roboto-medium">
-          <label
-            htmlFor="email"
-            className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500"
-          >
-            Email
-            {errors.email && (
-              <span className="absolute right-0 text-red-500">
-                {errors.email.message}
-              </span>
-            )}
-          </label>
-          <input
-            type="email"
-            placeholder="Email"
-            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-            {...register("email", {
-              required: true,
-              pattern: /^\S+@\S+$/i,
-              message: "Invalid email",
-            })}
-            onChange={(e) => {
-              setValue("email", e.target.value);
-            }}
+        <div className="flex flex-col gap-3 self-start justify-start items-center w-full md:w-8/12 lg:w-6/12 font-roboto-medium ">
+          <TextInput
+            formContext={ModalContext}
+            className={`flex gap-4 flex-col w-full`}
+            label="E-mail"
+            name="email"
+            placeholder="Masukkan Kode E-mail"
           />
-          {/* Username */}
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
-            Username
-            {errors.username && (
-              <span className="absolute right-0 text-red-500">
-                {errors.username.message}
-              </span>
-            )}
-          </label>
-          <input
-            type="username"
-            placeholder="Username"
-            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-            {...register("username", {
-              required: true,
-              maxLength: 80,
-            })}
-            onChange={(e) => {
-              setValue("username", e.target.value);
-            }}
+          <TextInput
+            formContext={ModalContext}
+            className={`flex gap-4 flex-col w-full`}
+            label="Admin Name"
+            name="username"
+            placeholder="Masukkan Nama Admin"
           />
-          {/* Role */}
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
-            Role
-            {errors.role && (
-              <span className="absolute right-0 text-red-500">
-                {errors.role.message}
-              </span>
-            )}
-          </label>
-          <Controller
+          <SelectInput
+            formContext={ModalContext}
+            className={`w-full flex gap-4 flex-col `}
+            label="Role Admin"
             name="role"
-            control={control}
-            defaultValue="1" // Nilai default jika perlu
-            render={({ field }) => (
-              <select
-                onChange={(e) => {
-                  field.onChange(e); // Menggunakan field.onChange untuk mengatur nilai di dalam Controller
-                  alert(
-                    "be carefull changing role grant access",
-                    e.target.value
-                  ); // Menggunakan e.target.value karena field.value mungkin belum diperbarui
-                }}
-                className="select select-info select-sm w-full max-w-3xl focus:outline-none self-start font-roboto-medium"
-                value={field.value} // Menggunakan field.value untuk nilai saat ini
-              >
-                <option value="1">Admin</option>
-                <option value="0">Super Admin</option>
-              </select>
-            )}
+            options={[
+              { id: 0, name: "Super Admin" },
+              { id: 1, name: "Admin" },
+            ]}
           />
-          {/* Password */}
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
-            New Password
-            {errors.password && (
-              <span className="absolute right-0 text-red-500">
-                {errors.password.message}
-              </span>
-            )}
-          </label>
-          <div className="relative w-full">
-            <input
-              type={showPassword ? "text" : "password"}
-              className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-              ref={(e) => {
-                field.ref(e);
-                passwordRef.current = e;
-              }}
-              {...register("password", {
-                required: "New Password is required",
-                minLength: {
-                  value: 6,
-                  message: "New Password must be at least 6 characters",
-                },
-                validate: (value) => {
-                  value <= 6 || "Passwords kurnag";
-                },
-              })}
-            />
-            <span
-              onClick={setShowPassword}
-              className="absolute bg-transparent w-4 right-[20px] bottom-[8px] cursor-pointer"
-            >
-              <MuiIcon
-                iconName={
-                  showPassword ? "VisibilityRounded" : "VisibilityOffRounded"
-                }
+          {formType === "INSERT" && (
+            <>
+              <PasswordInput
+                formContext={ModalContext}
+                className={`flex gap-4 flex-col w-full`}
+                label={formType === "ALTER_BY_ID" ? "New Password" : "Password"}
+                name="password"
+                placeholder="Masukkan Password"
               />
-            </span>
-          </div>
-          <label className="relative w-full font-roboto-bold text-left after:content-['*'] after:ml-0.5 after:text-red-500">
-            Confirm New Password
-            {errors.password_confirmation && (
-              <span className="absolute right-0 text-red-500">
-                {errors.password_confirmation.message}
-              </span>
-            )}
-          </label>
-          <div className="relative w-full">
-            <input
-              type={showPassword ? "text" : "password"}
-              className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl focus:outline-none"
-              ref={passwordRef} // Referensi input password
-              {...register("password_confirmation", {
-                required: "Confirm Password is required",
-                validate: (value) => {
-                  value === passwordRef.current || "Passwords do not match f";
-                  console.log(
-                    "this-passwordRef.current value",
-                    passwordRef.current
-                  );
-                  console.log("this-confirm-password value", value);
-                },
-              })}
-            />
-            <span
-              onClick={setShowPassword}
-              className="absolute bg-transparent w-4 right-[20px] bottom-[8px]  cursor-pointer"
-            >
-              <MuiIcon
-                iconName={
-                  showPassword ? "VisibilityRounded" : "VisibilityOffRounded"
+              <PasswordInput
+                formContext={ModalContext}
+                className={`flex gap-4 flex-col w-full`}
+                label={
+                  formType === "ALTER_BY_ID"
+                    ? "Confirm New Password"
+                    : "Confirm Password"
                 }
+                name="password_confirmation"
+                placeholder="Masukkan Confirm Password"
               />
-            </span>
-          </div>
+            </>
+          )}
+          {formType === "ALTER_BY_ID" && (
+            <>
+              <PasswordInput
+                formContext={ModalContext}
+                className={`flex gap-4 flex-col w-full`}
+                label={formType === "ALTER_BY_ID" ? "New Password" : "Password"}
+                name="newPassword"
+                placeholder="Masukkan Password Baru"
+              />
+              <PasswordInput
+                formContext={ModalContext}
+                className={`flex gap-4 flex-col w-full`}
+                label={
+                  formType === "ALTER_BY_ID"
+                    ? "Confirm New Password"
+                    : "Confirm Password"
+                }
+                name="newPassword_confirmation"
+                placeholder="Masukkan Confirm Password Baru"
+              />
+            </>
+          )}
         </div>
-      </div>
-      <div className="py-2 shadow-inner shadow-slate-50 bg-slate-100">
-        <button
-          type="submit"
-          className="btn bg-gradient-to-tr hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-        >
-          <MuiIcon iconName="EditRounded" /> Save Changes
-        </button>
       </div>
     </>
   );

@@ -39,9 +39,12 @@ Route::controller(ImagesController::class)->group(function () {
 // Endpoint Admin
 Route::controller(AdminsController::class)->group(function () {
     Route::get('/admins', 'index');
-    Route::get('/admins/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/admin/{id}', 'find'); // parameter id
-    // search admin
+    Route::get('/admin/image/{id}', 'getImage'); // parameter id
+    // table utility
+    Route::get('/admins/paginate/{page}/{perPage}', 'showLimit');
+    // Route::post('/admins/print', 'print'); // parameter id
+    Route::post('/admins/filter', 'filter'); // parameter id
     Route::post('/admins/search', 'search'); // parameter name, category, price(numeric), stok(numeric)
     //  create admin
     Route::post('/admin', 'store'); // parameter role_admin == 0; data => email, username, password, role

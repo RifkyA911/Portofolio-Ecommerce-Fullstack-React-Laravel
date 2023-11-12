@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { MuiIcon } from "../../utils/RenderIcons";
 
+const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
 const URL_PUT = import.meta.env.VITE_API_URL_PUT_ADMIN;
 
 export const ShowAdminData = (props) => {
@@ -28,10 +29,7 @@ export const ShowAdminData = (props) => {
       <div className="flex items-center space-x-3">
         <div className="avatar " onClick={onClick}>
           <div className="mask mask-squircle w-16 h-16 cursor-pointer ">
-            <img
-              src={`./src/assets/admin_avatar/${data.pict}`}
-              alt="Avatar Tailwind CSS Component"
-            />
+            <img src={`${ServerPublicAdminsImg}${data.pict}`} />
           </div>
         </div>
         <div className={`${textTable} pl-4 text-left`}>

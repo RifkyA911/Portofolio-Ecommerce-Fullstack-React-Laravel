@@ -114,6 +114,7 @@ export const TextInput = (props) => {
 
   const validationRules = {
     required: `This ${label} field is required `,
+    pattern: name == "email" ? /^\S+@\S+$/i : null,
     maxLength: {
       value: 200,
       message: label + " input must not exceed 200 characters",
