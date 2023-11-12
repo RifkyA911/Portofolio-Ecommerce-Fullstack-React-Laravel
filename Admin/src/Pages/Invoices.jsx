@@ -1,50 +1,68 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useMemo, useRef, createContext } from "react";
+import axios from "axios";
+import Barcode from "react-jsbarcode";
 // Components
-import Skeleton from "@mui/material/Skeleton";
-import { DangerAlert, WarningAlert } from "../components/Alert";
-// Layout
-import { Container, Content } from "../Layout";
-// REDUX
-import { useSelector } from "react-redux";
-// UTILS
-import { MuiIcon } from "../utils/RenderIcons";
+import { SkeltonTable } from "../components/Skelton/SkeltonTable";
+import { SetErrorMessage } from "../components/Error/ErrorMessage";
+import { MainModalHandler } from "../components/Modal";
+// import { ProductImage } from "../components/invoices/invoicesTableBody";
+import { ActionButton } from "../components/Button";
+import { NumberSpan } from "../components/Span";
 import {
   MyTableEngine,
-  Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
 } from "../components/Table/MyTableEngine";
-import { SkeltonTable } from "../components/Skelton/SkeltonTable";
-import { MainModalHandler, InfoModal } from "../components/Modal";
+// Layout
+import { Container, Content } from "../Layout";
+// REDUX
+import { useSelector } from "react-redux";
+// UTILS
+import { CurrencyFormatter } from "../utils/Formatter";
+import { ReactIcons } from "../utils/RenderIcons";
 
-// Custom Const
-const APIGetTransaction = import.meta.env.VITE_API_ALL_TRANSACTION;
+// define fetch data URL_PRODUCT by invoices
+const initUrlTransaction = import.meta.env.VITE_API_ALL_TRANSACTION;
+const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCT;
+const initUrlCategories = import.meta.env.VITE_API_ALL_CATEGORIES;
 
-export default function Invoices(props) {
+export const InvoicesContext = createContext();
+
+export default function Invoices() {
   // ---- Admins Basic States ----
-  const [transactions, setTransactions] = useState([]);
+  const [invoices, setIn] = useState([]);
+  const [categories, setCategories] = useState();
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // ---- MyTableEngine Pagination ----
+  const [tabPagination, setTabPagination] = useState(true);
+  const [colspan, setColspan] = useState();
   const [length, setLengthData] = useState();
   const [paginate, setPaginate] = useState(1);
   const [rows, setRows] = useState(10);
 
   // ---- MyTableEngine Header ----
-  const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showFixedBtn, setShowFixedBtn] = useState(null);
 
   // ---- MyTableEngine Body ----
   const [toggleSelect, setToggleSelect] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
 
   // ---- Modal States ----
-  const [transaction, setTransaction] = useState("");
+  const [product, setProduct] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState(false);
   const [formType, setFormType] = useState(null);
+  const [resultStatus, setResultStatus] = useState({
+    type: null,
+    state: false,
+    message: null,
+  });
 
   // REDUX
   const {
@@ -59,85 +77,129 @@ export default function Invoices(props) {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  const URL = `${APIGetTransaction}/paginate/${paginate}/${rows}`;
+  const URL_PRODUCT = `${initUrlProduct}/paginate/${paginate}/${rows}`;
+  const URL_PRODUCT_SEARCH = `${initUrlProduct}/search?search=`;
+  const URL_PRODUCT_FILTER = `${initUrlProduct}/filter`;
+  const URL_CATEGORIES = `${initUrlCategories}/paginate/${paginate}/${rows}`;
+  const URL_ALL_CATEGORIES = `${initUrlCategories}`;
 
-  const fetchTransactions = async (url, type) => {
+  const fetchData = async (url, table, form = null) => {
     try {
-      const response = await fetch(url);
-      const data = await response.json();
+      const controller = new AbortController();
+      const config = {
+        method: form ? "post" : "get", // Metode permintaan yang dinamis
+        url: url, // URL yang akan diakses
+        data: form, // Menggunakan 'data' untuk mengirim data dalam permintaan POST
+        signal: controller.signal,
+      };
+      const { data } = await axios(config);
+      // console.log(data);
+      // console.table(`fetching`, table);
       setLoading(false);
-      if (type == "fetch") {
-        setTransactions(data.data);
-        setErrorMessage(null);
+      if (table === "invoices") {
+        setIn(data.data);
         setLengthData(data.message.length);
-        // const parsedProducts_id = JSON.parse(data.data[0].products_id);
-        // console.log(JSON.parse(data.data[0].products_id));
-      } else if (type == "size") {
-        console.log(data.message.length);
+      } else if (table === "categories") {
+        setCategories(data.data);
       }
+      setErrorMessage(null);
     } catch (error) {
       setLoading(false);
-      console.error("Terjadi kesalahan:", error);
+      let message = `Gagal Fetching '${table}'`;
+      setErrorMessage(message);
+      console.error(message, error);
     }
   };
 
+  // ===================== MyTableEngine =====================
   useEffect(() => {
-    fetchTransactions(URL, "fetch");
-  }, []);
+    fetchData(URL_PRODUCT, "invoices");
+    fetchData(URL_ALL_CATEGORIES, "categories");
+    if (invoices !== null && invoices !== undefined) {
+      setColspan(columnOrder.length + 1);
+    }
+  }, [paginate, rows]);
 
-  const JSONParser = (input) => {
-    const parsedAuthority = JSON.parse(input);
-    console.log(parsedAuthority);
-    // return parsedAuthority
+  // Fungsi handler saat checkbox di klik
+  const handleCheckboxChange = (id, name, pict) => {
+    const isSelected = selectedRows.some((item) => item.id === id);
+    const newRow = { id, name, pict };
+    if (!isSelected) {
+      setSelectedRows([...selectedRows, newRow]);
+    } else {
+      setSelectedRows(selectedRows.filter((item) => item.id !== id));
+    }
   };
 
-  // ===================== MyTableEngine =====================
   // ---- MyTableEngine Search Filter ----
   useEffect(() => {
-    const filteredData = transactions.filter((transactions) =>
-      transactions.products_id.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(filteredData);
-  }, [searchTerm, transactions]);
+    // console.log("sd", searchTerm);
+    if (invoices !== null && invoices.length > 0) {
+      if (searchTerm.length > 1 || searchTerm !== "") {
+        fetchData(URL_PRODUCT_SEARCH, "invoices", { search: searchTerm });
+      } else if (searchTerm == "") {
+        fetchData(URL_PRODUCT, "invoices");
+      }
+    }
+  }, [searchTerm]);
 
   const MyTableEngineProps = {
-    inputData: transactions,
+    table: "invoices",
+    context: InvoicesContext,
+    inputData: invoices,
     refresh: () => {
-      fetchTransactions(URL, "fetch");
+      fetchData(URL_PRODUCT, "invoices");
       setLoading(true);
+      setTabPagination(true);
     },
+    setResultStatus: (type, state, message) =>
+      setResultStatus({
+        //  for toast
+        ...resultStatus,
+        type: type,
+        state: state,
+        message: message,
+      }),
     // ------------- Table Header Menu -------------
     TabHeader: true,
-    hideHeaderBtn: "deleteBtn",
-    searchTerm: searchTerm,
-    setSearchTerm: (e) => setSearchTerm(e.target.value),
-    setAddModal: () => {
-      document.getElementById("AdminForm").showModal();
-      handleActionButton(null, "INSERT");
+    hideHeaderBtn: "",
+    selectFilter: categories,
+    applyFilter: (form) => {
+      fetchData(URL_PRODUCT_FILTER, "invoices", form);
     },
-    setDeleteModal: () => {
-      // console.table(Object.assign({}, selectedRows));
-      document.getElementById("AdminForm").showModal();
-      handleActionButton(selectedRows, "DROP_BY_SELECTED");
+    showFixedBtn: showFixedBtn,
+    setShowFixedBtn: setShowFixedBtn,
+    searchTerm: searchTerm,
+    setSearchTerm: setSearchTerm,
+    setPrintBatchModal: () => {
+      setShowModal(true);
+      handleOpenModal(selectedRows, "PRINT_BATCH", "print");
+    },
+    setDeleteBatchModal: () => {
+      setShowModal(true);
+      handleOpenModal(selectedRows, "DROP_BY_SELECTED", "form");
+    },
+    setAddModal: () => {
+      setShowModal(true);
+      handleOpenModal(null, "INSERT", "form");
     },
     // ------------- Table Body -------------
     toggleSelect: toggleSelect,
-    setToggleSelect: () => {
-      setToggleSelect((toggleSelectProps) => !toggleSelectProps);
-    },
-    setSelectedRows: (propsValue) => setSelectedRows(propsValue),
+    setToggleSelect: setToggleSelect,
+    selectedRows: selectedRows,
+    setSelectedRows: setSelectedRows,
     // Sorting Filter
     sortData: (newSortedData) => {
-      setTransactions(newSortedData);
+      setIn(newSortedData);
     },
     // ------------ Table Pagination-------------
-    TabPagination: true,
-    colSpan: 7,
+    tabPagination: tabPagination,
+    setTabPagination: setTabPagination,
+    colSpan: colspan == null ? 5 : colspan,
     paginate: paginate,
     onChangePaginate: (newPaginate) => {
       setLoading(true);
       setPaginate(newPaginate);
-      console.log("paginate-", newPaginate);
     },
     rows: rows,
     onRowsChange: (newRows) => {
@@ -148,32 +210,68 @@ export default function Invoices(props) {
   };
 
   // ===================== Modal =====================
+  // Handler Ketika mengklik modal handler button
+  const handleOpenModal = (id, formType, modalType) => {
+    setShowModal(true);
+    setModalType(modalType);
+    setProduct(id);
+    setFormType(formType);
+  };
+
   const ModalProps = {
-    table: "transactions",
-    table_id: transaction,
+    table: "invoices",
+    table_id: product,
+    showModal: showModal,
+    setShowModal: setShowModal,
+    modalType: modalType,
+    formType: formType,
     refresh: () => {
-      fetchTransactions(URL, "fetch");
+      fetchData(URL_PRODUCT, "invoices");
       setLoading(true);
     },
-    formType: formType,
+    setResultStatus: (type, state, message) =>
+      setResultStatus({
+        ...resultStatus,
+        type: type,
+        state: state,
+        message: message,
+      }),
+    select: categories,
     clearData: () => {
-      setTransaction(null);
+      setIn(null);
       setToggleSelect(false);
       setSelectedRows([]);
       setFormType(null);
     },
   };
 
+  // Urutan kolom yang diinginkan
+  const columnOrder = [
+    "id",
+    "barcode",
+    "pict",
+    "name",
+    "category",
+    "stock",
+    "price",
+    "discount",
+    // "description",
+    // "created_at",
+    // "updated_at",
+  ];
+
   let table_styling = {};
-  if (transactions !== null && transactions.length > 0) {
+  if (invoices !== null && invoices.length > 0) {
     table_styling = {
       tbody: `${BgTable}`,
-      th: Object.keys(transactions[0]).map((key) => ({
+      tr: `h-8 text-left`,
+      th: columnOrder.map((key, index) => ({
         key,
         feature: [
           "id",
+          "barcode",
           "name",
-          "category",
+          // "category",
           "price",
           "stock",
           "discount",
@@ -182,128 +280,235 @@ export default function Invoices(props) {
           : null,
         style: `capitalize px-4`,
       })),
-      tr: `h-8 text-center`,
-      td: `flex-1 w-2/12 border-2 py-2 px-2 `,
+      td: `xborder-2 py-2 px-4 `,
     };
-    console.table(table_styling);
   }
 
   return (
     <>
-      {/* <AdminsContext.Provider value={AdminsContextValue}> */}
       <Container>
-        <Content pageName={"Invoices"}>
+        <Content pageName={"invoices"}>
           {loading == true ? (
             <SkeltonTable />
           ) : (
-            <div id="Invoices" className="rounded-lg text-sm ">
-              {/* ================ Error ================ */}
-              <div>
-                {errorMessage && (
-                  <SetErrorMessage
-                    errorMessage={errorMessage}
-                    refresh={() => {
-                      fetchTransactions(URL, "fetch");
-                      setLoading(true);
-                    }}
-                  >
-                    <span className="text-md font-medium my-2">{URL}</span>
-                  </SetErrorMessage>
-                )}
-              </div>
-              {/* ================ Modal ================= */}
-              <InfoModal {...ModalProps} />
-              <ActionModalForm {...ModalProps} />
-              {/* ================ Table ================ */}
-              <MyTableEngine {...MyTableEngineProps}>
-                <Thead className={`${BgOuterTable} ${textColor} `}>
-                  <Tr key="TableHead" className="h-8 text-center">
-                    <Th
-                      column="id"
-                      feature="filter"
-                      sortOrder="asc"
-                      className="px-4"
-                    ></Th>
-                    <Th name="Checked Out" column="checked_out"></Th>
-                    <Th
-                      name="Products"
-                      column="products_id"
-                      feature="filter"
-                    ></Th>
-                    <Th
-                      name="Total Price"
-                      column="total_price"
-                      className="text-center"
-                    ></Th>
+            <>
+              {invoices !== null ? (
+                // <InvoicesContext.Provider value={MyTableEngineProps}>
+                <div id="invoices" className="rounded-lg text-sm ">
+                  {/* ================ Error ================ */}
+                  <div>
+                    {errorMessage && (
+                      <SetErrorMessage
+                        errorMessage={errorMessage}
+                        refresh={() => {
+                          fetchData(URL_PRODUCT, "invoices");
+                          setLoading(true);
+                        }}
+                      >
+                        <span className="text-md font-medium my-2">
+                          {URL_PRODUCT}
+                        </span>
+                      </SetErrorMessage>
+                    )}
+                  </div>
+                  {/* ================ Modal ================= */}
+                  <MainModalHandler {...ModalProps} />
+                  {/* {resultStatus.type && resultStatus.state == true && (
+                    <FormToast
+                      formType={resultStatus.type}
+                      span={resultStatus.message}
+                    />
+                  )} */}
+                  {/* ================ Table ================ */}
+                  <div className="divider">Product List</div>
 
-                    <Th name="Quantity" column="qty" feature="filter"></Th>
-                    <Th name="User" column="user_id" feature="filter"></Th>
-                    <Th name="Admin" column="admin_id" feature="filter"></Th>
-                  </Tr>
-                </Thead>
-                <Tbody className={`${BgTable} `}>
-                  {searchResults.map((row, index) => (
-                    <Tr
-                      key={index}
-                      customKey={index}
-                      className={"divide-y min-h-[40px]:"}
-                    >
-                      {toggleSelect ? (
+                  <MyTableEngine
+                    {...MyTableEngineProps}
+                    className="rounded-sm mx-auto"
+                  >
+                    <Thead className={`${BgOuterTable} ${textColor} `}>
+                      <Tr key="TableHead" className={table_styling.tr}>
+                        {table_styling.th.map((th, index) => (
+                          <Th
+                            key={index}
+                            name={th.key === "id" ? "" : th.key}
+                            column={th.key}
+                            feature={th.feature}
+                            sortOrder="asc"
+                            className={th.style}
+                            // hidden={
+                            //   th.key === "created_at" || th.key === "updated_at"
+                            //     ? true
+                            //     : false
+                            // }
+                          ></Th>
+                        ))}
                         <Th
+                          key={55}
+                          name="Action"
+                          column="Action"
+                          feature={null}
+                          className="print:hidden capitalize px-4"
+                        ></Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody className={table_styling.tbody}>
+                      {invoices.map((row, index) => (
+                        <Tr
                           key={index}
-                          feature={"select"}
-                          onChange={() => handleCheckboxChange(row.id)}
-                          selectedRows={selectedRows}
-                          rowId={row.id}
-                          className=""
+                          className={`${table_styling.tr} divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50`}
                         >
-                          {selectedRows.some((item) => item.id === row.id) ? (
-                            <button
-                              onClick={() => handleCheckboxChange(row.id)}
-                              className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
-                            ></button>
+                          {toggleSelect ? (
+                            <>
+                              {row.role != 0 ? (
+                                <>
+                                  <Th
+                                    key={index}
+                                    feature={"select"}
+                                    onChange={() =>
+                                      handleCheckboxChange(
+                                        row.id,
+                                        row.name,
+                                        row.pict
+                                      )
+                                    }
+                                    selectedRows={selectedRows}
+                                    rowId={row.id}
+                                    className=""
+                                  >
+                                    {selectedRows.some(
+                                      (item) => item.id === row.id
+                                    ) ? (
+                                      <button
+                                        onClick={() =>
+                                          handleCheckboxChange(
+                                            row.id,
+                                            row.name,
+                                            row.pict
+                                          )
+                                        }
+                                        className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
+                                      ></button>
+                                    ) : (
+                                      <button
+                                        onClick={() =>
+                                          handleCheckboxChange(
+                                            row.id,
+                                            row.name,
+                                            row.pict
+                                          )
+                                        }
+                                        className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
+                                      ></button>
+                                    )}
+                                  </Th>
+                                </>
+                              ) : (
+                                <th className="cursor-not-allowed">
+                                  <MuiIcon iconName="BlockRounded" />
+                                </th>
+                              )}
+                            </>
                           ) : (
-                            <button
-                              onClick={() => handleCheckboxChange(row.id)}
-                              className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
-                            ></button>
+                            <>
+                              <Th
+                                key={index}
+                                className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-[1%] p-0 font-roboto-bold text-xs border-b-[2px] border-white`}
+                              >
+                                {parseInt(row.id) == 0
+                                  ? parseInt(row.id) + 1
+                                  : row.id}
+                              </Th>
+                            </>
                           )}
-                        </Th>
-                      ) : (
-                        <Th
-                          key={index}
-                          className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-0 p-0 font-roboto-bold border-b-[2px] border-white`}
-                        >
-                          {parseInt(row.id) == 0
-                            ? parseInt(row.id) + 1
-                            : row.id}
-                        </Th>
-                      )}
-                      <Td className="flex-1 w-2/12 border-2 ">
-                        {row.checked_out}
-                      </Td>
-                      <Td className="flex-1 w-2/12 border-2 ">
-                        {row.products_id}
-                      </Td>
-                      <Td className="flex-1 w-2/12 border-2 ">
-                        {row.total_price}
-                      </Td>
-                      <Td className="flex-1 w-2/12 border-2">{row.user_id}</Td>
-                      <Td className="flex-1 w-2/12 border-2 ">
-                        {row.admin_id}
-                      </Td>
-                      <Td className="flex-1 w-2/12 border-2 ">
-                        {row.admin_id}
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </MyTableEngine>
-            </div>
+                          <Td
+                            className={`py-2 px-2 w-1/12 cursor-pointer`}
+                            onClick={() => {
+                              handleOpenModal(
+                                row.id,
+                                "SHOW_PRODUCT_BARCODE",
+                                "info"
+                              );
+                            }}
+                          >
+                            {row.id && (
+                              <Barcode
+                                className={`h-[64px] p-0 m-0 max-w-[150px]`}
+                                value={row.barcode}
+                                // options={{ format: "EAN13" }}
+                              />
+                            )}
+                          </Td>
+                          <Td className={` w-1/12`}>{row.id}</Td>
+                          <Td className={`${table_styling.td} w-2/12`}>
+                            {row.name}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {row.category.name}
+                          </Td>
+                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
+                            {row.stock}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {CurrencyFormatter(row.price)}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            <span className="flex flex-row gap-2 justify-center items-center">
+                              {row.discount && (
+                                <NumberSpan
+                                  data={row.discount + " %"}
+                                  className="text-green-600 text-sm "
+                                />
+                              )}
+                            </span>
+                          </Td>
+
+                          <Td className="print:hidden px-4">
+                            {row.id && (
+                              <ActionButton
+                                key={index}
+                                inputData={row}
+                                onClickPrint={() => {
+                                  handleOpenModal(
+                                    row.id,
+                                    "PRINT_BY_ID",
+                                    "print"
+                                  );
+                                }}
+                                onClickDelete={() => {
+                                  handleOpenModal(row.id, "DROP_BY_ID", "form");
+                                }}
+                                onClickEdit={() => {
+                                  handleOpenModal(
+                                    row.id,
+                                    "ALTER_BY_ID",
+                                    "form"
+                                  );
+                                }}
+                              />
+                            )}
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </MyTableEngine>
+                  <div className="divider">Category List</div>
+                  {categories && (
+                    <>
+                      {categories.map((cat, index) => (
+                        <p key={index}>{cat.name}</p>
+                      ))}
+                    </>
+                  )}
+                </div>
+              ) : (
+                // </InvoicesContext.Provider>
+                "tidak ada data"
+              )}
+            </>
           )}
         </Content>
       </Container>
-      {/* </AdminsContext.Provider> */}
     </>
   );
 }

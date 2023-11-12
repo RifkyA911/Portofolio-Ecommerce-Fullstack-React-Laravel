@@ -56,9 +56,10 @@ export const isClickedOutside = (divRef) => {
 
 export const IsScreenResize = (props) => {
   const { monitoring = false } = props;
-  const dispatch = useDispatch();
   const { screenWidth, screenHeight } = useSelector((state) => state.refresh);
   const [screenSize, setScreenSize] = useState({ screenWidth, screenHeight });
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleResize = () => {
@@ -92,4 +93,25 @@ export const IsScreenResize = (props) => {
   if (monitoring) {
     console.log(screenSize);
   }
+};
+
+export const IsResponsive = (props) => {
+  const { screenWidth, screenHeight } = useSelector((state) => state.refresh);
+  const [screenSize, setScreenSize] = useState({ screenWidth, screenHeight });
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (screenWidth < 1024) {
+      if (screenWidth < 768) {
+        if (screenWidth < 540) {
+          setScreenSize(`40vh`);
+        }
+        setScreenSize(`70vh`);
+      }
+      setScreenSize(`110vh`);
+    }
+  }, [screenWidth, screenHeight]);
+
+  return screenWidth;
 };

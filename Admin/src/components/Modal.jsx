@@ -455,7 +455,7 @@ export const MainModalHandler = (props) => {
                 as="div"
                 className="fixed inset-0 z-[999] flex items-center justify-center overflow-y-hidden"
               >
-                <div className="flex flex-col items-center justify-center w-full">
+                <div className="flex flex-col items-center justify-center min-h-screen w-full">
                   <Dialog.Overlay />
                   <div
                     onClick={() => {
@@ -544,151 +544,131 @@ export const FormModal = (props) => {
     <>
       <Dialog.Panel
         as="div"
-        className={`flex flex-col w-[400px] md:w-[1200px] md:max-w-[200vh] h-full max-h-[95vh] my-8 justify-center ${
-          BgColor ?? "bg-white"
-        } ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all `}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-headline"
+        sd=""
+        className={` ${BgColor ?? "bg-white"} ${textColor} 
+        flex flex-col inset-0 my-8 justify-center rounded-lg overflow-hidden shadow-xl transform transition-all 
+        w-[400px] lg:w-[1200px] md:max-w-[200vh] sm:w-[80vh] md:w-[110vh] h-full xmax-h-[95vh]`}
       >
         <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-          <div className={` `}>
-            <div
-              className={`${BgColor} py-2 card-header pb-4 px-4 flex flex-row justify-between w-full items-center shadow-md`}
-            >
-              <div className="w-5/12 font-bold text-lg text-left capitalize ">
-                <Dialog.Title>
-                  {formType === "INSERT" && `Add New ${table}`}
-                  {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
-                  {formType === "DROP_BY_ID" && `Delete This ${table}`}
-                  {formType === "DROP_BY_SELECTED" &&
-                    `Delete Multiple ${table}`}
-                </Dialog.Title>
-              </div>
-              <div className="w-6/12 flex flex-col md:flex-row justify-end items-center">
-                {errorMessage ? (
+          <div
+            className={`${BgColor} py-2 card-header pb-4 px-4 flex flex-row justify-between w-full items-center shadow-md`}
+          >
+            <div className="w-5/12 font-bold text-lg text-left capitalize ">
+              <Dialog.Title>
+                {formType === "INSERT" && `Add New ${table}`}
+                {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
+                {formType === "DROP_BY_ID" && `Delete This ${table}`}
+                {formType === "DROP_BY_SELECTED" && `Delete Multiple ${table}`}
+              </Dialog.Title>
+            </div>
+            <div className="w-6/12 flex flex-col md:flex-row justify-end items-center">
+              {errorMessage ? (
+                <>
+                  <Dialog.Description
+                    key={id}
+                    className={`px-2 py-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
+                    as="small"
+                  >
+                    {console.log(errors)}
+                    {errorMessage}
+                  </Dialog.Description>
+                </>
+              ) : (
+                <>
+                  {formType === "ALTER_BY_ID" && (
+                    <DateRecord className="" data={data} />
+                  )}
+                </>
+              )}
+              <div className="w-12 text-right text-indigo-500">
+                {sending && (
                   <>
-                    <Dialog.Description
-                      key={id}
-                      className={`px-2 py-1 font-roboto-bold w-7/12 text-red-800 bg-red-300 rounded-md max-h-[28px] line-clamp-2`}
-                      as="small"
-                    >
-                      {console.log(errors)}
-                      {errorMessage}
-                    </Dialog.Description>
+                    <span className="self-end loading loading-dots loading-md"></span>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="w-1/12 text-right">
+              <button
+                className="btn btn-sm btn-circle btn-ghost hover:bg-red-300"
+                onClick={() => {
+                  setShowModal(false);
+                  refresh();
+                  clearData();
+                }}
+              >
+                <MuiIcon iconName="CloseRounded" />
+              </button>
+            </div>
+          </div>
+          <div className="card-body py-2 px-2 max-h-[80vh] xmax-h-[560px] overflow-y-scroll">
+            {data !== undefined && data !== null ? (
+              <>
+                {!loading ? (
+                  <>
+                    {onWorking ? (
+                      // =========================== Main Form ========================
+                      <>
+                        {/* Panggilan setValue diluar input */}
+                        {table === "admins" && (
+                          <>
+                            {(formType === "INSERT" ||
+                              formType === "ALTER_BY_ID") && (
+                              <>
+                                <AdminsAlterForm />
+                              </>
+                            )}
+                            {(formType === "DROP_BY_ID" ||
+                              formType === "DROP_BY_SELECTED") && (
+                              <>
+                                <AdminsDropForm />
+                              </>
+                            )}
+                          </>
+                        )}
+                        {table === "products" && (
+                          <>
+                            {(formType === "INSERT" ||
+                              formType === "ALTER_BY_ID") && (
+                              <>
+                                <ProductsInputForm />
+                              </>
+                            )}
+                            {(formType === "DROP_BY_ID" ||
+                              formType === "DROP_BY_SELECTED") && (
+                              <>
+                                <ProductsDropForm />
+                              </>
+                            )}
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <h1 className="font-roboto-bold py-8 text-xl">
+                          Modal Logic Error !
+                        </h1>
+                      </>
+                    )}
+                    {/* end of onWorking */}
                   </>
                 ) : (
                   <>
-                    {formType === "ALTER_BY_ID" && (
-                      <DateRecord className="" data={data} />
-                    )}
+                    <p>Loading...</p>
                   </>
                 )}
-                <div className="w-12 text-right text-indigo-500">
-                  {sending && (
-                    <>
-                      <span className="self-end loading loading-dots loading-md"></span>
-                    </>
-                  )}
+                {/* end of loading */}
+              </>
+            ) : (
+              <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
+                <h1 className="font-poppins-medium text-xl">
+                  Loading Render Form...
+                </h1>
+                <div className="flex-row">
+                  <span className="loading loading-bars loading-lg"></span>
                 </div>
               </div>
-              <div className="w-1/12 text-right">
-                <button
-                  className="btn btn-sm btn-circle btn-ghost hover:bg-red-300"
-                  onClick={() => {
-                    setShowModal(false);
-                    refresh();
-                    clearData();
-                  }}
-                >
-                  <MuiIcon iconName="CloseRounded" />
-                </button>
-              </div>
-            </div>
-            <div className="card-body py-2 px-2 max-h-[80vh] xmax-h-[560px] overflow-y-scroll">
-              {data !== undefined && data !== null ? (
-                <div className="content over">
-                  {!loading ? (
-                    <>
-                      {onWorking ? (
-                        // =========================== Main Form ========================
-                        <div className="">
-                          <input
-                            type="hidden"
-                            {...register("superAuthorizationPassword", {
-                              required:
-                                "Your Credentials superAuthorizationPassword are required",
-                            })}
-                          />
-                          {setValue(
-                            "superAuthorizationPassword",
-                            SuperAdminKey
-                          )}
-                          {/* Panggilan setValue diluar input */}
-                          {table === "admins" && (
-                            <>
-                              {formType === "INSERT" && (
-                                <>
-                                  <AdminsInsertForm />
-                                </>
-                              )}
-                              {formType === "ALTER_BY_ID" && (
-                                <>
-                                  <AdminsAlterForm />
-                                </>
-                              )}
-                              {(formType === "DROP_BY_ID" ||
-                                formType === "DROP_BY_SELECTED") && (
-                                <>
-                                  <AdminsDropForm />
-                                </>
-                              )}
-                            </>
-                          )}
-                          {table === "products" && (
-                            <>
-                              {(formType === "INSERT" ||
-                                formType === "ALTER_BY_ID") && (
-                                <>
-                                  <ProductsInputForm />
-                                </>
-                              )}
-                              {(formType === "DROP_BY_ID" ||
-                                formType === "DROP_BY_SELECTED") && (
-                                <>
-                                  <ProductsDropForm />
-                                </>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      ) : (
-                        <>
-                          <h1 className="font-roboto-bold py-8 text-xl">
-                            Modal Logic Error !
-                          </h1>
-                        </>
-                      )}
-                      {/* end of onWorking */}
-                    </>
-                  ) : (
-                    <>
-                      <p>Loading...</p>
-                    </>
-                  )}
-                  {/* end of loading */}
-                </div>
-              ) : (
-                <div className="flex justify-center items-center gap-8 flex-col min-h-[500px]">
-                  <h1 className="font-poppins-medium text-xl">
-                    Loading Render Form...
-                  </h1>
-                  <div className="flex-row">
-                    <span className="loading loading-bars loading-lg"></span>
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
           </div>
           <div
             className={`${BgColor} px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse shadow-inner`}
@@ -1466,87 +1446,6 @@ export const InfoModal = (props) => {
           </div> */}
         </form>
       </Dialog.Panel>
-    </>
-  );
-};
-
-export const ModalUI = (props) => {
-  const [isOpen, setIsOpen] = useState(true);
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  return (
-    <>
-      <Transition show={isOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          id="modal"
-          className="fixed inset-0 z-[999999999] overflow-y-auto"
-          // initialFocus={cancelButtonRef}
-          static
-          open={isOpen}
-          onClose={closeModal}
-        >
-          <div className="min-h-screen h-full px-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-50" />
-            </Transition.Child>
-
-            {/* This element is to trick the browser into centering the modal contents. */}
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <div className="inline-flex flex-col h-[90vh] w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
-                >
-                  Title
-                </Dialog.Title>
-
-                <div className="mt-2 flex-grow">
-                  <p className="text-sm text-gray-500">
-                    Your payment has been successfully submitted. We’ve sent
-                    your an email with all of the details of your order.
-                  </p>
-                </div>
-
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
-                    onClick={closeModal}
-                  >
-                    Got it, thanks!
-                  </button>
-                </div>
-              </div>
-            </Transition.Child>
-          </div>
-        </Dialog>
-      </Transition>
     </>
   );
 };
