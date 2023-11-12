@@ -41,7 +41,8 @@ import { AreaDropZone } from "./Area";
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
 const ServerAPIProductsImg = import.meta.env.VITE_API_ID_PRODUCT + "/image/";
-const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
+const ServerPublicProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
+const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
 
 export const ModalContext = createContext();
 
@@ -108,6 +109,7 @@ export const MainModalHandler = (props) => {
       formType === "PRINT_BY_ID" ||
       formType === "SHOW_PRODUCT_BARCODE" ||
       formType === "SHOW_PRODUCT_PICTURE" ||
+      formType === "SHOW_ADMIN_PROFILE_PICTURE" ||
       formType === "TEST_BULK"
     ) {
       // temp method: ini perlu dilakukan untuk menampilkan update setiap ada data baru
@@ -1339,44 +1341,41 @@ export const InfoModal = (props) => {
                       {onWorking ? (
                         // =========================== Main Form ========================
                         <div className="">
-                          {formType === "SHOW_ADMIN_PROFILE_PICTURE" ||
-                            (formType === "SHOW_PRODUCT_PICTURE" && (
-                              <>
-                                <div className="flex flex-col justify-center items-center">
-                                  <Dialog.Description
-                                    as="h3"
-                                    className="font-bold text-xl py-4 line-clamp-2 capitalize"
-                                  >
-                                    {formType ===
-                                      "SHOW_ADMIN_PROFILE_PICTURE" &&
-                                      data.username}
-                                    {formType === "SHOW_PRODUCT_PICTURE" &&
-                                      data.name}
-                                  </Dialog.Description>
-                                  <img
-                                    src={`${ServerProductsImg}${
-                                      data.pict || "default.png"
-                                    }`} // temporary
-                                    // src={`${serverPublic}${
-                                    //   data.id || "default.png"
-                                    // }`} why not sync???
-                                    alt={`Info Picture ${data.pict}`}
-                                    className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] overflow-hidden rounded-lg shadow-md"
-                                  />
-                                </div>
-                                <div className="py-4 text-center">
-                                  <small className="">
-                                    <span className="font-bold ">
-                                      Updated At :{" "}
-                                    </span>
-                                    {DateFormatter(
-                                      "YYYY-MM-DD-hh-mm-ss",
-                                      data.updated_at
-                                    )}
-                                  </small>
-                                </div>
-                              </>
-                            ))}
+                          {(formType === "SHOW_ADMIN_PROFILE_PICTURE" ||
+                            formType === "SHOW_PRODUCT_PICTURE") && (
+                            <>
+                              <div className="flex flex-col justify-center items-center">
+                                <Dialog.Description
+                                  as="h3"
+                                  className="font-bold text-xl py-4 line-clamp-2 capitalize"
+                                >
+                                  {formType === "SHOW_ADMIN_PROFILE_PICTURE" &&
+                                    data.username}
+                                  {formType === "SHOW_PRODUCT_PICTURE" &&
+                                    data.name}
+                                </Dialog.Description>
+                                <img
+                                  src={`${
+                                    formType === "SHOW_ADMIN_PROFILE_PICTURE"
+                                      ? ServerPublicAdminsImg
+                                      : ""
+                                  }${
+                                    formType === "SHOW_PRODUCT_PICTURE"
+                                      ? ServerPublicProductsImg
+                                      : ""
+                                  }${data.pict || "default.png"}`} // temporary
+                                  // src={`${serverPublic}${
+                                  //   data.id || "default.png"
+                                  // }`} why not sync???
+                                  alt={`Info Picture ${data.pict}`}
+                                  className="object-contain min-w-[300px] min-h-[320px] h-[420px] w-[420px] max-w-[500px] max-h-[520px] overflow-hidden rounded-lg shadow-md"
+                                />
+                              </div>
+                              <div className="flex justify-center items-center py-4 text-center">
+                                <DateRecord data={data} />
+                              </div>
+                            </>
+                          )}
                           {formType === "SHOW_PRODUCT_BARCODE" && (
                             <>
                               <div className="flex flex-col justify-center items-center">

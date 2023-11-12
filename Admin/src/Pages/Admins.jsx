@@ -427,10 +427,11 @@ export default function Admins() {
                             <ShowAdminData
                               key={index}
                               data={row}
-                              onProfilePictureClick={() => {
-                                handleInfoButton(
-                                  row,
-                                  "SHOW_ADMIN_PROFILE_PICTURE"
+                              onClick={() => {
+                                handleOpenModal(
+                                  row.id,
+                                  "SHOW_ADMIN_PROFILE_PICTURE",
+                                  "info"
                                 );
                               }}
                             />

@@ -8,7 +8,7 @@ import { MuiIcon } from "../../utils/RenderIcons";
 const URL_PUT = import.meta.env.VITE_API_URL_PUT_ADMIN;
 
 export const ShowAdminData = (props) => {
-  const { data, onProfilePictureClick } = props;
+  const { data, onClick } = props;
 
   // console.log(data.id);
   // REDUX
@@ -26,7 +26,7 @@ export const ShowAdminData = (props) => {
   return (
     <>
       <div className="flex items-center space-x-3">
-        <div className="avatar " onClick={onProfilePictureClick}>
+        <div className="avatar " onClick={onClick}>
           <div className="mask mask-squircle w-16 h-16 cursor-pointer ">
             <img
               src={`./src/assets/admin_avatar/${data.pict}`}
