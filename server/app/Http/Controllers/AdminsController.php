@@ -72,10 +72,6 @@ class AdminsController extends Controller
     {
         $searchTerm = $request->input('search'); // Ambil parameter pencarian dari input form
 
-        // $admins = Product::where('name', 'like', '%' . $searchTerm . '%')
-        //     ->orWhere('description', 'like', '%' . $searchTerm . '%')
-        //     ->get();
-
         $admins = Admin::where(function ($query) use ($searchTerm) {
             $columns = Schema::getColumnListing('admins'); // Mengambil daftar nama kolom dari tabel admins
             foreach ($columns as $column) {

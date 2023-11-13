@@ -55,7 +55,7 @@ Route::controller(AdminsController::class)->group(function () {
     Route::post('admin/refresh', 'refresh'); // parameter 'token' with value jwt token
     Route::post('admin/cek', 'me'); // uji coba, DELETE when deployed
     // patch admin
-    Route::patch('/admins', 'patch'); // parameter spasial
+    Route::patch('/admin/authority', 'patch'); // parameter spasial
     // delete admin
     Route::delete('/admins', 'drop'); // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
 });
