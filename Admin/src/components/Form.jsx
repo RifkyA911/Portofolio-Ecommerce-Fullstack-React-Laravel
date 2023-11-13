@@ -486,7 +486,10 @@ export const PasswordInput = (props) => {
   const id = useId();
 
   const validationRules = {
-    required: `This ${label} field is required`,
+    ...((name == "password" || name == "password_confirmation") && {
+      required: `This ${label} field is required`,
+    }),
+    // required: `This ${label} field is required`,
     maxLength: {
       value: 22,
       message: label + " input must not exceed 22 characters",
