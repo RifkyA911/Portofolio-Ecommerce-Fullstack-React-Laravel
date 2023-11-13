@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { TableContext } from "./MyTableEngine";
 import { ProductFilter } from "../Products/ProductsTableBody";
 import { MotionButton } from "../Button";
+import { AdminFilter } from "../Admins/AdminsTableBody";
 
 export const MyTableFilterContext = createContext();
 
@@ -87,6 +88,7 @@ export const MyTableHeaderFilter = (props) => {
         ></div> */}
         {inputData && inputData.length > 0 && inputData !== undefined ? (
           <>
+            {table === "admins" && <AdminFilter />}
             {table === "invoices" && <ProductFilter />}
             {table === "products" && <ProductFilter />}
           </>

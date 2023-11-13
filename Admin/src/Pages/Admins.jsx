@@ -159,7 +159,6 @@ export default function Admins() {
     // ------------- Table Header Menu -------------
     TabHeader: true,
     hideHeaderBtn: ["excelBtn", "printBtn"],
-    selectFilter: admins,
     applyFilter: (form) => {
       fetchData(URL_ADMINS_FILTER, "admins", form);
     },
