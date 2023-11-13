@@ -168,39 +168,18 @@ class AdminsController extends Controller
 
     public function login(Request $request)
     {
-        // inisiasi awal respon
-        // // validasi
-        // $validator = Validator::make($request->all(), [
-        //     "email" => "required|email",
-        //     "password" => "required",
-        //     "auth_key" => "required",
-        // ]);
-        // if ($validator->fails()) {
-        //     $respon->message = "validasi data error";
-        //     $respon->resource = ['errors' => $validator->errors(), 'old_input' => $request->except('auth_key')];
-        //     return response($respon, 400);
-        // }
-
-        // // auth_key = cikidaw
-        // if (!Hash::check($request->input('auth_key'), '$2y$10$eESkk5EgGHwBqUtGujWmkevQphwrPmkY3LH88Kpxw20p6VZ4kA9bi')) {
-        //     return response($respon, 404);
-        // }
-
-        $respon = PostResource::make(false, 'SUSpicious activity detected', $request->except('password'));
         // cek email
         if ($admin = Admin::firstWhere('email', $request->input('email'))) {
             // cek password
             if (!Hash::check($request->input('password'), $admin->password)) {
-                $respon->message = "Password salah";
-                return response($respon, 401);
+                return response(['message' => 'Password salah', $request->except('password')], 406);
             } else {
                 $credentials = request(['email', 'password']);
                 $token = auth('admin')->attempt($credentials);
                 return $this->respondWithToken($token);
             }
         } else {
-            $respon->message = 'Email salah';
-            return response($respon, 401);
+            return response(['message' => 'Email salah', $request->except('email')], 406);
         }
     }
 
@@ -270,10 +249,11 @@ class AdminsController extends Controller
             if (Admin::create($request->except(['superAuthorizationPassword'])) !== false) {
                 return new PostResource(true, "Admin berhasil ditambahkan.", $request->only(['email', 'username']));
             } else {
-                return response(new PostResource(false, "validasi data error", "Something went wrong with the DB :("), 403);
+                return response(['message' => 'validasi data error', 'error' => 'create()'], 406);
             }
         }
-        return response(new PostResource(false, "Akun admin gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan akun admin.", $request->input()), 403);
+        return response(['message' => 'Akun admin gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan akun admin.', 'error' => $request->input()], 406);
+
     }
 
     public function update(Request $request)
@@ -305,14 +285,14 @@ class AdminsController extends Controller
         $validator = Validator::make($request->all(), $rule);
 
         if ($validator->fails()) {
-            return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->except('id')]), 400);
+            return response(['message' => "validasi data error", 'errors' => $validator->errors(), 'old_input' => $request->except('id')], 400);
         }
 
         // cek password lama
         // jika yang mengedit bukan superAdmin 
         if ($getSuperAuthorizationPassword !== 'superAdmin') {
             if (!Hash::check($request->input('password'), $updateAdmin->password)) {
-                return response(new PostResource(false, "Password lama salah.", ['old_input' => $request->except('id')]), 401);
+                return response(['message' => "Password lama salah.", 'old_input' => $request->except('id')], 401);
             }
             ;
         }
@@ -349,8 +329,6 @@ class AdminsController extends Controller
             $modifedFileStatus = false;
             $request->merge(['pict' => $admin->pict]);
         }
-
-        // return $request;
 
         // isi data baru
         $updateAdmin->username = $request->input('username');
@@ -399,7 +377,7 @@ class AdminsController extends Controller
         $adminsId = $request->input('adminsId');
 
         if ($getSuperAuthorizationPassword !== "superAdmin") {
-            return response(new PostResource(false, "Authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('adminsId')]), 401);
+            return response(['message' => "Authorization gagal, pengenalan kredensial tidak tepat, abort.", 'old_input' => $request->except('adminsId')], 401);
         }
 
         if (is_array($adminsId)) {
@@ -410,19 +388,16 @@ class AdminsController extends Controller
             // Single delete
             $dropAdmin = Admin::find($adminsId);
             if (!$dropAdmin) {
-                return response(new PostResource(false, "Admin tidak ditemukan.", ['old_input' => $request->except('adminsId')]), 401);
+                return response(['message' => "Admin tidak ditemukan.", 'old_input' => $request->except('adminsId')], 401);
             }
             $deleted = $dropAdmin->delete();
             return new PostResource(true, "Berhasil menghapus admin " . $dropAdmin->username, $deleted);
         } else {
             // Invalid input
-            return response(new PostResource(false, "Input adminsId tidak valid.", ['old_input' => $request->except('adminsId')]), 400);
+            return response(['message' => "Input adminsId tidak valid.", 'old_input' => $request->except('adminsId')], 400);
         }
     }
-    // return response(new PostResource(false, 'Masuk coy :v', $request->input(), 302));
 
-    // Contoh metode controller Laravel untuk mengunggah gambar
-    // public function uploadImage(Request $request)
     public function uploadImage($imageData, $product)
     {
         $imageName = 'product-' . time() . '-' . $product->id . '-' . Str::slug($product->name) . '.jpg';
