@@ -106,9 +106,8 @@ class AdminsController extends Controller
     public function filter(Request $request) //////////////////////////////////////////////////
     {
         $SuperAdminKey = $request->input('superAuthorizationPassword');
-        $minPrice = $request->input('minPrice');
-        $maxPrice = $request->input('maxPrice');
-        $categories = $request->input('selectedFilter');
+        $authorities = $request->input('selectedAuthorities');
+        $roles = $request->input('selectedRoles') ?? [0, 1];
         $getDateType = $request->input('date_type');
         $startDate = $request->input('date_start');
         $endDate = $request->input('date_end');
@@ -117,9 +116,25 @@ class AdminsController extends Controller
             return response(['message' => 'validasi kredensial data error', 'error' => 'bad request client :('], 400);
         }
 
-        if (!is_array($categories)) {
-            return response(['message' => 'categories field type of data are not array', 'error' => 'bad request client :(', 'failed payload' => $request], 400);
+        if (!is_array($authorities) || !is_array($roles)) {
+            return response(['message' => 'authorities or roles field type of data are not array', 'error' => 'bad request client :(', 'failed payload' => $request], 400);
         }
+
+        // Mendefinisikan semua kunci dengan nilai false secara default
+        $authorityObject = new stdClass();
+        $defaultAuthorities = ["chat", "sort_warehouse", "alter_price"];
+        foreach ($defaultAuthorities as $authority) {
+            $authorityObject->$authority = false;
+        }
+
+        // Mengatur nilai true berdasarkan nilai yang ada dalam $authorities
+        foreach ($authorities as $authority) {
+            if (property_exists($authorityObject, $authority)) {
+                $authorityObject->$authority = true;
+            }
+        }
+
+        // return response(['message' => 'coba liat', 'data' => $authorityObject, 'chat' => $authorityObject->chat], 404);
 
         $dateType = '';
         if ($getDateType) {
@@ -134,17 +149,21 @@ class AdminsController extends Controller
             return response(['message' => 'payload->date_type null/error', 'error' => 'bad request client :('], 404);
         }
 
-        $products = Admin::where('price', '>=', $minPrice)
-            ->where('price', '<=', $maxPrice)
-            ->whereIn('category_id', $categories)
+        $admins = Admin::
+            where(function ($query) use ($authorityObject) {
+                foreach ($authorityObject as $authority) {
+                    $query->orWhereJsonContains('authority', ['chat' => $authorityObject->chat, 'sort_warehouse' => $authorityObject->sort_warehouse, 'alter_price' => $authorityObject->alter_price]);
+                }
+            })
+            ->whereIn('role', $roles = !isset($roles) || (is_array($roles) && empty($roles)) ? [0, 1] : $roles)
             ->whereBetween($dateType, [$startDate, $endDate])
             ->get();
-        $length = $products->count();
+        $length = $admins->count();
 
         if (!$length) {
             return $this->notFound();
         }
-        return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $products);
+        return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $admins);
     }
 
     public function login(Request $request)

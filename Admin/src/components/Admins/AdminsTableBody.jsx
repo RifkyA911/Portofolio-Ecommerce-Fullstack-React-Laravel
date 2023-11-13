@@ -324,8 +324,8 @@ export const AdminFilter = (props) => {
                       className={`p-2 ${
                         selectedAuthority.includes(select.key)
                           ? AuthorityBackgroundColor(select.key)
-                          : "bg-slate-200"
-                      } rounded-lg capitalize hover:text-white transition-all delay-100`}
+                          : "bg-slate-200 hover:text-gray-600"
+                      } rounded-lg capitalize  transition-all delay-100`}
                       type="button"
                       onClick={() => {
                         !selectedAuthority.some((key) => key === select.key)
@@ -362,8 +362,8 @@ export const AdminFilter = (props) => {
                       className={`p-2 ${
                         selectedRole.some((id) => id === select.id)
                           ? RoleBackgroundColor(select.id)
-                          : "bg-slate-200 "
-                      } rounded-lg hover:bg-green-600 capitalize hover:text-white transition-all delay-100`}
+                          : "bg-slate-200 hover:text-gray-600"
+                      } rounded-lg hover:bg-green-600 capitalize transition-all delay-100`}
                       type="button"
                       onClick={() => {
                         !selectedRole.some((id) => id === select.id)
