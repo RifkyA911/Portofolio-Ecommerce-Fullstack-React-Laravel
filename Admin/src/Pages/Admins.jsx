@@ -1,11 +1,9 @@
 import { useState, useEffect, useMemo, useRef, createContext } from "react";
 import axios from "axios";
-import Barcode from "react-jsbarcode";
 // Components
 import { SkeltonTable } from "../components/Skelton/SkeltonTable";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { MainModalHandler } from "../components/Modal";
-import { ProductImage } from "../components/Products/ProductsTableBody";
 import {
   ShowAdminData,
   ShowRole,
@@ -303,7 +301,7 @@ export default function Admins() {
                     />
                   )}
                   {/* ================ Table ================ */}
-                  <div className="divider">Product List</div>
+                  <div className="divider">Admin List</div>
 
                   <MyTableEngine
                     {...MyTableEngineProps}
