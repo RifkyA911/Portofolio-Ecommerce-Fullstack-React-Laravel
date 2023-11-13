@@ -124,6 +124,8 @@ class DatabaseSeeder extends Seeder
             'products_id' => '[{"product_id": "1", "quantity":"3"},{"product_id": "2", "quantity":"4"}]',
             'total_price' => 60000,
             'address' => fake()->address(),
+            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/1',
+            'payment' => 'payment1.jpg',
             'checked_out' => now(),
             'sent' => null,
             'done' => null
@@ -144,9 +146,12 @@ class DatabaseSeeder extends Seeder
             'products_id' => '[{"product_id": "6", "quantity":"5"},{"product_id": "1", "quantity":"3"},{"product_id": "2", "quantity":"4"}]',
             'total_price' => 60000,
             'address' => fake()->address(),
+            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/3',
+            'payment' => 'payment2.jpg',
             'checked_out' => now(),
             'sent' => null,
-            'done' => null
+            'done' => null,
+            'comment' => 'pembayaran kurang, requesting sisa'
         ]);
         Transaction::create([
             'user_id' => '2',

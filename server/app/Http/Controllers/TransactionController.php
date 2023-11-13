@@ -17,6 +17,7 @@ class TransactionController extends Controller
     {
         //return collection of posts as a resource
         return new PostResource(true, 'List Data Produk', Transaction::all());
+        // return new PostResource(true, 'List Data Produk', "/1/" . strtotime(now()));
     }
 
     /**
@@ -141,19 +142,37 @@ class TransactionController extends Controller
     {
         //
     }
-
-    // update status checkout
-    public function checkout(Request $request)
+    
+    // update comment by admin
+    public function comment(Request $request)
     {
         $transaksi = Transaction::find($request->input('id'));
-        if ($transaksi->user_id == $request->input('user_id')) {
-            $transaksi->checked_out = now();
+        if ($request->has('role_admin') && $request->has('admin_id')) {
+            $transaksi->comment = $request->input('comment');
+            return new PostResource(true, 'Comment berhasil diubah', $transaksi->update());
+        } else {
+            return response(new PostResource(false, 'Comment gagal diubah', 'forbidden action detected'), 403);
+        }
+    }
+
+
+    // update status checkout - for user
+    public function checkout(Request $request)
+    {
+        $id = $request->input('id');
+        $user_id = $request->input('user_id');
+        $transaksi = Transaction::find($id);
+        if ($transaksi->user_id == $user_id) {
+            $time = now();
+            $transaksi->checked_out = $time;
+            $transaksi->no_invoice = 'INV/' . explode("-", $time)[0]. explode("-", $time)[1] . "/$user_id/$id";
+            $transaksi->payment = $request->input('payment');
             return new PostResource(true, 'Transaksi berhasil', $transaksi->update());
         } else {
             return response(new PostResource(false, 'Gagal check out, forbidden action detected', $request->all()), 403);
         }
     }
-    // update status sent
+    // update status sent - for admin
     public function sent(Request $request)
     {
         $transaksi = Transaction::find($request->input('id'));
@@ -165,7 +184,7 @@ class TransactionController extends Controller
             return response(new PostResource(false, 'Status transaksi gagal diubah', 'forbidden action detected'), 403);
         }
     }
-    // update status done
+    // update status done - for user or automatically(?)
     public function done(Request $request)
     {
         $transaksi = Transaction::find($request->input('id'));

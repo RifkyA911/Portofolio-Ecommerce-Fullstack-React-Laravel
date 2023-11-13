@@ -141,9 +141,10 @@ Route::controller(TransactionController::class)->group(function () {
     Route::get('/transactions/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/transaction/{id}', 'show'); // parameter id
     Route::post('/transaction/buy', 'store'); // parameter user_id, products_id(in array/json form), total_price. all required
-    Route::post('/transaction/checkout', 'checkout'); // parameter id, user_id(same as trans' user)
+    Route::post('/transaction/checkout', 'checkout'); // parameter id, user_id(same as trans' user), payment(pict proof of payment)
     Route::post('/transaction/sent', 'sent'); // parameter id, admin_id, role_admin
     Route::post('/transaction/done', 'done'); // parameter id. user_id OR (admin_id & role_admin)
+    Route::post('/transaction/comment', 'comment'); // parameter id, admin_id, role_admin, comment
     // Endpoint tahap Transaction by user
     // parameter tahap berisi null, checkedout, sent, atau done
     // tahap = null -> user belum bayar/checkout (tiga kolom pada tabel berisi null)

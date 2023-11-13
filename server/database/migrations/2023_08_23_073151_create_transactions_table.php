@@ -18,9 +18,12 @@ return new class extends Migration
             $table->text('products_id');
             $table->integer('total_price');
             $table->string('address');
+            $table->text('no_invoice');     // format penomoran INV/tahunBulan/user_id/id_transaksi
+            $table->text('payment')->nullable()->default(null);     // isi bukti pembayaran
             $table->timestamp('checked_out')->nullable()->default(null);
             $table->timestamp('sent')->nullable()->default(null);
             $table->timestamp('done')->nullable()->default(null);
+            $table->text('comment')->nullable()->default(null);
             $table->timestamps();
         });
     }
