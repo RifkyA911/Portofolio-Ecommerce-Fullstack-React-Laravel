@@ -216,10 +216,6 @@ export default function Admins() {
     setFormType(formType);
   };
 
-  useEffect(() => {
-    console.log(admin);
-  }, [admin]);
-
   const ModalProps = {
     table: "admins",
     table_id: admin,

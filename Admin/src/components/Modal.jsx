@@ -149,10 +149,8 @@ export const MainModalHandler = (props) => {
       setErrorMessage(null);
     } else if (formType === "PRINT_BATCH") {
       const dataArray = Object.values(table_id);
-      // return console.log("dataArray", dataArray);
       // Ekstrak seluruh ID dari array dan letakkan dalam array terpisah
       const ids = dataArray.map((item) => item.id);
-      //////////////////////////////////////////////////////////////////////////////////////
       axios
         .post(URL_PRINT_BATCH, { ids: ids })
         .then((response) => {
@@ -291,21 +289,16 @@ export const MainModalHandler = (props) => {
     initialFormValue = null;
   }, [data]);
 
-  // jika submit, lakukan req ke server
-  let axiosResponse;
-
   // ============================================ Execute Backend QUERY ============================================
+  let axiosResponse;
   async function sendFormDataByMethod(form) {
     setSending(!sending);
-    // console.log(formType, table_id);
     try {
       if (formType === "INSERT") {
         axiosResponse = await axios.post(URL_STORE, form);
-        // console.log("Input data baru berhasil :", axiosResponse);
         setResultStatus("insert", true, `Input ${table} berhasil !`);
       } else if (formType === "ALTER_BY_ID") {
         axiosResponse = await axios.put(URL_ALL, form);
-        // console.log("Update data berhasil :", axiosResponse);
         setResultStatus("alter", true, `Update ${table} berhasil !`);
       } else if (formType === "DROP_BY_ID") {
         switch (table) {
@@ -328,39 +321,32 @@ export const MainModalHandler = (props) => {
           default:
             break;
         }
-        // console.log("Data berhasil di drop:", axiosResponse);
         setResultStatus("drop", true, `Drop ${table} berhasil !`);
       } else if (formType === "DROP_BY_SELECTED") {
-        // Loop melalui data dan buat permintaan DELETE untuk setiap elemen
-        const deleteRequests = []; // Deklarasikan sebagai array
+        const deleteRequests = [];
         for (const item of data) {
-          // Buat permintaan DELETE dengan axios
-          let deleteRequest; // Deklarasikan sebagai let
           switch (table) {
             case `admins`:
-              deleteRequest = axios.delete(URL_ALL, {
-                data: {
-                  superAuthorizationPassword: item.superAuthorizationPassword,
-                  adminsId: item.id, // Sesuaikan dengan atribut yang sesuai
-                },
-              });
+              deleteRequests.push(item.id);
               break;
             case `products`:
-              deleteRequest = axios.delete(URL_ALL, {
-                data: {
-                  superAuthorizationPassword: item.superAuthorizationPassword,
-                  productsId: item.id, // Sesuaikan dengan atribut yang sesuai
-                },
-              });
+              deleteRequests.push(item.id);
               break;
             default:
               break;
           }
-          deleteRequests.push(deleteRequest);
         }
+        // console.log(deleteRequests);
         try {
           // Kirim semua permintaan DELETE secara bersamaan
-          const responses = await axios.all(deleteRequests);
+          const responses = await axios.delete(URL_ALL, {
+            data: {
+              superAuthorizationPassword: SuperAdminKey,
+              ...(table === "admins" && { adminsId: deleteRequests }),
+              ...(table === "products" && { productsId: deleteRequests }),
+            },
+          });
+          // const responses = await axios.all(deleteRequests);
           // console.log("Batch data berhasil dihapus:", responses);
           setResultStatus("drop", true, `Drop Batch ${table} berhasil !`);
           setData([]);
