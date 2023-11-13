@@ -14,6 +14,7 @@ use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use stdClass;
 
 use function Laravel\Prompts\select;
 
@@ -223,8 +224,23 @@ class AdminsController extends Controller
 
     public function store(Request $request)
     {
-        // return response(new PostResource(false, "yoi", $request->input()), 200);
         if ($request->input('superAuthorizationPassword') === "superAdmin") {
+            $admin = new stdClass(); // membuat objek php baru
+            $admin->id = Admin::max('id') + 1; // mencari nilai id tertinggi lalu ditambah 1 untuk unique
+            $admin->name = $request->input('username');
+
+            $pict = $request->input('pict');
+
+            if ($pict) { // Test: Pass
+                $newPictValue = $this->uploadImage($pict, $admin);
+                // if ($oldName === $name) {
+                //     $modifedFileStatus = 'not changed';
+                // }
+                $request->merge(['pict' => $newPictValue]);
+            } else {
+                $request->merge(['pict' => 'default.jpg']);
+            }
+
             $validator = Validator::make($request->all(), [
                 "email" => 'required|email|unique:admins,email',
                 "username" => 'required',
