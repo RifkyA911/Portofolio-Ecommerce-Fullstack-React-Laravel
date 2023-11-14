@@ -398,9 +398,9 @@ class AdminsController extends Controller
         }
     }
 
-    public function uploadImage($imageData, $product)
+    public function uploadImage($imageData, $admin)
     {
-        $imageName = 'product-' . time() . '-' . $product->id . '-' . Str::slug($product->name) . '.jpg';
+        $imageName = 'admin-' . time() . '-' . $admin->id . '-' . Str::slug($admin->name) . '.jpg';
         // jika input pict adalah base64
         if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
             $data = substr($imageData, strpos($imageData, ',') + 1);

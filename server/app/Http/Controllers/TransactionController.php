@@ -31,8 +31,8 @@ class TransactionController extends Controller
     public function showLimit($page, $perPage)
     {
         // Mengonversi halaman dan perPage yang diterima menjadi integer
-        $page = (int)$page; // halaman
-        $perPage = (int)$perPage; // jumlah data yang akan di kirim
+        $page = (int) $page; // halaman
+        $perPage = (int) $perPage; // jumlah data yang akan di kirim
 
         $length = Transaction::count();
 
@@ -57,14 +57,14 @@ class TransactionController extends Controller
             'total_price' => 'required',
         ]);
 
-        if ($validator->fails()) {  // jika validasi gagal
-            return response(new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()]), 400);
+        if ($validator->fails()) { // jika validasi gagal
+            return response(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()], 400);
         }
 
         if ($hasil = Transaction::create($request->all())) {
-            return response(new PostResource(true, 'Transaksi berhasil', $hasil), 201);
+            return response(true, 'Transaksi berhasil', $hasil, 201);
         }
-        return response(new PostResource(false, 'Transaksi gagal', ['old_input' => $request->all()]), 400);
+        return response(false, 'Transaksi gagal', ['old_input' => $request->all()], 400);
     }
 
     /**
@@ -142,7 +142,7 @@ class TransactionController extends Controller
     {
         //
     }
-    
+
     // update comment by admin
     public function comment(Request $request)
     {
@@ -165,7 +165,7 @@ class TransactionController extends Controller
         if ($transaksi->user_id == $user_id) {
             $time = now();
             $transaksi->checked_out = $time;
-            $transaksi->no_invoice = 'INV/' . explode("-", $time)[0]. explode("-", $time)[1] . "/$user_id/$id";
+            $transaksi->no_invoice = 'INV/' . explode("-", $time)[0] . explode("-", $time)[1] . "/$user_id/$id";
             $transaksi->payment = $request->input('payment');
             return new PostResource(true, 'Transaksi berhasil', $transaksi->update());
         } else {
