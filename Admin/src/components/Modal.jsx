@@ -834,6 +834,7 @@ export const PrintModal = (props) => {
 
 export const CropperModal = (props) => {
   const {
+    formContext,
     inputFileRef,
     onDrag,
     setOnDrag,
@@ -873,7 +874,7 @@ export const CropperModal = (props) => {
     isValid,
     dirtyFields,
     watch,
-  } = useContext(ModalContext);
+  } = useContext(formContext);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];

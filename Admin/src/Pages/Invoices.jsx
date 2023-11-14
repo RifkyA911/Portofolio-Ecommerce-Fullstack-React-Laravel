@@ -26,7 +26,6 @@ import { ReactIcons } from "../utils/RenderIcons";
 
 // define fetch data URL_PRODUCT by invoices
 const initUrlTransaction = import.meta.env.VITE_API_ALL_TRANSACTION;
-const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCT;
 const initUrlCategories = import.meta.env.VITE_API_ALL_CATEGORIES;
 
 export const InvoicesContext = createContext();
@@ -77,9 +76,9 @@ export default function Invoices() {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  const URL_PRODUCT = `${initUrlProduct}/paginate/${paginate}/${rows}`;
-  const URL_PRODUCT_SEARCH = `${initUrlProduct}/search?search=`;
-  const URL_PRODUCT_FILTER = `${initUrlProduct}/filter`;
+  const URL_PRODUCT = `${initUrlTransaction}/paginate/${paginate}/${rows}`;
+  const URL_PRODUCT_SEARCH = `${initUrlTransaction}/search?search=`;
+  const URL_PRODUCT_FILTER = `${initUrlTransaction}/filter`;
   const URL_CATEGORIES = `${initUrlCategories}/paginate/${paginate}/${rows}`;
   const URL_ALL_CATEGORIES = `${initUrlCategories}`;
 
@@ -248,16 +247,13 @@ export default function Invoices() {
   // Urutan kolom yang diinginkan
   const columnOrder = [
     "id",
-    "total_price",
-    "address",
-    "checked_out",
-    "sent",
-    "done",
-    // "price",
-    // "discount",
-    // "description",
-    // "created_at",
-    // "updated_at",
+    "No. Invoices",
+    "Products",
+    "Customer",
+    "Checked",
+    "Address",
+    "Total",
+    "Status", // sent + done
   ];
 
   let table_styling = {};
@@ -267,15 +263,7 @@ export default function Invoices() {
       tr: `h-8 text-left`,
       th: columnOrder.map((key, index) => ({
         key,
-        feature: [
-          "id",
-          "total_price",
-          "checked_out",
-          // "category",
-          "sent",
-          "done",
-          // "discount",
-        ].includes(key)
+        feature: ["id", "Customer", "Checked", "Total"].includes(key)
           ? "filter"
           : null,
         style: `capitalize px-4`,
@@ -336,11 +324,6 @@ export default function Invoices() {
                             feature={th.feature}
                             sortOrder="asc"
                             className={th.style}
-                            // hidden={
-                            //   th.key === "created_at" || th.key === "updated_at"
-                            //     ? true
-                            //     : false
-                            // }
                           ></Th>
                         ))}
                         <Th
@@ -352,6 +335,8 @@ export default function Invoices() {
                         ></Th>
                       </Tr>
                     </Thead>
+                    {/* {row.no_invoices ? <>Data</> : <>No Data</>} */}
+
                     <Tbody className={table_styling.tbody}>
                       {invoices.map((row, index) => (
                         <Tr
@@ -421,48 +406,30 @@ export default function Invoices() {
                               </Th>
                             </>
                           )}
-                          <Td
-                            className={`py-2 px-2 w-1/12 cursor-pointer`}
-                            onClick={() => {
-                              handleOpenModal(
-                                row.id,
-                                "SHOW_PRODUCT_BARCODE",
-                                "info"
-                              );
-                            }}
-                          >
-                            {row.id && (
-                              <Barcode
-                                className={`h-[64px] p-0 m-0 max-w-[150px]`}
-                                value={row.barcode}
-                                // options={{ format: "EAN13" }}
-                              />
-                            )}
-                          </Td>
-                          <Td className={` w-1/12`}>{row.id}</Td>
-                          <Td className={`${table_styling.td} w-2/12`}>
-                            {row.name}
-                          </Td>
+                          <Td className={`w-1/12`}>{row.no_invoice}</Td>
                           <Td className={`${table_styling.td} w-1/12`}>
-                            {row.category.name}
+                            {row.products_id}
                           </Td>
                           <Td className={`px-6 ${table_styling.td} w-1/12`}>
-                            {row.stock}
+                            {row.user.username}
+                            {row.address}
+                          </Td>
+                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
+                            {row.checked_out}
+                          </Td>
+                          <Td className={`${table_styling.td} w-2/12`}>
+                            {row.address}
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
-                            {CurrencyFormatter(row.price)}
+                            {CurrencyFormatter(row.total_price)}
                           </Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
-                            <span className="flex flex-row gap-2 justify-center items-center">
-                              {row.discount && (
-                                <NumberSpan
-                                  data={row.discount + " %"}
-                                  className="text-green-600 text-sm "
-                                />
-                              )}
-                            </span>
+                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
+                            {!row.done ? (
+                              <>{!row.sent ? <>In Order</> : <>Proceed</>}</>
+                            ) : (
+                              <>Sent</>
+                            )}
                           </Td>
-
                           <Td className="print:hidden px-4">
                             {row.id && (
                               <ActionButton

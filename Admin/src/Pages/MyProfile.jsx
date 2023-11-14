@@ -1,26 +1,18 @@
 import React, { useState, useEffect, createContext } from "react";
 import axios from "axios";
-import { useDropzone } from "react-dropzone";
-
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 // Layout and Components
 import { Container, Content } from "../Layout";
-import {
-  Alert,
-  DangerAlert,
-  SuccessAlert,
-  WarningAlert,
-} from "../components/Alert";
-import { PasswordInput, TextInput } from "../components/Form";
-import { ConfirmButton } from "../components/Button";
+import { DangerAlert, SuccessAlert } from "../components/Alert";
+import { FilePictureInput, PasswordInput, TextInput } from "../components/Form";
+import { MotionButton } from "../components/Button";
 // Utils
-import { MuiIcon } from "./../utils/RenderIcons";
+import { ReactIcons } from "./../utils/RenderIcons";
 import { getUser } from "../utils/Session/Admin";
 import { updateCredentials, updateSession } from "../Redux/Slices/UserSlice";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { SkeltonForm } from "../components/Skelton/SkeltonForm";
-import { CropperModal } from "../components/Modal";
 import { debounce } from "lodash";
 
 const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
@@ -29,14 +21,13 @@ const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 export const MyProfileContext = createContext();
 
 export default function MyProfile() {
+  const [ready, setReady] = useState(true);
   const [toggleForm, setToggleForm] = useState({
     inputChange: null,
     passwordChange: false,
     btnChange: false,
   });
   const [change, setChange] = useState(null);
-  const [fileUpload, setFileUpload] = useState(false);
-  const [filePath, setFilePath] = useState("./src/assets/admin_avatar/");
   const [statusMessage, setStatusMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -96,7 +87,6 @@ export default function MyProfile() {
   }, [statusMessage, errorMessage]);
 
   useEffect(() => {
-    // console.log("sd");
     setToggleForm({ ...toggleForm, btnChange: (toggleForm.btnChange = true) });
   }, [change]);
 
@@ -108,24 +98,6 @@ export default function MyProfile() {
       setValue("password", null);
     }
   }, [toggleForm.passwordChange]);
-
-  const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
-    useDropzone({
-      accept: {
-        "image/jpeg": [],
-        "image/png": [],
-      },
-    });
-
-  function uploadPicture(e) {
-    const file = e.target.files[0];
-    setFileUpload(true);
-    setFilePath("./../assets/temp/");
-    setFormData((prevFormData) => ({
-      ...prevFormData, //spread opreator object
-      pict: file.name,
-    }));
-  }
 
   const onSubmit = async (form) => {
     // console.log(form);
@@ -140,11 +112,16 @@ export default function MyProfile() {
     }
     // finally {}
     dispatch(updateCredentials({ user: form }));
+    window.location.reload(); // ganti router
   };
 
   // const debouncedOnChange = debounce(, 1000);
 
   const MyProfileContextValue = {
+    table: "admins",
+    data: getValues(),
+    ready: ready,
+    setReady: setReady,
     //react-hook-form
     register,
     handleSubmit,
@@ -169,9 +146,6 @@ export default function MyProfile() {
             <>
               {/* <WarningAlert message="Proceed Forms and Drag Pict" /> */}
               <Content pageName="My Profile">
-                {errorMessage && <DangerAlert message={errorMessage} />}
-                {statusMessage && <SuccessAlert message={statusMessage} />}
-                {/* {console.log(errors.adminsId.message)} */}
                 {errors?.adminsId?.message && (
                   <>
                     {console.log(getValues("adminsId"))}
@@ -180,7 +154,7 @@ export default function MyProfile() {
                 )}
                 <div className="flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-full py-4">
                   <form
-                    className="font-base flex flex-row justify-center p-4 bg-white rounded-xl shadow-md text-black"
+                    className="font-base w-full text-black"
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                   >
@@ -191,24 +165,19 @@ export default function MyProfile() {
                       })}
                     />
                     <ul className="flex flex-col lg:flex-row lg:justify-center w-full ">
-                      <li className="flex flex-col w-96 py-16">
-                        <div className="flex-col justify-center items-center form-control w-full ">
-                          <img
-                            src={`${filePath}${getValues("pict")}`}
-                            className="w-60 h-60 rounded-[7rem] shadow-md shadow-slate-400"
-                          />
-                          {/* <input
-                            type="file"
+                      <li className="flex flex-col md:w-1/2">
+                        <div className="flex-col justify-start items-center form-control w-full">
+                          <FilePictureInput
+                            formContext={MyProfileContext}
+                            type="picture"
+                            label="Product Picture"
                             name="pict"
-                            className="file-input file-input-bordered file-input-md w-64 text-sm mt-6"
-                            onChange={uploadPicture}
-                          /> */}
-                          <CropperModal />
+                          />
                         </div>
                       </li>
                       <div className="divider divider-horizontal"></div>
-                      <li className="flex flex-col w-96 justify-center items-center py-10">
-                        <div className="flex flex-col gap-4 divide-slate-700 w-[350px] justify-center px-4">
+                      <li className="relative flex flex-col md:w-1/2justify-start items-center">
+                        <div className="flex flex-col gap-4 divide-slate-700 w-[350px] px-4 lg:px-0">
                           <TextInput
                             className={`flex gap-4 flex-col w-full`}
                             label="Email"
@@ -223,61 +192,64 @@ export default function MyProfile() {
                             placeholder="Masukkan Username"
                             formContext={MyProfileContext}
                           />
-                          {!toggleForm.passwordChange ? (
-                            <>
-                              <PasswordInput
-                                className={`flex gap-4 flex-col w-full`}
-                                label="Password"
-                                name="password"
-                                placeholder="Masukkan Password"
-                                formContext={MyProfileContext}
-                              />
-                            </>
-                          ) : (
-                            <>
-                              <PasswordInput
-                                className={`flex gap-4 flex-col w-full`}
-                                label="New Password"
-                                name="newPassword"
-                                placeholder="Masukkan Password Baru"
-                                formContext={MyProfileContext}
-                              />
-                              <PasswordInput
-                                className={`flex gap-4 flex-col w-full`}
-                                label="Confirm New Password"
-                                name="newPassword_confirmation"
-                                placeholder="Confirm Password Baru"
-                                formContext={MyProfileContext}
-                              />
-                            </>
-                          )}
-                          <div>
-                            <button
-                              onClick={() =>
-                                setToggleForm({
-                                  ...toggleForm, // Menyalin nilai properti yang ada
-                                  passwordChange: !toggleForm.passwordChange, // Mengubah properti btnChange
-                                })
-                              }
-                              className={`btn btn-sm outline-none border-none transition-all duration-300
+                          <div className="relative flex flex-col gap-4 min-h-[280px]">
+                            {!toggleForm.passwordChange ? (
+                              <>
+                                <PasswordInput
+                                  className={`flex gap-4 flex-col w-full`}
+                                  label="Password"
+                                  name="password"
+                                  placeholder="Masukkan Password"
+                                  formContext={MyProfileContext}
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <PasswordInput
+                                  className={`flex gap-4 flex-col w-full`}
+                                  label="New Password"
+                                  name="newPassword"
+                                  placeholder="Masukkan Password Baru"
+                                  formContext={MyProfileContext}
+                                />
+                                <PasswordInput
+                                  className={`flex gap-4 flex-col w-full`}
+                                  label="Confirm New Password"
+                                  name="newPassword_confirmation"
+                                  placeholder="Confirm Password Baru"
+                                  formContext={MyProfileContext}
+                                />
+                              </>
+                            )}
+                            <div className="absolute top-0 right-0">
+                              <MotionButton
+                                type="button"
+                                onClick={() =>
+                                  setToggleForm({
+                                    ...toggleForm, // Menyalin nilai properti yang ada
+                                    passwordChange: !toggleForm.passwordChange, // Mengubah properti btnChange
+                                  })
+                                }
+                                className={`outline-none border-none transition-all duration-300
                             ${
                               !toggleForm.passwordChange
                                 ? "bg-amber-500 "
                                 : "bg-gray-500 "
                             }
-                             rounded-lg text-white font-roboto-bold font-bold capitalize`}
-                              type="button"
-                            >
-                              {<MuiIcon iconName="AutorenewRounded" />}
-                              {!toggleForm.passwordChange
-                                ? "New Password"
-                                : "Cancel"}
-                            </button>
-                          </div>
-                          {toggleForm.btnChange && (
-                            <div className="pt-10">
-                              <ConfirmButton confirmType="alter" />
+                             rounded-md text-white`}
+                                icon="BiRefresh"
+                                disabled={!ready}
+                              >
+                                <ReactIcons
+                                  iconName="BiRefresh"
+                                  fontSize={24}
+                                />
+                              </MotionButton>
                             </div>
+                          </div>
+
+                          {toggleForm.btnChange && (
+                            <MotionButton formType="alter" disabled={!ready} />
                           )}
                         </div>
                       </li>
