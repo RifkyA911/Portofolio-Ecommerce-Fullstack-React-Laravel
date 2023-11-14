@@ -5,15 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { DangerAlert, WarningAlert } from "../components/Alert";
 import { useForm } from "react-hook-form";
 import { PasswordInput, TextInput } from "../components/Form";
+import Tooltips from "../components/Tooltips";
 
 const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
-const auth_key = import.meta.env.VITE_ADMIN_AUTH_KEY;
+// const auth_key = import.meta.env.VITE_ADMIN_AUTH_KEY;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 
 export const LoginContext = createContext();
 
 function Login() {
-  //states
+  // states
   const [ready, setReady] = useState(true);
 
   // redux state
@@ -41,12 +42,13 @@ function Login() {
   });
 
   useEffect(() => {
+    // setValue("auth_key", auth_key);
     setValue("email", import.meta.env.VITE_SUPER_ADMIN_EMAIL);
     setValue("password", import.meta.env.VITE_SUPER_ADMIN_PASSWORD);
   }, []);
 
   const onSubmit = async (form) => {
-    console.log(getValues());
+    // console.log(getValues());
 
     dispatch(loginUser(getValues())).then((result) => {
       if (result.payload) {
@@ -57,17 +59,6 @@ function Login() {
         window.location.reload(); // ganti router
       }
     });
-
-    // try {
-    //   const response = await axios.put(URL_ADMIN, form);
-    //   setStatusMessage(response.data.message);
-    // } catch (error) {
-    //   setErrorMessage(error.response.data.message);
-    //   console.error("Error updating admin:", error);
-    // }
-    // // finally {}
-    // dispatch(updateCredentials({ user: form }));
-    // window.location.reload(); // ganti router
   };
 
   // const debouncedOnChange = debounce(, 1000);
@@ -91,26 +82,6 @@ function Login() {
     watch,
   };
 
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   let userCredentials = {
-  //     email,
-  //     password,
-  //     auth_key,
-  //   };
-  //   const requestBody = JSON.stringify(userCredentials);
-
-  //   dispatch(loginUser(userCredentials)).then((result) => {
-  //     if (result.payload) {
-  //       setEmail("");
-  //       setPassword("");
-  //       // Arahkan pengguna ke halaman utama setelah login berhasil dan refresh
-  //       navigate("/"); // temporary view dashborad in <LoginRouter />
-  //       window.location.reload(); // ganti router
-  //     }
-  //   });
-  // };
-
   // Konten komponen
   return (
     <>
@@ -133,12 +104,11 @@ function Login() {
                   )}
                 </div>
                 <form
-                  // action="http://127.0.0.1:8000/api/admins/login"
                   method="post"
                   className="flex flex-col text-left px-2 py-6 justify-center"
                   onSubmit={handleSubmit(onSubmit)}
                 >
-                  <div className="flex flex-col gap-4 px-4 h-60">
+                  <div className="relative flex flex-col gap-4 px-4 h-60">
                     <TextInput
                       className={`flex gap-2 flex-col w-full`}
                       labelClassName={`block text-sm text-gray-700`}
@@ -157,10 +127,13 @@ function Login() {
                       placeholder="Masukkan Password"
                       formContext={LoginContext}
                     />
-                    <a className=" mb-8 link link-info text-xs">
-                      Forgot Password?
-                    </a>
+                    <Tooltips text="Contact Super Admin">
+                      <a className="mb-8 link link-info text-xs">
+                        Forgot Password?
+                      </a>
+                    </Tooltips>
                   </div>
+
                   <button className="btn flex-none w-48 mx-auto self-center py-2 px-6 text-center bg-sky-400 hover:bg-blue-400 transition-colors duration-200 rounded-md">
                     {loading ? (
                       <>
@@ -172,13 +145,6 @@ function Login() {
                     )}
                   </button>
                 </form>
-                {/* {error ? (
-                <div className="p-1 bg-red-400 text-center font-semibold rounded-b-xl">
-                  <DangerAlert message={`${error}`} />
-                </div>
-              ) : (
-                ""
-              )} */}
               </div>
             </div>
           </div>
