@@ -69,8 +69,10 @@ export const TextInput = (props) => {
     formContext,
     className,
     label,
+    labelClassName,
     labelSize = "text-sm",
     name,
+    inputClassName,
     autoFocus = false,
     placeholder,
     type = name,
@@ -124,6 +126,11 @@ export const TextInput = (props) => {
       message: label + " input must exceed 4 characters",
     },
   };
+
+  const errorToggle = errors[name] ? "border-pink-500" : "border-sky-500";
+  const validationToggle = validationRules.required
+    ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+    : "";
   return (
     <>
       {(name != "password" ||
@@ -138,11 +145,11 @@ export const TextInput = (props) => {
         >
           {/* <p>{watch("product")}</p> */}
           <label
-            className={`relative w-full font-roboto-bold ${labelSize} text-left ${
-              validationRules.required
-                ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
-                : ""
-            }`}
+            className={
+              labelClassName ??
+              `relative w-full font-roboto-bold ${labelSize} text-left` +
+                validationToggle
+            }
           >
             {label}
             {errors[name] && (
@@ -158,9 +165,11 @@ export const TextInput = (props) => {
             autoFocus={autoFocus}
             type={type}
             placeholder={placeholder.toLowerCase()}
-            className={`input input-bordered input-info w-full input-md h-[38px] max-w-3xl text-gray-900 focus:outline-none ${
-              errors[name] ? "border-pink-500" : "border-sky-500"
-            }`}
+            className={
+              inputClassName ??
+              `input input-bordered input-info w-full input-md h-[38px] max-w-3xl text-gray-900 focus:outline-none` +
+                errorToggle
+            }
             {...register(name, validationRules)}
             onChange={(e) => {
               // console.log(name, ":", e.target.value);
@@ -440,8 +449,10 @@ export const PasswordInput = (props) => {
     inputRef,
     className,
     label,
+    labelClassName,
     labelSize = "text-sm",
     name,
+    inputClassName,
     autoFocus = false,
     placeholder,
     type = name,
@@ -502,6 +513,11 @@ export const PasswordInput = (props) => {
       value <= 6 || "Passwords kurang";
     },
   };
+
+  const errorToggle = errors[name] ? "border-pink-500" : "border-sky-500";
+  const validationToggle = validationRules.required
+    ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
+    : "";
   return (
     <>
       {(name == "password" ||
@@ -515,11 +531,11 @@ export const PasswordInput = (props) => {
           className={`relative ${className}`}
         >
           <label
-            className={`relative w-full font-roboto-bold ${labelSize} text-left ${
-              validationRules.required
-                ? "after:content-['*'] after:ml-0.5 after:text-red-500 "
-                : ""
-            }`}
+            className={
+              labelClassName ??
+              `relative w-full font-roboto-bold ${labelSize} text-left` +
+                validationToggle
+            }
           >
             {label}
             {errors[name] && (
@@ -533,7 +549,11 @@ export const PasswordInput = (props) => {
           <input
             type={showPassword ? "text" : name}
             placeholder={placeholder}
-            className="input input-bordered input-info w-full input-md h-[38px] max-w-3xl text-gray-900 focus:outline-none"
+            className={
+              inputClassName ??
+              `input input-bordered input-info w-full input-md h-[38px] max-w-3xl text-gray-900 focus:outline-none ${errorToggle}` +
+                errorToggle
+            }
             {...register(name, validationRules)}
           />
           <span
@@ -985,6 +1005,7 @@ export const FilePictureInput = (props) => {
           <>{/* <LoadingDaisyUI /> */}</>
         )}
         <CropperModal
+          formContext={formContext}
           inputFileRef={inputFileRef}
           onDrag={onDrag}
           setOnDrag={(value) => setOnDrag(value)}

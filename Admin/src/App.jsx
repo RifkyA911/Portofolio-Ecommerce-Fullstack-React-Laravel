@@ -54,7 +54,7 @@ function App() {
       dispatch(updateCredentials({ user: getUser() }));
     }
     // console.log(`logged:`, logged);
-    // console.log(`userSession:`, userSession);
+    console.log(`userSession:`, userSession);
     // console.log(`user:`, user);
     // setUserSession(getUser())
     // console.log(user);

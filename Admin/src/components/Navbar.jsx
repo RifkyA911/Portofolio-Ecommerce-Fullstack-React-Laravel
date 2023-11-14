@@ -11,6 +11,9 @@ import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 import { getUser, logOutUser } from "../utils/Session/Admin";
 import { MuiIcon } from "../utils/RenderIcons";
 
+const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
+const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
+
 export const NavbarComponent = () => {
   // REDUX
   const { BgColor, textColor, screenWidth, ComponentColor } = useSelector(
@@ -291,7 +294,7 @@ export const NavbarComponent = () => {
               <div className="relative avatar  focus:ring-0 focus:outline-none">
                 <div className="w-10 rounded-full shadow-xl focus:ring-0 focus:outline-none">
                   <img
-                    src={`./src/assets/admin_avatar/${userSession.pict}`}
+                    src={`${ServerPublicAdminsImg}${userSession.pict}`}
                     alt="profile"
                     className="w-6 h-6 rounded-full text-center "
                   />
@@ -313,7 +316,7 @@ export const NavbarComponent = () => {
                     <div className="flex flex-row picture items-center px-4">
                       <div className="flex relative pr-4">
                         <img
-                          src={`./src/assets/admin_avatar/${pict}`}
+                          src={`${ServerPublicAdminsImg}${pict}`}
                           alt="profile"
                           className="w-14 h-14 rounded-full text-center"
                         />
