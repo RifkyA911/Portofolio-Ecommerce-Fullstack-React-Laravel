@@ -1,34 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const URL_LOGIN_ADMIN = import.meta.env.VITE_API_LOGIN_ADMIN;
+
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userCredentials) => {
     try {
       const response = await axios.post(URL_LOGIN_ADMIN, userCredentials);
-      // console.log(response)
-
       if (response.status === 200) {
         //   const responseData = response.data.data;
         const responseData = response.data;
         sessionStorage.setItem("token", JSON.stringify(responseData));
-        //   decodeJWT(responseData.access_token)
         return responseData;
       }
-
-      // Jika status code selain 200, lempar status code sebagai error
       throw response.status;
     } catch (error) {
       const errorMessage = error.response.data.message;
       const errorStatus = error.response.status;
       console.info(error);
-      // Jika error adalah respons dari Axios, Anda dapat mengambil status code
       if (error.response && error.response.status) {
-        // throw errorMessage
         throw errorMessage;
       }
-
-      // Jika bukan respons dari Axios, lempar error tersebut
       throw error;
     }
   }

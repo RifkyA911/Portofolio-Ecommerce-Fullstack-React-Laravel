@@ -1,6 +1,10 @@
+import axios from "axios";
 import jwtDecode from "jwt-decode";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateCredentials } from "../../Redux/Slices/UserSlice";
 
-const secretKey = import.meta.env.VITE_JWT_SECRET; // Ganti dengan kunci rahasia Anda
+const URL_REFRESH_JWT = import.meta.env.VITE_API_ID_ADMIN + "/refresh"; // Ganti dengan kunci rahasia Anda
 function decodeJWT(token) {
   let decodedToken;
   try {
@@ -14,35 +18,45 @@ function decodeJWT(token) {
 
 // Fungsi untuk merefresh token
 export const refreshAccessToken = async () => {
-  try {
-    // Ambil token refresh dari tempat penyimpanan yang sesuai (misalnya, cookie, local storage)
-    const refreshToken = "your_refresh_token_here"; ////nunggu merdin
+  const { refreshToken } = useSelector((state) => state.refresh);
+  const { logged, user } = useSelector((state) => state.user);
 
-    // Lakukan permintaan POST ke endpoint refresh token di server Laravel
-    const response = await fetch("https://your-laravel-api.com/api/refresh", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${refreshToken}`,
-      },
-    });
+  const dispatch = useDispatch();
 
-    if (response.ok) {
-      const data = await response.json();
-      const newAccessToken = data.access_token;
+  let getToken = JSON.parse(sessionStorage.getItem("token"));
+  let access_token = getToken.access_token;
+  // console.log(getToken.access_token);
 
-      // Simpan token akses yang baru ke tempat penyimpanan yang sesuai (misalnya, cookie, local storage)
-      // Juga, gunakan token akses yang baru untuk permintaan selanjutnya
-      return newAccessToken;
-    } else {
-      // Tangani kasus jika refresh token gagal (misalnya, refresh token tidak valid)
-      // Anda mungkin ingin menghapus token penyimpanan dan/atau mengarahkan pengguna ke halaman login
+  useEffect(() => {
+    console.log("sdsd");
+    doRefreshJWT();
+  }, [refreshToken]);
+
+  const doRefreshJWT = async () => {
+    console.log("refresh JWT");
+    try {
+      const response = await axios.post(
+        URL_REFRESH_JWT,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + access_token,
+          },
+        }
+      );
+
+      if (!response.data.access_token) {
+        throw new Error("Failed to refresh token");
+      }
+      // console.log("refreshedToken", response.data);
+      sessionStorage.setItem("token", JSON.stringify(response.data));
+      dispatch(updateCredentials({ user: getUser() }));
+    } catch (error) {
+      console.error("Error refreshing token:", error);
       return null;
     }
-  } catch (error) {
-    console.error("Error refreshing token:", error);
-    return null;
-  }
+  };
 };
 
 export default decodeJWT;

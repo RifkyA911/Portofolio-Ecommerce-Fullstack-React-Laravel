@@ -14,6 +14,7 @@ import { updateCredentials, updateSession } from "../Redux/Slices/UserSlice";
 import { useForm } from "react-hook-form";
 import { SkeltonForm } from "../components/Skelton/SkeltonForm";
 import { debounce } from "lodash";
+import { refreshToken } from "../Redux/Slices/RefreshSlice";
 
 const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -35,7 +36,6 @@ export default function MyProfile() {
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
     (state) => state.UI
   );
-
   const { logged, adminsId, id, email, username, pict } = useSelector(
     (state) => state.user
   );
@@ -100,19 +100,17 @@ export default function MyProfile() {
   }, [toggleForm.passwordChange]);
 
   const onSubmit = async (form) => {
-    // console.log(form);
     try {
       const response = await axios.put(URL_ADMIN, form);
       setStatusMessage(response.data.message);
-      // console.log("data send successfully:", response.data);
       // dispatch(updateSession(formData.username));
     } catch (error) {
-      // console.error("Error updating admin:", error);
       setErrorMessage(error.response.data.message);
     }
-    // finally {}
+    dispatch(refreshToken({ user: form }));
     dispatch(updateCredentials({ user: form }));
-    window.location.reload(); // ganti router
+    getUser();
+    // window.location.reload(); // ganti router
   };
 
   // const debouncedOnChange = debounce(, 1000);

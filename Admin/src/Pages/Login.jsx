@@ -8,7 +8,6 @@ import { PasswordInput, TextInput } from "../components/Form";
 import Tooltips from "../components/Tooltips";
 
 const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
-// const auth_key = import.meta.env.VITE_ADMIN_AUTH_KEY;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 
 export const LoginContext = createContext();
@@ -42,7 +41,7 @@ function Login() {
   });
 
   useEffect(() => {
-    // setValue("auth_key", auth_key);
+    sessionStorage.clear();
     setValue("email", import.meta.env.VITE_SUPER_ADMIN_EMAIL);
     setValue("password", import.meta.env.VITE_SUPER_ADMIN_PASSWORD);
   }, []);

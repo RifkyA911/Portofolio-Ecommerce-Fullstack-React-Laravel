@@ -53,11 +53,10 @@ function App() {
     } else {
       dispatch(updateCredentials({ user: getUser() }));
     }
-    // console.log(`logged:`, logged);
+    console.log(`logged:`, logged);
     console.log(`userSession:`, userSession);
-    // console.log(`user:`, user);
+    console.log(`user:`, user);
     // setUserSession(getUser())
-    // console.log(user);
   }, [userSession]);
   return (
     <>

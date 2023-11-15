@@ -8,7 +8,7 @@ export const RefreshSlice = createSlice({
   },
   reducers: {
     refreshToken: (state, action) => {
-      state.refreshToken = action.payload;
+      state.refreshToken = action.payload.user;
     },
     refreshScreen: (state, action) => {
       // console.log(action);
