@@ -29,6 +29,66 @@ class AdminsController extends Controller
         return new PostResource(true, 'List Data Admin', $admins);
     }
 
+    public function login(Request $request)
+    {
+
+        // cek email
+        if ($admin = Admin::firstWhere('email', $request->input('email'))) {
+            // cek password
+            if (!Hash::check($request->input('password'), $admin->password)) {
+                return response(['message' => 'Password salah', $request->except('password')], 406);
+            } else {
+                $credentials = request(['email', 'password']);
+                $token = auth('admin')->attempt($credentials);
+                return $this->respondWithToken($token);
+            }
+        } else {
+            return response(['message' => 'Email tidak ada', $request->except('email')], 406);
+        }
+    }
+
+    public function me(Request $request)
+    {
+        return response()->json(auth('admin')->user());
+        // }
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function refresh()
+    {
+        return $this->respondWithToken(auth('admin')->refresh());
+    }
+
+
+    protected function respondWithToken($token)
+    {
+
+        // return response()->json([
+        //     'access_token' => $token,
+        //     'token_type' => 'bearer',
+        //     'expires_in' => auth()->factory()->getTTL() * 60
+        // ]);
+        $cookie = cookie('access_token', $token, config('auth.ttl'), null, null, false, true);
+
+        // Return JSON response with access token
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ])->withCookie($cookie);
+    }
+
+    public function find($id)
+    {
+        return new PostResource(true, "Data admin " . $id . " :", Admin::find($id));
+    }
+
     private function notFound()
     {
         return response([
@@ -164,56 +224,6 @@ class AdminsController extends Controller
             return $this->notFound();
         }
         return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $admins);
-    }
-
-    public function login(Request $request)
-    {
-        // cek email
-        if ($admin = Admin::firstWhere('email', $request->input('email'))) {
-            // cek password
-            if (!Hash::check($request->input('password'), $admin->password)) {
-                return response(['message' => 'Password salah', $request->except('password')], 406);
-            } else {
-                $credentials = request(['email', 'password']);
-                $token = auth('admin')->attempt($credentials);
-                return $this->respondWithToken($token);
-            }
-        } else {
-            return response(['message' => 'Email salah', $request->except('email')], 406);
-        }
-    }
-
-    public function me(Request $request)
-    {
-        return response()->json(auth('admin')->user());
-        // }
-    }
-
-    public function logout()
-    {
-        auth()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    public function refresh()
-    {
-        return $this->respondWithToken(auth('admin')->refresh());
-    }
-
-
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
-    }
-
-    public function find($id)
-    {
-        return new PostResource(true, "data admin :", Admin::find($id));
     }
 
     public function store(Request $request)
