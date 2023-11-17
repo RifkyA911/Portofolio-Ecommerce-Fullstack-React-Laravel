@@ -13,7 +13,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\OrderController;
 use App\Models\Message;
 
 /*
@@ -47,17 +47,17 @@ Route::controller(AdminsController::class)->group(function () {
     Route::post('/admins/filter', 'filter'); // parameter id
     Route::post('/admins/search', 'search'); // parameter name, category, price(numeric), stok(numeric)
     //  create admin
-    Route::post('/admin/store', 'store'); // parameter role_admin == 0; data => email, username, password, role
+    Route::post('/admin/store', 'store'); //NEED TOKEN parameter role_admin == 0; data => email, username, password, role
     // update admin
-    Route::put('/admins', 'update'); // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    Route::put('/admins', 'update'); //NEED TOKEN parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     Route::post('admin/login', 'login'); // parameter email, password
     Route::post('admin/logout', 'logout');
     Route::post('admin/refresh', 'refresh'); // parameter 'token' with value jwt token
     Route::post('admin/cek', 'me'); // uji coba, DELETE when deployed
     // patch admin
-    Route::patch('/admin/authority', 'patch'); // parameter spasial
+    Route::patch('/admin/authority', 'patch'); //NEED TOKEN parameter spasial
     // delete admin
-    Route::delete('/admins', 'drop'); // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    Route::delete('/admins', 'drop'); //NEED TOKEN parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
 });
 
 // Endpoint User
@@ -135,26 +135,26 @@ Route::controller(WishlistController::class)->group(function () {
     Route::post('/wishlist/delete', 'destroy'); // parameter id
 });
 
-// Endpoint Transaction
-Route::controller(TransactionController::class)->group(function () {
-    Route::get('/transactions', 'index');
-    Route::get('/transactions/paginate/{page}/{perPage}', 'showLimit');
-    Route::get('/transaction/{id}', 'show'); // parameter id
-    Route::post('/transaction/buy', 'store'); // parameter user_id, products_id(in array/json form), total_price. all required
-    Route::post('/transaction/checkout', 'checkout'); // parameter id, user_id(same as trans' user), payment(pict proof of payment)
-    Route::post('/transaction/sent', 'sent'); // parameter id, admin_id, role_admin
-    Route::post('/transaction/done', 'done'); // parameter id. user_id OR (admin_id & role_admin)
-    Route::post('/transaction/comment', 'comment'); // parameter id, admin_id, role_admin, comment
-    // Endpoint tahap Transaction by user
+// Endpoint Order
+Route::controller(OrderController::class)->group(function () {
+    Route::get('/orders', 'index');
+    Route::get('/orders/paginate/{page}/{perPage}', 'showLimit');
+    Route::get('/order/{id}', 'show'); // parameter id
+    Route::post('/order/buy', 'store'); // parameter user_id, products_id(in array/json form), total_price. all required
+    Route::post('/order/checkout', 'checkout'); // parameter id, user_id(same as trans' user), payment(pict proof of payment)
+    Route::post('/order/sent', 'sent'); // parameter id, admin_id, role_admin
+    Route::post('/order/done', 'done'); // parameter id. user_id OR (admin_id & role_admin)
+    Route::post('/order/comment', 'comment'); // parameter id, admin_id, role_admin, comment
+    // Endpoint tahap order by user
     // parameter tahap berisi null, checkedout, sent, atau done
     // tahap = null -> user belum bayar/checkout (tiga kolom pada tabel berisi null)
     // tahap = checkedout -> user sudah bayar/checkout tpi admin belum mengirim barang (kolom check_out sudah terisi tpi kolom sent dan done kosong)
     // begitu seterusnya
-    // Route::get('/transaction/user/{user_id}', 'showByUser');
-    Route::get('/transaction/user/{user_id}/{tahap?}', 'showByUser'); // parameter user_id, tahap(opional)
-    // Endpoint tahap Transaction by admin
+    // Route::get('/order/user/{user_id}', 'showByUser');
+    Route::get('/order/user/{user_id}/{tahap?}', 'showByUser'); // parameter user_id, tahap(opional)
+    // Endpoint tahap order by admin
     // ketentuan sama dengan endpoint user
-    Route::get('/transaction/admin/{admin_id}/{tahap?}', 'showByAdmin'); // parameter admin_id, tahap(optional)
+    Route::get('/order/admin/{admin_id}/{tahap?}', 'showByAdmin'); // parameter admin_id, tahap(optional)
 });
 
 // Endpoint Review
