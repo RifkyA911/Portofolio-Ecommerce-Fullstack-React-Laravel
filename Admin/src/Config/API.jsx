@@ -6,7 +6,8 @@ const superAuthorizationPassword = import.meta.env
 const loginEmail = import.meta.env.VITE_SUPER_ADMIN_EMAIL;
 const loginPassword = import.meta.env.VITE_SUPER_ADMIN_PASSWORD;
 
-export const getApiUrl = (endpointType, id = null, formType = "print") => {
+export const getApiUrl = (endpointType, data, formType) => {
+  console.log("data", data);
   const baseUrls = {
     publicImg: import.meta.env.VITE_SERVER_PUBLIC_IMG,
     publicAdmin: import.meta.env.VITE_SERVER_PUBLIC_ADMIN,
@@ -42,7 +43,7 @@ export const getApiUrl = (endpointType, id = null, formType = "print") => {
   if (baseUrls.hasOwnProperty(endpointType)) {
     return baseUrls[endpointType];
   } else if (apiEndpoints.id.hasOwnProperty(endpointType)) {
-    return id ? `${apiEndpoints.id[endpointType]}/${id}` : 0;
+    return data.id ? `${apiEndpoints.id[endpointType]}/${data.id}` : 0;
   } else if (apiEndpoints.all.hasOwnProperty(endpointType)) {
     return apiEndpoints.all[endpointType];
   }
@@ -54,28 +55,29 @@ const RequestAPI = async (
   endpoint,
   method = "GET",
   data = null,
+  formType,
   headers = {
+    "Content-Type": "application/json",
     Authorization: `Bearer ${getAccessToken()}`,
   }
 ) => {
-  try {
-    const url = `${getApiUrl(endpoint, data)}/${endpoint}`;
-    const axiosConfig = {
-      method,
-      url,
-      data,
-      headers: {
-        "Content-Type": "application/json",
-        ...headers,
-      },
-    };
+  if (data) {
+    try {
+      const url = `${getApiUrl(endpoint, data, formType)}`;
+      const axiosConfig = {
+        method,
+        url,
+        data,
+        headers: headers,
+      };
 
-    const response = await axios(axiosConfig);
-    return response.data;
-  } catch (error) {
-    // Handle errors (e.g., network issues, API errors)
-    console.error("API request failed:", error);
-    throw error;
+      const response = await axios(axiosConfig);
+      return response;
+    } catch (error) {
+      // Handle errors (e.g., network issues, API errors)
+      console.error("API request failed:", error);
+      throw error;
+    }
   }
 };
 

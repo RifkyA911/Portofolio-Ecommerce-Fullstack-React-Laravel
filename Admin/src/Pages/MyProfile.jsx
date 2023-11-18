@@ -59,19 +59,39 @@ export default function MyProfile() {
     },
   });
 
+  const fetchData = async () => {
+    try {
+      const request = await RequestAPI(
+        "admin",
+        "GET",
+        { id: id },
+        { paginate: `paginate/${1}/${10}` }
+      );
+      const response = request.data;
+      // console.log(response);
+      setAdmin(response.data);
+    } catch (error) {
+      // Handle errors jika diperlukan
+      console.error("Error fetching admin data:", error);
+    }
+  };
+
   const { id } = getUser();
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/admin/" + id, {
-        headers: {
-          Authorization: `Bearer ${getAccessToken()}`,
-        },
-      })
-      .then((response) => {
-        // console.log(response.data.data);
-        setAdmin(response.data.data);
-      })
-      .catch((error) => console.error(error));
+    // axios
+    //   .get("http://127.0.0.1:8000/api/admin/" + id, {
+    //     headers: {
+    //       Authorization: `Bearer ${getAccessToken()}`,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     // console.log(response.data.data);
+    //     setAdmin(response.data.data);
+    //   })
+    //   .catch((error) => console.error(error));
+
+    // Panggil fungsi fetchData
+    fetchData();
   }, []);
 
   let initialFormValue;
@@ -172,9 +192,11 @@ export default function MyProfile() {
                     <DangerAlert message={errors.adminsId.message} />
                   </>
                 )}
-                <div className="flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-full py-4">
+                <div
+                  className={`${BgColor} ${textColor} flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-full py-4`}
+                >
                   <form
-                    className="font-base w-full text-black"
+                    className="font-base w-full"
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                   >
@@ -185,7 +207,7 @@ export default function MyProfile() {
                       })}
                     />
                     <ul className="flex flex-col lg:flex-row lg:justify-center w-full ">
-                      <li className="flex flex-col md:w-1/2">
+                      <li className="flex flex-col md:w-7/12">
                         <div className="flex-col justify-start items-center form-control w-full">
                           <FilePictureInput
                             formContext={MyProfileContext}
@@ -196,8 +218,8 @@ export default function MyProfile() {
                         </div>
                       </li>
                       <div className="divider divider-horizontal"></div>
-                      <li className="relative flex flex-col md:w-1/2justify-start items-center">
-                        <div className="flex flex-col gap-4 divide-slate-700 w-[350px] px-4 lg:px-0">
+                      <li className="relative flex flex-col md:w-5/12 justify-start items-center">
+                        <div className="flex flex-col text-left gap-4  divide-slate-700 w-[350px] px-4 lg:px-0">
                           <TextInput
                             className={`flex gap-4 flex-col w-full`}
                             label="Email"
