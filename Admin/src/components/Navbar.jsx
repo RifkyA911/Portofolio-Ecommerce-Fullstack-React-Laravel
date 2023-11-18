@@ -1,4 +1,4 @@
-import { Fragment, React } from "react";
+import { Fragment, React, useEffect } from "react";
 import { Link } from "react-router-dom";
 // Data
 import { MarketInbox, MarketNotification } from "../Config/Temporary";
@@ -8,7 +8,7 @@ import { Transition, Popover, Switch, Tab } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 // UTILS
-import { getUser, logOutUser } from "../utils/Session/Admin";
+import { getUser, logOutUser } from "../Config/Session";
 import { MuiIcon } from "../utils/RenderIcons";
 
 const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
@@ -22,6 +22,10 @@ export const NavbarComponent = () => {
   const { logged, adminsId, id, email, username, pict, role } = useSelector(
     (state) => state.user
   );
+
+  useEffect(() => {
+    console.log(logged, adminsId, id, email, username, pict, role);
+  }, [pict]);
 
   const dispatch = useDispatch();
   const userSession = getUser();

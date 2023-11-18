@@ -6,6 +6,7 @@ import { DangerAlert, WarningAlert } from "../components/Alert";
 import { useForm } from "react-hook-form";
 import { PasswordInput, TextInput } from "../components/Form";
 import Tooltips from "../components/Tooltips";
+import jwtDecode from "jwt-decode";
 
 const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -48,19 +49,23 @@ function Login() {
 
   const onSubmit = async (form) => {
     // console.log(getValues());
-
     dispatch(loginUser(getValues())).then((result) => {
       if (result.payload) {
-        setValue("email", "");
-        setValue("password", "");
-        // Arahkan pengguna ke halaman utama setelah login berhasil dan refresh
-        navigate("/"); // temporary view dashborad in <LoginRouter />
-        window.location.reload(); // ganti router
+        // console.log("result.payload", result.payload);
+        const decodeResult = jwtDecode(result.payload.access_token);
+        if (decodeResult) {
+          //// JWT ACCESS VALIDATOR
+          setValue("email", "");
+          setValue("password", "");
+          navigate("/"); // temporary view dashborad in <LoginRouter />
+          window.location.reload(); // ganti router
+        } else {
+          navigate("/login"); // temporary view dashborad in <LoginRouter />
+          window.location.reload(); // ganti router
+        }
       }
     });
   };
-
-  // const debouncedOnChange = debounce(, 1000);
 
   const LoginContextValue = {
     table: "admins",

@@ -26,7 +26,8 @@ import NotFound, {
   RedirectPage,
   Unauthorized,
 } from "../Pages/Error/Error";
-import { getUser } from "../utils/Session/Admin";
+import { getUser, logOutUser } from "./../Config/Session";
+
 import { useDispatch } from "react-redux";
 import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 

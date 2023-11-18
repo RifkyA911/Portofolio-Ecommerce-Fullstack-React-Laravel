@@ -8,7 +8,7 @@ import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utility
 import { MuiIcon } from "../utils/RenderIcons";
-import { getUser } from "../utils/Session/Admin";
+import { getUser } from "../Config/Session";
 
 const Sidebar = () => {
   const [current, setCurrent] = useState();
