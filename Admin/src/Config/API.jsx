@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAccessToken } from "./Session";
+import { getAccessToken, getUser, refreshAccessToken } from "./Session";
 
 const superAuthorizationPassword = import.meta.env
   .VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -61,17 +61,24 @@ const RequestAPI = async (
     Authorization: `Bearer ${getAccessToken()}`,
   }
 ) => {
+  let access_token = getAccessToken();
+
   if (data) {
     try {
       const url = `${getApiUrl(endpoint, data, formType)}`;
       const axiosConfig = {
         method,
         url,
-        data,
+        data: {
+          ...data,
+          superAuthorizationPassword: superAuthorizationPassword,
+          token: access_token,
+        },
         headers: headers,
       };
 
       const response = await axios(axiosConfig);
+      refreshAccessToken();
       return response;
     } catch (error) {
       // Handle errors (e.g., network issues, API errors)

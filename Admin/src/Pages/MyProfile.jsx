@@ -1,25 +1,26 @@
 import React, { useState, useEffect, createContext } from "react";
 import axios from "axios";
+import { useForm } from "react-hook-form";
+import { debounce } from "lodash";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-// Layout and Components
+// Config
+import RequestAPI from "../Config/API";
+import { getAccessToken, getUser, refreshAccessToken } from "../Config/Session";
+// Layout
 import { Container, Content } from "../Layout";
+// Components
+import { SkeltonMyProfile } from "../components/Skelton/Skelton";
 import { DangerAlert, SuccessAlert } from "../components/Alert";
 import { FilePictureInput, PasswordInput, TextInput } from "../components/Form";
 import { MotionButton } from "../components/Button";
 // Utils
 import { ReactIcons } from "./../utils/RenderIcons";
-import { getAccessToken, getUser, refreshAccessToken } from "../Config/Session";
-import { updateCredentials } from "../Redux/Slices/UserSlice";
-import { useForm } from "react-hook-form";
-import { SkeltonForm } from "../components/Skelton/SkeltonForm";
-import { debounce } from "lodash";
-import { refreshToken } from "../Redux/Slices/RefreshSlice";
-import RequestAPI from "../Config/API";
 import { IsThisAnImage } from "../utils/Solver";
 
 const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMINS;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
+const placeholder_password = import.meta.env.VITE_SUPER_ADMIN_PASSWORD;
 
 export const MyProfileContext = createContext();
 
@@ -59,6 +60,8 @@ export default function MyProfile() {
     },
   });
 
+  const { id } = getUser();
+
   const fetchData = async () => {
     try {
       const request = await RequestAPI(
@@ -71,26 +74,12 @@ export default function MyProfile() {
       // console.log(response);
       setAdmin(response.data);
     } catch (error) {
-      // Handle errors jika diperlukan
       console.error("Error fetching admin data:", error);
+      setStatusMessage(error.message);
     }
   };
 
-  const { id } = getUser();
   useEffect(() => {
-    // axios
-    //   .get("http://127.0.0.1:8000/api/admin/" + id, {
-    //     headers: {
-    //       Authorization: `Bearer ${getAccessToken()}`,
-    //     },
-    //   })
-    //   .then((response) => {
-    //     // console.log(response.data.data);
-    //     setAdmin(response.data.data);
-    //   })
-    //   .catch((error) => console.error(error));
-
-    // Panggil fungsi fetchData
     fetchData();
   }, []);
 
@@ -100,13 +89,13 @@ export default function MyProfile() {
     if (admin) {
       initialFormValue = {
         // PS: ganti nanti ambil dari redux
-        superAuthorizationPassword: SuperAdminKey,
+        // superAuthorizationPassword: SuperAdminKey,
         id: admin.id,
         adminsId: admin.id,
         email: admin.email,
         username: admin.username,
         pict: admin.pict,
-        password: "superadmin",
+        password: placeholder_password,
         password_confirmation: null,
         newPassword: null,
         newPassword_confirmation: null,
@@ -135,23 +124,17 @@ export default function MyProfile() {
 
   const onSubmit = async (form) => {
     // console.log(form);
+    if (!IsThisAnImage(form.pict)) {
+      form.pict = "noChange";
+    }
     try {
-      let access_token = getAccessToken();
-      if (!IsThisAnImage(form.pict)) {
-        form.pict = "noChange";
-      }
-      // console.log(access_token);
-      const response = await axios.put(URL_ADMIN, {
-        ...form,
-        token: access_token,
-      });
+      const request = await RequestAPI("admins", "PUT", form);
+      // const response = request.data;
       // console.log(response);
-      // setStatusMessage(response.data.message);
-      refreshAccessToken();
       window.location.reload();
     } catch (error) {
-      console.error(error);
-      setErrorMessage(error);
+      console.error("Error fetching admin data:", error);
+      setStatusMessage(error.message);
     }
   };
 
@@ -180,12 +163,12 @@ export default function MyProfile() {
     <>
       <Container>
         <MyProfileContext.Provider value={MyProfileContextValue}>
-          {loading ? (
-            <SkeltonForm />
-          ) : (
-            <>
-              {/* <WarningAlert message="Proceed Forms and Drag Pict" /> */}
-              <Content pageName="My Profile">
+          <Content pageName="My Profile">
+            {loading ? (
+              <SkeltonMyProfile />
+            ) : (
+              <>
+                {/* <WarningAlert message="Proceed Forms and Drag Pict" /> */}
                 {errors?.adminsId?.message && (
                   <>
                     {console.log(getValues("adminsId"))}
@@ -193,7 +176,7 @@ export default function MyProfile() {
                   </>
                 )}
                 <div
-                  className={`${BgColor} ${textColor} flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-full py-4`}
+                  className={`${BgColor} ${textColor}  flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-full py-4`}
                 >
                   <form
                     className="font-base w-full"
@@ -298,9 +281,9 @@ export default function MyProfile() {
                     </ul>
                   </form>
                 </div>
-              </Content>
-            </>
-          )}
+              </>
+            )}
+          </Content>
         </MyProfileContext.Provider>
       </Container>
     </>
