@@ -9,20 +9,23 @@ import { FilePictureInput, PasswordInput, TextInput } from "../components/Form";
 import { MotionButton } from "../components/Button";
 // Utils
 import { ReactIcons } from "./../utils/RenderIcons";
-import { getUser, refreshAccessToken } from "../Config/Session";
+import { getAccessToken, getUser, refreshAccessToken } from "../Config/Session";
 import { updateCredentials } from "../Redux/Slices/UserSlice";
 import { useForm } from "react-hook-form";
 import { SkeltonForm } from "../components/Skelton/SkeltonForm";
 import { debounce } from "lodash";
 import { refreshToken } from "../Redux/Slices/RefreshSlice";
+import RequestAPI from "../Config/API";
+import { IsThisAnImage } from "../utils/Solver";
 
-const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
+const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMINS;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 
 export const MyProfileContext = createContext();
 
 export default function MyProfile() {
   const [ready, setReady] = useState(true);
+  const [admin, setAdmin] = useState(null);
   const [toggleForm, setToggleForm] = useState({
     inputChange: null,
     passwordChange: false,
@@ -36,11 +39,6 @@ export default function MyProfile() {
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
     (state) => state.UI
   );
-  const { logged, adminsId, id, email, username, pict } = useSelector(
-    (state) => state.user
-  );
-
-  const dispatch = useDispatch();
 
   // react-hook-form
   const {
@@ -61,30 +59,46 @@ export default function MyProfile() {
     },
   });
 
-  const userSession = getUser();
+  const { id } = getUser();
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/admin/" + id, {
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`,
+        },
+      })
+      .then((response) => {
+        // console.log(response.data.data);
+        setAdmin(response.data.data);
+      })
+      .catch((error) => console.error(error));
+  }, []);
 
   let initialFormValue;
+
   useEffect(() => {
-    initialFormValue = {
-      // PS: ganti nanti ambil dari redux
-      superAuthorizationPassword: SuperAdminKey,
-      id: id,
-      adminsId: adminsId,
-      email: email,
-      username: username,
-      pict: pict,
-      password: "superadmin",
-      password_confirmation: null,
-      newPassword: null,
-      newPassword_confirmation: null,
-    };
-    for (const key in initialFormValue) {
-      setValue(key, initialFormValue[key]);
-      setLoading(false);
+    if (admin) {
+      initialFormValue = {
+        // PS: ganti nanti ambil dari redux
+        superAuthorizationPassword: SuperAdminKey,
+        id: admin.id,
+        adminsId: admin.id,
+        email: admin.email,
+        username: admin.username,
+        pict: admin.pict,
+        password: "superadmin",
+        password_confirmation: null,
+        newPassword: null,
+        newPassword_confirmation: null,
+      };
+      for (const key in initialFormValue) {
+        setValue(key, initialFormValue[key]);
+        setLoading(false);
+      }
+      initialFormValue = null;
+      // console.log(getValues());
     }
-    initialFormValue = null;
-    // console.log(getValues());
-  }, [statusMessage, errorMessage]);
+  }, [admin, statusMessage, errorMessage]);
 
   useEffect(() => {
     setToggleForm({ ...toggleForm, btnChange: (toggleForm.btnChange = true) });
@@ -100,17 +114,25 @@ export default function MyProfile() {
   }, [toggleForm.passwordChange]);
 
   const onSubmit = async (form) => {
+    // console.log(form);
     try {
-      const response = await axios.put(URL_ADMIN, form);
-      setStatusMessage(response.data.message);
-      // dispatch(updateSession(formData.username));
+      let access_token = getAccessToken();
+      if (!IsThisAnImage(form.pict)) {
+        form.pict = "noChange";
+      }
+      // console.log(access_token);
+      const response = await axios.put(URL_ADMIN, {
+        ...form,
+        token: access_token,
+      });
+      // console.log(response);
+      // setStatusMessage(response.data.message);
+      refreshAccessToken();
+      window.location.reload();
     } catch (error) {
-      setErrorMessage(error.response.data.message);
+      console.error(error);
+      setErrorMessage(error);
     }
-    dispatch(refreshToken({ user: form }));
-    dispatch(updateCredentials({ user: form }));
-    refreshAccessToken();
-    // window.location.reload(); // ganti router
   };
 
   // const debouncedOnChange = debounce(, 1000);

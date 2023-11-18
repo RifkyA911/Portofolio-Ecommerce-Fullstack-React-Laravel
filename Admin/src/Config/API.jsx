@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAccessToken } from "./Session";
 
 const superAuthorizationPassword = import.meta.env
   .VITE_SUPER_AUTHORIZATION_PASSWORD;
@@ -41,7 +42,7 @@ export const getApiUrl = (endpointType, id = null, formType = "print") => {
   if (baseUrls.hasOwnProperty(endpointType)) {
     return baseUrls[endpointType];
   } else if (apiEndpoints.id.hasOwnProperty(endpointType)) {
-    return id ? `${apiEndpoints.id[endpointType]}/${id}` : null;
+    return id ? `${apiEndpoints.id[endpointType]}/${id}` : 0;
   } else if (apiEndpoints.all.hasOwnProperty(endpointType)) {
     return apiEndpoints.all[endpointType];
   }
@@ -53,10 +54,12 @@ const RequestAPI = async (
   endpoint,
   method = "GET",
   data = null,
-  headers = {}
+  headers = {
+    Authorization: `Bearer ${getAccessToken()}`,
+  }
 ) => {
   try {
-    const url = `${getApiUrl(endpoint)}/${endpoint}`;
+    const url = `${getApiUrl(endpoint, data)}/${endpoint}`;
     const axiosConfig = {
       method,
       url,
