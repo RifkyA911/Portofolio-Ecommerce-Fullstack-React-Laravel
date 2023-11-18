@@ -26,7 +26,7 @@ import { FormToast } from "../components/Toast";
 import { ReactIcons } from "../utils/RenderIcons";
 
 // define fetch data URL_PRODUCT by products
-const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCT;
+const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCTS;
 const initUrlCategories = import.meta.env.VITE_API_ALL_CATEGORIES;
 
 export const ProductsContext = createContext();

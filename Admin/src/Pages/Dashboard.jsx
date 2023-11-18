@@ -5,11 +5,11 @@ import { Container, Content } from "../Layout"; // ./components/index.jsx
 import DashboardHeader from "../components/Dashboard/DashboardHeader";
 // Utils
 import { MuiIcon } from "./../utils/RenderIcons.jsx";
-import fetchData from "./../utils/API/AsyncFetch.js";
 // Data
 import { RenderAreaChart } from "./../components/Chart/Recharts.jsx";
 import { useSelector } from "react-redux";
 import { ApexCharts } from "../components/Chart/ApexCharts";
+import axios from "axios";
 
 const Dashboard = (props) => {
   const [error, setError] = useState(null);
@@ -31,14 +31,15 @@ const Dashboard = (props) => {
     BorderRowTable,
     BorderOuterTable,
   } = useSelector((state) => state.UI);
-  const URLproducts = import.meta.env.VITE_API_ALL_PRODUCT + "/paginate/1/10";
+  const URLproducts = import.meta.env.VITE_API_ALL_PRODUCTS + "/paginate/1/10";
 
   useEffect(() => {
-    fetchData(URLproducts)
+    axios
+      .get(URLproducts)
       .then((response) => {
         // console.log(response); // Cetak seluruh objek respons
         // console.log(response.data); // Akses properti 'data' dari objek respons
-        setProducts(response.data);
+        setProducts(response.data.data);
         setLoading(false);
       })
       .catch((error) => {
