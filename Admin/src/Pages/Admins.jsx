@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef, createContext } from "react";
 import axios from "axios";
 // Components
-import { SkeltonTable } from "../components/Skelton/SkeltonTable";
+import { SkeltonTable } from "../components/Skelton";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { MainModalHandler } from "../components/Modal";
 import {
