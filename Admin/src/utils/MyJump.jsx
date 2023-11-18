@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { MuiIcon } from "./RenderIcons.jsx";
+import { MuiIcon } from "./RenderIcons";
 
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { darkTheme, toggleSidebar } from "../Redux/Slices/UISlice.js";
-import { navLink } from "../Redux/Slices/NavigationSlice.js";
-import { logOutUser } from "./Session/Admin.js";
+import { darkTheme, toggleSidebar } from "../Redux/Slices/UISlice";
+import { navLink } from "../Redux/Slices/NavigationSlice";
+import { logOutUser } from "./../Config/Session";
 
 function MyJump() {
   const [close, setClose] = useState(false);

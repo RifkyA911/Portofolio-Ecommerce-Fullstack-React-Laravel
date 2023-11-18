@@ -9,8 +9,8 @@ import { FilePictureInput, PasswordInput, TextInput } from "../components/Form";
 import { MotionButton } from "../components/Button";
 // Utils
 import { ReactIcons } from "./../utils/RenderIcons";
-import { getUser } from "../utils/Session/Admin";
-import { updateCredentials, updateSession } from "../Redux/Slices/UserSlice";
+import { getUser, refreshAccessToken } from "../Config/Session";
+import { updateCredentials } from "../Redux/Slices/UserSlice";
 import { useForm } from "react-hook-form";
 import { SkeltonForm } from "../components/Skelton/SkeltonForm";
 import { debounce } from "lodash";
@@ -109,7 +109,7 @@ export default function MyProfile() {
     }
     dispatch(refreshToken({ user: form }));
     dispatch(updateCredentials({ user: form }));
-    getUser();
+    refreshAccessToken();
     // window.location.reload(); // ganti router
   };
 

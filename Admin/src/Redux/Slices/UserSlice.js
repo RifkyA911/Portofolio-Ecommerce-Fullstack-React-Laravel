@@ -8,8 +8,16 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axios.post(URL_LOGIN_ADMIN, userCredentials);
       if (response.status === 200) {
+        console.log(response);
         //   const responseData = response.data.data;
         const responseData = response.data;
+        // Set the token as a cookie with an expiration time (e.g., 1 day)
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + 1); // Expires in 1 day
+        document.cookie = `token=${JSON.stringify(
+          responseData
+        )}; expires=${expirationDate.toUTCString()}`;
+
         sessionStorage.setItem("token", JSON.stringify(responseData));
         return responseData;
       }
