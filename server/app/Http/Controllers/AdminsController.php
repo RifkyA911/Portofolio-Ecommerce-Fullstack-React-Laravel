@@ -8,6 +8,7 @@ use App\Models\Admin;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\AuthController;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
@@ -30,64 +31,44 @@ class AdminsController extends Controller
         return new PostResource(true, 'List Data Admin', $admins);
     }
 
-    public function login(Request $request)
-    {
+    // public function login(Request $request)
+    // {
 
-        // cek email
-        if ($admin = Admin::firstWhere('email', $request->input('email'))) {
-            // cek password
-            if (!Hash::check($request->input('password'), $admin->password)) {
-                return response(['message' => 'Password salah', $request->except('password')], 406);
-            } else {
-                $credentials = request(['email', 'password']);
-                $token = auth('admin')->attempt($credentials);
-                return $this->respondWithToken($token);
-            }
-        } else {
-            return response(['message' => 'Email tidak ada', $request->except('email')], 406);
-        }
-    }
+    //     // cek email
+    //     if ($admin = Admin::firstWhere('email', $request->input('email'))) {
+    //         // cek password
+    //         if (!Hash::check($request->input('password'), $admin->password)) {
+    //             return response(['message' => 'Password salah', $request->except('password')], 406);
+    //         } else {
+    //             $credentials = request(['email', 'password']);
+    //             $token = auth('admin')->attempt($credentials);
+    //             return $this->respondWithToken($token);
+    //         }
+    //     } else {
+    //         return response(['message' => 'Email tidak ada', $request->except('email')], 406);
+    //     }
+    // }
 
     public function me(Request $request)
     {
         return response()->json(auth('admin')->user());
     }
 
-    public function logout()
-    {
-        auth()->logout();
+    // public function logout()
+    // {
+    //     auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
-    }
+    //     return response()->json(['message' => 'Successfully logged out']);
+    // }
 
-    public function refresh()
-    {
-        return $this->respondWithToken(auth('admin')->refresh());
-    }
-
-
-    protected function respondWithToken($token)
-    {
-
-        // return response()->json([
-        //     'access_token' => $token,
-        //     'token_type' => 'bearer',
-        //     'expires_in' => auth()->factory()->getTTL() * 60
-        // ]);
-        $cookie = cookie('access_token', $token, config('auth.ttl'), null, null, false, true);
-
-        // Return JSON response with access token
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ])->withCookie($cookie);
-    }
+    // public function refresh()
+    // {
+    //     return $this->respondWithToken(auth('admin')->refresh());
+    // }
 
     public function find(Request $request, $id)
     {
-        // return strlen($this->me($request));
-        if (strlen($this->me($request)->getContent()) > 5) {
+        if (AuthController::check($request)) {
             return response(["message" => "Data admin " . $id . " :", "data" => Admin::find($id), 'result' => $this->me($request)], 200);
         }
         return response(['error' => 'Validasi gagal', 'message' => 'forbidden action detected', 'result' => $this->me($request)], 403);
@@ -134,7 +115,7 @@ class AdminsController extends Controller
 
     public function search(Request $request)
     {
-        if (strlen($this->me($request)->getContent()) > 5) {
+        if (AuthController::check($request)) {
             $searchTerm = $request->input('search'); // Ambil parameter pencarian dari input form
 
             $admins = Admin::where(function ($query) use ($searchTerm) {
@@ -173,7 +154,7 @@ class AdminsController extends Controller
 
     public function filter(Request $request) //////////////////////////////////////////////////
     {
-        if (strlen($this->me($request)->getContent()) > 5) {
+        if (AuthController::check($request)) {
             $SuperAdminKey = $request->input('superAuthorizationPassword');
             $authorities = $request->input('selectedAuthorities');
             $roles = $request->input('selectedRoles') ?? [0, 1];
@@ -240,7 +221,7 @@ class AdminsController extends Controller
 
     public function store(Request $request)
     {
-        if (strlen($this->me($request)->getContent()) > 5) {
+        if (AuthController::check($request)) {
             if ($request->input('superAuthorizationPassword') === "superAdmin") {
                 $admin = new stdClass(); // membuat objek php baru
                 $admin->id = Admin::max('id') + 1; // mencari nilai id tertinggi lalu ditambah 1 untuk unique
@@ -283,7 +264,8 @@ class AdminsController extends Controller
 
     public function update(Request $request)
     {
-        if (strlen($this->me($request)->getContent()) > 5) {
+        return $this->me($request)->getContent();
+        if (AuthController::check($request)) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
 
             $updateAdmin = Admin::find($request->input('adminsId'));
@@ -367,9 +349,9 @@ class AdminsController extends Controller
             $updateAdmin->pict = $request->input('pict');
             if ($request->input('newPassword') !== null) {
                 $updateAdmin->password = $request->input('newPassword');
-            } else {
+            } /*else {
                 $updateAdmin->password = $request->input('password');
-            }
+            } */
             if ($updateAdmin->role == 1) { // jika admin role = admin
                 $updateAdmin->role = $request->input('role');
             }
@@ -381,7 +363,7 @@ class AdminsController extends Controller
 
     public function patch(Request $request)
     {
-        if (strlen($this->me($request)->getContent()) > 5) {
+        if (AuthController::check($request)) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
             $adminsId = $request->input('adminsId');
 
@@ -411,7 +393,7 @@ class AdminsController extends Controller
 
     public function drop(Request $request)
     {
-        if (strlen($this->me($request)->getContent()) > 5) {
+        if (AuthController::check($request)) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
             $adminsId = $request->input('adminsId');
 

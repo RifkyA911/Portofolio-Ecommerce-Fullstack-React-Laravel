@@ -4,16 +4,18 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Cart;
 use App\Models\User;
 use App\Models\Admin;
-use App\Models\Cart;
-use App\Models\Category;
+use App\Models\Order;
 use App\Models\Dialog;
+use App\Models\Review;
 use App\Models\Message;
 use App\Models\Product;
-use App\Models\Review;
-use App\Models\Transaction;
+use App\Models\Category;
+use App\Models\Shipment;
 use App\Models\Wishlist;
+use App\Models\Order_item;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -115,53 +117,138 @@ class DatabaseSeeder extends Seeder
             'pict' => 'topi_biru.jpg',
             'description' => fake()->sentence(9)
         ]);
-        Product::factory(110)->create();
+        Product::factory(10)->create();
 
 
-        Transaction::create([
+        Order::create([
             'user_id' => '1',
             'admin_id' => '2',
-            'products_id' => '[{"product_id": "1", "quantity":"3"},{"product_id": "2", "quantity":"4"}]',
-            'total_price' => 60000,
-            'address' => fake()->address(),
+            'shipment_id' => 1,
+            'payment_id' => null,
             'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/1',
-            'payment' => 'payment1.jpg',
-            'checked_out' => now(),
-            'sent' => null,
-            'done' => null
-        ]);
-        Transaction::create([
-            'user_id' => '2',
-            'admin_id' => '1',
-            'products_id' => '[{"product_id": "2", "quantity":"15"}]',
-            'total_price' => 40000,
-            'address' => fake()->address(),
-            'checked_out' => null,
-            'sent' => null,
-            'done' => null
-        ]);
-        Transaction::create([
-            'user_id' => '1',
-            'admin_id' => '2',
-            'products_id' => '[{"product_id": "6", "quantity":"5"},{"product_id": "1", "quantity":"3"},{"product_id": "2", "quantity":"4"}]',
             'total_price' => 60000,
-            'address' => fake()->address(),
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/3',
-            'payment' => 'payment2.jpg',
-            'checked_out' => now(),
-            'sent' => null,
-            'done' => null,
-            'comment' => 'pembayaran kurang, requesting sisa'
+            'status' => 'Completed',
         ]);
-        Transaction::create([
+        Order::create([
             'user_id' => '2',
             'admin_id' => '1',
-            'products_id' => '[{"product_id": "7", "quantity":"135"}]',
-            'total_price' => 40000,
-            'address' => fake()->address(),
-            'checked_out' => null,
-            'sent' => null,
-            'done' => null
+            'shipment_id' => 2,
+            'payment_id' => null,
+            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/2/2',
+            'total_price' => 60000,
+            'status' => 'Shipped',
+        ]);
+        Order::create([
+            'user_id' => '1',
+            'admin_id' => '3',
+            'shipment_id' => null,
+            'payment_id' => null,
+            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/3',
+            'total_price' => 60000,
+            'status' => 'Processing',
+        ]);
+        Order::create([
+            'user_id' => '2',
+            'admin_id' => null,
+            'shipment_id' => null,
+            'payment_id' => null,
+            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/2/4',
+            'total_price' => 60000,
+            'status' => 'Pending',
+        ]);
+        Order::create([
+            'user_id' => '3',
+            'admin_id' => 3,
+            'shipment_id' => 3,
+            'payment_id' => null,
+            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/3/5',
+            'total_price' => 60000,
+            'status' => 'Shipped',
+        ]);
+
+        // order_items
+        Order_item::create([
+            'order_id' => 1,
+            'product_id' => 1,
+            'quantity' => 3,
+            'sum_price' => 60000,
+        ]);
+        Order_item::create([
+            'order_id' => 2,
+            'product_id' => 2,
+            'quantity' => 15,
+            'sum_price' => 600000,
+        ]);
+
+        Order_item::create([
+            'order_id' => 3,
+            'product_id' => 6,
+            'quantity' => 5,
+            'sum_price' => Product::where('id', 6)->value('price') * 5,
+        ]);
+        Order_item::create([
+            'order_id' => 3,
+            'product_id' => 1,
+            'quantity' => 3,
+            'sum_price' => Product::where('id', 1)->value('price') * 3,
+        ]);
+        Order_item::create([
+            'order_id' => 3,
+            'product_id' => 2,
+            'quantity' => 4,
+            'sum_price' => Product::where('id', 2)->value('price') * 4,
+        ]);
+
+        Order_item::create([
+            'order_id' => 4,
+            'product_id' => 7,
+            'quantity' => 135,
+            'sum_price' => Product::where('id', 7)->value('price') * 135,
+        ]);
+
+        Order_item::create([
+            'order_id' => 5,
+            'product_id' => 3,
+            'quantity' => 6,
+            'sum_price' => Product::where('id', 3)->value('price') * 6,
+        ]);
+        
+        // shipment
+        Shipment::create([
+            'consignee' => Order::where('id', 1)->user->username,
+            'address' => Order::where('id', 1)->user->address,
+            'contact' => fake()->phoneNumber(),
+            'tracking_number' => fake()->randomNumber(7),
+            'courier_service' => 'SiHalu',
+            'cost' => 20000,
+            'log' => 'Y',
+            'status' => 'Delivered',
+            'sent' => '2023-11-10 09:34:34',
+            'done' => now(),
+        ]);
+        Shipment::create([
+            'consignee' => Order::where('id', 2)->user->username,
+            'address' => Order::where('id', 2)->user->address,
+            'contact' => fake()->phoneNumber(),
+            'tracking_number' => fake()->randomNumber(7),
+            'courier_service' => 'SiHalu',
+            'cost' => 20000,
+            'log' => 'Y',
+            'status' => 'Shipping',
+            'sent' => '2023-11-13 09:34:34',
+            'done' => null,
+        ]);
+        Shipment::create([
+            'consignee' => Order::where('id', 3)->user->username,
+            'address' => Order::where('id', 3)->user->address,
+            'contact' => fake()->phoneNumber(),
+            'tracking_number' => fake()->randomNumber(7),
+            'courier_service' => 'SiHalu',
+            'cost' => 20000,
+            'log' => 'Y',
+            'status' => 'Delivered',
+            'sent' => '2023-11-14 09:34:34',
+            'done' => now(),
         ]);
 
         Cart::create([

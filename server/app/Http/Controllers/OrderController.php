@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Console\Input\Input;
 
-class TransactionController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class TransactionController extends Controller
     public function index()
     {
         //return collection of posts as a resource
-        return new PostResource(true, 'List Data Produk', Transaction::all());
+        return new PostResource(true, 'List Data Produk', Order::all());
         // return new PostResource(true, 'List Data Produk', "/1/" . strtotime(now()));
     }
 
@@ -34,16 +34,16 @@ class TransactionController extends Controller
         $page = (int) $page; // halaman
         $perPage = (int) $perPage; // jumlah data yang akan di kirim
 
-        $length = Transaction::count();
+        $length = Order::count();
 
         // Menghitung offset berdasarkan halaman yang diminta
         $offset = ($page - 1) * $perPage;
 
         // Mengambil data Admin dengan paginasi dan offset
-        $transactions = Transaction::skip($offset)->take($perPage)->get();
+        $orders = Order::skip($offset)->take($perPage)->get();
 
         // Mengembalikan hasil dalam bentuk resource
-        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $transactions);
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $orders);
     }
 
     /**
@@ -61,7 +61,7 @@ class TransactionController extends Controller
             return response(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()], 400);
         }
 
-        if ($hasil = Transaction::create($request->all())) {
+        if ($hasil = Order::create($request->all())) {
             return response(true, 'Transaksi berhasil', $hasil, 201);
         }
         return response(false, 'Transaksi gagal', ['old_input' => $request->all()], 400);
@@ -72,7 +72,7 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        return new PostResource(true, "data Transaksi berdasarkan id :", Transaction::find($id));
+        return new PostResource(true, "data Transaksi berdasarkan id :", Order::find($id));
     }
 
     public function showByUser($uid, $tahap = null)
@@ -80,22 +80,22 @@ class TransactionController extends Controller
         $pesan = "data Transaksi berdasarkan user tahap " . $tahap . " :";
         // parameter tahap berisi null, checkedout, sent, atau done
         if ($tahap == "checkedout") {
-            $trans = Transaction::where([
+            $trans = Order::where([
                 ['user_id', '=', $uid],
                 ['checked_out', '!=', null]
             ])->get();
         } elseif ($tahap == "sent") {
-            $trans = Transaction::where([
+            $trans = Order::where([
                 ['user_id', '=', $uid],
                 ['sent', '!=', null]
             ])->get();
         } elseif ($tahap == "done") {
-            $trans = Transaction::where([
+            $trans = Order::where([
                 ['user_id', '=', $uid],
                 ['done', '!=', null]
             ])->get();
         } else {
-            $trans = Transaction::where('user_id', '=', $uid)->get();
+            $trans = Order::where('user_id', '=', $uid)->get();
             $pesan = "data Transaksi berdasarkan user :";
         }
         return new PostResource(true, $pesan, $trans);
@@ -106,22 +106,22 @@ class TransactionController extends Controller
         $pesan = "data Transaksi berdasarkan admin tahap " . $tahap . " :";
         // parameter tahap berisi null, checkedout, sent, atau done
         if ($tahap == "checkedout") {
-            $trans = Transaction::where([
+            $trans = Order::where([
                 ['admin_id', '=', $admin_id],
                 ['checked_out', '!=', null]
             ])->get();
         } elseif ($tahap == "sent") {
-            $trans = Transaction::where([
+            $trans = Order::where([
                 ['admin_id', '=', $admin_id],
                 ['sent', '!=', null]
             ])->get();
         } elseif ($tahap == "done") {
-            $trans = Transaction::where([
+            $trans = Order::where([
                 ['admin_id', '=', $admin_id],
                 ['done', '!=', null]
             ])->get();
         } else {
-            $trans = Transaction::where('admin_id', '=', $admin_id)->get();
+            $trans = Order::where('admin_id', '=', $admin_id)->get();
             $pesan = "data Transaksi berdasarkan admin :";
         }
         return new PostResource(true, $pesan, $trans);
@@ -130,7 +130,7 @@ class TransactionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Transaction $transaction)
+    public function edit(Order $order)
     {
         //
     }
@@ -138,7 +138,7 @@ class TransactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Transaction $transaction)
+    public function update(Request $request, Order $order)
     {
         //
     }
@@ -146,7 +146,7 @@ class TransactionController extends Controller
     // update comment by admin
     public function comment(Request $request)
     {
-        $transaksi = Transaction::find($request->input('id'));
+        $transaksi = Order::find($request->input('id'));
         if ($request->has('role_admin') && $request->has('admin_id')) {
             $transaksi->comment = $request->input('comment');
             return new PostResource(true, 'Comment berhasil diubah', $transaksi->update());
@@ -161,7 +161,7 @@ class TransactionController extends Controller
     {
         $id = $request->input('id');
         $user_id = $request->input('user_id');
-        $transaksi = Transaction::find($id);
+        $transaksi = Order::find($id);
         if ($transaksi->user_id == $user_id) {
             $time = now();
             $transaksi->checked_out = $time;
@@ -175,7 +175,7 @@ class TransactionController extends Controller
     // update status sent - for admin
     public function sent(Request $request)
     {
-        $transaksi = Transaction::find($request->input('id'));
+        $transaksi = Order::find($request->input('id'));
         if ($request->has('role_admin') && $request->has('admin_id') && ($transaksi->sent == null)) {
             $transaksi->sent = now();
             $transaksi->admin_id = $request->input('admin_id');
@@ -187,8 +187,8 @@ class TransactionController extends Controller
     // update status done - for user or automatically(?)
     public function done(Request $request)
     {
-        $transaksi = Transaction::find($request->input('id'));
-        // check if admin is same as transaction's admin_id, or th user is same as transaction's user_id
+        $transaksi = Order::find($request->input('id'));
+        // check if admin is same as Order's admin_id, or th user is same as Order's user_id
         if (($request->has('role_admin') && ($request->input('admin_id') == $transaksi->admin_id)) || ($transaksi->user_id == $request->input('user_id'))) {
             $transaksi->done = now();
             return new PostResource(true, 'Status transaksi berhasil diubah', $transaksi->update());
@@ -200,7 +200,7 @@ class TransactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Transaction $transaction)
+    public function destroy(Order $order)
     {
         //
     }

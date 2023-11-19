@@ -22,8 +22,8 @@ class Admin extends Authenticatable implements JWTSubject
         'password' => 'hashed'
     ];
 
-    public function transaction(): HasMany {
-        return $this->hasMany(Transaction::class);
+    public function order(): HasMany {
+        return $this->hasMany(Order::class);
     }
     public function chat(): HasMany {
         return $this->hasMany(Message::class);
