@@ -16,6 +16,7 @@ use App\Models\Category;
 use App\Models\Shipment;
 use App\Models\Wishlist;
 use App\Models\Order_item;
+use App\Models\Payment;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -124,27 +125,27 @@ class DatabaseSeeder extends Seeder
             'user_id' => '1',
             'admin_id' => '2',
             'shipment_id' => 1,
-            'payment_id' => null,
+            'payment_id' => 1,
             'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/1',
-            'total_price' => 60000,
+            'total_price' => 80000,
             'status' => 'Completed',
         ]);
         Order::create([
             'user_id' => '2',
             'admin_id' => '1',
             'shipment_id' => 2,
-            'payment_id' => null,
+            'payment_id' => 2,
             'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/2/2',
-            'total_price' => 60000,
+            'total_price' => 620000,
             'status' => 'Shipped',
         ]);
         Order::create([
             'user_id' => '1',
             'admin_id' => '3',
             'shipment_id' => null,
-            'payment_id' => null,
+            'payment_id' => 3,
             'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/3',
-            'total_price' => 60000,
+            'total_price' => 20000 + (Product::where('id', 6)->value('price') * 5)+(Product::where('id', 1)->value('price') * 3)+(Product::where('id', 2)->value('price') * 4),
             'status' => 'Processing',
         ]);
         Order::create([
@@ -153,16 +154,16 @@ class DatabaseSeeder extends Seeder
             'shipment_id' => null,
             'payment_id' => null,
             'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/2/4',
-            'total_price' => 60000,
+            'total_price' => 20000 + (Product::where('id', 7)->value('price') * 135),
             'status' => 'Pending',
         ]);
         Order::create([
             'user_id' => '3',
             'admin_id' => 3,
             'shipment_id' => 3,
-            'payment_id' => null,
+            'payment_id' => 4,
             'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/3/5',
-            'total_price' => 60000,
+            'total_price' => 20000 + (Product::where('id', 3)->value('price') * 6),
             'status' => 'Shipped',
         ]);
 
@@ -215,8 +216,8 @@ class DatabaseSeeder extends Seeder
         
         // shipment
         Shipment::create([
-            'consignee' => Order::where('id', 1)->user->username,
-            'address' => Order::where('id', 1)->user->address,
+            'consignee' => User::where('id', 1)->value('username'),
+            'address' => User::where('id', 1)->value('address'),
             'contact' => fake()->phoneNumber(),
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'SiHalu',
@@ -227,8 +228,8 @@ class DatabaseSeeder extends Seeder
             'done' => now(),
         ]);
         Shipment::create([
-            'consignee' => Order::where('id', 2)->user->username,
-            'address' => Order::where('id', 2)->user->address,
+            'consignee' => User::where('id', 2)->value('username'),
+            'address' => User::where('id', 2)->value('address'),
             'contact' => fake()->phoneNumber(),
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'SiHalu',
@@ -239,8 +240,8 @@ class DatabaseSeeder extends Seeder
             'done' => null,
         ]);
         Shipment::create([
-            'consignee' => Order::where('id', 3)->user->username,
-            'address' => Order::where('id', 3)->user->address,
+            'consignee' => User::where('id', 3)->value('username'),
+            'address' => User::where('id', 3)->value('address'),
             'contact' => fake()->phoneNumber(),
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'SiHalu',
@@ -249,6 +250,31 @@ class DatabaseSeeder extends Seeder
             'status' => 'Delivered',
             'sent' => '2023-11-14 09:34:34',
             'done' => now(),
+        ]);
+
+        Payment::create([
+            'transaction_id' => "TF/" . fake()->regexify('[A-Za-z0-9]{9}'),
+            'amount' => 80000,
+            'payment_method' => 'virtual account BRI',
+            'status' => 'success'
+        ]);
+        Payment::create([
+            'transaction_id' => "GO/" . fake()->regexify('[A-Za-z0-9]{9}'),
+            'amount' => 620000,
+            'payment_method' => 'Gopay',
+            'status' => 'success'
+        ]);
+        Payment::create([
+            'transaction_id' => "VA/" . fake()->regexify('[A-Za-z0-9]{9}'),
+            'amount' => 20000 + (Product::where('id', 6)->value('price') * 5)+(Product::where('id', 1)->value('price') * 3)+(Product::where('id', 2)->value('price') * 4),
+            'payment_method' => 'virtual account BCA',
+            'status' => 'success'
+        ]);
+        Payment::create([
+            'transaction_id' => "OVO/" . fake()->regexify('[A-Za-z0-9]{9}'),
+            'amount' => 20000 + (Product::where('id', 3)->value('price') * 6),
+            'payment_method' => 'OVO',
+            'status' => 'success'
         ]);
 
         Cart::create([
