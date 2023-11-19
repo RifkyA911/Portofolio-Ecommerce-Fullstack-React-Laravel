@@ -116,22 +116,11 @@ export const AuthorityToggle = (props) => {
       const request = await RequestAPI("admin/authority", "PATCH", data);
       // const response = request.data;
       // console.log(response);
-      // window.location.reload();
     } catch (error) {
       console.error("Error fetching admin data:", error);
       setToggle(!toggle);
       setErrorMessage(error.response.data.message);
     }
-    // await axios
-    //   .patch(URL_BY_ID, data)
-    //   .then((data) => {
-    //     console.info(data.data);
-    //   })
-    //   .catch((error) => {
-    //     setToggle(!toggle);
-    //     setErrorMessage(error.response.data.message);
-    //     console.error(error);
-    //   });
   };
 
   useEffect(() => {

@@ -20,8 +20,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DownloadBtnReactPDF, LookReactPDF } from "./Print/Print";
 import { Dialog, Transition } from "@headlessui/react";
 // Components
-import { DangerAlert } from "./Alert";
-import { FormToast } from "./Toast";
 import { DateRecord } from "./Span";
 import { AdminsDropForm, AdminsInputForm } from "./Admins/AdminsForm";
 import { ProductsInputForm, ProductsDropForm } from "./Products/ProductsForm";
@@ -33,6 +31,7 @@ import { DateFormatter } from "../utils/Formatter";
 //CONFIG
 import { motionProps } from "../Config/MotionProps";
 import { AreaDropZone } from "./Area";
+import RequestAPI from "../Config/API";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
@@ -70,29 +69,50 @@ export const MainModalHandler = (props) => {
   const id = useId();
   // console.log(props);
 
-  let URL_BY_ID;
-  let URL_STORE;
-  let URL_PRINT_BATCH;
-  let URL_ALL; // UPDATE,PATCH,DROP
+  // let URL_BY_ID;
+  // let URL_ALL; // UPDATE,PATCH,DROP
 
-  if (table === "admins") {
-    URL_BY_ID = import.meta.env.VITE_API_ID_ADMIN + "/" + table_id;
-    URL_STORE = import.meta.env.VITE_API_STORE_ADMIN;
-    URL_PRINT_BATCH = import.meta.env.VITE_API_ALL_ADMIN + "/print";
-    URL_ALL = import.meta.env.VITE_API_ALL_ADMIN;
-  } else if (table === "products") {
-    URL_BY_ID = import.meta.env.VITE_API_ID_PRODUCT + "/" + table_id;
-    URL_STORE = import.meta.env.VITE_API_STORE_PRODUCT;
-    URL_PRINT_BATCH = import.meta.env.VITE_API_ALL_PRODUCT + "/print";
-    URL_ALL = import.meta.env.VITE_API_ALL_PRODUCT;
-  } else if (table === "orders") {
-    URL_BY_ID = import.meta.env.VITE_API_ID_TRANSACTION + "/" + table_id;
-    URL_STORE = import.meta.env.VITE_API_STORE_TRANSACTION;
-    URL_PRINT_BATCH = import.meta.env.VITE_API_ALL_TRANSACTION + "/print";
-    URL_ALL = import.meta.env.VITE_API_ALL_TRANSACTION;
-  }
+  // if (table === "admins") {
+  //   URL_BY_ID = 'admin';
+  //   URL_ALL = 'admins'
+  // } else if (table === "products") {
+  //   URL_BY_ID = 'product';
+  //   URL_ALL = 'products'
+  // } else if (table === "orders") {
+  //   URL_BY_ID = 'order';
+  //   URL_ALL = 'orders';
+  // }
+  const tableMappings = {
+    admins: { URL_BY_ID: "admin", URL_ALL: "admins" },
+    products: { URL_BY_ID: "product", URL_ALL: "products" },
+    orders: { URL_BY_ID: "order", URL_ALL: "orders" },
+  };
+
+  const { URL_BY_ID, URL_ALL } = tableMappings[table] || {}; // Jika table tidak sesuai dengan kunci di dalam objek, URL_BY_ID dan URL_ALL akan menjadi undefined.
 
   // ========================== Initial Query Data ==========================
+  const fetchData = async (endpoint, method, table, form) => {
+    console.table("fetching:", endpoint, form);
+    try {
+      const { data } = await RequestAPI(endpoint, method, form);
+      // console.log("response:", data);
+      setData(data.data);
+      setLoading(false);
+      setErrorMessage(null);
+      setOnWorking(true);
+    } catch (error) {
+      if (error.response) {
+        console.error("Response error:", error.response.data);
+      } else if (error.request) {
+        console.error("Request error:", error.request);
+      } else {
+        console.error("Error:", error.message);
+      }
+      setLoading(false);
+      setErrorMessage(error.message || "An error occurred.");
+    }
+  };
+
   useEffect(() => {
     if (formType === "INSERT") {
       setData({
@@ -108,27 +128,28 @@ export const MainModalHandler = (props) => {
       formType === "SHOW_ADMIN_PROFILE_PICTURE" ||
       formType === "TEST_BULK"
     ) {
-      // temp method: ini perlu dilakukan untuk menampilkan update setiap ada data baru
       if (table_id !== "" && table_id !== null) {
-        axios
-          .get(URL_BY_ID)
-          .then((response) => {
-            console.table("fetching:", URL_BY_ID);
-            setData(response.data.data);
-            setLoading(false);
-            setErrorMessage(null);
-          })
-          .catch((error) => {
-            if (error.response) {
-              console.log("Response error:", error.response.data);
-            } else if (error.request) {
-              console.log("Request error:", error.request);
-            } else {
-              console.log("Error:", error.message);
-            }
-            setLoading(false);
-            setErrorMessage(error.message || "An error occurred.");
-          });
+        fetchData(URL_BY_ID, "GET", table, { id: table_id });
+
+        // axios
+        //   .get(URL_BY_ID)
+        //   .then((response) => {
+        //     console.table("fetching:", URL_BY_ID);
+        //     setData(response.data.data);
+        //     setLoading(false);
+        //     setErrorMessage(null);
+        //   })
+        //   .catch((error) => {
+        //     if (error.response) {
+        //       console.log("Response error:", error.response.data);
+        //     } else if (error.request) {
+        //       console.log("Request error:", error.request);
+        //     } else {
+        //       console.log("Error:", error.message);
+        //     }
+        //     setLoading(false);
+        //     setErrorMessage(error.message || "An error occurred.");
+        //   });
       } else {
         setOnWorking(false);
         setLoading(false);
@@ -148,30 +169,32 @@ export const MainModalHandler = (props) => {
       setLoading(false);
       setErrorMessage(null);
     } else if (formType === "PRINT_BATCH") {
-      const dataArray = Object.values(table_id);
       // Ekstrak seluruh ID dari array dan letakkan dalam array terpisah
+      const dataArray = Object.values(table_id);
       const ids = dataArray.map((item) => item.id);
-      axios
-        .post(URL_PRINT_BATCH, { ids: ids })
-        .then((response) => {
-          // return console.log(response.data);
-          console.table("fetching:", URL_PRINT_BATCH);
-          setData(response.data.data);
-          setOnWorking(true);
-          setLoading(false);
-          setErrorMessage(null);
-        })
-        .catch((error) => {
-          if (error.response) {
-            console.log("Response error:", error.response.data);
-          } else if (error.request) {
-            console.log("Request error:", error.request);
-          } else {
-            console.log("Error:", error.message);
-          }
-          setLoading(false);
-          setErrorMessage(error.message || "An error occurred.");
-        });
+      fetchData(URL_ALL + "/print", "POST", table, { ids: ids });
+
+      // axios
+      //   .post(URL_ALL+'/print', { ids: ids })
+      //   .then((response) => {
+      //     // return console.log(response.data);
+      //     console.table("fetching:", URL_PRINT_BATCH);
+      //     setData(response.data.data);
+      //     setOnWorking(true);
+      //     setLoading(false);
+      //     setErrorMessage(null);
+      //   })
+      //   .catch((error) => {
+      //     if (error.response) {
+      //       console.log("Response error:", error.response.data);
+      //     } else if (error.request) {
+      //       console.log("Request error:", error.request);
+      //     } else {
+      //       console.log("Error:", error.message);
+      //     }
+      //     setLoading(false);
+      //     setErrorMessage(error.message || "An error occurred.");
+      //   });
     } else {
       setLoading(false);
     }
