@@ -284,6 +284,7 @@ class AdminsController extends Controller
 
     public function update(Request $request)
     {
+        return $this->me($request)->getContent();
         if (strlen($this->me($request)->getContent()) > 5) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
     
@@ -363,9 +364,9 @@ class AdminsController extends Controller
             $updateAdmin->pict = $request->input('pict') ?? 'default.jpg';
             if ($request->input('newPassword') !== null) {
                 $updateAdmin->password = $request->input('newPassword');
-            } else {
+            } /*else {
                 $updateAdmin->password = $request->input('password');
-            }
+            } */
             if ($updateAdmin->role == 1) { // jika admin role = admin
                 $updateAdmin->role = $request->input('role');
             }

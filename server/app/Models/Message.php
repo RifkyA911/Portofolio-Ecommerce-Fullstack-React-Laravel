@@ -11,7 +11,7 @@ class Message extends Model
     use HasFactory;
     protected $guarded = ['id'];
     // default eager loading
-    protected $with = ['dialog'];
+    protected $with = ['dialog', 'user:id,email,username,pict', 'admin:id,email,username,pict'];
 
     // relation
     public function dialog(): BelongsTo {
