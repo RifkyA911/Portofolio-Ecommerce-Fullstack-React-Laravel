@@ -64,12 +64,7 @@ export default function MyProfile() {
 
   const fetchData = async () => {
     try {
-      const request = await RequestAPI(
-        "admin",
-        "GET",
-        { id: id },
-        { paginate: `paginate/${1}/${10}` }
-      );
+      const request = await RequestAPI("admin", "GET", { id: id });
       const response = request.data;
       // console.log(response);
       setAdmin(response.data);

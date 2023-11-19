@@ -11,6 +11,8 @@ import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 import { getAccessToken, getUser, logOutUser } from "../Config/Session";
 import { MuiIcon } from "../utils/RenderIcons";
 import axios from "axios";
+import { SkeltonCircle } from "./Skelton";
+import { LoadingDaisyUI } from "./Loading";
 
 const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
 const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -316,11 +318,15 @@ export const NavbarComponent = () => {
             >
               <div className="relative avatar  focus:ring-0 focus:outline-none">
                 <div className="w-10 rounded-full shadow-xl focus:ring-0 focus:outline-none">
-                  <img
-                    src={`${ServerPublicAdminsImg}${admin.pict}`}
-                    alt="profile"
-                    className="w-6 h-6 rounded-full text-center "
-                  />
+                  {!admin.pict ? (
+                    <LoadingDaisyUI max={1} />
+                  ) : (
+                    <img
+                      src={`${ServerPublicAdminsImg}${admin.pict}`}
+                      alt="profile"
+                      className="w-6 h-6 rounded-full text-center "
+                    />
+                  )}
                 </div>
               </div>
             </Popover.Button>
@@ -338,11 +344,15 @@ export const NavbarComponent = () => {
                   <div className="lg:p-4 py-2 px-2 flex flex-col w-full bg-slate-100 shadow-sm">
                     <div className="flex flex-row picture items-center px-4">
                       <div className="flex relative pr-4">
-                        <img
-                          src={`${ServerPublicAdminsImg}${admin.pict}`}
-                          alt="profile"
-                          className="w-14 h-14 rounded-full text-center"
-                        />
+                        {!admin.pict ? (
+                          <SkeltonCircle />
+                        ) : (
+                          <img
+                            src={`${ServerPublicAdminsImg}${admin.pict}`}
+                            alt="profile"
+                            className="w-14 h-14 rounded-full text-center"
+                          />
+                        )}
                       </div>
                       <div className="flex flex-col text-left ">
                         <p className="flex-none font-medium text-sm text-ellipsis overflow-hidden max-h-[85px] max-w-[85px] line-clamp-2">

@@ -6,8 +6,8 @@ const superAuthorizationPassword = import.meta.env
 const loginEmail = import.meta.env.VITE_SUPER_ADMIN_EMAIL;
 const loginPassword = import.meta.env.VITE_SUPER_ADMIN_PASSWORD;
 
-export const getApiUrl = (endpointType, data, formType) => {
-  console.log("data", data);
+export const getApiUrl = (endpointType, params, data, formType) => {
+  // console.log("data", data);
   const baseUrls = {
     publicImg: import.meta.env.VITE_SERVER_PUBLIC_IMG,
     publicAdmin: import.meta.env.VITE_SERVER_PUBLIC_ADMIN,
@@ -40,12 +40,32 @@ export const getApiUrl = (endpointType, data, formType) => {
     },
   };
 
+  // if (baseUrls.hasOwnProperty(endpointType)) {
+  //   return baseUrls[endpointType];
+  // } else if (apiEndpoints.id.hasOwnProperty(endpointType)) {
+  //   return `${apiEndpoints.id[endpointType]}/${data.id ? data.id : ""}`;
+  // } else if (apiEndpoints.all.hasOwnProperty(endpointType)) {
+  //   return apiEndpoints.all[endpointType];
+  // }
+
+  const URL_Segments = endpointType.split("/");
+  console.log(URL_Segments);
   if (baseUrls.hasOwnProperty(endpointType)) {
     return baseUrls[endpointType];
-  } else if (apiEndpoints.id.hasOwnProperty(endpointType)) {
-    return data.id ? `${apiEndpoints.id[endpointType]}/${data.id}` : 0;
-  } else if (apiEndpoints.all.hasOwnProperty(endpointType)) {
-    return apiEndpoints.all[endpointType];
+  } else if (apiEndpoints.id.hasOwnProperty(URL_Segments[0])) {
+    if (URL_Segments[1] == "refresh") {
+      return `${apiEndpoints.id[URL_Segments[0]]}/refresh`;
+    } else {
+      return `${apiEndpoints.id[URL_Segments[0]]}/${data.id ? data.id : ""}`;
+    }
+  } else if (apiEndpoints.all.hasOwnProperty(URL_Segments[0])) {
+    if (URL_Segments[1] == "paginate") {
+      return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}/${
+        URL_Segments[2]
+      }/${URL_Segments[3]}`;
+    } else {
+      return apiEndpoints.all[URL_Segments[0]];
+    }
   }
 
   return null;
@@ -55,36 +75,35 @@ const RequestAPI = async (
   endpoint,
   method = "GET",
   data = null,
-  formType,
   headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${getAccessToken()}`,
   }
 ) => {
   let access_token = getAccessToken();
+  console.log(endpoint, data);
+  try {
+    const url = `${getApiUrl(endpoint, null, data)}`;
+    const axiosConfig = {
+      method: method,
+      url: url,
+      data: {
+        ...data,
+        superAuthorizationPassword: superAuthorizationPassword,
+        token: access_token,
+      },
+      headers: headers,
+    };
 
-  if (data) {
-    try {
-      const url = `${getApiUrl(endpoint, data, formType)}`;
-      const axiosConfig = {
-        method,
-        url,
-        data: {
-          ...data,
-          superAuthorizationPassword: superAuthorizationPassword,
-          token: access_token,
-        },
-        headers: headers,
-      };
-
-      const response = await axios(axiosConfig);
-      refreshAccessToken();
-      return response;
-    } catch (error) {
-      // Handle errors (e.g., network issues, API errors)
-      console.error("API request failed:", error);
-      throw error;
-    }
+    const response = await axios(axiosConfig);
+    // if (!data.getRefreshAccessToken) {
+    //   refreshAccessToken();
+    // }
+    return response;
+  } catch (error) {
+    // Handle errors (e.g., network issues, API errors)
+    console.error("API request failed:", error);
+    throw error;
   }
 };
 
