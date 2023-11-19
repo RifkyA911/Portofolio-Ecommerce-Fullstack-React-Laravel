@@ -130,7 +130,8 @@ class AdminsController extends Controller
             return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $admins);
 
         }
-        return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
+        return response(['error' => 'Validasi gagal', "message" => 'forbidden action detected'], 403);
+
     }
 
 
@@ -216,7 +217,8 @@ class AdminsController extends Controller
             return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $admins);
 
         }
-        return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
+        return response(['error' => 'Validasi gagal', "message" => 'forbidden action detected'], 403);
+
     }
 
     public function store(Request $request)
@@ -259,7 +261,8 @@ class AdminsController extends Controller
             return response(['message' => 'Akun admin gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan akun admin.', 'error' => $request->input()], 406);
 
         }
-        return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
+        return response(['error' => 'Validasi gagal', "message" => 'forbidden action detected'], 403);
+
     }
 
     public function update(Request $request)
@@ -311,11 +314,6 @@ class AdminsController extends Controller
             $name = $request->input('name'); // incoming req
             $pict = $request->input('pict'); // incoming req
 
-            if ($oldPict !== $pict) {
-                $wey = true;
-            } else {
-                $wey = false;
-            }
             // if pict req is not null/noChange
             if ($pict !== "noChange") { // Test: Pass
                 // if oldName!=name, replace property values in $admin object
@@ -349,15 +347,15 @@ class AdminsController extends Controller
             if ($request->input('newPassword') !== null) {
                 $updateAdmin->password = $request->input('newPassword');
             } /*else {
-        $updateAdmin->password = $request->input('password');
-    } */
+       $updateAdmin->password = $request->input('password');
+   } */
             if ($updateAdmin->role == 1) { // jika admin role = admin
                 $updateAdmin->role = $request->input('role');
             }
-            return response(["status" => $updateAdmin->update(), "message" => "product ter-update.", "modifedFileStatus" => $modifedFileStatus ?? null, "oldData" => $wey], 202);
+            return response(["status" => $updateAdmin->update(), "message" => "product ter-update.", "modifedFileStatus" => $modifedFileStatus ?? null], 202);
 
         }
-        return response(['error' => 'Validasi gagal', 'message' => 'forbidden action detected', 's' => $this->me($request)], 404);
+        return response(['error' => 'Validasi gagal', 'message' => 'forbidden action detected'], 404);
     }
 
     public function patch(Request $request)
