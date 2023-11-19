@@ -103,7 +103,6 @@ export const MainModalHandler = (props) => {
     if (formType === "INSERT") {
       setData({
         pict: "default.jpg",
-        email: "",
       });
     } else if (
       formType === "ALTER_BY_ID" ||
@@ -126,11 +125,11 @@ export const MainModalHandler = (props) => {
     } else if (formType === "DROP_BY_SELECTED") {
       if (table_id !== null && table !== null) {
         const dataArray = Object.values(table_id);
-        const modifiedDataArray = dataArray.map((item) => ({
-          ...item,
-          superAuthorizationPassword: SuperAdminKey,
-        }));
-        setData(modifiedDataArray);
+        // const modifiedDataArray = dataArray.map((item) => ({
+        //   ...item,
+        //   superAuthorizationPassword: SuperAdminKey,
+        // }));
+        setData(dataArray);
       }
       setLoading(false);
       setErrorMessage(null);
@@ -159,9 +158,9 @@ export const MainModalHandler = (props) => {
     watch,
   } = useForm({
     mode: "onChange",
-    defaultValues: {
-      superAuthorizationPassword: SuperAdminKey,
-    },
+    // defaultValues: {
+    //   table: table,
+    // },
   });
 
   // set values by state data
@@ -170,168 +169,117 @@ export const MainModalHandler = (props) => {
   useEffect(() => {
     // console.table(table);
     // console.log(data);
-    if (formType === "INSERT") {
-      switch (table) {
-        case `admins`:
-          passwordRef.current = watch("password", "");
-
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            email: "",
-            username: "",
-            role: 1,
-            pict: "default.png",
-            // password: "123456f",
-            // password_confirmation: "123456f",
-          };
-          break;
-        case `products`:
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            pict: "default.jpg",
-          };
-          break;
-        default:
-          break;
-      }
-    } else if (formType === "ALTER_BY_ID") {
-      switch (table) {
-        case `admins`:
-          initialFormValue = {
-            id: data.id,
-            email: data.email,
-            username: data.username,
-            role: data.role,
-            pict: data.pict,
-          };
-          break;
-        case `products`:
-          // console.log(data);
-          initialFormValue = {
-            id: data.id,
-            barcode: data.barcode,
-            name: data.name,
-            price: parseInt(data.price),
-            category_id: data.category.id,
-            stock: parseInt(data.stock),
-            discount: parseFloat(data.discount),
-            pict: data.pict,
-            description: data.description,
-          };
-          break;
-        default:
-          break;
-      }
-    } else if (formType === "DROP_BY_ID") {
-      switch (table) {
-        case `admins`:
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            id: data.id,
-            email: data.email,
-            username: data.username,
-            role: data.role,
-            pict: data.pict,
-          };
-          break;
-        case `products`:
-          initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            id: data.id,
-            name: data.name,
-          };
-          break;
-        default:
-          break;
-      }
-    }
-    for (const key in initialFormValue) {
-      setValue(key, initialFormValue[key]);
+    // if (formType === "INSERT") {
+    //   switch (table) {
+    //     case `admins`:
+    //       passwordRef.current = watch("password", "");
+    //       initialFormValue = {
+    //         email: "",
+    //         username: "",
+    //         role: 1,
+    //         pict: "default.jpg",
+    //       };
+    //       break;
+    //     case `products`:
+    //       initialFormValue = {
+    //         pict: "default.jpg",
+    //       };
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // } else if (formType === "ALTER_BY_ID") {
+    //   switch (table) {
+    //     case `admins`:
+    //       initialFormValue = {
+    //         id: data.id,
+    //         email: data.email,
+    //         username: data.username,
+    //         role: data.role,
+    //         pict: data.pict,
+    //       };
+    //       break;
+    //     case `products`:
+    //       // console.log(data);
+    //       initialFormValue = {
+    //         id: data.id,
+    //         barcode: data.barcode,
+    //         name: data.name,
+    //         price: parseInt(data.price),
+    //         category_id: data.category.id,
+    //         stock: parseInt(data.stock),
+    //         discount: parseFloat(data.discount),
+    //         pict: data.pict,
+    //         description: data.description,
+    //       };
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // } else if (formType === "DROP_BY_ID") {
+    //   switch (table) {
+    //     case `admins`:
+    //       initialFormValue = {
+    //         id: data.id,
+    //         email: data.email,
+    //         username: data.username,
+    //         pict: data.pict,
+    //       };
+    //       break;
+    //     case `products`:
+    //       initialFormValue = {
+    //         id: data.id,
+    //         name: data.name,
+    //       };
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // }
+    // for (const key in initialFormValue) {
+    //   setValue(key, initialFormValue[key]);
+    // }
+    for (const key in data) {
+      setValue(key, data[key]);
     }
     initialFormValue = null;
   }, [data]);
 
-  useEffect(() => {
-    console.log(getValues());
-  }, [getValues()]);
-
   // ============================================ Execute Backend QUERY ============================================
   async function sendFormDataByMethod(form) {
+    // console.log(form);
     setSending(!sending);
     try {
       if (formType === "INSERT") {
-        fetchData(URL_BY_ID + "/store", "POST", table, form);
+        await fetchData(URL_BY_ID + "/store", "POST", table, form);
         setResultStatus("insert", true, `Input ${table} berhasil !`); // DELETE AFTER FIX BROADCAST
       } else if (formType === "ALTER_BY_ID") {
-        fetchData(URL_ALL + "/update", "PUT", table, form);
+        await fetchData(URL_ALL + "/update", "PUT", table, form);
         setResultStatus("alter", true, `Update ${table} berhasil !`); // DELETE AFTER FIX BROADCAST
       } else if (formType === "DROP_BY_ID") {
-        fetchData(URL_ALL + "/delete", "DELETE", table, {
+        await fetchData(URL_ALL + "/delete", "DELETE", table, {
           id: form.id,
         });
-
-        // switch (table) {
-        //   case `admins`:
-        //     axiosResponse = await axios.delete(URL_ALL, {
-        //       data: {
-        //         adminsId: form.adminsId,
-        //         superAuthorizationPassword: form.superAuthorizationPassword,
-        //       },
-        //     });
-        //     break;
-        //   case `products`:
-        //     axiosResponse = await axios.delete(URL_ALL, {
-        //       data: {
-        //         productsId: form.productsId,
-        //         superAuthorizationPassword: form.superAuthorizationPassword,
-        //       },
-        //     });
-        //     break;
-        //   default:
-        //     break;
-        // }
-        setResultStatus("drop", true, `Drop ${table} berhasil !`);
+        setResultStatus("drop", true, `Drop ${table} berhasil !`); // DELETE AFTER FIX BROADCAST
       } else if (formType === "DROP_BY_SELECTED") {
         const deleteRequests = [];
         for (const item of data) {
-          switch (table) {
-            case `admins`:
-              deleteRequests.push(item.id);
-              break;
-            case `products`:
-              deleteRequests.push(item.id);
-              break;
-            default:
-              break;
-          }
+          deleteRequests.push(item.id);
         }
-        // console.log(deleteRequests);
         try {
-          // Kirim semua permintaan DELETE secara bersamaan
-          fetchData(URL_ALL + "/delete", "DELETE", table, {
-            // ...(table === "admins" && { adminsId: deleteRequests }),
-            // ...(table === "products" && { productsId: deleteRequests }),
+          await fetchData(URL_ALL + "/delete", "DELETE", table, {
             id: deleteRequests,
           });
-
-          // const responses = await axios.delete(URL_ALL, {
-          //   data: {
-          //     superAuthorizationPassword: SuperAdminKey,
-          //     ...(table === "admins" && { adminsId: deleteRequests }),
-          //     ...(table === "products" && { productsId: deleteRequests }),
-          //   },
-          // });
-          // const responses = await axios.all(deleteRequests);
-          // console.log("Batch data berhasil dihapus:", responses);
-          setResultStatus("drop", true, `Drop Batch ${table} berhasil !`);
+          setResultStatus("drop", true, `Drop Batch ${table} berhasil !`); // DELETE AFTER FIX BROADCAST
           setData([]);
         } catch (error) {
           setData([]);
           console.error("Terjadi kesalahan saat menghapus batch data:", error);
         }
+      } else {
+        console.warning("no formtype");
       }
       // ------------------------- if success send data to server
-      // setResultStatus(null, false, null);
       setData([]);
       // console.table(data);
       setSending(false);

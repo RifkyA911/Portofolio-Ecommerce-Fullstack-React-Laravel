@@ -44,7 +44,7 @@ export const getApiUrl = (endpointType, data) => {
   };
 
   const URL_Segments = endpointType.split("/");
-  console.log(URL_Segments);
+  // console.log(URL_Segments);
 
   // AUTH
   if (apiEndpoints.session.hasOwnProperty(URL_Segments[0])) {

@@ -41,15 +41,9 @@ export const ShowAdminData = (props) => {
   return (
     <>
       <div className="flex items-center space-x-3">
-        <div className="avatar " onClick={onClick}>
+        <div className="avatar" onClick={onClick}>
           <div className="mask mask-squircle w-16 h-16 cursor-pointer ">
-            <img
-              src={
-                `${ServerPublicAdminsImg}${
-                  data.pict ? data.pict : "blank.jpg"
-                }` ?? "blank.jpg"
-              }
-            />
+            <img src={`${ServerPublicAdminsImg}${data.pict}`} />
           </div>
         </div>
         <div className={`${textTable} pl-4 text-left`}>

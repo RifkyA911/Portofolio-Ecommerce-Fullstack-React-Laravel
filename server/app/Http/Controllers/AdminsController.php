@@ -349,8 +349,8 @@ class AdminsController extends Controller
             if ($request->input('newPassword') !== null) {
                 $updateAdmin->password = $request->input('newPassword');
             } /*else {
-           $updateAdmin->password = $request->input('password');
-       } */
+        $updateAdmin->password = $request->input('password');
+    } */
             if ($updateAdmin->role == 1) { // jika admin role = admin
                 $updateAdmin->role = $request->input('role');
             }
@@ -386,7 +386,7 @@ class AdminsController extends Controller
             }
 
         }
-        return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
+        return response(['error' => 'Validasi gagal', "message" => 'forbidden action detected'], 403);
     }
 
 
@@ -418,7 +418,8 @@ class AdminsController extends Controller
             }
 
         }
-        return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
+        return response(['error' => 'Validasi gagal', "message" => 'forbidden action detected'], 403);
+
     }
 
     public function uploadImage($imageData, $admin)

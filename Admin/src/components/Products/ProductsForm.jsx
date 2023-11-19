@@ -141,7 +141,6 @@ export const ProductsDropForm = (props) => {
             {formType === "DROP_BY_ID" && (
               <DropByIdForm
                 formContext={ModalContext}
-                tableId="productsId"
                 location={table}
                 thisName={data.name}
                 pict={data.pict}

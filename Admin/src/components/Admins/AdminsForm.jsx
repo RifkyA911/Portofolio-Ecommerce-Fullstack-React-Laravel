@@ -654,7 +654,6 @@ export const AdminsDropForm = (props) => {
             {formType === "DROP_BY_ID" && (
               <DropByIdForm
                 formContext={ModalContext}
-                tableId="adminsId"
                 location={table}
                 thisName={data.username}
                 pict={data.pict}
