@@ -150,6 +150,8 @@ export const ProductFilter = (props) => {
   const { MenuBoxRef, labelRef } = useRef(null);
 
   const {
+    clicked,
+    setClicked,
     register,
     handleSubmit,
     setValue,
@@ -237,7 +239,7 @@ export const ProductFilter = (props) => {
               onClick={() => {
                 closeFunction();
                 refresh();
-                clearData();
+                setClicked(true);
               }}
               className=" py-2 px-4 hover:bg-red-200 text-left transition-all delay-50"
             >
@@ -412,11 +414,18 @@ export const ProductFilter = (props) => {
           </div>
           <div className="py-2 mt-2 border-t flex flex-row justify-center">
             <MotionButton
+              disabled={
+                selectedItems.length > 0 ||
+                minPrice.length > 0 ||
+                maxPrice.length > 0
+                  ? false
+                  : true
+              }
               formType="confirm"
               onClick={() => {
                 // setShowModal(false);
                 setTabPagination(false);
-                clearData();
+                setClicked(true);
               }}
             />
           </div>

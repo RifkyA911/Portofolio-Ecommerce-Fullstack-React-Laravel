@@ -16,7 +16,7 @@ import { navLink } from "./Redux/Slices/NavigationSlice";
 
 // Utils
 import MyAppRoutes from "./Config/MyAppRoutes";
-import { getUser } from "./Config/Session";
+import { getAccessToken, getCookie, getUser } from "./Config/Session";
 import LoginRouter from "./Config/LoginRouter";
 import MyJump from "./utils/MyJump";
 import {
@@ -25,12 +25,13 @@ import {
   updateSession,
 } from "./Redux/Slices/UserSlice";
 import { IsScreenResize } from "./utils/Solver";
-import { getApiUrl } from "./Config/API";
+import RequestAPI, { getApiUrl } from "./Config/API";
 // import Summary from "./utils/Summary";
 
 function App() {
   // login component
-  const [userSession, setUserSession] = useState(getUser()); // need to change
+  // const [fetch, setFetch] = useState(false); // need to change
+  const [token, setToken] = useState(getCookie("token"));
 
   // REDUX
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
@@ -44,27 +45,29 @@ function App() {
   const appMode = import.meta.env.MODE;
 
   useEffect(() => {
-    if (userSession == null) {
+    if (token == null) {
       navigate("/login");
       dispatch(clearSession());
-    } else {
-      dispatch(updateCredentials({ user: getUser() }));
     }
-    console.log(getApiUrl("products"));
+    // else {
+    //   // navigate("/");
+    //   console.log("token", token ? true : false, "| logged", logged);
+    // }
+    // console.log(getApiUrl("products"));
     // console.log(`logged:`, logged);
-    // console.log(`userSession:`, userSession);
+    // console.log(`token:`, token);
     // console.log(`user:`, getUser());
-    // setUserSession(getUser())
-  }, [userSession, user]);
+  }, [token]);
+
   return (
     <>
-      {userSession !== null ? (
+      {token !== null ? (
         <>
-          {logged && (
-            <>
-              <MyAppRoutes />
-            </>
-          )}
+          {/* {logged && ( */}
+          <>
+            <MyAppRoutes />
+          </>
+          {/* )} */}
         </>
       ) : (
         <>
@@ -72,7 +75,7 @@ function App() {
         </>
       )}
       <IsScreenResize monitoring={false} />
-      {/* Developer Panel */}
+      {/* ------- Developer Panel ------- */}
       {appMode == "development" && (
         <>
           {/* <MyDebuggerPanel /> */}

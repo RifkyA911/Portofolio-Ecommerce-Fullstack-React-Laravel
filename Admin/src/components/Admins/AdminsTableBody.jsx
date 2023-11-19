@@ -193,6 +193,8 @@ export const AdminFilter = (props) => {
   ];
 
   const {
+    clicked,
+    setClicked,
     register,
     handleSubmit,
     setValue,
@@ -285,6 +287,7 @@ export const AdminFilter = (props) => {
                 });
                 setValue("date_start", "2000-01-01T01:00");
                 setValue("date_end", DateFormatter("dateTimeLocale", null));
+                setClicked(false);
               }}
               className=" py-2 px-4 hover:bg-sky-200 text-left transition-all delay-50"
             >
@@ -294,7 +297,6 @@ export const AdminFilter = (props) => {
               onClick={() => {
                 closeFunction();
                 refresh();
-                clearData();
               }}
               className=" py-2 px-4 hover:bg-red-200 text-left transition-all delay-50"
             >
@@ -429,11 +431,16 @@ export const AdminFilter = (props) => {
           </div>
           <div className="py-2 mt-2 border-t flex flex-row justify-center">
             <MotionButton
+              disabled={
+                selectedAuthority.length > 0 || selectedRole.length > 0
+                  ? false
+                  : true
+              }
               formType="confirm"
               onClick={() => {
                 // setShowModal(false);
                 setTabPagination(false);
-                clearData();
+                setClicked(true);
               }}
             />
           </div>

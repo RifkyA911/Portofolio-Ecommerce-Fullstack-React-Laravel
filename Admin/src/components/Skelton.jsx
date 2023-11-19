@@ -12,6 +12,22 @@ export const SkeltonTable = (props) => {
   );
 };
 
+export const SkeltonCircle = (props) => {
+  const {
+    className,
+    Bg = "bg-slate-200",
+    height = "h-12",
+    weight = "w-12",
+  } = props;
+  return (
+    <>
+      <div
+        className={className ?? `rounded-full ${Bg} ${height} ${weight}`}
+      ></div>
+    </>
+  );
+};
+
 export const SkeltonMyProfile = ({ children }) => {
   return (
     <div className="flex flex-col items-center justify-center h-[800px] w-full">

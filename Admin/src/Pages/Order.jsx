@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef, createContext } from "react";
 import axios from "axios";
 import Barcode from "react-jsbarcode";
 // Components
-import { SkeltonTable } from "../components/Skelton/SkeltonTable";
+import { SkeltonTable } from "../components/Skelton";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { MainModalHandler } from "../components/Modal";
 // import { ProductImage } from "../components/invoices/invoicesTableBody";

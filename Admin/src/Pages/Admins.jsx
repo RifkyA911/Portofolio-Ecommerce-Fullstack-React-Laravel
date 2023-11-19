@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useRef, createContext } from "react";
-import axios from "axios";
 // Components
-import { SkeltonTable } from "../components/Skelton/SkeltonTable";
+import { SkeltonTable } from "../components/Skelton";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
 import { MainModalHandler } from "../components/Modal";
 import {
@@ -10,7 +9,6 @@ import {
   AuthorityToggle,
 } from "./../components/Admins/AdminsTableBody";
 import { ActionButton } from "../components/Button";
-import { NumberSpan } from "../components/Span";
 import {
   MyTableEngine,
   Thead,
@@ -24,12 +22,9 @@ import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import { CurrencyFormatter } from "../utils/Formatter";
 import { FormToast } from "../components/Toast";
 import { ReactIcons } from "../utils/RenderIcons";
-
-// define fetch data URL_ADMINS by admins
-const initUrlAdmins = import.meta.env.VITE_API_ALL_ADMINS;
+import RequestAPI from "../Config/API";
 
 export const AdminsContext = createContext();
 
@@ -78,39 +73,28 @@ export default function Admins() {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  const URL_ADMINS = `${initUrlAdmins}/paginate/${paginate}/${rows}`;
-  const URL_ADMINS_SEARCH = `${initUrlAdmins}/search?search=`;
-  const URL_ADMINS_FILTER = `${initUrlAdmins}/filter`;
+  const table = "admins";
+  const URL_ADMINS = `${table}/paginate/${paginate}/${rows}`;
+  const URL_ADMINS_SEARCH = `${table}/search`;
+  const URL_ADMINS_FILTER = `${table}/filter`;
 
-  const fetchData = async (url, table, form = null) => {
+  const fetchData = async (url, form = null) => {
     try {
-      const controller = new AbortController();
-      const config = {
-        method: form ? "post" : "get", // Metode permintaan yang dinamis
-        url: url, // URL yang akan diakses
-        data: form, // Menggunakan 'data' untuk mengirim data dalam permintaan POST
-        signal: controller.signal,
-      };
-      const { data } = await axios(config);
-      // console.log(data);
-      // console.table(`fetching`, table);
+      const { data } = await RequestAPI(url, form ? "POST" : "GET", form);
+      // console.log(data.data);
       setLoading(false);
-      if (table === "admins") {
-        setAdmins(data.data);
-        setLengthData(data.message.length);
-      }
+      setAdmins(data.data);
+      setLengthData(data.message.length);
       setErrorMessage(null);
     } catch (error) {
-      setLoading(false);
-      let message = `Gagal Fetching '${table}'`;
-      setErrorMessage(message);
+      setErrorMessage(`Gagal Fetching '${url}'`);
       console.error(message, error);
     }
   };
 
   // ===================== MyTableEngine =====================
   useEffect(() => {
-    fetchData(URL_ADMINS, "admins");
+    fetchData(URL_ADMINS);
     if (admins !== null && admins !== undefined) {
       setColspan(columnOrder.length + 1);
     }
@@ -132,9 +116,9 @@ export default function Admins() {
     // console.log("sd", searchTerm);
     if (admins !== null && admins.length > 0) {
       if (searchTerm.length > 1 || searchTerm !== "") {
-        fetchData(URL_ADMINS_SEARCH, "admins", { search: searchTerm });
+        fetchData(URL_ADMINS_SEARCH, { search: searchTerm });
       } else if (searchTerm == "") {
-        fetchData(URL_ADMINS, "admins");
+        fetchData(URL_ADMINS);
       }
     }
   }, [searchTerm]);
@@ -144,7 +128,7 @@ export default function Admins() {
     context: AdminsContext,
     inputData: admins,
     refresh: () => {
-      fetchData(URL_ADMINS, "admins");
+      fetchData(URL_ADMINS);
       setLoading(true);
       setTabPagination(true);
     },
@@ -160,7 +144,7 @@ export default function Admins() {
     TabHeader: true,
     hideHeaderBtn: ["excelBtn", "printBtn"],
     applyFilter: (form) => {
-      fetchData(URL_ADMINS_FILTER, "admins", form);
+      fetchData(URL_ADMINS_FILTER, form);
     },
     showFixedBtn: showFixedBtn,
     setShowFixedBtn: setShowFixedBtn,
@@ -221,7 +205,7 @@ export default function Admins() {
     modalType: modalType,
     formType: formType,
     refresh: () => {
-      fetchData(URL_ADMINS, "admins");
+      fetchData(URL_ADMINS);
       setLoading(true);
     },
     setResultStatus: (type, state, message) =>
@@ -252,6 +236,7 @@ export default function Admins() {
 
   let table_styling = {};
   if (admins !== null && admins.length > 0) {
+    console.log();
     table_styling = {
       tbody: `${BgTable}`,
       tr: `h-8 text-left`,
@@ -281,7 +266,7 @@ export default function Admins() {
                       <SetErrorMessage
                         errorMessage={errorMessage}
                         refresh={() => {
-                          fetchData(URL_ADMINS, "admins");
+                          fetchData(URL_ADMINS);
                           setLoading(true);
                         }}
                       >

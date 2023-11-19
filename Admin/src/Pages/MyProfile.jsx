@@ -10,7 +10,7 @@ import { getAccessToken, getUser, refreshAccessToken } from "../Config/Session";
 // Layout
 import { Container, Content } from "../Layout";
 // Components
-import { SkeltonMyProfile } from "../components/Skelton/Skelton";
+import { SkeltonMyProfile } from "../components/Skelton";
 import { DangerAlert, SuccessAlert } from "../components/Alert";
 import { FilePictureInput, PasswordInput, TextInput } from "../components/Form";
 import { MotionButton } from "../components/Button";
@@ -64,12 +64,7 @@ export default function MyProfile() {
 
   const fetchData = async () => {
     try {
-      const request = await RequestAPI(
-        "admin",
-        "GET",
-        { id: id },
-        { paginate: `paginate/${1}/${10}` }
-      );
+      const request = await RequestAPI("admin", "GET", { id: id });
       const response = request.data;
       // console.log(response);
       setAdmin(response.data);
