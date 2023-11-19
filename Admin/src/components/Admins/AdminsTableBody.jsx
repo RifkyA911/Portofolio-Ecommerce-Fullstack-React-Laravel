@@ -16,6 +16,7 @@ import { DateFormatter } from "../../utils/Formatter";
 import { MyTableFilterContext } from "../Table/MyTableComponents";
 import { SelectInput } from "../Form";
 import { getAccessToken } from "../../Config/Session";
+import RequestAPI from "../../Config/API";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -111,16 +112,26 @@ export const AuthorityToggle = (props) => {
   }, [data]);
 
   const updateAdminsAuthority = async (data) => {
-    await axios
-      .patch(URL_BY_ID, data)
-      .then((data) => {
-        console.info(data.data);
-      })
-      .catch((error) => {
-        setToggle(!toggle);
-        setErrorMessage(error.response.data.message);
-        console.error(error);
-      });
+    try {
+      const request = await RequestAPI("admin/authority", "PATCH", data);
+      // const response = request.data;
+      // console.log(response);
+      // window.location.reload();
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
+      setToggle(!toggle);
+      setErrorMessage(error.response.data.message);
+    }
+    // await axios
+    //   .patch(URL_BY_ID, data)
+    //   .then((data) => {
+    //     console.info(data.data);
+    //   })
+    //   .catch((error) => {
+    //     setToggle(!toggle);
+    //     setErrorMessage(error.response.data.message);
+    //     console.error(error);
+    //   });
   };
 
   useEffect(() => {

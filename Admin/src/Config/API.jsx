@@ -53,8 +53,8 @@ export const getApiUrl = (endpointType, params, data, formType) => {
   if (baseUrls.hasOwnProperty(endpointType)) {
     return baseUrls[endpointType];
   } else if (apiEndpoints.id.hasOwnProperty(URL_Segments[0])) {
-    if (URL_Segments[1] == "refresh") {
-      return `${apiEndpoints.id[URL_Segments[0]]}/refresh`;
+    if (URL_Segments[1] == "refresh" || URL_Segments[1] == "authority") {
+      return `${apiEndpoints.id[URL_Segments[0]]}/${URL_Segments[1]}`;
     } else {
       return `${apiEndpoints.id[URL_Segments[0]]}/${data.id ? data.id : ""}`;
     }
@@ -63,6 +63,8 @@ export const getApiUrl = (endpointType, params, data, formType) => {
       return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}/${
         URL_Segments[2]
       }/${URL_Segments[3]}`;
+    } else if (URL_Segments[1] == "search" || URL_Segments[1] == "filter") {
+      return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}`;
     } else {
       return apiEndpoints.all[URL_Segments[0]];
     }
@@ -81,7 +83,7 @@ const RequestAPI = async (
   }
 ) => {
   let access_token = getAccessToken();
-  console.log(endpoint, data);
+  // console.log(endpoint, data);
   try {
     const url = `${getApiUrl(endpoint, null, data)}`;
     const axiosConfig = {
