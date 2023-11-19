@@ -10,12 +10,6 @@ const loginPassword = import.meta.env.VITE_SUPER_ADMIN_PASSWORD;
 
 export const getApiUrl = (endpointType, data) => {
   // console.log("data", data);
-  const baseUrls = {
-    publicImg: import.meta.env.VITE_SERVER_PUBLIC_IMG,
-    publicAdmin: import.meta.env.VITE_SERVER_PUBLIC_ADMIN,
-    publicUser: import.meta.env.VITE_SERVER_PUBLIC_USER,
-    publicProduct: import.meta.env.VITE_SERVER_PUBLIC_PRODUCT,
-  };
 
   const apiEndpoints = {
     session: { auth: `${SERVER_BASE_URL}/api/auth` },
@@ -54,16 +48,13 @@ export const getApiUrl = (endpointType, data) => {
       return `${apiEndpoints.session.auth}/${URL_Segments[1]}`;
     }
   }
-  // PUBLIC SERVER
-  else if (baseUrls.hasOwnProperty(endpointType)) {
-    return baseUrls[endpointType];
-  }
   // QUERY BY ID
   else if (apiEndpoints.id.hasOwnProperty(URL_Segments[0])) {
     if (
       URL_Segments[1] == "store" ||
       URL_Segments[1] == "refresh" ||
       URL_Segments[1] == "authority" ||
+      URL_Segments[1] == "image" ||
       URL_Segments[1] == "cek"
     ) {
       return `${apiEndpoints.id[URL_Segments[0]]}/${URL_Segments[1]}`;
@@ -90,7 +81,7 @@ export const getApiUrl = (endpointType, data) => {
     }
   }
 
-  return null;
+  return SERVER_BASE_URL;
 };
 
 const RequestAPI = async (
@@ -127,6 +118,22 @@ const RequestAPI = async (
     // Handle errors (e.g., network issues, API errors)
     console.error("API request failed:", error);
     throw error;
+  }
+};
+
+export const ServerPublic = (endpointType, data = null) => {
+  const ServerFolder = {
+    pictures: {
+      img: import.meta.env.VITE_SERVER_PUBLIC_IMG,
+      admins: import.meta.env.VITE_SERVER_PUBLIC_ADMIN,
+      users: import.meta.env.VITE_SERVER_PUBLIC_USER,
+      products: import.meta.env.VITE_SERVER_PUBLIC_PRODUCT,
+    },
+  };
+
+  // PUBLIC SERVER
+  if (ServerFolder.pictures.hasOwnProperty(endpointType)) {
+    return ServerFolder.pictures[endpointType];
   }
 };
 
