@@ -63,7 +63,11 @@ export const getApiUrl = (endpointType, params, data, formType) => {
       return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}/${
         URL_Segments[2]
       }/${URL_Segments[3]}`;
-    } else if (URL_Segments[1] == "search" || URL_Segments[1] == "filter") {
+    } else if (
+      URL_Segments[1] == "search" ||
+      URL_Segments[1] == "filter" ||
+      URL_Segments[1] == "print"
+    ) {
       return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}`;
     } else {
       return apiEndpoints.all[URL_Segments[0]];
