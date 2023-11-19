@@ -44,7 +44,7 @@ export const getApiUrl = (endpointType, data) => {
   };
 
   const URL_Segments = endpointType.split("/");
-  // console.log(URL_Segments);
+  console.log(URL_Segments);
 
   // AUTH
   if (apiEndpoints.session.hasOwnProperty(URL_Segments[0])) {
@@ -62,7 +62,6 @@ export const getApiUrl = (endpointType, data) => {
   else if (apiEndpoints.id.hasOwnProperty(URL_Segments[0])) {
     if (
       URL_Segments[1] == "store" ||
-      URL_Segments[1] == "update" ||
       URL_Segments[1] == "refresh" ||
       URL_Segments[1] == "authority" ||
       URL_Segments[1] == "cek"
@@ -79,6 +78,8 @@ export const getApiUrl = (endpointType, data) => {
         URL_Segments[2]
       }/${URL_Segments[3]}`;
     } else if (
+      URL_Segments[1] == "update" ||
+      URL_Segments[1] == "delete" ||
       URL_Segments[1] == "search" ||
       URL_Segments[1] == "filter" ||
       URL_Segments[1] == "print"
@@ -102,8 +103,8 @@ const RequestAPI = async (
   }
 ) => {
   let access_token = getAccessToken();
-  console.log(endpoint, data);
-  console.log(getApiUrl(endpoint, data));
+  // console.log(endpoint, data);
+  // console.log(getApiUrl(endpoint, data));
   try {
     const url = `${getApiUrl(endpoint, data)}`;
     const axiosConfig = {

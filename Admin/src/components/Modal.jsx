@@ -78,7 +78,7 @@ export const MainModalHandler = (props) => {
 
   // ========================== Initial Query Data ==========================
   const fetchData = async (endpoint, method, table, form) => {
-    console.table("fetching:", endpoint, form);
+    // console.table("fetching:", endpoint, form);
     try {
       const { data } = await RequestAPI(endpoint, method, form);
       // console.log("response:", data);
@@ -198,21 +198,17 @@ export const MainModalHandler = (props) => {
       switch (table) {
         case `admins`:
           initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            adminsId: data.id,
+            id: data.id,
             email: data.email,
             username: data.username,
             role: data.role,
             pict: data.pict,
-            // newPassword: "123456FF",
-            // newPassword_confirmation: "123456FF",
           };
           break;
         case `products`:
           // console.log(data);
           initialFormValue = {
-            superAuthorizationPassword: SuperAdminKey,
-            productId: data.id,
+            id: data.id,
             barcode: data.barcode,
             name: data.name,
             price: parseInt(data.price),
@@ -221,8 +217,6 @@ export const MainModalHandler = (props) => {
             discount: parseFloat(data.discount),
             pict: data.pict,
             description: data.description,
-            created_at: data.created_at,
-            updated_at: data.updated_at,
           };
           break;
         default:
@@ -233,7 +227,7 @@ export const MainModalHandler = (props) => {
         case `admins`:
           initialFormValue = {
             superAuthorizationPassword: SuperAdminKey,
-            adminsId: data.id,
+            id: data.id,
             email: data.email,
             username: data.username,
             role: data.role,
@@ -243,7 +237,7 @@ export const MainModalHandler = (props) => {
         case `products`:
           initialFormValue = {
             superAuthorizationPassword: SuperAdminKey,
-            productsId: data.id,
+            id: data.id,
             name: data.name,
           };
           break;
@@ -257,39 +251,45 @@ export const MainModalHandler = (props) => {
     initialFormValue = null;
   }, [data]);
 
+  useEffect(() => {
+    console.log(getValues());
+  }, [getValues()]);
+
   // ============================================ Execute Backend QUERY ============================================
   async function sendFormDataByMethod(form) {
     setSending(!sending);
     try {
       if (formType === "INSERT") {
         fetchData(URL_BY_ID + "/store", "POST", table, form);
-
-        // axiosResponse = await axios.post(URL_STORE, form);
-        setResultStatus("insert", true, `Input ${table} berhasil !`);
+        setResultStatus("insert", true, `Input ${table} berhasil !`); // DELETE AFTER FIX BROADCAST
       } else if (formType === "ALTER_BY_ID") {
-        axiosResponse = await axios.put(URL_ALL, form);
-        setResultStatus("alter", true, `Update ${table} berhasil !`);
+        fetchData(URL_ALL + "/update", "PUT", table, form);
+        setResultStatus("alter", true, `Update ${table} berhasil !`); // DELETE AFTER FIX BROADCAST
       } else if (formType === "DROP_BY_ID") {
-        switch (table) {
-          case `admins`:
-            axiosResponse = await axios.delete(URL_ALL, {
-              data: {
-                adminsId: form.adminsId,
-                superAuthorizationPassword: form.superAuthorizationPassword,
-              },
-            });
-            break;
-          case `products`:
-            axiosResponse = await axios.delete(URL_ALL, {
-              data: {
-                productsId: form.productsId,
-                superAuthorizationPassword: form.superAuthorizationPassword,
-              },
-            });
-            break;
-          default:
-            break;
-        }
+        fetchData(URL_ALL + "/delete", "DELETE", table, {
+          id: form.id,
+        });
+
+        // switch (table) {
+        //   case `admins`:
+        //     axiosResponse = await axios.delete(URL_ALL, {
+        //       data: {
+        //         adminsId: form.adminsId,
+        //         superAuthorizationPassword: form.superAuthorizationPassword,
+        //       },
+        //     });
+        //     break;
+        //   case `products`:
+        //     axiosResponse = await axios.delete(URL_ALL, {
+        //       data: {
+        //         productsId: form.productsId,
+        //         superAuthorizationPassword: form.superAuthorizationPassword,
+        //       },
+        //     });
+        //     break;
+        //   default:
+        //     break;
+        // }
         setResultStatus("drop", true, `Drop ${table} berhasil !`);
       } else if (formType === "DROP_BY_SELECTED") {
         const deleteRequests = [];
@@ -308,13 +308,19 @@ export const MainModalHandler = (props) => {
         // console.log(deleteRequests);
         try {
           // Kirim semua permintaan DELETE secara bersamaan
-          const responses = await axios.delete(URL_ALL, {
-            data: {
-              superAuthorizationPassword: SuperAdminKey,
-              ...(table === "admins" && { adminsId: deleteRequests }),
-              ...(table === "products" && { productsId: deleteRequests }),
-            },
+          fetchData(URL_ALL + "/delete", "DELETE", table, {
+            // ...(table === "admins" && { adminsId: deleteRequests }),
+            // ...(table === "products" && { productsId: deleteRequests }),
+            id: deleteRequests,
           });
+
+          // const responses = await axios.delete(URL_ALL, {
+          //   data: {
+          //     superAuthorizationPassword: SuperAdminKey,
+          //     ...(table === "admins" && { adminsId: deleteRequests }),
+          //     ...(table === "products" && { productsId: deleteRequests }),
+          //   },
+          // });
           // const responses = await axios.all(deleteRequests);
           // console.log("Batch data berhasil dihapus:", responses);
           setResultStatus("drop", true, `Drop Batch ${table} berhasil !`);
@@ -382,7 +388,7 @@ export const MainModalHandler = (props) => {
     dirtyFields,
     watch,
     onSubmit: async (form) => {
-      console.info("data form:", form);
+      // console.info("data form:", form);
       if (errors) {
         Object.keys(errors).map((fieldName) => {
           console.log("Kesalahan dalam formulir:", errors[fieldName].message);
