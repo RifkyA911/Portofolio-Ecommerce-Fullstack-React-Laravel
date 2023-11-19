@@ -19,11 +19,7 @@ import MyAppRoutes from "./Config/MyAppRoutes";
 import { getAccessToken, getCookie, getUser } from "./Config/Session";
 import LoginRouter from "./Config/LoginRouter";
 import MyJump from "./utils/MyJump";
-import {
-  clearSession,
-  updateCredentials,
-  updateSession,
-} from "./Redux/Slices/UserSlice";
+import { clearSession, updateCredentials } from "./Redux/Slices/UserSlice";
 import { IsScreenResize } from "./utils/Solver";
 import RequestAPI, { getApiUrl } from "./Config/API";
 // import Summary from "./utils/Summary";

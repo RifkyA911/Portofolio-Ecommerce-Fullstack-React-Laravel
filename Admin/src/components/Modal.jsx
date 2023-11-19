@@ -67,21 +67,7 @@ export const MainModalHandler = (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const id = useId();
-  // console.log(props);
 
-  // let URL_BY_ID;
-  // let URL_ALL; // UPDATE,PATCH,DROP
-
-  // if (table === "admins") {
-  //   URL_BY_ID = 'admin';
-  //   URL_ALL = 'admins'
-  // } else if (table === "products") {
-  //   URL_BY_ID = 'product';
-  //   URL_ALL = 'products'
-  // } else if (table === "orders") {
-  //   URL_BY_ID = 'order';
-  //   URL_ALL = 'orders';
-  // }
   const tableMappings = {
     admins: { URL_BY_ID: "admin", URL_ALL: "admins" },
     products: { URL_BY_ID: "product", URL_ALL: "products" },
@@ -130,26 +116,6 @@ export const MainModalHandler = (props) => {
     ) {
       if (table_id !== "" && table_id !== null) {
         fetchData(URL_BY_ID, "GET", table, { id: table_id });
-
-        // axios
-        //   .get(URL_BY_ID)
-        //   .then((response) => {
-        //     console.table("fetching:", URL_BY_ID);
-        //     setData(response.data.data);
-        //     setLoading(false);
-        //     setErrorMessage(null);
-        //   })
-        //   .catch((error) => {
-        //     if (error.response) {
-        //       console.log("Response error:", error.response.data);
-        //     } else if (error.request) {
-        //       console.log("Request error:", error.request);
-        //     } else {
-        //       console.log("Error:", error.message);
-        //     }
-        //     setLoading(false);
-        //     setErrorMessage(error.message || "An error occurred.");
-        //   });
       } else {
         setOnWorking(false);
         setLoading(false);
@@ -172,29 +138,8 @@ export const MainModalHandler = (props) => {
       // Ekstrak seluruh ID dari array dan letakkan dalam array terpisah
       const dataArray = Object.values(table_id);
       const ids = dataArray.map((item) => item.id);
-      fetchData(URL_ALL + "/print", "POST", table, { ids: ids });
 
-      // axios
-      //   .post(URL_ALL+'/print', { ids: ids })
-      //   .then((response) => {
-      //     // return console.log(response.data);
-      //     console.table("fetching:", URL_PRINT_BATCH);
-      //     setData(response.data.data);
-      //     setOnWorking(true);
-      //     setLoading(false);
-      //     setErrorMessage(null);
-      //   })
-      //   .catch((error) => {
-      //     if (error.response) {
-      //       console.log("Response error:", error.response.data);
-      //     } else if (error.request) {
-      //       console.log("Request error:", error.request);
-      //     } else {
-      //       console.log("Error:", error.message);
-      //     }
-      //     setLoading(false);
-      //     setErrorMessage(error.message || "An error occurred.");
-      //   });
+      fetchData(URL_ALL + "/print", "POST", table, { ids: ids });
     } else {
       setLoading(false);
     }
@@ -313,12 +258,13 @@ export const MainModalHandler = (props) => {
   }, [data]);
 
   // ============================================ Execute Backend QUERY ============================================
-  let axiosResponse;
   async function sendFormDataByMethod(form) {
     setSending(!sending);
     try {
       if (formType === "INSERT") {
-        axiosResponse = await axios.post(URL_STORE, form);
+        fetchData(URL_BY_ID + "/store", "POST", table, form);
+
+        // axiosResponse = await axios.post(URL_STORE, form);
         setResultStatus("insert", true, `Input ${table} berhasil !`);
       } else if (formType === "ALTER_BY_ID") {
         axiosResponse = await axios.put(URL_ALL, form);

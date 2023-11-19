@@ -8,7 +8,6 @@ import { PasswordInput, TextInput } from "../components/Form";
 import Tooltips from "../components/Tooltips";
 import jwtDecode from "jwt-decode";
 
-const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 
 export const LoginContext = createContext();
