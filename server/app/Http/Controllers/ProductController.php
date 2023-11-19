@@ -330,10 +330,10 @@ class ProductController extends Controller
     public function drop(Request $request)
     {
         $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
-        $productsId = $request->input('productsId');
+        $productsId = $request->input('id');
 
         if ($getSuperAuthorizationPassword !== "superAdmin") {
-            return response(false, "Authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('productsId')], 401);
+            return response(false, "Authorization gagal, pengenalan kredensial tidak tepat, abort.", ['old_input' => $request->except('id')], 401);
         }
 
         if (is_array($productsId)) {
@@ -344,13 +344,13 @@ class ProductController extends Controller
             // Single delete
             $dropProduct = Product::find($productsId);
             if (!$dropProduct) {
-                return response(false, "Product tidak ditemukan.", ['old_input' => $request->except('productsId')], 401);
+                return response(false, "Product tidak ditemukan.", ['old_input' => $request->except('id')], 401);
             }
             $deleted = $dropProduct->delete();
             return new PostResource(true, "Berhasil menghapus Product " . $dropProduct->name, $deleted);
         } else {
             // Invalid input
-            return response(false, "Input productsId tidak valid.", ['old_input' => $request->except('productsId')], 400);
+            return response(false, "Input productsId tidak valid.", ['old_input' => $request->except('id')], 400);
         }
     }
 

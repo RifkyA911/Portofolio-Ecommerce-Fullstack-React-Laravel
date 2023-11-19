@@ -43,7 +43,13 @@ export const ShowAdminData = (props) => {
       <div className="flex items-center space-x-3">
         <div className="avatar " onClick={onClick}>
           <div className="mask mask-squircle w-16 h-16 cursor-pointer ">
-            <img src={`${ServerPublicAdminsImg}${data.pict}`} />
+            <img
+              src={
+                `${ServerPublicAdminsImg}${
+                  data.pict ? data.pict : "blank.jpg"
+                }` ?? "blank.jpg"
+              }
+            />
           </div>
         </div>
         <div className={`${textTable} pl-4 text-left`}>
@@ -73,8 +79,7 @@ export const AuthorityToggle = (props) => {
   // console.log("AuthorityToggle", data);
 
   const [thisAdmin, setThisAdmin] = useState({
-    superAuthorizationPassword: null,
-    adminsId: null,
+    id: null,
     authority: {
       chat: false,
       sort_warehouse: false,
@@ -98,14 +103,12 @@ export const AuthorityToggle = (props) => {
         const parsedAuthority = JSON.parse(data.authority);
         setThisAdmin((prevAdmin) => ({
           ...prevAdmin,
-          superAuthorizationPassword: SuperAdminKey,
-          adminsId: data.id,
+          id: data.id,
           authority: {
             chat: parsedAuthority.chat,
             sort_warehouse: parsedAuthority.sort_warehouse,
             alter_price: parsedAuthority.alter_price,
           },
-          token: getAccessToken(),
         }));
       }
     }
@@ -113,9 +116,7 @@ export const AuthorityToggle = (props) => {
 
   const updateAdminsAuthority = async (data) => {
     try {
-      const request = await RequestAPI("admin/authority", "PATCH", data);
-      // const response = request.data;
-      // console.log(response);
+      await RequestAPI("admin/authority", "PATCH", data);
     } catch (error) {
       console.error("Error fetching admin data:", error);
       setToggle(!toggle);
@@ -128,8 +129,7 @@ export const AuthorityToggle = (props) => {
     isComponentMounted.current = false;
 
     if (
-      thisAdmin.superAuthorizationPassword &&
-      thisAdmin.adminsId &&
+      thisAdmin.id &&
       isUpdated // Hanya jalankan jika belum diupdate
     ) {
       console.info(data.username + " => " + data.authority);
