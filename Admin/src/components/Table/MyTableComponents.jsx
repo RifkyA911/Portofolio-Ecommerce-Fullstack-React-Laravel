@@ -30,6 +30,8 @@ export const MyTableHeaderFilter = (props) => {
     setTabPagination,
   } = props;
 
+  const [clicked, setClicked] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -48,6 +50,8 @@ export const MyTableHeaderFilter = (props) => {
   });
 
   const MyTableFilterContextValue = {
+    clicked,
+    setClicked,
     register,
     handleSubmit,
     setValue,
@@ -73,19 +77,17 @@ export const MyTableHeaderFilter = (props) => {
       {/* BTN HEADER */}
       <MotionButton
         type="button"
-        className="mr-2 grow-0 shrink-0 focus:outline-none bg-gray-200 text-black py-[6px] px-[4px] rounded-md font-roboto-medium items-center "
-        onClick={closeFunction}
-        icon="MdFilterList"
+        className={
+          clicked
+            ? "mr-2 grow-0 shrink-0 focus:outline-none bg-red-200 text-black py-[6px] px-[4px] rounded-md font-roboto-medium items-center "
+            : "mr-2 grow-0 shrink-0 focus:outline-none bg-gray-200 text-black py-[6px] px-[4px] rounded-md font-roboto-medium items-center "
+        }
+        onClick={clicked ? refresh : closeFunction}
+        icon={clicked ? "CgClose" : "MdFilterList"}
         noSpan
         style="p-0"
       />
       <MyTableFilterContext.Provider value={MyTableFilterContextValue}>
-        {/* <div
-          className={`${
-            !isDialogOpen.filter ? "hidden" : "block"
-          } absolute bg-transparent w-full h-full z-[9] cursor-wait rounded-lg backdrop-blur-[0.5px] p-20`}
-          onClick={closeFunction}
-        ></div> */}
         {inputData && inputData.length > 0 && inputData !== undefined ? (
           <>
             {table === "admins" && <AdminFilter />}

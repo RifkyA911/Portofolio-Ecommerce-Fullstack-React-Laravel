@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, useRef, createContext } from "react";
-import axios from "axios";
 // Components
 import { SkeltonTable } from "../components/Skelton";
 import { SetErrorMessage } from "../components/Error/ErrorMessage";
@@ -10,7 +9,6 @@ import {
   AuthorityToggle,
 } from "./../components/Admins/AdminsTableBody";
 import { ActionButton } from "../components/Button";
-import { NumberSpan } from "../components/Span";
 import {
   MyTableEngine,
   Thead,
@@ -24,13 +22,9 @@ import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import { CurrencyFormatter } from "../utils/Formatter";
 import { FormToast } from "../components/Toast";
 import { ReactIcons } from "../utils/RenderIcons";
 import RequestAPI from "../Config/API";
-
-// define fetch data URL_ADMINS by admins
-const initUrlAdmins = import.meta.env.VITE_API_ALL_ADMINS;
 
 export const AdminsContext = createContext();
 
@@ -79,12 +73,10 @@ export default function Admins() {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  // const URL_ADMINS = `${initUrlAdmins}/paginate/${paginate}/${rows}`;
-  // const URL_ADMINS_SEARCH = `${initUrlAdmins}/search?search=`;
-  // const URL_ADMINS_FILTER = `${initUrlAdmins}/filter`;
-  const URL_ADMINS = `admins/paginate/${paginate}/${rows}`;
-  const URL_ADMINS_SEARCH = `admins/search?search=`;
-  const URL_ADMINS_FILTER = `admins/filter`;
+  const table = "admins";
+  const URL_ADMINS = `${table}/paginate/${paginate}/${rows}`;
+  const URL_ADMINS_SEARCH = `${table}/search`;
+  const URL_ADMINS_FILTER = `${table}/filter`;
 
   const fetchData = async (url, form = null) => {
     try {
@@ -98,28 +90,6 @@ export default function Admins() {
       setErrorMessage(`Gagal Fetching '${url}'`);
       console.error(message, error);
     }
-
-    // try {
-    //   const config = {
-    //     method: form ? "post" : "get", // Metode permintaan yang dinamis
-    //     url: url, // URL yang akan diakses
-    //     data: form, // Menggunakan 'data' untuk mengirim data dalam permintaan POST
-    //   };
-    //   const { data } = await axios(config);
-    //   // console.log(data);
-    //   // console.table(`fetching`, table);
-    //   setLoading(false);
-    //   if (table === "admins") {
-    //     setAdmins(data.data);
-    //     setLengthData(data.message.length);
-    //   }
-    //   setErrorMessage(null);
-    // } catch (error) {
-    //   setLoading(false);
-    //   let message = `Gagal Fetching '${table}'`;
-    //   setErrorMessage(message);
-    //   console.error(message, error);
-    // }
   };
 
   // ===================== MyTableEngine =====================
