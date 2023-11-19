@@ -31,6 +31,19 @@ use App\Models\Message;
 //     return $request->user();
 // });
 
+// JWT
+Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
+    // user
+    Route::post('register', [AuthController::class,'register']);    // parameter email, username, password(min:6)
+    Route::post('login', [AuthController::class,'login']);
+    // admin
+    Route::post('admin/register', [AuthController::class,'registerAdmin']);
+    Route::post('admin/login', [AuthController::class,'loginAdmin']);
+
+    Route::post('logout', [AuthController::class,'logout']);
+    Route::post('refresh', [AuthController::class,'refresh']);
+});
+
 // Endpoint Images for image's stuff
 Route::controller(ImagesController::class)->group(function () {
     Route::post('image/{type}/{filename}', 'show'); // type = choose between product, admin, or user
@@ -50,9 +63,9 @@ Route::controller(AdminsController::class)->group(function () {
     Route::post('/admin/store', 'store'); //NEED TOKEN parameter role_admin == 0; data => email, username, password, role
     // update admin
     Route::put('/admins', 'update'); //NEED TOKEN parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
-    Route::post('admin/login', 'login'); // parameter email, password
-    Route::post('admin/logout', 'logout');
-    Route::post('admin/refresh', 'refresh'); // parameter 'token' with value jwt token
+    // Route::post('admin/login', 'login'); // parameter email, password
+    // Route::post('admin/logout', 'logout');
+    // Route::post('admin/refresh', 'refresh'); // parameter 'token' with value jwt token
     Route::post('admin/cek', 'me'); // uji coba, DELETE when deployed
     // patch admin
     Route::patch('/admin/authority', 'patch'); //NEED TOKEN parameter spasial
@@ -66,17 +79,17 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/users/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/user/{id}', 'show'); // parameter id
     // create user
-    Route::post('/user', 'store'); // parameter email, username, password(min:6)
+    // Route::post('/user', 'store'); // parameter email, username, password(min:6)
     // update user
     Route::put('/user', 'update'); // parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     // optional : address, pict;
     // patch user
     Route::patch('/users', 'patch'); // parameter spasial
     // login user
-    Route::post('/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
-    Route::post('/logout', 'logout');
-    Route::post('user/refresh', 'refresh'); // parameter 'token' with value jwt token
-    Route::post('user/cek', 'me'); // uji coba, DELETE when deployed
+    // Route::post('/login', 'login'); // parameter email, password, auth_key(isi = cikidaw)
+    // Route::post('/logout', 'logout');
+    // Route::post('user/refresh', 'refresh'); // parameter 'token' with value jwt token
+    // Route::post('user/cek', 'me'); // uji coba, DELETE when deployed
 });
 
 // Endpoint Product
@@ -188,11 +201,3 @@ Route::controller(MessageController::class)->group(function () {
     // parameter : dialog_id
 });
 
-// JWT
-// Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
-//     Route::post('register', [AuthController::class,'register']);
-//     Route::post('login', [AuthController::class,'login']);
-//     Route::post('logout', [AuthController::class,'logout']);
-//     Route::post('refresh', [AuthController::class,'refresh']);
-//     Route::post('me', [AuthController::class,'me']);
-// });

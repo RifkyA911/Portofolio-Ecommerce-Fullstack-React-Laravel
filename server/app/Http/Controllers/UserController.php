@@ -82,48 +82,49 @@ class UserController extends Controller
         return response()->json(auth()->user());
     }
 
-    public function logout()
-    {
-        auth()->logout();
+    // public function logout()
+    // {
+    //     auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
-    }
+    //     return response()->json(['message' => 'Successfully logged out']);
+    // }
 
-    public function refresh()
-    {
-        return $this->respondWithToken(auth()->refresh());
-    }
+    // public function refresh()
+    // {
+    //     return $this->respondWithToken(auth()->refresh());
+    // }
 
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
-    }
+    // protected function respondWithToken($token)
+    // {
+    //     return response()->json([
+    //         'access_token' => $token,
+    //         'token_type' => 'bearer',
+    //         'expires_in' => auth()->factory()->getTTL() * 60
+    //     ]);
+    // }
 
     /**
      * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            "email" => 'required|email|unique:users,email',
-            "username" => 'required',
-            "password" => 'required|min:6',
-        ]);
-        // $validated = $request->validate([
-        //     "email" => 'required|email|unique:users,email',
-        //     "username" => 'required',
-        //     "password" => 'required|min:6',
-        // ]);
-        if ($validator->fails()) {
-            return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
-        }
-        $addUser = User::create($request->all());
-        return response(new PostResource(true, "User berhasil ditambahkan.", $addUser), 201);
-    }
+     * Registrasi/add user pindah ke authController
+     */     
+    // public function store(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         "email" => 'required|email|unique:users,email',
+    //         "username" => 'required',
+    //         "password" => 'required|min:6',
+    //     ]);
+    //     // $validated = $request->validate([
+    //     //     "email" => 'required|email|unique:users,email',
+    //     //     "username" => 'required',
+    //     //     "password" => 'required|min:6',
+    //     // ]);
+    //     if ($validator->fails()) {
+    //         return response(new PostResource(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()]), 400);
+    //     }
+    //     $addUser = User::create($request->all());
+    //     return response(new PostResource(true, "User berhasil ditambahkan.", $addUser), 201);
+    // }
 
     /**
      * Display the specified resource.
