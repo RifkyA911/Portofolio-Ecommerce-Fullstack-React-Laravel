@@ -4,7 +4,7 @@ import { Link, Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 // UTILS
-import { getUser, logOutUser } from "../utils/Session/Admin";
+import { getUser, logOutUser } from "../Config/Session";
 import { NavbarComponent } from "../components/Navbar";
 import { MuiIcon } from "../utils/RenderIcons";
 

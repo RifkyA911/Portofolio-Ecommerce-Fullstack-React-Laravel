@@ -29,7 +29,7 @@ import { FormToast } from "../components/Toast";
 import { ReactIcons } from "../utils/RenderIcons";
 
 // define fetch data URL_ADMINS by admins
-const initUrlAdmins = import.meta.env.VITE_API_ALL_ADMIN;
+const initUrlAdmins = import.meta.env.VITE_API_ALL_ADMINS;
 
 export const AdminsContext = createContext();
 

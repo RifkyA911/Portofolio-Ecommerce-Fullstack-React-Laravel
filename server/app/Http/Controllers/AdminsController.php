@@ -51,7 +51,6 @@ class AdminsController extends Controller
     public function me(Request $request)
     {
         return response()->json(auth('admin')->user());
-        // }
     }
 
     public function logout()
@@ -89,9 +88,9 @@ class AdminsController extends Controller
     {
         // return strlen($this->me($request));
         if (strlen($this->me($request)->getContent()) > 5) {
-            return new PostResource(true, "Data admin " . $id . " :", Admin::find($id));
+            return response(["message" => "Data admin " . $id . " :", "data" => Admin::find($id), 'result' => $this->me($request)], 200);
         }
-        return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
+        return response(['error' => 'Validasi gagal', 'message' => 'forbidden action detected', 'result' => $this->me($request)], 403);
     }
 
     private function notFound()
@@ -137,18 +136,18 @@ class AdminsController extends Controller
     {
         if (strlen($this->me($request)->getContent()) > 5) {
             $searchTerm = $request->input('search'); // Ambil parameter pencarian dari input form
-    
+
             $admins = Admin::where(function ($query) use ($searchTerm) {
                 $columns = Schema::getColumnListing('admins'); // Mengambil daftar nama kolom dari tabel admins
                 foreach ($columns as $column) {
                     $query->orWhere($column, 'like', '%' . $searchTerm . '%');
                 }
             })->get();
-    
+
             $length = $admins->count();
-    
+
             return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $admins);
-            
+
         }
         return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
     }
@@ -156,20 +155,20 @@ class AdminsController extends Controller
 
     public function showLimit($page, $perPage)
     {
-            // Mengonversi halaman dan perPage yang diterima menjadi integer
-            $page = (int) $page; // halaman
-            $perPage = (int) $perPage; // jumlah data yang akan di kirim
-    
-            $length = Admin::count();
-    
-            // Menghitung offset berdasarkan halaman yang diminta
-            $offset = ($page - 1) * $perPage;
-    
-            // Mengambil data Admin dengan paginasi dan offset
-            $admins = Admin::skip($offset)->take($perPage)->get();
-    
-            // Mengembalikan hasil dalam bentuk resource
-            return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $admins);
+        // Mengonversi halaman dan perPage yang diterima menjadi integer
+        $page = (int) $page; // halaman
+        $perPage = (int) $perPage; // jumlah data yang akan di kirim
+
+        $length = Admin::count();
+
+        // Menghitung offset berdasarkan halaman yang diminta
+        $offset = ($page - 1) * $perPage;
+
+        // Mengambil data Admin dengan paginasi dan offset
+        $admins = Admin::skip($offset)->take($perPage)->get();
+
+        // Mengembalikan hasil dalam bentuk resource
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $admins);
     }
 
     public function filter(Request $request) //////////////////////////////////////////////////
@@ -181,31 +180,31 @@ class AdminsController extends Controller
             $getDateType = $request->input('date_type');
             $startDate = $request->input('date_start');
             $endDate = $request->input('date_end');
-    
+
             if (!$SuperAdminKey == 'superAdmin') {
                 return response(['message' => 'validasi kredensial data error', 'error' => 'bad request client :('], 400);
             }
-    
+
             if (!is_array($authorities) || !is_array($roles)) {
                 return response(['message' => 'authorities or roles field type of data are not array', 'error' => 'bad request client :(', 'failed payload' => $request], 400);
             }
-    
+
             // Mendefinisikan semua kunci dengan nilai false secara default
             $authorityObject = new stdClass();
             $defaultAuthorities = ["chat", "sort_warehouse", "alter_price"];
             foreach ($defaultAuthorities as $authority) {
                 $authorityObject->$authority = false;
             }
-    
+
             // Mengatur nilai true berdasarkan nilai yang ada dalam $authorities
             foreach ($authorities as $authority) {
                 if (property_exists($authorityObject, $authority)) {
                     $authorityObject->$authority = true;
                 }
             }
-    
+
             // return response(['message' => 'coba liat', 'data' => $authorityObject, 'chat' => $authorityObject->chat], 404);
-    
+
             $dateType = '';
             if ($getDateType) {
                 if ($getDateType == 'created_at') {
@@ -218,7 +217,7 @@ class AdminsController extends Controller
             } else {
                 return response(['message' => 'payload->date_type null/error', 'error' => 'bad request client :('], 404);
             }
-    
+
             $admins = Admin::
                 where(function ($query) use ($authorityObject) {
                     foreach ($authorityObject as $authority) {
@@ -229,12 +228,12 @@ class AdminsController extends Controller
                 ->whereBetween($dateType, [$startDate, $endDate])
                 ->get();
             $length = $admins->count();
-    
+
             if (!$length) {
                 return $this->notFound();
             }
             return new PostResource(true, ['Message' => 'Request Search Berhasil', 'length' => $length], $admins);
-            
+
         }
         return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
     }
@@ -246,9 +245,9 @@ class AdminsController extends Controller
                 $admin = new stdClass(); // membuat objek php baru
                 $admin->id = Admin::max('id') + 1; // mencari nilai id tertinggi lalu ditambah 1 untuk unique
                 $admin->name = $request->input('username');
-    
+
                 $pict = $request->input('pict');
-    
+
                 if ($pict) { // Test: Pass
                     $newPictValue = $this->uploadImage($pict, $admin);
                     // if ($oldName === $name) {
@@ -258,18 +257,18 @@ class AdminsController extends Controller
                 } else {
                     $request->merge(['pict' => 'default.jpg']);
                 }
-    
+
                 $validator = Validator::make($request->all(), [
                     "email" => 'required|email|unique:admins,email',
                     "username" => 'required',
                     "password" => 'required|min:6',
                     "role" => "required|numeric"
                 ]);
-    
+
                 if ($validator->fails()) {
                     return response(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()], 400);
                 }
-    
+
                 if (Admin::create($request->except(['superAuthorizationPassword'])) !== false) {
                     return new PostResource(true, "Admin berhasil ditambahkan.", $request->only(['email', 'username']));
                 } else {
@@ -277,7 +276,7 @@ class AdminsController extends Controller
                 }
             }
             return response(['message' => 'Akun admin gagal ditambahkan, Akun anda tidak punya akses dalam pembuatan akun admin.', 'error' => $request->input()], 406);
-            
+
         }
         return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
     }
@@ -287,10 +286,10 @@ class AdminsController extends Controller
         return $this->me($request)->getContent();
         if (strlen($this->me($request)->getContent()) > 5) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
-    
+
             $updateAdmin = Admin::find($request->input('adminsId'));
             // return $request;
-    
+
             // initiate rule for validation
             // jika yang mengedit adalah superAdmin 
             $getSuperAuthorizationPassword === 'superAdmin'
@@ -304,18 +303,18 @@ class AdminsController extends Controller
                     "username" => 'required',
                     "password" => 'required|min:6'
                 ]);
-    
-    
+
+
             // if an Admin issuing newPassword then add rule list
             if ($request->input("newPassword") !== null) {
                 $rule = array_merge($rule, ["newPassword" => "min:6|confirmed"]);
             }
             $validator = Validator::make($request->all(), $rule);
-    
+
             if ($validator->fails()) {
                 return response(['message' => "validasi data error", 'errors' => $validator->errors(), 'old_input' => $request->except('id')], 400);
             }
-    
+
             // cek password lama
             // jika yang mengedit bukan superAdmin 
             if ($getSuperAuthorizationPassword !== 'superAdmin') {
@@ -324,14 +323,19 @@ class AdminsController extends Controller
                 }
                 ;
             }
-    
+
             $admin = Admin::find($request->input('adminsId'));
             $oldName = $admin->name; // current data in db
             $oldPict = $admin->pict; // current data in db
             // ~~~~~~ mutasi update variabel separator ~~~~~~
             $name = $request->input('name'); // incoming req
             $pict = $request->input('pict'); // incoming req
-    
+
+            if ($oldPict !== $pict) {
+                $wey = true;
+            } else {
+                $wey = false;
+            }
             // if pict req is not null/noChange
             if ($pict !== "noChange") { // Test: Pass
                 // if oldName!=name, replace property values in $admin object
@@ -357,11 +361,11 @@ class AdminsController extends Controller
                 $modifedFileStatus = false;
                 $request->merge(['pict' => $admin->pict]);
             }
-    
+
             // isi data baru
             $updateAdmin->username = $request->input('username');
             $updateAdmin->email = $request->input('email');
-            $updateAdmin->pict = $request->input('pict') ?? 'default.jpg';
+            $updateAdmin->pict = $request->input('pict');
             if ($request->input('newPassword') !== null) {
                 $updateAdmin->password = $request->input('newPassword');
             } /*else {
@@ -370,10 +374,10 @@ class AdminsController extends Controller
             if ($updateAdmin->role == 1) { // jika admin role = admin
                 $updateAdmin->role = $request->input('role');
             }
-            return new PostResource(true, ["Message" => "product ter-update.", "modifedFileStatus" => $modifedFileStatus ?? null], $updateAdmin->update());
-            
+            return response(["status" => $updateAdmin->update(), "message" => "product ter-update.", "modifedFileStatus" => $modifedFileStatus ?? null, "oldData" => $wey], 202);
+
         }
-        return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
+        return response(['error' => 'Validasi gagal', 'message' => 'forbidden action detected', 's' => $this->me($request)], 404);
     }
 
     public function patch(Request $request)
@@ -381,9 +385,9 @@ class AdminsController extends Controller
         if (strlen($this->me($request)->getContent()) > 5) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
             $adminsId = $request->input('adminsId');
-    
+
             $updateAdmin = Admin::find($adminsId);
-    
+
             // Jika yang mengedit adalah superAdmin 
             if ($getSuperAuthorizationPassword === 'superAdmin') {
                 // Ambil nilai 'authority' dari request, jika tidak ada, gunakan nilai default
@@ -392,15 +396,15 @@ class AdminsController extends Controller
                     "sort_warehouse" => false,
                     "alter_price" => false
                 ];
-    
+
                 // Menggunakan metode update untuk mengupdate data dengan nilai authority yang dinamis
                 $updateAdmin->update(['authority' => $authorityValue]);
-    
+
                 return new PostResource(true, "User ter-update.", $updateAdmin);
             } else {
                 return new PostResource(false, "SuperAuthorizationPassword salah.", null);
             }
-            
+
         }
         return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
     }
@@ -411,11 +415,11 @@ class AdminsController extends Controller
         if (strlen($this->me($request)->getContent()) > 5) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
             $adminsId = $request->input('adminsId');
-    
+
             if ($getSuperAuthorizationPassword !== "superAdmin") {
                 return response(['message' => "Authorization gagal, pengenalan kredensial tidak tepat, abort.", 'old_input' => $request->except('adminsId')], 401);
             }
-    
+
             if (is_array($adminsId)) {
                 // Batch delete
                 $deletedCount = Admin::whereIn('id', $adminsId)->delete();
@@ -432,7 +436,7 @@ class AdminsController extends Controller
                 // Invalid input
                 return response(['message' => "Input adminsId tidak valid.", 'old_input' => $request->except('adminsId')], 400);
             }
-            
+
         }
         return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
     }

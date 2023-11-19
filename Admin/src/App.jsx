@@ -16,17 +16,16 @@ import { navLink } from "./Redux/Slices/NavigationSlice";
 
 // Utils
 import MyAppRoutes from "./Config/MyAppRoutes";
-import { getUser } from "./utils/Session/Admin";
+import { getUser } from "./Config/Session";
 import LoginRouter from "./Config/LoginRouter";
 import MyJump from "./utils/MyJump";
-import MyDebuggerPanel from "./utils/MyDebuggerPanel";
-import MyToDoList from "./utils/MyToDoList";
 import {
   clearSession,
   updateCredentials,
   updateSession,
 } from "./Redux/Slices/UserSlice";
 import { IsScreenResize } from "./utils/Solver";
+import { getApiUrl } from "./Config/API";
 // import Summary from "./utils/Summary";
 
 function App() {
@@ -38,13 +37,11 @@ function App() {
     (state) => state.UI
   );
   const { logged, user } = useSelector((state) => state.user);
-  const location = useLocation();
+  // const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const appMode = import.meta.env.MODE;
-  // console.info("Mode:", import.meta.env);
-  // console.log(location);
 
   useEffect(() => {
     if (userSession == null) {
@@ -53,11 +50,12 @@ function App() {
     } else {
       dispatch(updateCredentials({ user: getUser() }));
     }
-    console.log(`logged:`, logged);
-    console.log(`userSession:`, userSession);
-    console.log(`user:`, user);
+    console.log(getApiUrl("products"));
+    // console.log(`logged:`, logged);
+    // console.log(`userSession:`, userSession);
+    // console.log(`user:`, getUser());
     // setUserSession(getUser())
-  }, [userSession]);
+  }, [userSession, user]);
   return (
     <>
       {userSession !== null ? (

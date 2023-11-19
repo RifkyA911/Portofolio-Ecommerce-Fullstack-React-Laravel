@@ -13,7 +13,7 @@ import { createTw } from "react-pdf-tailwind";
 import { styles } from "./Styles";
 
 import { CurrencyFormatter, DateFormatter } from "../../utils/Formatter";
-import { getUser } from "../../utils/Session/Admin";
+import { getUser } from "../../Config/Session";
 import axios from "axios";
 
 const CompanyProfileURL = import.meta.env.VITE_COMPANY_PROFILE;

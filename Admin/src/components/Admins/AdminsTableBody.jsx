@@ -15,6 +15,7 @@ import { MotionButton } from "../Button";
 import { DateFormatter } from "../../utils/Formatter";
 import { MyTableFilterContext } from "../Table/MyTableComponents";
 import { SelectInput } from "../Form";
+import { getAccessToken } from "../../Config/Session";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -103,6 +104,7 @@ export const AuthorityToggle = (props) => {
             sort_warehouse: parsedAuthority.sort_warehouse,
             alter_price: parsedAuthority.alter_price,
           },
+          token: getAccessToken(),
         }));
       }
     }

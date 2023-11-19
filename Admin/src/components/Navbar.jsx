@@ -1,4 +1,4 @@
-import { Fragment, React } from "react";
+import { Fragment, React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 // Data
 import { MarketInbox, MarketNotification } from "../Config/Temporary";
@@ -8,20 +8,43 @@ import { Transition, Popover, Switch, Tab } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 // UTILS
-import { getUser, logOutUser } from "../utils/Session/Admin";
+import { getAccessToken, getUser, logOutUser } from "../Config/Session";
 import { MuiIcon } from "../utils/RenderIcons";
+import axios from "axios";
 
 const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
 const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
 
 export const NavbarComponent = () => {
+  const [admin, setAdmin] = useState({
+    id: null,
+    username: null,
+    pict: null,
+    role: null,
+  });
+
   // REDUX
   const { BgColor, textColor, screenWidth, ComponentColor } = useSelector(
     (state) => state.UI
   );
-  const { logged, adminsId, id, email, username, pict, role } = useSelector(
-    (state) => state.user
-  );
+
+  // useEffect(() => {
+  //   console.log(logged, adminsId, id, email, username, pict, role);
+  // }, [pict]);
+  useEffect(() => {
+    const { id } = getUser();
+    axios
+      .get("http://127.0.0.1:8000/api/admin/" + id, {
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`,
+        },
+      })
+      .then((response) => {
+        // console.log(response.data.data);
+        setAdmin(response.data.data);
+      })
+      .catch((error) => console.error(error));
+  }, []);
 
   const dispatch = useDispatch();
   const userSession = getUser();
@@ -294,7 +317,7 @@ export const NavbarComponent = () => {
               <div className="relative avatar  focus:ring-0 focus:outline-none">
                 <div className="w-10 rounded-full shadow-xl focus:ring-0 focus:outline-none">
                   <img
-                    src={`${ServerPublicAdminsImg}${userSession.pict}`}
+                    src={`${ServerPublicAdminsImg}${admin.pict}`}
                     alt="profile"
                     className="w-6 h-6 rounded-full text-center "
                   />
@@ -316,17 +339,17 @@ export const NavbarComponent = () => {
                     <div className="flex flex-row picture items-center px-4">
                       <div className="flex relative pr-4">
                         <img
-                          src={`${ServerPublicAdminsImg}${pict}`}
+                          src={`${ServerPublicAdminsImg}${admin.pict}`}
                           alt="profile"
                           className="w-14 h-14 rounded-full text-center"
                         />
                       </div>
                       <div className="flex flex-col text-left ">
                         <p className="flex-none font-medium text-sm text-ellipsis overflow-hidden max-h-[85px] max-w-[85px] line-clamp-2">
-                          {username}
+                          {admin.username}
                         </p>
                         <p className="text-xs">
-                          {role == 0 ? "Super Admin" : "Admin"}
+                          {admin.role == 0 ? "Super Admin" : "Admin"}
                         </p>
                       </div>
                     </div>

@@ -1,28 +1,32 @@
 import React, { useState, useEffect, createContext } from "react";
 import axios from "axios";
+import { useForm } from "react-hook-form";
+import { debounce } from "lodash";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-// Layout and Components
+// Config
+import RequestAPI from "../Config/API";
+import { getAccessToken, getUser, refreshAccessToken } from "../Config/Session";
+// Layout
 import { Container, Content } from "../Layout";
+// Components
+import { SkeltonMyProfile } from "../components/Skelton/Skelton";
 import { DangerAlert, SuccessAlert } from "../components/Alert";
 import { FilePictureInput, PasswordInput, TextInput } from "../components/Form";
 import { MotionButton } from "../components/Button";
 // Utils
 import { ReactIcons } from "./../utils/RenderIcons";
-import { getUser } from "../utils/Session/Admin";
-import { updateCredentials, updateSession } from "../Redux/Slices/UserSlice";
-import { useForm } from "react-hook-form";
-import { SkeltonForm } from "../components/Skelton/SkeltonForm";
-import { debounce } from "lodash";
-import { refreshToken } from "../Redux/Slices/RefreshSlice";
+import { IsThisAnImage } from "../utils/Solver";
 
-const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMIN;
+const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMINS;
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
+const placeholder_password = import.meta.env.VITE_SUPER_ADMIN_PASSWORD;
 
 export const MyProfileContext = createContext();
 
 export default function MyProfile() {
   const [ready, setReady] = useState(true);
+  const [admin, setAdmin] = useState(null);
   const [toggleForm, setToggleForm] = useState({
     inputChange: null,
     passwordChange: false,
@@ -36,11 +40,6 @@ export default function MyProfile() {
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
     (state) => state.UI
   );
-  const { logged, adminsId, id, email, username, pict } = useSelector(
-    (state) => state.user
-  );
-
-  const dispatch = useDispatch();
 
   // react-hook-form
   const {
@@ -61,30 +60,54 @@ export default function MyProfile() {
     },
   });
 
-  const userSession = getUser();
+  const { id } = getUser();
+
+  const fetchData = async () => {
+    try {
+      const request = await RequestAPI(
+        "admin",
+        "GET",
+        { id: id },
+        { paginate: `paginate/${1}/${10}` }
+      );
+      const response = request.data;
+      // console.log(response);
+      setAdmin(response.data);
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
+      setStatusMessage(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   let initialFormValue;
+
   useEffect(() => {
-    initialFormValue = {
-      // PS: ganti nanti ambil dari redux
-      superAuthorizationPassword: SuperAdminKey,
-      id: id,
-      adminsId: adminsId,
-      email: email,
-      username: username,
-      pict: pict,
-      password: "superadmin",
-      password_confirmation: null,
-      newPassword: null,
-      newPassword_confirmation: null,
-    };
-    for (const key in initialFormValue) {
-      setValue(key, initialFormValue[key]);
-      setLoading(false);
+    if (admin) {
+      initialFormValue = {
+        // PS: ganti nanti ambil dari redux
+        // superAuthorizationPassword: SuperAdminKey,
+        id: admin.id,
+        adminsId: admin.id,
+        email: admin.email,
+        username: admin.username,
+        pict: admin.pict,
+        password: placeholder_password,
+        password_confirmation: null,
+        newPassword: null,
+        newPassword_confirmation: null,
+      };
+      for (const key in initialFormValue) {
+        setValue(key, initialFormValue[key]);
+        setLoading(false);
+      }
+      initialFormValue = null;
+      // console.log(getValues());
     }
-    initialFormValue = null;
-    // console.log(getValues());
-  }, [statusMessage, errorMessage]);
+  }, [admin, statusMessage, errorMessage]);
 
   useEffect(() => {
     setToggleForm({ ...toggleForm, btnChange: (toggleForm.btnChange = true) });
@@ -100,17 +123,19 @@ export default function MyProfile() {
   }, [toggleForm.passwordChange]);
 
   const onSubmit = async (form) => {
-    try {
-      const response = await axios.put(URL_ADMIN, form);
-      setStatusMessage(response.data.message);
-      // dispatch(updateSession(formData.username));
-    } catch (error) {
-      setErrorMessage(error.response.data.message);
+    // console.log(form);
+    if (!IsThisAnImage(form.pict)) {
+      form.pict = "noChange";
     }
-    dispatch(refreshToken({ user: form }));
-    dispatch(updateCredentials({ user: form }));
-    getUser();
-    // window.location.reload(); // ganti router
+    try {
+      const request = await RequestAPI("admins", "PUT", form);
+      // const response = request.data;
+      // console.log(response);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
+      setStatusMessage(error.message);
+    }
   };
 
   // const debouncedOnChange = debounce(, 1000);
@@ -138,21 +163,23 @@ export default function MyProfile() {
     <>
       <Container>
         <MyProfileContext.Provider value={MyProfileContextValue}>
-          {loading ? (
-            <SkeltonForm />
-          ) : (
-            <>
-              {/* <WarningAlert message="Proceed Forms and Drag Pict" /> */}
-              <Content pageName="My Profile">
+          <Content pageName="My Profile">
+            {loading ? (
+              <SkeltonMyProfile />
+            ) : (
+              <>
+                {/* <WarningAlert message="Proceed Forms and Drag Pict" /> */}
                 {errors?.adminsId?.message && (
                   <>
                     {console.log(getValues("adminsId"))}
                     <DangerAlert message={errors.adminsId.message} />
                   </>
                 )}
-                <div className="flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-full py-4">
+                <div
+                  className={`${BgColor} ${textColor}  flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-full py-4`}
+                >
                   <form
-                    className="font-base w-full text-black"
+                    className="font-base w-full"
                     autoComplete="off"
                     onSubmit={handleSubmit(onSubmit)}
                   >
@@ -163,7 +190,7 @@ export default function MyProfile() {
                       })}
                     />
                     <ul className="flex flex-col lg:flex-row lg:justify-center w-full ">
-                      <li className="flex flex-col md:w-1/2">
+                      <li className="flex flex-col md:w-7/12">
                         <div className="flex-col justify-start items-center form-control w-full">
                           <FilePictureInput
                             formContext={MyProfileContext}
@@ -174,8 +201,8 @@ export default function MyProfile() {
                         </div>
                       </li>
                       <div className="divider divider-horizontal"></div>
-                      <li className="relative flex flex-col md:w-1/2justify-start items-center">
-                        <div className="flex flex-col gap-4 divide-slate-700 w-[350px] px-4 lg:px-0">
+                      <li className="relative flex flex-col md:w-5/12 justify-start items-center">
+                        <div className="flex flex-col text-left gap-4  divide-slate-700 w-[350px] px-4 lg:px-0">
                           <TextInput
                             className={`flex gap-4 flex-col w-full`}
                             label="Email"
@@ -254,9 +281,9 @@ export default function MyProfile() {
                     </ul>
                   </form>
                 </div>
-              </Content>
-            </>
-          )}
+              </>
+            )}
+          </Content>
         </MyProfileContext.Provider>
       </Container>
     </>
