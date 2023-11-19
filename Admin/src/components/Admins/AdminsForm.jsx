@@ -556,15 +556,6 @@ export const AdminsInputForm = (props) => {
 
   return (
     <>
-      {/* ALTER */}
-      {formType === "ALTER_BY_ID" && (
-        <input
-          type="hidden"
-          {...register("adminsId", {
-            required: "This adminsId Credentials ID are required",
-          })}
-        />
-      )}
       <div className="flex flex-col md:flex-row justify-center items-center py-2 px-6">
         {/* Images */}
         <div className="flex flex-col justify-start items-center self-start w-full md:w-4/12 lg:w-6/12">
@@ -663,7 +654,6 @@ export const AdminsDropForm = (props) => {
             {formType === "DROP_BY_ID" && (
               <DropByIdForm
                 formContext={ModalContext}
-                tableId="adminsId"
                 location={table}
                 thisName={data.username}
                 pict={data.pict}

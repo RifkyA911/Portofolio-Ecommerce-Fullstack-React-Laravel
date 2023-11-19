@@ -1,12 +1,14 @@
 import axios from "axios";
 import { getAccessToken, getUser, refreshAccessToken } from "./Session";
 
+const table = "admin";
+const SERVER_BASE_URL = import.meta.env.VITE_API_URL;
 const superAuthorizationPassword = import.meta.env
   .VITE_SUPER_AUTHORIZATION_PASSWORD;
 const loginEmail = import.meta.env.VITE_SUPER_ADMIN_EMAIL;
 const loginPassword = import.meta.env.VITE_SUPER_ADMIN_PASSWORD;
 
-export const getApiUrl = (endpointType, params, data, formType) => {
+export const getApiUrl = (endpointType, data) => {
   // console.log("data", data);
   const baseUrls = {
     publicImg: import.meta.env.VITE_SERVER_PUBLIC_IMG,
@@ -16,6 +18,7 @@ export const getApiUrl = (endpointType, params, data, formType) => {
   };
 
   const apiEndpoints = {
+    session: { auth: `${SERVER_BASE_URL}/api/auth` },
     id: {
       product: import.meta.env.VITE_API_ID_PRODUCT,
       category: import.meta.env.VITE_API_ID_CATEGORY,
@@ -40,29 +43,48 @@ export const getApiUrl = (endpointType, params, data, formType) => {
     },
   };
 
-  // if (baseUrls.hasOwnProperty(endpointType)) {
-  //   return baseUrls[endpointType];
-  // } else if (apiEndpoints.id.hasOwnProperty(endpointType)) {
-  //   return `${apiEndpoints.id[endpointType]}/${data.id ? data.id : ""}`;
-  // } else if (apiEndpoints.all.hasOwnProperty(endpointType)) {
-  //   return apiEndpoints.all[endpointType];
-  // }
-
   const URL_Segments = endpointType.split("/");
-  console.log(URL_Segments);
-  if (baseUrls.hasOwnProperty(endpointType)) {
+  // console.log(URL_Segments);
+
+  // AUTH
+  if (apiEndpoints.session.hasOwnProperty(URL_Segments[0])) {
+    if (URL_Segments[1] == "login" || URL_Segments[1] == "logout") {
+      return `${apiEndpoints.session.auth}/${table}/${URL_Segments[1]}`;
+    } else if (URL_Segments[1] == "refresh") {
+      return `${apiEndpoints.session.auth}/${URL_Segments[1]}`;
+    }
+  }
+  // PUBLIC SERVER
+  else if (baseUrls.hasOwnProperty(endpointType)) {
     return baseUrls[endpointType];
-  } else if (apiEndpoints.id.hasOwnProperty(URL_Segments[0])) {
-    if (URL_Segments[1] == "refresh") {
-      return `${apiEndpoints.id[URL_Segments[0]]}/refresh`;
+  }
+  // QUERY BY ID
+  else if (apiEndpoints.id.hasOwnProperty(URL_Segments[0])) {
+    if (
+      URL_Segments[1] == "store" ||
+      URL_Segments[1] == "refresh" ||
+      URL_Segments[1] == "authority" ||
+      URL_Segments[1] == "cek"
+    ) {
+      return `${apiEndpoints.id[URL_Segments[0]]}/${URL_Segments[1]}`;
     } else {
       return `${apiEndpoints.id[URL_Segments[0]]}/${data.id ? data.id : ""}`;
     }
-  } else if (apiEndpoints.all.hasOwnProperty(URL_Segments[0])) {
+  }
+  // QUERY ALL
+  else if (apiEndpoints.all.hasOwnProperty(URL_Segments[0])) {
     if (URL_Segments[1] == "paginate") {
       return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}/${
         URL_Segments[2]
       }/${URL_Segments[3]}`;
+    } else if (
+      URL_Segments[1] == "update" ||
+      URL_Segments[1] == "delete" ||
+      URL_Segments[1] == "search" ||
+      URL_Segments[1] == "filter" ||
+      URL_Segments[1] == "print"
+    ) {
+      return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}`;
     } else {
       return apiEndpoints.all[URL_Segments[0]];
     }
@@ -81,9 +103,10 @@ const RequestAPI = async (
   }
 ) => {
   let access_token = getAccessToken();
-  console.log(endpoint, data);
+  // console.log(endpoint, data);
+  // console.log(getApiUrl(endpoint, data));
   try {
-    const url = `${getApiUrl(endpoint, null, data)}`;
+    const url = `${getApiUrl(endpoint, data)}`;
     const axiosConfig = {
       method: method,
       url: url,

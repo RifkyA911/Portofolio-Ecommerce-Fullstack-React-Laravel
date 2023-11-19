@@ -32,16 +32,16 @@ use App\Models\Message;
 // });
 
 // JWT
-Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
+Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     // user
-    Route::post('register', [AuthController::class,'register']);    // parameter email, username, password(min:6)
-    Route::post('login', [AuthController::class,'login']);
+    Route::post('register', [AuthController::class, 'register']);    // parameter email, username, password(min:6)
+    Route::post('login', [AuthController::class, 'login']);
     // admin
-    Route::post('admin/register', [AuthController::class,'registerAdmin']);
-    Route::post('admin/login', [AuthController::class,'loginAdmin']);
+    Route::post('admin/register', [AuthController::class, 'registerAdmin']);
+    Route::post('admin/login', [AuthController::class, 'loginAdmin']);
 
-    Route::post('logout', [AuthController::class,'logout']);
-    Route::post('refresh', [AuthController::class,'refresh']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
 });
 
 // Endpoint Images for image's stuff
@@ -62,7 +62,7 @@ Route::controller(AdminsController::class)->group(function () {
     //  create admin
     Route::post('/admin/store', 'store'); //NEED TOKEN parameter role_admin == 0; data => email, username, password, role
     // update admin
-    Route::put('/admins', 'update'); //NEED TOKEN parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    Route::put('/admins/update', 'update'); //NEED TOKEN parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     // Route::post('admin/login', 'login'); // parameter email, password
     // Route::post('admin/logout', 'logout');
     // Route::post('admin/refresh', 'refresh'); // parameter 'token' with value jwt token
@@ -70,7 +70,7 @@ Route::controller(AdminsController::class)->group(function () {
     // patch admin
     Route::patch('/admin/authority', 'patch'); //NEED TOKEN parameter spasial
     // delete admin
-    Route::delete('/admins', 'drop'); //NEED TOKEN parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    Route::delete('/admins/delete', 'drop'); //NEED TOKEN parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
 });
 
 // Endpoint User

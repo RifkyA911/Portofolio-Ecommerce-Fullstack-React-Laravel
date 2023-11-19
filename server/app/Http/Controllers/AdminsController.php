@@ -264,11 +264,10 @@ class AdminsController extends Controller
 
     public function update(Request $request)
     {
-        return $this->me($request)->getContent();
         if (AuthController::check($request)) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
 
-            $updateAdmin = Admin::find($request->input('adminsId'));
+            $updateAdmin = Admin::find($request->input('id'));
             // return $request;
 
             // initiate rule for validation
@@ -276,11 +275,11 @@ class AdminsController extends Controller
             $getSuperAuthorizationPassword === 'superAdmin'
                 ?
                 ($rule = [
-                    "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('adminsId'))],
+                    "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
                     "username" => 'required',
                 ])
                 : ($rule = [
-                    "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('adminsId'))],
+                    "email" => ['required', 'email', Rule::unique('admins', 'email')->ignore($request->input('id'))],
                     "username" => 'required',
                     "password" => 'required|min:6'
                 ]);
@@ -305,7 +304,7 @@ class AdminsController extends Controller
                 ;
             }
 
-            $admin = Admin::find($request->input('adminsId'));
+            $admin = Admin::find($request->input('id'));
             $oldName = $admin->name; // current data in db
             $oldPict = $admin->pict; // current data in db
             // ~~~~~~ mutasi update variabel separator ~~~~~~
@@ -350,8 +349,8 @@ class AdminsController extends Controller
             if ($request->input('newPassword') !== null) {
                 $updateAdmin->password = $request->input('newPassword');
             } /*else {
-                $updateAdmin->password = $request->input('password');
-            } */
+        $updateAdmin->password = $request->input('password');
+    } */
             if ($updateAdmin->role == 1) { // jika admin role = admin
                 $updateAdmin->role = $request->input('role');
             }
@@ -365,7 +364,7 @@ class AdminsController extends Controller
     {
         if (AuthController::check($request)) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
-            $adminsId = $request->input('adminsId');
+            $adminsId = $request->input('id');
 
             $updateAdmin = Admin::find($adminsId);
 
@@ -387,7 +386,7 @@ class AdminsController extends Controller
             }
 
         }
-        return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
+        return response(['error' => 'Validasi gagal', "message" => 'forbidden action detected'], 403);
     }
 
 
@@ -395,10 +394,10 @@ class AdminsController extends Controller
     {
         if (AuthController::check($request)) {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
-            $adminsId = $request->input('adminsId');
+            $adminsId = $request->input('id');
 
             if ($getSuperAuthorizationPassword !== "superAdmin") {
-                return response(['message' => "Authorization gagal, pengenalan kredensial tidak tepat, abort.", 'old_input' => $request->except('adminsId')], 401);
+                return response(['message' => "Authorization gagal, pengenalan kredensial tidak tepat, abort.", 'old_input' => $request->except('id')], 401);
             }
 
             if (is_array($adminsId)) {
@@ -409,17 +408,18 @@ class AdminsController extends Controller
                 // Single delete
                 $dropAdmin = Admin::find($adminsId);
                 if (!$dropAdmin) {
-                    return response(['message' => "Admin tidak ditemukan.", 'old_input' => $request->except('adminsId')], 401);
+                    return response(['message' => "Admin tidak ditemukan.", 'old_input' => $request->except('id')], 401);
                 }
                 $deleted = $dropAdmin->delete();
                 return new PostResource(true, "Berhasil menghapus admin " . $dropAdmin->username, $deleted);
             } else {
                 // Invalid input
-                return response(['message' => "Input adminsId tidak valid.", 'old_input' => $request->except('adminsId')], 400);
+                return response(['message' => "Input adminsId tidak valid.", 'old_input' => $request->except('id')], 400);
             }
 
         }
-        return response(new PostResource(false, 'Validasi gagal', 'forbidden action detected'), 403);
+        return response(['error' => 'Validasi gagal', "message" => 'forbidden action detected'], 403);
+
     }
 
     public function uploadImage($imageData, $admin)

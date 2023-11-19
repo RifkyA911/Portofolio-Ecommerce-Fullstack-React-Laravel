@@ -123,7 +123,7 @@ export default function MyProfile() {
       form.pict = "noChange";
     }
     try {
-      const request = await RequestAPI("admins", "PUT", form);
+      const request = await RequestAPI("admins/update", "PUT", form);
       // const response = request.data;
       // console.log(response);
       window.location.reload();

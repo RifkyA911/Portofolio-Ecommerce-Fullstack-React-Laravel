@@ -16,6 +16,7 @@ import { DateFormatter } from "../../utils/Formatter";
 import { MyTableFilterContext } from "../Table/MyTableComponents";
 import { SelectInput } from "../Form";
 import { getAccessToken } from "../../Config/Session";
+import RequestAPI from "../../Config/API";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
@@ -40,7 +41,7 @@ export const ShowAdminData = (props) => {
   return (
     <>
       <div className="flex items-center space-x-3">
-        <div className="avatar " onClick={onClick}>
+        <div className="avatar" onClick={onClick}>
           <div className="mask mask-squircle w-16 h-16 cursor-pointer ">
             <img src={`${ServerPublicAdminsImg}${data.pict}`} />
           </div>
@@ -72,8 +73,7 @@ export const AuthorityToggle = (props) => {
   // console.log("AuthorityToggle", data);
 
   const [thisAdmin, setThisAdmin] = useState({
-    superAuthorizationPassword: null,
-    adminsId: null,
+    id: null,
     authority: {
       chat: false,
       sort_warehouse: false,
@@ -97,30 +97,25 @@ export const AuthorityToggle = (props) => {
         const parsedAuthority = JSON.parse(data.authority);
         setThisAdmin((prevAdmin) => ({
           ...prevAdmin,
-          superAuthorizationPassword: SuperAdminKey,
-          adminsId: data.id,
+          id: data.id,
           authority: {
             chat: parsedAuthority.chat,
             sort_warehouse: parsedAuthority.sort_warehouse,
             alter_price: parsedAuthority.alter_price,
           },
-          token: getAccessToken(),
         }));
       }
     }
   }, [data]);
 
   const updateAdminsAuthority = async (data) => {
-    await axios
-      .patch(URL_BY_ID, data)
-      .then((data) => {
-        console.info(data.data);
-      })
-      .catch((error) => {
-        setToggle(!toggle);
-        setErrorMessage(error.response.data.message);
-        console.error(error);
-      });
+    try {
+      await RequestAPI("admin/authority", "PATCH", data);
+    } catch (error) {
+      console.error("Error fetching admin data:", error);
+      setToggle(!toggle);
+      setErrorMessage(error.response.data.message);
+    }
   };
 
   useEffect(() => {
@@ -128,8 +123,7 @@ export const AuthorityToggle = (props) => {
     isComponentMounted.current = false;
 
     if (
-      thisAdmin.superAuthorizationPassword &&
-      thisAdmin.adminsId &&
+      thisAdmin.id &&
       isUpdated // Hanya jalankan jika belum diupdate
     ) {
       console.info(data.username + " => " + data.authority);

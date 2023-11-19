@@ -1,34 +1,24 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-const URL_LOGIN_ADMIN = import.meta.env.VITE_API_LOGIN_ADMIN;
+import RequestAPI from "../../Config/API";
 
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userCredentials) => {
     try {
-      const response = await axios.post(URL_LOGIN_ADMIN, userCredentials);
-      if (response.status === 200) {
-        console.log(response);
-        //   const responseData = response.data.data;
-        const responseData = response.data;
-        // Set the token as a cookie with an expiration time (e.g., 1 day)
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + 1); // Expires in 1 day
-        document.cookie = `token=${JSON.stringify(
-          responseData
-        )}; expires=${expirationDate.toUTCString()}`;
+      const { data } = await RequestAPI("auth/login", "POST", userCredentials);
+      // console.log(request);
+      // const response = request.data;
+      const expirationDate = new Date(); // Set the token as a cookie with an expiration time (e.g., 1 day)
+      expirationDate.setDate(expirationDate.getDate() + 1); // Expires in 1 day
+      document.cookie = `token=${JSON.stringify(
+        data
+      )}; expires=${expirationDate.toUTCString()}`;
 
-        sessionStorage.setItem("token", JSON.stringify(responseData));
-        return responseData;
-      }
-      throw response.status;
+      sessionStorage.setItem("token", JSON.stringify(data));
+      return data;
     } catch (error) {
-      const errorMessage = error.response.data.message;
-      const errorStatus = error.response.status;
-      console.info(error);
-      if (error.response && error.response.status) {
-        throw errorMessage;
-      }
+      console.error(error);
       throw error;
     }
   }
@@ -39,7 +29,6 @@ const userSlice = createSlice({
   initialState: {
     loading: false,
     id: null,
-    adminsId: null,
     username: null,
     email: null,
     role: null,
@@ -47,27 +36,18 @@ const userSlice = createSlice({
     authority: null,
     user: null,
     logged: false,
-    jwtExp: 0,
     error: null,
   },
   reducers: {
     updateCredentials: (state, action) => {
       // console.log(action.payload.user);
       state.id = action.payload.user.id;
-      state.adminsId = action.payload.user.id;
       state.username = action.payload.user.username;
       state.email = action.payload.user.email;
       state.role = action.payload.user.role;
       state.pict = action.payload.user.pict;
       state.authority = action.payload.user.authority;
       state.logged = true;
-    },
-    updateSession: (state, action) => {
-      //   console.log(action.payload.user);
-      state.user = action.payload.user;
-    },
-    updateJWT: (state, action) => {
-      state.jwtExp = action.payload;
     },
     clearSession: (state, action) => {
       state.username = null;
@@ -93,7 +73,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        console.info("action payload:", action);
+        console.error("action payload:", action);
         const errorCode = action.error.message;
         state.loading = false;
         state.user = null;
@@ -110,5 +90,4 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
-export const { updateSession, updateCredentials, clearSession } =
-  userSlice.actions;
+export const { updateCredentials, clearSession } = userSlice.actions;

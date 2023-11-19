@@ -60,7 +60,7 @@ export function deleteCookie(cookieName) {
 // Fungsi untuk merefresh token
 export const refreshAccessToken = async () => {
   try {
-    const request = await RequestAPI("admin/refresh", "POST", {
+    const request = await RequestAPI("auth/refresh", "POST", {
       getRefreshAccessToken: true,
     });
     const response = request.data;

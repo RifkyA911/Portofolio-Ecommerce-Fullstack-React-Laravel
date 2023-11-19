@@ -1044,7 +1044,7 @@ export const FilePictureInput = (props) => {
 };
 
 export const DropByIdForm = (props) => {
-  const { formContext, tableId, productsId, location, thisName, pict } = props;
+  const { formContext, productsId, location, thisName, pict } = props;
 
   const {
     table,
@@ -1063,13 +1063,6 @@ export const DropByIdForm = (props) => {
   } = useContext(formContext);
   return (
     <>
-      <input
-        type="hidden"
-        {...register(tableId, {
-          required: `This ${tableId} Credentials ID are required`,
-        })}
-        defaultValue={getValues(tableId)}
-      />
       {/* Images */}
       <img
         src={

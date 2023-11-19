@@ -205,8 +205,8 @@ export default function Admins() {
     modalType: modalType,
     formType: formType,
     refresh: () => {
-      fetchData(URL_ADMINS);
       setLoading(true);
+      fetchData(URL_ADMINS);
     },
     setResultStatus: (type, state, message) =>
       setResultStatus({
