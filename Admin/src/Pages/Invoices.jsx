@@ -23,16 +23,13 @@ import { useSelector } from "react-redux";
 // UTILS
 import { CurrencyFormatter } from "../utils/Formatter";
 import { ReactIcons } from "../utils/RenderIcons";
-
-// define fetch data URL_PRODUCT by invoices
-const initUrlTransaction = import.meta.env.VITE_API_ALL_TRANSACTION;
-const initUrlCategories = import.meta.env.VITE_API_ALL_CATEGORIES;
+import RequestAPI from "../Config/API";
 
 export const InvoicesContext = createContext();
 
 export default function Invoices() {
   // ---- Admins Basic States ----
-  const [invoices, setIn] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const [categories, setCategories] = useState();
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -76,27 +73,18 @@ export default function Invoices() {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  const URL_PRODUCT = `${initUrlTransaction}/paginate/${paginate}/${rows}`;
-  const URL_PRODUCT_SEARCH = `${initUrlTransaction}/search?search=`;
-  const URL_PRODUCT_FILTER = `${initUrlTransaction}/filter`;
-  const URL_CATEGORIES = `${initUrlCategories}/paginate/${paginate}/${rows}`;
-  const URL_ALL_CATEGORIES = `${initUrlCategories}`;
+  const table = "orders";
+  const URL_PRODUCT = `${table}/paginate/${paginate}/${rows}`;
+  const URL_PRODUCT_SEARCH = `${table}/search`;
+  const URL_PRODUCT_FILTER = `${table}/filter`;
 
   const fetchData = async (url, table, form = null) => {
     try {
-      const controller = new AbortController();
-      const config = {
-        method: form ? "post" : "get", // Metode permintaan yang dinamis
-        url: url, // URL yang akan diakses
-        data: form, // Menggunakan 'data' untuk mengirim data dalam permintaan POST
-        signal: controller.signal,
-      };
-      const { data } = await axios(config);
-      // console.log(data);
-      // console.table(`fetching`, table);
+      const { data } = await RequestAPI(url, form ? "POST" : "GET", form);
+      // console.log(data.data);
       setLoading(false);
-      if (table === "invoices") {
-        setIn(data.data);
+      if (table === "orders") {
+        setInvoices(data.data);
         setLengthData(data.message.length);
       } else if (table === "categories") {
         setCategories(data.data);
@@ -104,9 +92,8 @@ export default function Invoices() {
       setErrorMessage(null);
     } catch (error) {
       setLoading(false);
-      let message = `Gagal Fetching '${table}'`;
-      setErrorMessage(message);
-      console.error(message, error);
+      setErrorMessage(`Gagal Fetching '${url}'`);
+      console.error(errorMessage, error);
     }
   };
 
@@ -189,7 +176,7 @@ export default function Invoices() {
     setSelectedRows: setSelectedRows,
     // Sorting Filter
     sortData: (newSortedData) => {
-      setIn(newSortedData);
+      setInvoices(newSortedData);
     },
     // ------------ Table Pagination-------------
     tabPagination: tabPagination,
@@ -237,7 +224,7 @@ export default function Invoices() {
       }),
     select: categories,
     clearData: () => {
-      setIn(null);
+      setInvoices(null);
       setToggleSelect(false);
       setSelectedRows([]);
       setFormType(null);
