@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Container = (props) => {
+  const { className, children } = props;
   // REDUX
   const { sidebarOpen, BackBgColor, textColor, container, ContainerBgColor } =
     useSelector((state) => state.UI);
@@ -20,9 +21,9 @@ const Container = (props) => {
           >
             {/*max-w-[1700px] mx-auto */}
             <div
-              className={`${ContainerBgColor} ${textColor} rounded-xl shadow-sm`}
+              className={`${className} ${ContainerBgColor} ${textColor} rounded-xl shadow-sm`}
             >
-              {props.children}
+              {children}
             </div>
           </div>
         </main>
