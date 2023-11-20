@@ -203,5 +203,5 @@ Route::controller(MessageController::class)->group(function () {
 });
 
 Route::controller(NotificationController::class)->group(function () {
-    Route::get('/notifications', 'getAll');
+    Route::get('/notifications/fetch', 'getAll');
 });

@@ -27,7 +27,7 @@ return new class extends Migration {
             7. Delete: Pesanan ditunda atau ditahan sementara.
             8. Info: Produk dikembalikan oleh pelanggan.
             */
-            $table->enum('difficulty', ['Chat', 'Order', 'Invoice', 'Review', 'Add', 'Update', 'Delete', 'Info'])->nullable()->default('Info');
+            $table->enum('type', ['Chat', 'Order', 'Invoice', 'Review', 'Add', 'Update', 'Delete', 'Info'])->nullable()->default('Info');
             $table->text('message');
             $table->timestamps();
         });

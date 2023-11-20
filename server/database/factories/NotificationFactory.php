@@ -28,7 +28,7 @@ class NotificationFactory extends Factory
                 // return random admin_id, atau sesuaikan dengan kebutuhan aplikasi Anda
                 return rand(1, 5);
             },
-            'difficulty' => $this->faker->randomElement(['Chat', 'Order', 'Invoice', 'Review', 'Add', 'Update', 'Delete', 'Info']),
+            'type' => $this->faker->randomElement(['Chat', 'Order', 'Invoice', 'Review', 'Add', 'Update', 'Delete', 'Info']),
             'message' => $this->faker->text,
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
