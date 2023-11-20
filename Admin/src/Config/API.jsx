@@ -18,9 +18,15 @@ export const getApiUrl = (endpointType, data) => {
       category: import.meta.env.VITE_API_ID_CATEGORY,
       admin: import.meta.env.VITE_API_ID_ADMIN,
       customer: import.meta.env.VITE_API_ID_CUSTOMER,
+
+      order: import.meta.env.VITE_API_ID_ORDER,
+      order_item: import.meta.env.VITE_API_ID_ORDER_ITEM,
+      shipment: import.meta.env.VITE_API_ID_SHIPMENT,
+      payment: import.meta.env.VITE_API_ID_PAYMENT,
+
+      notification: import.meta.env.VITE_API_ID_NOTIFICATION,
       cart: import.meta.env.VITE_API_ID_CART,
       wishlist: import.meta.env.VITE_API_ID_WHISLIS,
-      transaction: import.meta.env.VITE_API_ID_TRANSACTION,
       review: import.meta.env.VITE_API_ID_REVIEW,
       message: import.meta.env.VITE_API_ID_MESSAGE,
     },
@@ -29,16 +35,22 @@ export const getApiUrl = (endpointType, data) => {
       categories: import.meta.env.VITE_API_ALL_CATEGORIES,
       admins: import.meta.env.VITE_API_ALL_ADMINS,
       customers: import.meta.env.VITE_API_ALL_CUSTOMERS,
+
+      orders: import.meta.env.VITE_API_ALL_ORDERS,
+      order_items: import.meta.env.VITE_API_ALL_ORDER_ITEMS,
+      shipments: import.meta.env.VITE_API_ALL_SHIPMENTS,
+      payments: import.meta.env.VITE_API_ALL_PAYMENTS,
+
+      notifications: import.meta.env.VITE_API_ALL_NOTIFICATIONS,
       carts: import.meta.env.VITE_API_ALL_CARTS,
       wishlists: import.meta.env.VITE_API_ALL_WHISLIS,
-      transactions: import.meta.env.VITE_API_ALL_TRANSACTIONS,
       reviews: import.meta.env.VITE_API_ALL_REVIEWS,
       messages: import.meta.env.VITE_API_ALL_MESSAGES,
     },
   };
 
   const URL_Segments = endpointType.split("/");
-  // console.log(URL_Segments);
+  console.log(URL_Segments);
 
   // AUTH
   if (apiEndpoints.session.hasOwnProperty(URL_Segments[0])) {
@@ -69,6 +81,7 @@ export const getApiUrl = (endpointType, data) => {
         URL_Segments[2]
       }/${URL_Segments[3]}`;
     } else if (
+      URL_Segments[1] == "fetch" ||
       URL_Segments[1] == "update" ||
       URL_Segments[1] == "delete" ||
       URL_Segments[1] == "search" ||

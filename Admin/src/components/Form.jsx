@@ -298,6 +298,7 @@ export const SelectInput = (props) => {
   const {
     formContext,
     className,
+    newStyle,
     style,
     label,
     labelSize = "text-sm",
@@ -392,7 +393,10 @@ export const SelectInput = (props) => {
           {type == "date" || type == "datetime-local" ? (
             <input
               type={type}
-              className={`${style} bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-text outline-none`}
+              className={
+                newStyle ??
+                `${style} bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-text outline-none`
+              }
               {...register(name, {
                 valueAsDate: true,
               })}
