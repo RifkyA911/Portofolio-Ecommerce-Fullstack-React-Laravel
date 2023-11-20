@@ -415,9 +415,7 @@ export const ProductFilter = (props) => {
           <div className="py-2 mt-2 border-t flex flex-row justify-center">
             <MotionButton
               disabled={
-                selectedItems.length > 0 ||
-                minPrice.length > 0 ||
-                maxPrice.length > 0
+                selectedItems.length > 0 || minPrice >= 0 || maxPrice >= 10000
                   ? false
                   : true
               }

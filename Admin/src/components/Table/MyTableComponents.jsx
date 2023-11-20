@@ -44,9 +44,6 @@ export const MyTableHeaderFilter = (props) => {
     watch,
   } = useForm({
     mode: "onChange",
-    defaultValues: {
-      superAuthorizationPassword: SuperAdminKey,
-    },
   });
 
   const MyTableFilterContextValue = {
@@ -79,8 +76,8 @@ export const MyTableHeaderFilter = (props) => {
         type="button"
         className={
           clicked
-            ? "mr-2 grow-0 shrink-0 focus:outline-none bg-red-200 text-black py-[6px] px-[4px] rounded-md font-roboto-medium items-center "
-            : "mr-2 grow-0 shrink-0 focus:outline-none bg-gray-200 text-black py-[6px] px-[4px] rounded-md font-roboto-medium items-center "
+            ? "mr-2 grow-0 shrink-0 focus:outline-none bg-red-200 hover:bg-red-400 hover:text-white text-black py-[6px] px-[4px] rounded-md font-roboto-medium items-center "
+            : "mr-2 grow-0 shrink-0 focus:outline-none bg-gray-200 hover:bg-gray-300 text-black py-[6px] px-[4px] rounded-md font-roboto-medium items-center "
         }
         onClick={clicked ? refresh : closeFunction}
         icon={clicked ? "CgClose" : "MdFilterList"}
