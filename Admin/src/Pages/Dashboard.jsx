@@ -52,7 +52,7 @@ const Dashboard = (props) => {
   return (
     <>
       <Container className="bg-white">
-        <Content pageName="Dashboard" Bg="bg-white">
+        <Content pageName="Dashboard" Bg="bg-indigo-100">
           {loading == false ? (
             <>
               {products ? (
