@@ -300,6 +300,7 @@ export const SelectInput = (props) => {
     className,
     newStyle,
     style,
+    required = true,
     label,
     labelSize = "text-sm",
     name,
@@ -336,7 +337,7 @@ export const SelectInput = (props) => {
   } = useContext(formContext);
 
   const validationRules = {
-    required: `This ${label} field is required`,
+    required: required ?? `This ${label} field is required`,
     maxLength: 4,
   };
 
