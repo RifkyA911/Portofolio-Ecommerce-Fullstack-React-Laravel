@@ -138,18 +138,22 @@ function Notification() {
     { id: 3, content: "Item 3", updated_at: "2023-11-18" },
     // Tambahkan data lainnya sesuai kebutuhan
   ];
+
   useEffect(() => {
     if (notifications) {
-      const sortedNotifications = notifications
-        .slice()
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
-      console.log(sortedNotifications);
+      const sortedNotifications = [...notifications].sort(
+        (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+      );
+      console.log(sortedNotifications.map((a) => a.updated_at));
+
       const groupedData = sortedNotifications.reduce((groups, notification) => {
         const date = notification.updated_at;
-        groups[date] = groups[date] || [];
-        groups[date].push(notification);
+        const day = date.split("T")[0]; // Mengambil bagian tanggal saja
+        groups[day] = [...(groups[day] || []), notification];
         return groups;
       }, {});
+
+      console.log("groupedData", groupedData);
       setGrouppedDate(Object.entries(groupedData));
     }
   }, [notifications]);
@@ -160,94 +164,92 @@ function Notification() {
       <NotificationContext.Provider value={NotificationContextValue}>
         <Container className="relative">
           <Content pageName={"Notifications"}>
-            {!notifications ? (
+            {!notifications && !grouppedDate ? (
               <>LOADING </>
             ) : (
               <div className="notifications">
-                <div className={`notifications-header flex flex-col`}>
-                  <div
-                    className={`${textColor} flex flex-row mb-2 w-full justify-end`}
-                  >
-                    <div className="flex flex-row text-[14px] gap-2 font-roboto-medium items-end text-xs">
-                      <SelectInput
-                        formContext={NotificationContext}
-                        className={`w-full flex gap-2 flex-col `}
-                        newStyle="bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-pointer outline-none"
-                        label="Start"
-                        labelSize="text-xs"
-                        name="date_start"
-                        type="datetime-local"
-                        defaultValue={date.start}
-                      />
-                      <SelectInput
-                        formContext={NotificationContext}
-                        className={`w-full flex gap-2 flex-col `}
-                        newStyle="bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-pointer outline-none"
-                        label="End"
-                        labelSize="text-xs"
-                        name="date_end"
-                        type="datetime-local"
-                        defaultValue={date.end}
-                      />
-                    </div>
-                  </div>
-                  <div
-                    className={`${textColor} flex flex-row my-2 w-full justify-between`}
-                  >
-                    <div className="text-xl font-roboto-regular inline-flex items-center">
-                      <span>Today</span>{" "}
-                    </div>
+                <div
+                  className={`${textColor} flex flex-row mb-2 w-full justify-end`}
+                >
+                  <div className="flex flex-row text-[14px] gap-2 font-roboto-medium items-end text-xs">
+                    <SelectInput
+                      formContext={NotificationContext}
+                      className={`w-full flex gap-2 flex-col `}
+                      newStyle="bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-pointer outline-none"
+                      label="Start"
+                      labelSize="text-xs"
+                      name="date_start"
+                      type="datetime-local"
+                      defaultValue={date.start}
+                    />
+                    <SelectInput
+                      formContext={NotificationContext}
+                      className={`w-full flex gap-2 flex-col `}
+                      newStyle="bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-pointer outline-none"
+                      label="End"
+                      labelSize="text-xs"
+                      name="date_end"
+                      type="datetime-local"
+                      defaultValue={date.end}
+                    />
                   </div>
                 </div>
-                {grouppedDate && (
-                  <>
-                    {grouppedDate.map(([date, items]) => (
-                      <div key={date} className="group">
-                        <h2>{DateFormatter("dateTime", date)}</h2>
-                        {items.map((item) => (
-                          <div key={item.id}>{item.type}</div>
-                        ))}
+                {grouppedDate.map(([date, notifications]) => (
+                  <div key={date} className="group">
+                    {/* {items.map((item) => (
+                      <div key={item.id}>{item.type}</div>
+                    ))} */}
+                    <div className={`notifications-header flex flex-col`}>
+                      <div
+                        className={`${textColor} flex flex-row my-2 w-full justify-between`}
+                      >
+                        <div className="text-xl font-roboto-regular inline-flex items-center">
+                          <h2>{DateFormatter("date", date)}</h2>
+                        </div>
                       </div>
-                    ))}
-                  </>
-                )}
-                <div className="notifications-list flex flex-col px-8">
-                  {notifications.map((notification, index) => (
-                    <div
-                      className={`
+                    </div>
+                    <div className="notifications-list flex flex-col px-8">
+                      {notifications.map((notification, index) => (
+                        <div
+                          className={`
                       ${typeHandler(notification.type, "border")}
                       flex flex-row justify-center items-center w-full line-clamp-4 overflow-hidden bg-slate-100 shadow-sm h-14 rounded-sm border-l-8 my-2`}
-                    >
-                      <div className="flex flex-row h-full items-center w-2/12 px-2 font-roboto">
-                        <span className="p-2 mr-2">
-                          <ReactIcons
-                            className={typeHandler(
-                              notification.type,
-                              "iconColor"
-                            )}
-                            iconName={typeHandler(
-                              notification.type,
-                              "iconName"
-                            )}
-                            fontSize={26}
-                          />
-                        </span>
-                        <p className="text-sm font-roboto-medium text-gray-700">
-                          {notification.type}
-                        </p>
-                      </div>
-                      <div className="p-2 w-8/12 h-full text-left bg-lime-300">
-                        <p className="text-sm">{notification.message}</p>
-                      </div>
-                      <div className="w-2/12  h-full bg-blue-300">
-                        <span className="text-xs">
-                          {DateFormatter("dateTime", notification.updated_at)}
-                        </span>
-                      </div>
+                        >
+                          <div className="flex flex-row h-full items-center w-2/12 px-2 font-roboto">
+                            <span className="p-2 mr-2">
+                              <ReactIcons
+                                className={typeHandler(
+                                  notification.type,
+                                  "iconColor"
+                                )}
+                                iconName={typeHandler(
+                                  notification.type,
+                                  "iconName"
+                                )}
+                                fontSize={26}
+                              />
+                            </span>
+                            <p className="text-sm font-roboto-medium text-gray-700">
+                              {notification.type}
+                            </p>
+                          </div>
+                          <div className="p-2 w-8/12 h-full text-left bg-lime-300">
+                            <p className="text-sm">{notification.message}</p>
+                          </div>
+                          <div className="w-2/12  h-full bg-blue-300">
+                            <span className="text-xs">
+                              {DateFormatter(
+                                "dateTime",
+                                notification.updated_at
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="divider my-0"></div>
                     </div>
-                  ))}
-                  <div className="divider my-0"></div>
-                </div>
+                  </div>
+                ))}
               </div>
             )}
           </Content>
