@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DialogController;
 use App\Http\Controllers\ImagesController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\WishlistController;
@@ -105,11 +106,11 @@ Route::controller(ProductController::class)->group(function () {
     // create product
     Route::post('/product/store', 'store'); // parameter name, category, price(numeric), stok(numeric)
     // update product
-    Route::put('/products', 'update'); // parameter id, name, category, price(numeric), stok(numeric)
+    Route::put('/products/update', 'update'); // parameter id, name, category, price(numeric), stok(numeric)
     // patch products
     Route::patch('/products', 'patch'); // parameter spasial
     // delete products
-    Route::delete('/products', 'drop'); // parameter superAdmin, id)
+    Route::delete('/products/delete', 'drop'); // parameter superAdmin, id)
 });
 
 // Endpoint Categories
@@ -201,3 +202,6 @@ Route::controller(MessageController::class)->group(function () {
     // parameter : dialog_id
 });
 
+Route::controller(NotificationController::class)->group(function () {
+    Route::get('/notifications', 'getAll');
+});
