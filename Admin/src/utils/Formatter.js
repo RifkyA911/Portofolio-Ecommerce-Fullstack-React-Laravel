@@ -6,6 +6,13 @@ export function DateFormatter(type, inputDate) {
 
   if (type == null) {
     return date;
+  } else if (type == "date") {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const formattedDateTime = `${year}-${month}-${day}`;
+    return formattedDateTime;
   } else if (type == "dateTime") {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
