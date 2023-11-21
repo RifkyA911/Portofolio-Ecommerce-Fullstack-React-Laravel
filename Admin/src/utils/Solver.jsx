@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { refreshScreen } from "./../Redux/Slices/UISlice.js";
+import { DateFormatter } from "./Formatter.js";
 
 // Fungsi untuk membandingkan objek secara mendalam
 export function isObjectsEqual(objA, objB) {
@@ -31,6 +32,50 @@ export const IsThisAnImage = (src) => {
     }
   } else {
     return false;
+  }
+};
+
+export const isOutdated = (
+  inputDate,
+  exception = ["Last Year", "Last Month"],
+  typeData = "char"
+) => {
+  const splitDate = (input, level) => {
+    const splittedDate = input.split("-");
+    if (level == "year") {
+      return splittedDate[0];
+    } else if (level == "month") {
+      return splittedDate[1];
+    } else if (level == "date") {
+      return splittedDate[2];
+    } else {
+      return splittedDate;
+    }
+  };
+
+  const now = DateFormatter("date");
+
+  const nowYear = parseInt(splitDate(now, "year"));
+  const nowMonth = parseInt(splitDate(now, "month"));
+  const nowDate = parseInt(splitDate(now, "date"));
+  const inputDateYear = parseInt(splitDate(inputDate, "year"));
+  const inputDateMonth = parseInt(splitDate(inputDate, "month"));
+  const inputDateDate = parseInt(splitDate(inputDate, "date"));
+
+  // console.log(nowYear, nowMonth, nowDate);\
+  if (now == DateFormatter("date", inputDate) && !exception.includes("Today")) {
+    return "Today";
+  } else if (nowYear - inputDateYear == 1 && !exception.includes("Last Year")) {
+    return "Last Year";
+  } else if (
+    nowMonth - inputDateMonth == 1 &&
+    !exception.includes("Last Month")
+  ) {
+    return "Last Month";
+  } else if (nowDate - inputDateDate == 1 && !exception.includes("Yesterday")) {
+    return "Yesterday";
+  } else {
+    return null;
   }
 };
 
