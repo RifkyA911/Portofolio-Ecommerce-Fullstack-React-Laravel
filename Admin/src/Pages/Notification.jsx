@@ -1,18 +1,20 @@
 import React, { createContext, useEffect, useState } from "react";
-// Layout
-import { Container, Content } from "../Layout";
+import { useForm } from "react-hook-form";
+import RequestAPI from "../Config/API.jsx";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
-// Utils
-import { getCurrentEndpoint } from "./../utils/Navigation";
-import { MarketInbox } from "./../Config/Temporary.js";
-import { DateFormatter } from "../utils/Formatter.js";
-import { useForm } from "react-hook-form";
-import { SelectInput } from "../components/Form.jsx";
-import RequestAPI from "../Config/API.jsx";
-import { ReactIcons } from "../utils/RenderIcons.jsx";
+// Config
+import { notificationTypes } from "../Config/ObjectProps.jsx";
+// Layout
+import { Container, Content } from "../Layout";
+// Components
 import { MotionButton } from "../components/Button.jsx";
+import { SelectInput } from "../components/Form.jsx";
+import { MyPagination } from "../components/Table/MyTableEngine.jsx";
+// Utils
+import { DateFormatter } from "../utils/Formatter.js";
+import { ReactIcons } from "../utils/RenderIcons.jsx";
+import { isOutdated } from "../utils/Solver.jsx";
 
 export const NotificationContext = createContext();
 
@@ -32,7 +34,7 @@ function Notification() {
   const [loading, setLoading] = useState(true);
 
   // REDUX
-  const { BgColor, textColor, ContentBgColor } = useSelector(
+  const { DarkMode, BgColor, textColor, ContentBgColor } = useSelector(
     (state) => state.UI
   );
 
@@ -46,7 +48,7 @@ function Notification() {
       // console.log(data.data);
       setLoading(false);
       setNotifications(data.data);
-      // setLengthData(data.message.length);
+      setLengthData(data.message.length);
       setErrorMessage(null);
     } catch (error) {
       setErrorMessage(`Gagal Fetching '${url}'`);
@@ -57,6 +59,11 @@ function Notification() {
   useEffect(() => {
     fetchData(URL_NOTIFICATIONS);
   }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchData(URL_NOTIFICATIONS);
+  }, [paginate, rows]);
 
   const {
     register,
@@ -73,6 +80,12 @@ function Notification() {
   });
 
   const NotificationContextValue = {
+    length,
+    paginate,
+    setPaginate,
+    rows,
+    setRows,
+    // react hook form
     register,
     handleSubmit,
     setValue,
@@ -84,54 +97,6 @@ function Notification() {
     isValid,
     dirtyFields,
     watch,
-  };
-
-  const notificationTypes = {
-    Chat: {
-      border: "border-green-500 text-black",
-      iconName: "HiMiniChatBubbleOvalLeftEllipsis",
-      iconColor: "text-green-500",
-    },
-    Order: {
-      border: "border-sky-500 text-black",
-      iconName: "MdAddBusiness",
-      iconColor: "text-sky-500",
-    },
-    Invoice: {
-      border: "border-orange-500 text-black",
-      iconName: "IoReceiptSharp",
-      iconColor: "text-orange-500",
-    },
-    Review: {
-      border: "border-amber-500 text-black",
-      iconName: "GiRoundStar",
-      iconColor: "text-amber-500",
-    },
-    Add: {
-      border: "border-blue-400 text-black",
-      iconName: "BiSolidCommentAdd",
-      iconColor: "text-blue-400",
-    },
-    Update: {
-      border: "border-indigo-500 text-black",
-      iconName: "FaSquarePen",
-      iconColor: "text-indigo-500",
-    },
-    Delete: {
-      border: "border-red-500 text-black",
-      iconName: "RiDeleteBin2Fill",
-      iconColor: "text-red-500",
-    },
-    Info: {
-      border: "border-cyan-400 text-black",
-      iconName: "MdInfo",
-      iconColor: "text-cyan-400",
-    },
-    default: {
-      border: "border-slate-400 text-black",
-      iconName: "IoNotifications",
-      iconColor: "text-slate-500",
-    },
   };
 
   const typeHandler = (type, part) => {
@@ -157,7 +122,6 @@ function Notification() {
     }
   }, [notifications]);
 
-  // Mengonversi objek hasil pengelompokkan menjadi array
   return (
     <>
       <NotificationContext.Provider value={NotificationContextValue}>
@@ -166,7 +130,9 @@ function Notification() {
             {!notifications && !grouppedDate ? (
               <>LOADING </>
             ) : (
-              <div className="notifications">
+              <div className="notifications min-h-screen">
+                {loading &&
+                  "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"}
                 <div
                   className={`notifications-filter flex flex-col md:flex-row mb-2 w-full justify-between items-center md:max-h-[80px] md:overflow-y-hidden border-b pb-4  ${textColor} `}
                 >
@@ -174,8 +140,8 @@ function Notification() {
                     <h5 className="text-left font-roboto-bold text-xs pb-2">
                       Types
                     </h5>
-                    {Object.keys(notificationTypes).map((key) => (
-                      <div className="inline-flex mx-1">
+                    {Object.keys(notificationTypes).map((key, index) => (
+                      <div key={index} className="inline-flex mx-1">
                         <MotionButton className="inline-flex items-center p-2 border rounded-lg text-xs shadow hover:font-bold">
                           <ReactIcons
                             className={`${typeHandler(key, "iconColor")}`}
@@ -220,10 +186,7 @@ function Notification() {
                       >
                         <div className="text-xl font-roboto-regular inline-flex items-center">
                           <h2>
-                            {DateFormatter("date", date) ==
-                            DateFormatter("date")
-                              ? "Today"
-                              : DateFormatter("date", date)}
+                            {isOutdated(date) ?? DateFormatter("Day", date)}
                           </h2>
                         </div>
                       </div>
@@ -231,11 +194,18 @@ function Notification() {
                     <div className="notifications-list flex flex-col px-8">
                       {notifications.map((notification, index) => (
                         <div
+                          key={index}
                           className={`
                       ${typeHandler(notification.type, "border")}
-                      flex flex-row justify-center items-center w-full line-clamp-4 drop-shadow-sm overflow-hidden bg-slate-100 shadow-sm h-14 rounded-md border-l-8 my-2`}
+                      flex flex-row justify-center items-center w-full line-clamp-4 drop-shadow-sm overflow-hidden shadow-sm h-14 rounded-md border-l-8 my-2`}
                         >
-                          <div className="flex flex-row h-full items-center w-2/12 px-2 font-roboto">
+                          <div
+                            className={`flex flex-row h-full items-center w-2/12 px-2 font-roboto ${
+                              DarkMode
+                                ? "bg-slate-700 text-white"
+                                : "bg-slate-100 text-gray-700"
+                            }`}
+                          >
                             <span className="p-2 mr-2">
                               <ReactIcons
                                 className={typeHandler(
@@ -249,24 +219,28 @@ function Notification() {
                                 fontSize={26}
                               />
                             </span>
-                            <p className="text-sm font-roboto-medium text-gray-700">
+                            <p className="text-sm font-roboto-medium">
                               {notification.type}
                             </p>
                           </div>
                           <div
-                            className={`p-2 w-8/12 h-full text-left bg-gray-50`}
+                            className={`p-2 w-8/12 h-full text-left bg-gradient-to-b from-white to-gray-50 over`}
                           >
-                            <p className="text-sm inline-block align-middle">
+                            <p className="text-sm inline-block overflow-hidden max-h-[45px] line-clamp-2">
                               {notification.message}
                             </p>
                           </div>
-                          <div className="w-2/12  h-full bg-blue-300">
-                            <span className="text-xs">
-                              {DateFormatter(
-                                "dateTime",
-                                notification.updated_at
-                              )}
-                            </span>
+                          <div
+                            className={`w-2/12 flex flex-col justify-center text-xs align-middle h-full ${
+                              DarkMode
+                                ? "bg-slate-700 text-white"
+                                : "bg-slate-100 text-gray-700"
+                            }`}
+                          >
+                            {DateFormatter("dateTime", notification.updated_at)}
+                            <p className="font-roboto-medium py-1">
+                              {notification.admin.username}
+                            </p>
                           </div>
                         </div>
                       ))}
@@ -276,6 +250,7 @@ function Notification() {
                 ))}
               </div>
             )}
+            <MyPagination formContext={NotificationContext} />
           </Content>
         </Container>
       </NotificationContext.Provider>
