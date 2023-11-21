@@ -103,36 +103,9 @@ export default function Products() {
     }
   };
 
-  // const fetchData = async (url, table, form = null) => {
-  //   try {
-  //     const controller = new AbortController();
-  //     const config = {
-  //       method: form ? "post" : "get", // Metode permintaan yang dinamis
-  //       url: url, // URL yang akan diakses
-  //       data: form, // Menggunakan 'data' untuk mengirim data dalam permintaan POST
-  //       signal: controller.signal,
-  //     };
-  //     const { data } = await axios(config);
-  //     // console.log(data);
-  //     // console.table(`fetching`, table);
-  //     setLoading(false);
-  //     if (table === "products") {
-  //       setProducts(data.data);
-  //       setLengthData(data.message.length);
-  //     } else if (table === "categories") {
-  //       setCategories(data.data);
-  //     }
-  //     setErrorMessage(null);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     let message = `Gagal Fetching '${table}'`;
-  //     setErrorMessage(message);
-  //     console.error(message, error);
-  //   }
-  // };
-
   // ===================== MyTableEngine =====================
   useEffect(() => {
+    setLoading(true);
     fetchData(URL_PRODUCT, "products");
     fetchData(URL_ALL_CATEGORIES, "categories");
     if (products !== null && products !== undefined) {
@@ -164,7 +137,7 @@ export default function Products() {
   }, [searchTerm]);
 
   const MyTableEngineProps = {
-    table: "products",
+    table,
     context: ProductsContext,
     inputData: products,
     refresh: () => {
@@ -187,10 +160,10 @@ export default function Products() {
     applyFilter: (form) => {
       fetchData(URL_PRODUCT_FILTER, "products", form);
     },
-    showFixedBtn: showFixedBtn,
-    setShowFixedBtn: setShowFixedBtn,
-    searchTerm: searchTerm,
-    setSearchTerm: setSearchTerm,
+    showFixedBtn,
+    setShowFixedBtn,
+    searchTerm,
+    setSearchTerm,
     setPrintBatchModal: () => {
       setShowModal(true);
       handleOpenModal(selectedRows, "PRINT_BATCH", "print");
@@ -204,29 +177,23 @@ export default function Products() {
       handleOpenModal(null, "INSERT", "form");
     },
     // ------------- Table Body -------------
-    toggleSelect: toggleSelect,
-    setToggleSelect: setToggleSelect,
-    selectedRows: selectedRows,
-    setSelectedRows: setSelectedRows,
+    toggleSelect,
+    setToggleSelect,
+    selectedRows,
+    setSelectedRows,
     // Sorting Filter
     sortData: (newSortedData) => {
       setProducts(newSortedData);
     },
     // ------------ Table Pagination-------------
-    tabPagination: tabPagination,
-    setTabPagination: setTabPagination,
+    tabPagination,
+    setTabPagination,
     colSpan: colspan == null ? 5 : colspan,
-    paginate: paginate,
-    onChangePaginate: (newPaginate) => {
-      setLoading(true);
-      setPaginate(newPaginate);
-    },
-    rows: rows,
-    onRowsChange: (newRows) => {
-      setLoading(true);
-      setRows(newRows);
-    },
-    length: length,
+    paginate,
+    setPaginate,
+    rows,
+    setRows,
+    length,
   };
 
   // ===================== Modal =====================
@@ -239,12 +206,12 @@ export default function Products() {
   };
 
   const ModalProps = {
-    table: "products",
+    table,
     table_id: product,
-    showModal: showModal,
-    setShowModal: setShowModal,
-    modalType: modalType,
-    formType: formType,
+    showModal,
+    setShowModal,
+    modalType,
+    formType,
     refresh: () => {
       fetchData(URL_PRODUCT, "products");
       setLoading(true);

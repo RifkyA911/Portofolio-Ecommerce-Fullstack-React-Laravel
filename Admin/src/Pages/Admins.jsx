@@ -94,6 +94,7 @@ export default function Admins() {
 
   // ===================== MyTableEngine =====================
   useEffect(() => {
+    setLoading(true);
     fetchData(URL_ADMINS);
     if (admins !== null && admins !== undefined) {
       setColspan(columnOrder.length + 1);
@@ -124,7 +125,7 @@ export default function Admins() {
   }, [searchTerm]);
 
   const MyTableEngineProps = {
-    table: table,
+    table,
     context: AdminsContext,
     inputData: admins,
     refresh: () => {
@@ -146,10 +147,10 @@ export default function Admins() {
     applyFilter: (form) => {
       fetchData(URL_ADMINS_FILTER, form);
     },
-    showFixedBtn: showFixedBtn,
-    setShowFixedBtn: setShowFixedBtn,
-    searchTerm: searchTerm,
-    setSearchTerm: setSearchTerm,
+    showFixedBtn,
+    setShowFixedBtn,
+    searchTerm,
+    setSearchTerm,
     setPrintBatchModal: () => {
       setShowModal(true);
       handleOpenModal(selectedRows, "PRINT_BATCH", "print");
@@ -163,29 +164,23 @@ export default function Admins() {
       handleOpenModal(null, "INSERT", "form");
     },
     // ------------- Table Body -------------
-    toggleSelect: toggleSelect,
-    setToggleSelect: setToggleSelect,
-    selectedRows: selectedRows,
-    setSelectedRows: setSelectedRows,
+    toggleSelect,
+    setToggleSelect,
+    selectedRows,
+    setSelectedRows,
     // Sorting Filter
     sortData: (newSortedData) => {
       setAdmins(newSortedData);
     },
     // ------------ Table Pagination-------------
-    tabPagination: tabPagination,
-    setTabPagination: setTabPagination,
+    tabPagination,
+    setTabPagination,
     colSpan: colspan == null ? 5 : colspan,
-    paginate: paginate,
-    onChangePaginate: (newPaginate) => {
-      setLoading(true);
-      setPaginate(newPaginate);
-    },
-    rows: rows,
-    onRowsChange: (newRows) => {
-      setLoading(true);
-      setRows(newRows);
-    },
-    length: length,
+    paginate,
+    setPaginate,
+    rows,
+    setRows,
+    length,
   };
 
   // ===================== Modal =====================
@@ -198,12 +193,12 @@ export default function Admins() {
   };
 
   const ModalProps = {
-    table: "admins",
+    table,
     table_id: admin,
-    showModal: showModal,
-    setShowModal: setShowModal,
-    modalType: modalType,
-    formType: formType,
+    showModal,
+    setShowModal,
+    modalType,
+    formType,
     refresh: () => {
       setLoading(true);
       fetchData(URL_ADMINS);
