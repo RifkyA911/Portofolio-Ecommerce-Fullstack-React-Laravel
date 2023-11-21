@@ -37,7 +37,7 @@ export const IsThisAnImage = (src) => {
 
 export const isOutdated = (
   inputDate,
-  exception = ["Last Year", "Last Month"],
+  exception = ["Last Year", "Last Month", "Last Week"],
   typeData = "char"
 ) => {
   const splitDate = (input, level) => {
@@ -67,6 +67,8 @@ export const isOutdated = (
     return "Today";
   } else if (nowYear - inputDateYear == 1 && !exception.includes("Last Year")) {
     return "Last Year";
+  } else if (nowDate - inputDateDate == 7 && !exception.includes("Last Week")) {
+    return "Last Week";
   } else if (
     nowMonth - inputDateMonth == 1 &&
     !exception.includes("Last Month")
