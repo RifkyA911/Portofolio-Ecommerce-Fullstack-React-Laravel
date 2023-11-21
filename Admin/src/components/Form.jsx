@@ -185,6 +185,7 @@ export const TextInput = (props) => {
 
 export const NumberInput = (props) => {
   const {
+    required = true,
     formContext,
     inputRef,
     className,
@@ -221,7 +222,7 @@ export const NumberInput = (props) => {
   } = useContext(formContext);
 
   const validationRules = {
-    required: `This ${label} field is required`,
+    required: required ? `This ${label} field is required` : false,
     pattern: {
       value: /\d+/,
       message: label + " input is number only.",
@@ -236,6 +237,16 @@ export const NumberInput = (props) => {
     },
   };
   const ref = useRef();
+
+  useEffect(() => {
+    if (
+      getValues(name) == null ||
+      getValues(name) == 0 ||
+      getValues(name) == undefined
+    ) {
+      setValue(name, 0);
+    }
+  }, [getValues]);
 
   return (
     <div
@@ -264,10 +275,12 @@ export const NumberInput = (props) => {
         control={control}
         name={name}
         rules={validationRules}
-        render={({ field: { onChange, name, value, ref } }) => (
+        defaultValue={0}
+        render={({ field: { onChange, name, value, ref, defaultValue } }) => (
           <NumericFormat
             name={name}
-            value={value ?? 0}
+            defaultValue={0}
+            value={value}
             className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl text-gray-900 focus:outline-none ${
               errors[name] ? "border-pink-500" : "border-sky-500"
             }`}
