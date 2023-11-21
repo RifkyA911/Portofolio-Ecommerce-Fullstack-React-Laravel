@@ -37,7 +37,7 @@ function Notification() {
   );
 
   const table = "notifications";
-  const URL_NOTIFICATIONS = `${table}/fetch`;
+  const URL_NOTIFICATIONS = `${table}/paginate/${paginate}/${rows}`;
   const URL_NOTIFICATIONS_FILTER = `${table}/filter`;
 
   const fetchData = async (url, form = null) => {
