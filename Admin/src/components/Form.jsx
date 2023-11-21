@@ -201,6 +201,9 @@ export const NumberInput = (props) => {
     onInputChange = null,
   } = props;
 
+  // REDUX
+  const { BgColor } = useSelector((state) => state.UI);
+
   // react-hook-form
   const {
     // data,
@@ -264,7 +267,7 @@ export const NumberInput = (props) => {
         render={({ field: { onChange, name, value, ref } }) => (
           <NumericFormat
             name={name}
-            value={value}
+            value={value ?? 0}
             className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl text-gray-900 focus:outline-none ${
               errors[name] ? "border-pink-500" : "border-sky-500"
             }`}

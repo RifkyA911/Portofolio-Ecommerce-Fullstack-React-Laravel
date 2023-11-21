@@ -51,8 +51,18 @@ class AdminsController extends Controller
 
     public function me(Request $request)
     {
-        return response()->json(auth('admin')->user());
+        // Pastikan bahwa pengguna telah diotentikasi
+        $user = auth('admin')->user();
+
+        if ($user) {
+            // Jika pengguna diotentikasi, sertakan informasi dari objek $request dalam respons JSON
+            return response()->json(['success' => true, 'data' => $user, 'request_info' => $request->all()], 200);
+        } else {
+            // Jika pengguna tidak diotentikasi, kembalikan respons JSON dengan pesan error
+            return response()->json(['success' => false, 'message' => 'Unauthorized', 'request_info' => $request->all()], 401);
+        }
     }
+
 
     // public function logout()
     // {
@@ -347,8 +357,8 @@ class AdminsController extends Controller
             if ($request->input('newPassword') !== null) {
                 $updateAdmin->password = $request->input('newPassword');
             } /*else {
-       $updateAdmin->password = $request->input('password');
-   } */
+    $updateAdmin->password = $request->input('password');
+} */
             if ($updateAdmin->role == 1) { // jika admin role = admin
                 $updateAdmin->role = $request->input('role');
             }
