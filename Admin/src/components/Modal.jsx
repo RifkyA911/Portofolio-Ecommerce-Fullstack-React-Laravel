@@ -31,13 +31,7 @@ import { DateFormatter } from "../utils/Formatter";
 //CONFIG
 import { motionProps } from "../Config/MotionProps";
 import { AreaDropZone } from "./Area";
-import RequestAPI from "../Config/API";
-
-const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
-const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
-const ServerAPIProductsImg = import.meta.env.VITE_API_ID_PRODUCT + "/image/";
-const ServerPublicProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
-const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
+import RequestAPI, { ServerPublic } from "../Config/API";
 
 export const ModalContext = createContext();
 
@@ -125,10 +119,6 @@ export const MainModalHandler = (props) => {
     } else if (formType === "DROP_BY_SELECTED") {
       if (table_id !== null && table !== null) {
         const dataArray = Object.values(table_id);
-        // const modifiedDataArray = dataArray.map((item) => ({
-        //   ...item,
-        //   superAuthorizationPassword: SuperAdminKey,
-        // }));
         setData(dataArray);
       }
       setLoading(false);
@@ -158,91 +148,13 @@ export const MainModalHandler = (props) => {
     watch,
   } = useForm({
     mode: "onChange",
-    // defaultValues: {
-    //   table: table,
-    // },
   });
 
   // set values by state data
-  let initialFormValue;
-  let passwordRef = useRef({});
   useEffect(() => {
-    // console.table(table);
-    // console.log(data);
-    // if (formType === "INSERT") {
-    //   switch (table) {
-    //     case `admins`:
-    //       passwordRef.current = watch("password", "");
-    //       initialFormValue = {
-    //         email: "",
-    //         username: "",
-    //         role: 1,
-    //         pict: "default.jpg",
-    //       };
-    //       break;
-    //     case `products`:
-    //       initialFormValue = {
-    //         pict: "default.jpg",
-    //       };
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // } else if (formType === "ALTER_BY_ID") {
-    //   switch (table) {
-    //     case `admins`:
-    //       initialFormValue = {
-    //         id: data.id,
-    //         email: data.email,
-    //         username: data.username,
-    //         role: data.role,
-    //         pict: data.pict,
-    //       };
-    //       break;
-    //     case `products`:
-    //       // console.log(data);
-    //       initialFormValue = {
-    //         id: data.id,
-    //         barcode: data.barcode,
-    //         name: data.name,
-    //         price: parseInt(data.price),
-    //         category_id: data.category.id,
-    //         stock: parseInt(data.stock),
-    //         discount: parseFloat(data.discount),
-    //         pict: data.pict,
-    //         description: data.description,
-    //       };
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // } else if (formType === "DROP_BY_ID") {
-    //   switch (table) {
-    //     case `admins`:
-    //       initialFormValue = {
-    //         id: data.id,
-    //         email: data.email,
-    //         username: data.username,
-    //         pict: data.pict,
-    //       };
-    //       break;
-    //     case `products`:
-    //       initialFormValue = {
-    //         id: data.id,
-    //         name: data.name,
-    //       };
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // }
-    // for (const key in initialFormValue) {
-    //   setValue(key, initialFormValue[key]);
-    // }
     for (const key in data) {
       setValue(key, data[key]);
     }
-    initialFormValue = null;
   }, [data]);
 
   // ============================================ Execute Backend QUERY ============================================
@@ -323,7 +235,6 @@ export const MainModalHandler = (props) => {
     showPassword,
     setShowPassword: () => setShowPassword(!showPassword),
     //react-hook-form
-    passwordRef,
     register,
     handleSubmit,
     setValue,
@@ -1153,7 +1064,6 @@ export const InfoModal = (props) => {
     watch,
     onSubmit,
   } = useContext(ModalContext);
-  const [serverPublic, setServerPublic] = useState(null);
 
   // REDUX
   const {
@@ -1167,14 +1077,6 @@ export const InfoModal = (props) => {
     BorderRowTable,
     BorderOuterTable,
   } = useSelector((state) => state.UI);
-
-  useLayoutEffect(() => {
-    if (formType === "SHOW_ADMIN_PROFILE_PICTURE") {
-      setServerPublic(ServerAPIAdminsImg);
-    } else if (formType === "SHOW_PRODUCT_PICTURE") {
-      setServerPublic(ServerAPIProductsImg);
-    }
-  }, [table, formType]);
 
   // useEffect(() => {
   //   console.table(props);
@@ -1262,12 +1164,9 @@ export const InfoModal = (props) => {
                                 </Dialog.Description>
                                 <img
                                   src={`${
-                                    formType === "SHOW_ADMIN_PROFILE_PICTURE"
-                                      ? ServerPublicAdminsImg
-                                      : ""
-                                  }${
+                                    formType === "SHOW_ADMIN_PROFILE_PICTURE" ||
                                     formType === "SHOW_PRODUCT_PICTURE"
-                                      ? ServerPublicProductsImg
+                                      ? ServerPublic(table)
                                       : ""
                                   }${data.pict || "default.png"}`} // temporary
                                   // src={`${serverPublic}${

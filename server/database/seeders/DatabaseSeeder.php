@@ -13,6 +13,7 @@ use App\Models\Review;
 use App\Models\Message;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Notification;
 use App\Models\Shipment;
 use App\Models\Wishlist;
 use App\Models\Order_item;
@@ -126,7 +127,7 @@ class DatabaseSeeder extends Seeder
             'admin_id' => '2',
             'shipment_id' => 1,
             'payment_id' => 1,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/1',
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/1/1',
             'total_price' => 80000,
             'status' => 'Completed',
         ]);
@@ -135,7 +136,7 @@ class DatabaseSeeder extends Seeder
             'admin_id' => '1',
             'shipment_id' => 2,
             'payment_id' => 2,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/2/2',
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/2/2',
             'total_price' => 620000,
             'status' => 'Shipped',
         ]);
@@ -144,8 +145,8 @@ class DatabaseSeeder extends Seeder
             'admin_id' => '3',
             'shipment_id' => null,
             'payment_id' => 3,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/3',
-            'total_price' => 20000 + (Product::where('id', 6)->value('price') * 5)+(Product::where('id', 1)->value('price') * 3)+(Product::where('id', 2)->value('price') * 4),
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/1/3',
+            'total_price' => 20000 + (Product::where('id', 6)->value('price') * 5) + (Product::where('id', 1)->value('price') * 3) + (Product::where('id', 2)->value('price') * 4),
             'status' => 'Processing',
         ]);
         Order::create([
@@ -153,7 +154,7 @@ class DatabaseSeeder extends Seeder
             'admin_id' => null,
             'shipment_id' => null,
             'payment_id' => null,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/2/4',
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/2/4',
             'total_price' => 20000 + (Product::where('id', 7)->value('price') * 135),
             'status' => 'Pending',
         ]);
@@ -162,7 +163,7 @@ class DatabaseSeeder extends Seeder
             'admin_id' => 3,
             'shipment_id' => 3,
             'payment_id' => 4,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/3/5',
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/3/5',
             'total_price' => 20000 + (Product::where('id', 3)->value('price') * 6),
             'status' => 'Shipped',
         ]);
@@ -420,7 +421,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Payment::create([
             'transaction_id' => "VA/" . fake()->regexify('[A-Za-z0-9]{9}'),
-            'amount' => 20000 + (Product::where('id', 6)->value('price') * 5)+(Product::where('id', 1)->value('price') * 3)+(Product::where('id', 2)->value('price') * 4),
+            'amount' => 20000 + (Product::where('id', 6)->value('price') * 5) + (Product::where('id', 1)->value('price') * 3) + (Product::where('id', 2)->value('price') * 4),
             'payment_method' => 'virtual account BCA',
             'status' => 'success'
         ]);
@@ -530,5 +531,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Review::factory(7)->create();
+        Notification::factory(10)->create();
     }
 }

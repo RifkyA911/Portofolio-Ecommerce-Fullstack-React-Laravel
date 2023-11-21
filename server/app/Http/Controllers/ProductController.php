@@ -274,7 +274,7 @@ class ProductController extends Controller
             return response(false, "validasi data error", ['errors' => $validator->errors(), 'old_input' => $request->all()], 400);
         }
 
-        $product = Product::find($request->input('productId'));
+        $product = Product::find($request->input('id'));
         $oldName = $product->name; // current data in db
         $oldPict = $product->pict; // current data in db
         // ~~~~~~ mutasi update variabel separator ~~~~~~

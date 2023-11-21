@@ -298,7 +298,9 @@ export const SelectInput = (props) => {
   const {
     formContext,
     className,
+    newStyle,
     style,
+    required = true,
     label,
     labelSize = "text-sm",
     name,
@@ -335,7 +337,7 @@ export const SelectInput = (props) => {
   } = useContext(formContext);
 
   const validationRules = {
-    required: `This ${label} field is required`,
+    required: required ?? `This ${label} field is required`,
     maxLength: 4,
   };
 
@@ -392,7 +394,10 @@ export const SelectInput = (props) => {
           {type == "date" || type == "datetime-local" ? (
             <input
               type={type}
-              className={`${style} bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-text outline-none`}
+              className={
+                newStyle ??
+                `${style} bg-slate-200 text-black shadow-md py-1 px-2 rounded-md cursor-text outline-none`
+              }
               {...register(name, {
                 valueAsDate: true,
               })}

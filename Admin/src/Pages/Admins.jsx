@@ -124,7 +124,7 @@ export default function Admins() {
   }, [searchTerm]);
 
   const MyTableEngineProps = {
-    table: "admins",
+    table: table,
     context: AdminsContext,
     inputData: admins,
     refresh: () => {

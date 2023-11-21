@@ -18,16 +18,16 @@ import {
 } from "../components/Table/MyTableEngine";
 // Layout
 import { Container, Content } from "../Layout";
+import Categories from "./../components/Products/Tables.jsx";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
 import { CurrencyFormatter } from "../utils/Formatter";
 import { FormToast } from "../components/Toast";
 import { ReactIcons } from "../utils/RenderIcons";
+import RequestAPI from "../Config/API";
 
 // define fetch data URL_PRODUCT by products
-const initUrlProduct = import.meta.env.VITE_API_ALL_PRODUCTS;
-const initUrlCategories = import.meta.env.VITE_API_ALL_CATEGORIES;
 
 export const ProductsContext = createContext();
 
@@ -77,24 +77,17 @@ export default function Products() {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  const URL_PRODUCT = `${initUrlProduct}/paginate/${paginate}/${rows}`;
-  const URL_PRODUCT_SEARCH = `${initUrlProduct}/search?search=`;
-  const URL_PRODUCT_FILTER = `${initUrlProduct}/filter`;
-  const URL_CATEGORIES = `${initUrlCategories}/paginate/${paginate}/${rows}`;
-  const URL_ALL_CATEGORIES = `${initUrlCategories}`;
+  const table = "products";
+
+  const URL_PRODUCT = `${table}/paginate/${paginate}/${rows}`;
+  const URL_PRODUCT_SEARCH = `${table}/search`;
+  const URL_PRODUCT_FILTER = `${table}/filter`;
+  const URL_ALL_CATEGORIES = `categories`;
 
   const fetchData = async (url, table, form = null) => {
     try {
-      const controller = new AbortController();
-      const config = {
-        method: form ? "post" : "get", // Metode permintaan yang dinamis
-        url: url, // URL yang akan diakses
-        data: form, // Menggunakan 'data' untuk mengirim data dalam permintaan POST
-        signal: controller.signal,
-      };
-      const { data } = await axios(config);
-      // console.log(data);
-      // console.table(`fetching`, table);
+      const { data } = await RequestAPI(url, form ? "POST" : "GET", form);
+      // console.log(data.data);
       setLoading(false);
       if (table === "products") {
         setProducts(data.data);
@@ -105,11 +98,38 @@ export default function Products() {
       setErrorMessage(null);
     } catch (error) {
       setLoading(false);
-      let message = `Gagal Fetching '${table}'`;
-      setErrorMessage(message);
-      console.error(message, error);
+      setErrorMessage(`Gagal Fetching '${url}'`);
+      console.error(errorMessage, error);
     }
   };
+
+  // const fetchData = async (url, table, form = null) => {
+  //   try {
+  //     const controller = new AbortController();
+  //     const config = {
+  //       method: form ? "post" : "get", // Metode permintaan yang dinamis
+  //       url: url, // URL yang akan diakses
+  //       data: form, // Menggunakan 'data' untuk mengirim data dalam permintaan POST
+  //       signal: controller.signal,
+  //     };
+  //     const { data } = await axios(config);
+  //     // console.log(data);
+  //     // console.table(`fetching`, table);
+  //     setLoading(false);
+  //     if (table === "products") {
+  //       setProducts(data.data);
+  //       setLengthData(data.message.length);
+  //     } else if (table === "categories") {
+  //       setCategories(data.data);
+  //     }
+  //     setErrorMessage(null);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     let message = `Gagal Fetching '${table}'`;
+  //     setErrorMessage(message);
+  //     console.error(message, error);
+  //   }
+  // };
 
   // ===================== MyTableEngine =====================
   useEffect(() => {
@@ -324,7 +344,7 @@ export default function Products() {
 
                   <MyTableEngine
                     {...MyTableEngineProps}
-                    className="rounded-sm mx-auto"
+                    className="rounded-sm mx-auto md:min-h-[800px]"
                   >
                     <Thead className={`${BgOuterTable} ${textColor} `}>
                       <Tr key="TableHead" className={table_styling.tr}>
@@ -505,14 +525,7 @@ export default function Products() {
                       ))}
                     </Tbody>
                   </MyTableEngine>
-                  <div className="divider">Category List</div>
-                  {categories && (
-                    <>
-                      {categories.map((cat, index) => (
-                        <p key={index}>{cat.name}</p>
-                      ))}
-                    </>
-                  )}
+                  <Categories />
                 </div>
               ) : (
                 // </ProductsContext.Provider>
