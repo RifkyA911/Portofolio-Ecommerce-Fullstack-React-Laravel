@@ -52,9 +52,9 @@ export const MyTableEngine = (props) => {
     setTabPagination,
     colSpan = 2,
     paginate,
-    onChangePaginate,
+    setPaginate,
     rows,
-    onRowsChange,
+    setRows,
     length,
     // Children Tags
     children,
@@ -125,7 +125,7 @@ export const MyTableEngine = (props) => {
           <Table className={`text-sm w-full `}>
             {children}
             {tabPagination ? (
-              <MyTablePagination />
+              <Tfoot formContext={TableContext} />
             ) : (
               <tfoot className="print:hidden ">
                 <tr>
@@ -524,16 +524,42 @@ export const Td = (props) => {
   );
 };
 
-export const MyTablePagination = (props) => {
+export const Tfoot = (props) => {
+  const { colSpan } = useContext(TableContext);
+
+  // REDUX
   const {
-    setToggleSelect,
-    colSpan,
-    paginate,
-    onChangePaginate,
-    rows,
-    onRowsChange,
-    length,
-  } = useContext(TableContext);
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  return (
+    <>
+      <tfoot className="print:hidden ">
+        <tr>
+          <td
+            key={9999}
+            align="center"
+            colSpan={colSpan}
+            className={`${BgOuterTable} ${textColor} `}
+          >
+            <MyPagination formContext={TableContext} />
+          </td>
+        </tr>
+      </tfoot>
+    </>
+  );
+};
+
+export const MyPagination = ({ formContext }) => {
+  const { paginate, setPaginate, rows, setRows, length } =
+    useContext(formContext);
 
   const [currentPage, setCurrentPage] = useState(paginate);
   // const [headPage, setHeadPage] = useState(1);
@@ -605,7 +631,7 @@ export const MyTablePagination = (props) => {
         key="prev-btn" // Berikan key yang unik
         onClick={() => {
           handlePageChange(currentPage - 1);
-          onChangePaginate(parseInt(currentPage - 1));
+          setPaginate(parseInt(currentPage - 1));
         }}
         disabled={currentPage === 1}
         className="px-4 py-2 hover:text-violet-500 cursor-pointer"
@@ -622,7 +648,7 @@ export const MyTablePagination = (props) => {
         key="left-dots-btn"
         onClick={() => {
           handlePageChange(1);
-          onChangePaginate(parseInt(1));
+          setPaginate(parseInt(1));
         }}
         className="px-4 py-2 hover:bg-violet-300 rounded-lg transition-all duration-200"
       >
@@ -638,7 +664,7 @@ export const MyTablePagination = (props) => {
         onClick={() => {
           if (i !== currentPage) {
             handlePageChange(i);
-            onChangePaginate(parseInt(i));
+            setPaginate(parseInt(i));
           }
         }}
         key={i}
@@ -657,7 +683,7 @@ export const MyTablePagination = (props) => {
       <button
         onClick={() => {
           handlePageChange(totalPages);
-          onChangePaginate(parseInt(totalPages));
+          setPaginate(parseInt(totalPages));
         }}
         key="right-dots-btn"
         className="px-4 py-2 hover:bg-violet-300 rounded-lg transition-all duration-200"
@@ -674,7 +700,7 @@ export const MyTablePagination = (props) => {
         key="next-btn"
         onClick={() => {
           handlePageChange(currentPage + 1);
-          onChangePaginate(parseInt(currentPage + 1));
+          setPaginate(parseInt(currentPage + 1));
         }}
         disabled={currentPage === totalPages}
         className="px-3 py-2 hover:bg-violet-300 hover:text-gray-500 rounded-lg transition-all duration-20"
@@ -688,54 +714,41 @@ export const MyTablePagination = (props) => {
     setTotalItems(length);
     // console.log("pagin: ", rows);
   }, []);
-
   return (
     <>
-      <tfoot className="print:hidden ">
-        <tr>
-          <td
-            key={9999}
-            align="center"
-            colSpan={colSpan}
-            className={`${BgOuterTable} ${textColor} `}
+      <div
+        className={`${BgOuterTable} flex flex-wrap lg:flex-row h-auto lg:h-12 font-roboto-medium text-sm p-0 justify-center items-center`}
+      >
+        <div className="selector w-auto">
+          <span className="px-4 font-roboto-regular text-xs lg:text-sm">
+            Rows per page:
+          </span>
+          <select
+            name="pagination"
+            className="text-black select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-sm"
+            autoComplete="off"
+            value={rows}
+            onChange={(e) => {
+              setRows(parseInt(e.target.value));
+              handlePageChange(1);
+              setPaginate(parseInt(1));
+            }}
           >
-            <div
-              className={`${BgOuterTable} flex flex-wrap lg:flex-row h-auto lg:h-12 font-roboto-medium text-sm p-0 justify-center items-center`}
-            >
-              <div className="selector w-auto">
-                <span className="px-4 font-roboto-regular text-xs lg:text-sm">
-                  Rows per page:
-                </span>
-                <select
-                  name="pagination"
-                  className="text-black select select-bordered select-xs lg:select-sm text-dark cursor-pointer focus:outline-none text-xs lg:text-sm"
-                  autoComplete="off"
-                  value={rows}
-                  onChange={(e) => {
-                    onRowsChange(parseInt(e.target.value));
-                    handlePageChange(1);
-                    onChangePaginate(parseInt(1));
-                  }}
-                >
-                  <option value={10}>10</option>
-                  <option value={25}>25</option>
-                  <option value={50}>50</option>
-                  <option value={totalItems}>All</option>
-                </select>
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+            <option value={totalItems}>All</option>
+          </select>
 
-                <span className="px-4 text-xs lg:text-sm">
-                  {currentPage * totalRows - totalRows + 1}-
-                  {Math.min(currentPage * totalRows, totalItems)} of{" "}
-                  {totalItems}
-                </span>
-              </div>
-              <div className="navigate max-w-[420px] overflow-y-scroll text-xs lg:text-sm">
-                {pageNumbers}
-              </div>
-            </div>
-          </td>
-        </tr>
-      </tfoot>
+          <span className="px-4 text-xs lg:text-sm">
+            {currentPage * totalRows - totalRows + 1}-
+            {Math.min(currentPage * totalRows, totalItems)} of {totalItems}
+          </span>
+        </div>
+        <div className="navigate max-w-[420px] overflow-y-scroll text-xs lg:text-sm">
+          {pageNumbers}
+        </div>
+      </div>
     </>
   );
 };
