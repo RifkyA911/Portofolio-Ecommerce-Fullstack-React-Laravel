@@ -10,7 +10,7 @@ import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 // Config
 
 export const Content = (props) => {
-  const { pageName, Bg } = props;
+  const { pageName, Bg, children } = props;
 
   // REDUX
   const { BgColor, textColor, ContentBgColor } = useSelector(
@@ -46,7 +46,7 @@ export const Content = (props) => {
             Bg == null ? ContentBgColor : Bg
           } rounded-xl flex flex-col min-h-screen py-2 lg:py-4 px-4 lg:px-4 text-black`}
         >
-          {props.children}
+          {children}
         </div>
       </div>
     </>
