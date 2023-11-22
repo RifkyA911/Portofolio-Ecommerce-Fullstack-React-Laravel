@@ -40,6 +40,7 @@ return new class extends Migration
                 11. Backordered: Barang atau produk dalam pesanan tidak tersedia saat ini dan akan dikirim kemudian. 
                 */
                 $table->text('status')->nullable()->default('Pending');
+                $table->timestamp('deadline_payment')->default(now()->addDay());
                 // $table->text('comment')->nullable()->default(null); // moved to table order_items
                 $table->timestamps();
             });

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Shipment;
+use App\Models\Order_item;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use Illuminate\Support\Facades\Validator;
@@ -48,23 +52,77 @@ class OrderController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * adding shipment tabel & order_item tabel
+     * parameter order_item memakai JSON cth :
+     * [{"product_id":"2","quantity":"7"},{"product_id":"7","quantity":"3","discount":"20"}]
      */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
-            'products_id' => 'required',
-            'total_price' => 'required',
+            'order_item' => 'required',
+            // for shipment
+            'address' => 'required',
+            'contact' => 'required',
+            'courier' => 'required',
+            'shipment_cost' => 'required',
+            // 'total_price' => 'required',
         ]);
-
+        
         if ($validator->fails()) { // jika validasi gagal
-            return response(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()], 400);
+            // return response(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()], 400);
+            return response(new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()]), 400);
         }
 
-        if ($hasil = Order::create($request->all())) {
-            return response(true, 'Transaksi berhasil', $hasil, 201);
+        $order_item = json_decode($request->input('order_item'), true);
+        $order_id = Order::max('id') + 1;
+        $shipment_id = Shipment::max('id') + 1;
+
+        $product_id = [];
+        $total_price = 0;
+        foreach ($order_item as $item) {
+            array_push($product_id, $item['product_id']);
+            $item_price = Product::find($item['product_id'])->price * $item['quantity'];
+            //##########insert tabel order_items#############
+            $insertOrder_item = new Order_item;
+            $insertOrder_item->order_id = $order_id;
+            $insertOrder_item->product_id = $item['product_id'];
+            $insertOrder_item->quantity = $item['quantity'];
+            $insertOrder_item->sum_price = $item_price;
+            if (isset($item['comment'])) {
+                $insertOrder_item->comment = $item['comment'];
+            }
+            if (isset($item['discount'])) {
+                $insertOrder_item->discount = $item['discount'];
+                $item_price *= (100 - $item['discount']) / 100;
+            }
+            $insertOrder_item->save();
+            $total_price += ceil($item_price);  // bulatkan keatas hehe :v
         }
-        return response(false, 'Transaksi gagal', ['old_input' => $request->all()], 400);
+        // return ['product_id' => $product_id, 'total_price' =>$total_price];
+        // ########## insert Shipment ###########
+        $parameterShipment = [
+            'consignee' => User::find($request->input('user_id'))->username,
+            'address' => $request->input('address'),
+            'contact' => $request->input('contact'),
+            'courier_service' => $request->input('courier'),
+            'cost' => $request->input('shipment_cost'),
+        ];
+        if (!Shipment::create($parameterShipment)) {
+            return response(new PostResource(false, 'Transaksi gagal, something wrong in shipment', ['old_input' => $request->all()]), 400);
+        }
+
+        // ###### insert Order ######
+        $parameterOrder = [
+            'user_id' => $request->input('user_id'),
+            'shipment_id' => $shipment_id,
+            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . "/".$request->input('user_id')."/$order_id",
+            'total_price' => $total_price,
+        ];
+        if ($hasil = Order::create($parameterOrder)) {
+            return response(new PostResource(true, 'Transaksi berhasil', $hasil), 201);
+        }
+        return response(new PostResource(false, 'Transaksi gagal', ['old_input' => $request->all()]), 400);
     }
 
     /**
@@ -78,21 +136,11 @@ class OrderController extends Controller
     public function showByUser($uid, $tahap = null)
     {
         $pesan = "data Transaksi berdasarkan user tahap " . $tahap . " :";
-        // parameter tahap berisi null, checkedout, sent, atau done
-        if ($tahap == "checkedout") {
+        // parameter tahap berisi null atau status pesanan
+        if ($tahap !== null) {
             $trans = Order::where([
                 ['user_id', '=', $uid],
-                ['checked_out', '!=', null]
-            ])->get();
-        } elseif ($tahap == "sent") {
-            $trans = Order::where([
-                ['user_id', '=', $uid],
-                ['sent', '!=', null]
-            ])->get();
-        } elseif ($tahap == "done") {
-            $trans = Order::where([
-                ['user_id', '=', $uid],
-                ['done', '!=', null]
+                ['status', '==', $tahap]
             ])->get();
         } else {
             $trans = Order::where('user_id', '=', $uid)->get();
@@ -104,21 +152,11 @@ class OrderController extends Controller
     public function showByAdmin($admin_id, $tahap = null)
     {
         $pesan = "data Transaksi berdasarkan admin tahap " . $tahap . " :";
-        // parameter tahap berisi null, checkedout, sent, atau done
-        if ($tahap == "checkedout") {
+        // parameter tahap berisi null atau status pesanan
+        if ($tahap !== null) {
             $trans = Order::where([
                 ['admin_id', '=', $admin_id],
-                ['checked_out', '!=', null]
-            ])->get();
-        } elseif ($tahap == "sent") {
-            $trans = Order::where([
-                ['admin_id', '=', $admin_id],
-                ['sent', '!=', null]
-            ])->get();
-        } elseif ($tahap == "done") {
-            $trans = Order::where([
-                ['admin_id', '=', $admin_id],
-                ['done', '!=', null]
+                ['checked_out', '==', $tahap]
             ])->get();
         } else {
             $trans = Order::where('admin_id', '=', $admin_id)->get();

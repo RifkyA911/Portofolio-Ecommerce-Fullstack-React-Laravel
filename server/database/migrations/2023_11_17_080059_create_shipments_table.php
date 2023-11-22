@@ -16,10 +16,10 @@ return new class extends Migration
             $table->text('consignee');
             $table->longText('address');
             $table->text('contact');
-            $table->text('tracking_number');
+            $table->text('tracking_number')->default(null);
             $table->text('courier_service');
             $table->integer('cost');
-            $table->text('log');
+            $table->text('log')->default('Preparing Shipment');
             $table->text('status')->default('Pending');
             $table->timestamp('sent')->nullable()->default(null);
             $table->timestamp('done')->nullable()->default(null);
