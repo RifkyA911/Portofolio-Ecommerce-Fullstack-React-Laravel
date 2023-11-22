@@ -4,7 +4,8 @@ import RequestAPI from "../Config/API.jsx";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 // Config
-import { notificationTypes } from "../Config/ObjectProps.jsx";
+import { notificationTypes, typeHandler } from "../Config/ObjectProps";
+
 // Layout
 import { Container, Content } from "../Layout";
 // Components
@@ -64,10 +65,6 @@ function Notification() {
   // useEffect(() => {
   //   fetchData(URL_NOTIFICATIONS_FILTER);
   // }, [getValues()]);
-
-  const typeHandler = (type, part) => {
-    return notificationTypes[type]?.[part] || notificationTypes.default[part];
-  };
 
   useEffect(() => {
     if (notifications) {

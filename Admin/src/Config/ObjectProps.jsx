@@ -45,3 +45,7 @@ export const notificationTypes = {
     iconColor: "text-slate-500",
   },
 };
+
+export const typeHandler = (type, part) => {
+  return notificationTypes[type]?.[part] || notificationTypes.default[part];
+};

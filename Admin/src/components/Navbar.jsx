@@ -15,7 +15,7 @@ import { SkeltonCircle } from "./Skelton";
 import { LoadingDaisyUI } from "./Loading";
 import RequestAPI, { ServerPublic } from "../Config/API";
 import { DateFormatter, SortData } from "../utils/Formatter";
-import { notificationTypes } from "../Config/ObjectProps";
+import { notificationTypes, typeHandler } from "../Config/ObjectProps";
 
 export const NavbarComponent = () => {
   const [admin, setAdmin] = useState([]);
@@ -93,9 +93,6 @@ export const NavbarComponent = () => {
     }
   };
 
-  const typeHandler = (type, part) => {
-    return notificationTypes[type]?.[part] || notificationTypes.default[part];
-  };
   // Konten komponen
   return (
     <>
@@ -285,7 +282,7 @@ export const NavbarComponent = () => {
                               ? "bg-slate-50 text-gray-100 "
                               : "bg-white text-gray-700 "
                           } 
-                          flex flex-col justify-between py-2`}
+                          flex flex-col justify-between py-2 rounded-lg`}
                         >
                           <p className="capitalize overflow-hidden truncate text-sm font-roboto text-gray-900 mb-2">
                             {item.message}
