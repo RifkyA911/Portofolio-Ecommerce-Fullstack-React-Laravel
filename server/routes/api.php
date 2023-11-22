@@ -205,5 +205,5 @@ Route::controller(MessageController::class)->group(function () {
 Route::controller(NotificationController::class)->group(function () {
     Route::get('/notifications/fetch', 'getAll');
     Route::get('/notifications/paginate/{page}/{perPage}', 'showLimit');
-
+    Route::post('/notifications/filter', 'filter'); // parameter id
 });
