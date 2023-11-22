@@ -734,9 +734,9 @@ export const MyPagination = ({ formContext }) => {
               setPaginate(parseInt(1));
             }}
           >
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
+            <option value={rows}>{rows}</option>
+            <option value={rows * 2.5}>{rows * 2.5}</option>
+            <option value={rows * 5}>{rows * 5}</option>
             <option value={totalItems}>All</option>
           </select>
 

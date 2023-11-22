@@ -9,44 +9,80 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 // UTILS
 import { getAccessToken, getUser, logOutUser } from "../Config/Session";
-import { MuiIcon } from "../utils/RenderIcons";
+import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 import axios from "axios";
 import { SkeltonCircle } from "./Skelton";
 import { LoadingDaisyUI } from "./Loading";
-
-const ServerAPIAdminsImg = import.meta.env.VITE_API_ID_ADMIN + "/image/";
-const ServerPublicAdminsImg = import.meta.env.VITE_SERVER_PUBLIC_ADMIN;
+import RequestAPI, { ServerPublic } from "../Config/API";
+import { DateFormatter, SortData } from "../utils/Formatter";
+import { notificationTypes } from "../Config/ObjectProps";
 
 export const NavbarComponent = () => {
-  const [admin, setAdmin] = useState({
-    id: null,
-    username: null,
-    pict: null,
-    role: null,
-  });
+  const [admin, setAdmin] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // REDUX
-  const { BgColor, textColor, screenWidth, ComponentColor } = useSelector(
-    (state) => state.UI
-  );
+  const {
+    DarkMode,
+    BgColor,
+    ContainerBgColor,
+    textColor,
+    screenWidth,
+    ComponentColor,
+  } = useSelector((state) => state.UI);
+
+  const table = "admin";
+  const table2 = "notifications";
+  const { id } = getUser();
+
+  const fetchData = async (url, form = null) => {
+    try {
+      const { data } = await RequestAPI(
+        url == "admin" ? url : `${url}/paginate/1/5`,
+        "GET",
+        { id }
+      );
+      // console.log(data.data);
+      setLoading(false);
+      if (url == "admin") {
+        setAdmin(data.data);
+      }
+      if (url == "notifications") {
+        const notificationsDate = SortData(data.data, "date");
+
+        console.log(Object.keys(notificationsDate));
+
+        Object.keys(notificationsDate).forEach((date) => {
+          const notificationsForDate = notificationsDate[date];
+          console.log(`Data for date ${date}:`, notificationsForDate);
+        });
+
+        // Jika Anda ingin menggabungkan semua data menjadi satu array, Anda dapat menggunakan flatMap
+        const allNotifications = Object.values(notificationsDate).flatMap(
+          (date) => date
+        );
+        console.log("All notifications:", allNotifications);
+
+        setNotifications(allNotifications);
+      }
+      setErrorMessage(null);
+    } catch (error) {
+      setErrorMessage(`Gagal Fetching '${url}'`);
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(table);
+    fetchData(table2);
+  }, []);
 
   // useEffect(() => {
-  //   console.log(logged, adminsId, id, email, username, pict, role);
-  // }, [pict]);
-  useEffect(() => {
-    const { id } = getUser();
-    axios
-      .get("http://127.0.0.1:8000/api/admin/" + id, {
-        headers: {
-          Authorization: `Bearer ${getAccessToken()}`,
-        },
-      })
-      .then((response) => {
-        // console.log(response.data.data);
-        setAdmin(response.data.data);
-      })
-      .catch((error) => console.error(error));
-  }, []);
+  //   console.log(SortData(notifications, "date"));
+  // }, [notifications]);
 
   const dispatch = useDispatch();
   const userSession = getUser();
@@ -55,6 +91,10 @@ export const NavbarComponent = () => {
     if (screenWidth < 1024) {
       dispatch(toggleSidebar(false));
     }
+  };
+
+  const typeHandler = (type, part) => {
+    return notificationTypes[type]?.[part] || notificationTypes.default[part];
   };
   // Konten komponen
   return (
@@ -180,7 +220,7 @@ export const NavbarComponent = () => {
                 <span className="absolute left-4 bottom-3.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-4 w-4 bg-sky-500 text-white font-semibold justify-center">
-                    {MarketNotification.length}
+                    {notifications.length}
                   </span>
                 </span>
               </div>
@@ -196,10 +236,11 @@ export const NavbarComponent = () => {
             >
               <Popover.Panel className="-translate-x-[48%]  lg:-translate-x-[90%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-3 absolute w-96">
                 <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div className="bg-red-400 text-xl">
-                    Nunggu Data Seeder dari DB
-                  </div>
-                  <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
+                  <div
+                    className={`flex justify-between relative ${
+                      DarkMode ? "bg-slate-700" : "bg-slate-100"
+                    } ${textColor} shadow-xl shadow-black w-full p-3`}
+                  >
                     <span className="text-base font-medium">
                       List Notification
                     </span>
@@ -212,85 +253,80 @@ export const NavbarComponent = () => {
                     </Popover.Button>
                     {/* </button> */}
                   </div>
-                  <div className="relative bg-white p-4 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
-                    {" "}
-                    <svg
-                      className="h-6 w-6 text-red-600"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                      />
-                    </svg>
-                    {MarketNotification.slice(0, 5).map((item, bg) => (
+                  <div
+                    className={`relative flex flex-col gap-2 ${
+                      DarkMode ? "bg-gray-800" : "bg-white"
+                    } ${textColor} p-4 text-left overflow-y-scroll max-h-80`}
+                  >
+                    {notifications.map((item, bg) => (
                       <Link
                         key={item.id}
                         to={`/notification?${item.id}`}
-                        className="border-b shadow-sm focus:ring-2 hover:ring-2 hover:ring-slate-300 p-2 flex items-center rounded-lg transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-violet-500 focus-visible:ring-opacity-50"
+                        className={`min-h-[60px] max-h-[60px] flex flex-row items-center rounded-lg border-b shadow-sm 
+                        ${
+                          DarkMode
+                            ? "bg-slate-700 text-gray-100 hover:ring-slate-600 hover:bg-slate-400 focus-visible:ring-violet-500"
+                            : "bg-slate-100 text-gray-700 hover:ring-slate-300 hover:bg-slate-50 focus-visible:ring-violet-500"
+                        }
+                         focus:ring-2 hover:ring-2 transition duration-150 ease-in-out focus:outline-none focus-visible:ring focus-visible:ring-opacity-50`}
                       >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white sm:h-12 sm:w-12">
-                          {item.status === "success" ? (
-                            /* Konten untuk status "success" */
-                            <MuiIcon
-                              iconName="Insights"
-                              className="text-lime-500"
-                            />
-                          ) : item.status === "danger" ? (
-                            /* Konten untuk status "danger" */
-                            <MuiIcon
-                              iconName="DeleteForever"
-                              className="text-red-500"
-                            />
-                          ) : item.status === "warning" ? (
-                            /* Konten untuk status "warning" */
-                            <MuiIcon
-                              iconName="Announcement"
-                              className="text-yellow-500"
-                            />
-                          ) : item.status === "info" ? (
-                            /* Konten untuk status "info" */
-                            <MuiIcon
-                              iconName="Info"
-                              className="text-blue-500"
-                            />
-                          ) : (
-                            /* Konten default jika status tidak cocok dengan yang diharapkan */
-                            <span>Unknown</span>
-                          )}
-                        </div>
-                        <div className="ml-4">
-                          <p className="text-sm font-medium text-gray-900 mb-2">
-                            {item.name}
+                        <ReactIcons
+                          className={`${typeHandler(
+                            item.type,
+                            "iconColor"
+                          )} mx-4`}
+                          iconName={typeHandler(item.type, "iconName")}
+                          fontSize={26}
+                        />
+                        <div
+                          className={`w-[82.5%] pl-4 h-[56px] 
+                          ${
+                            DarkMode
+                              ? "bg-slate-50 text-gray-100 "
+                              : "bg-white text-gray-700 "
+                          } 
+                          flex flex-col justify-between py-2`}
+                        >
+                          <p className="capitalize overflow-hidden truncate text-sm font-roboto text-gray-900 mb-2">
+                            {item.message}
                           </p>
-                          <p className="w-64 overflow-hidden text-sm text-gray-500 truncate">
-                            <MuiIcon
-                              iconName="Circle"
-                              fontSize={12}
-                              className="text-red-600 font-sm mr-2"
-                            />
-                            {item.time}
+                          <p className="flex flex-row mr-2 justify-between overflow-hidden text-xs text-gray-500 truncate">
+                            <span className="text-xs flex items-center">
+                              <MuiIcon
+                                iconName="Circle"
+                                fontSize={12}
+                                className="text-red-600 font-sm mr-2"
+                              />
+                              {item.type}
+                            </span>
+                            <small>
+                              {DateFormatter("Day", item.updated_at)}
+                            </small>
                           </p>
                         </div>
                       </Link>
                     ))}
-                    <Link to="/notification" className="text-center p-3">
-                      <div className="font-semibold bg-slate-200 rounded-2xl p-2">
+                    <Link to="/notification" className="text-center p-2">
+                      <div
+                        className={`font-semibold ${
+                          DarkMode ? "bg-slate-700" : "bg-slate-100"
+                        } ${textColor} rounded-2xl p-2`}
+                      >
                         <span className="pr-3">Check more Notification</span>
                         <MuiIcon iconName="MoreHoriz" />
                       </div>
                     </Link>
                   </div>
-                  <div className="bg-gray-50">
+                  <div
+                    className={`${
+                      DarkMode ? "bg-slate-700" : "bg-slate-100"
+                    } ${textColor}`}
+                  >
                     <Link
                       to="/"
-                      className="flex flex-1 justify-center items-center p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                      className={`flex flex-1 justify-center items-center p-3 rounded-md transition duration-150 ease-in-out ${
+                        DarkMode ? "hover:bg-slate-600" : "hover:bg-slate-200"
+                      } ${textColor}`}
                     >
                       <MuiIcon
                         iconName="NotificationsActive"
@@ -322,7 +358,7 @@ export const NavbarComponent = () => {
                     <LoadingDaisyUI max={1} />
                   ) : (
                     <img
-                      src={`${ServerPublicAdminsImg}${admin.pict}`}
+                      src={`${ServerPublic("admins")}${admin.pict}`}
                       alt="profile"
                       className="w-6 h-6 rounded-full text-center "
                     />
@@ -339,23 +375,32 @@ export const NavbarComponent = () => {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className="-translate-x-[75%]  lg:-translate-x-[85%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-2 absolute w-60">
-                <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div className="lg:p-4 py-2 px-2 flex flex-col w-full bg-slate-100 shadow-sm">
-                    <div className="flex flex-row picture items-center px-4">
+              <Popover.Panel className="-translate-x-[75%] lg:-translate-x-[85%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-2 absolute w-60">
+                <div className="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5 shadow-sm shadow-sky-500/50">
+                  <div
+                    className={`lg:p-4 py-2 px-2 flex flex-col w-full ${
+                      DarkMode ? "bg-slate-700 " + textColor : "bg-slate-100"
+                    } shadow-sm `}
+                  >
+                    <div className="flex flex-row picture items-center px-2">
                       <div className="flex relative pr-4">
                         {!admin.pict ? (
                           <SkeltonCircle />
                         ) : (
                           <img
-                            src={`${ServerPublicAdminsImg}${admin.pict}`}
+                            src={`${ServerPublic("admins")}${admin.pict}`}
                             alt="profile"
                             className="w-14 h-14 rounded-full text-center"
                           />
                         )}
+                        <ReactIcons
+                          className="absolute bottom-0 right-3 text-lime-500 "
+                          iconName="GoDotFill"
+                          fontSize={20}
+                        />
                       </div>
-                      <div className="flex flex-col text-left ">
-                        <p className="flex-none font-medium text-sm text-ellipsis overflow-hidden max-h-[85px] max-w-[85px] line-clamp-2">
+                      <div className="flex-1 flex-col text-left ">
+                        <p className="flex-none font-medium text-sm text-ellipsis overflow-hidden max-h-[85px] max-w-full line-clamp-2">
                           {admin.username}
                         </p>
                         <p className="text-xs">
@@ -364,18 +409,22 @@ export const NavbarComponent = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="relative bg-white py-2 grid grid-cols-1 text-left overflow-y-scroll max-h-80">
-                    <div className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
-                      <div className="flex toggle-theme mb-1">
+                  <div
+                    className={`relative bg-white  text-left overflow-y-scroll max-h-80`}
+                  >
+                    <div className="flex flex-row items-center border-b py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
+                      <div className="flex toggle-theme mb-1 py-1">
                         {BgColor != "bg-white" ? (
-                          <MuiIcon
-                            iconName="NightsStayTwoTone"
+                          <ReactIcons
+                            iconName="MdNightsStay"
                             className="text-sky-800 mr-3 transition-transform fade duration-300"
+                            fontSize={24}
                           />
                         ) : (
-                          <MuiIcon
-                            iconName="Brightness4TwoTone"
+                          <ReactIcons
+                            iconName="MdSunny"
                             className="text-yellow-500 mr-3 transition-transform duration-300"
+                            fontSize={24}
                           />
                         )}
                         <input
@@ -388,7 +437,11 @@ export const NavbarComponent = () => {
                         <div className="divider lg:divider-horizontal"></div>
                         <div className="flex flex-row justify-center items-center p-0 text-yellow-500 ">
                           <i className="text-2xl">
-                            {/* {<IconsIo iconName="IoMdPartlySunny" />} */}
+                            <ReactIcons
+                              iconName="IoPartlySunnySharp"
+                              className="text-yellow-500 mr-3 transition-transform duration-300"
+                              fontSize={22}
+                            />
                           </i>
                           <span className="text-black font-roboto-medium text-md">
                             36°
@@ -396,31 +449,39 @@ export const NavbarComponent = () => {
                         </div>
                       </div>
                     </div>
-                    <Link
-                      to="/myprofile"
-                      className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
-                    >
-                      <MuiIcon
-                        iconName="ManageAccounts"
-                        className="text-dark mr-4"
-                      />
-                      <p>My Profile</p>
-                    </Link>
-                    <Link
-                      to="/settings"
-                      className="flex flex-1 items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
-                    >
-                      <MuiIcon iconName="Settings" className="text-dark mr-4" />
-                      <p>Settings</p>
-                    </Link>
+                    <div className="flex flex-col mb-1 gap-1 justify-start items-start border-b transition duration-150 ease-in-out">
+                      <Link
+                        to="/myprofile"
+                        className="flex flex-row max-h-[40px] w-full items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                      >
+                        <ReactIcons
+                          iconName="FaUserCog"
+                          className="text-dark mr-4"
+                          fontSize={18}
+                        />
+                        <p>My Profile</p>
+                      </Link>
+                      <Link
+                        to="/settings"
+                        className="flex flex-row max-h-[40px] w-full items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                      >
+                        <ReactIcons
+                          iconName="FaGear"
+                          className="text-dark mr-4"
+                          fontSize={18}
+                        />
+                        <p>Settings</p>
+                      </Link>
+                    </div>
                     <a
                       href="/login"
                       onClick={logOutUser}
-                      className=" border-t-2 border-slate-200 flex flex-1 items-center mt-2 py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                      className="flex flex-row items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                     >
-                      <MuiIcon
-                        iconName="LogoutOutlined"
+                      <ReactIcons
+                        iconName="MdLogout"
                         className="text-dark mr-4"
+                        fontSize={22}
                       />
                       Logout
                     </a>

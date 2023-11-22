@@ -50,7 +50,7 @@ export const getApiUrl = (endpointType, data) => {
   };
 
   const URL_Segments = endpointType.split("/");
-  console.log(URL_Segments);
+  // console.log(URL_Segments);
 
   // AUTH
   if (apiEndpoints.session.hasOwnProperty(URL_Segments[0])) {
@@ -97,15 +97,7 @@ export const getApiUrl = (endpointType, data) => {
   return SERVER_BASE_URL;
 };
 
-const RequestAPI = async (
-  endpoint,
-  method = "GET",
-  data = null,
-  headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${getAccessToken()}`,
-  }
-) => {
+const RequestAPI = async (endpoint, method = "GET", data = null, config) => {
   let access_token = getAccessToken();
   // console.log(endpoint, data);
   // console.log(getApiUrl(endpoint, data));
@@ -119,10 +111,23 @@ const RequestAPI = async (
         superAuthorizationPassword: superAuthorizationPassword,
         token: access_token,
       },
-      headers: headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getAccessToken()}`,
+      },
+      // onDownloadProgress: (progressEvent) => {
+      //   console.log(progressEvent);
+      //   const total = parseFloat(
+      //     progressEvent.currentTarget.responseHeaders["Content-Length"]
+      //   );
+      //   const current = progressEvent.currentTarget.response.length;
+
+      //   let percentCompleted = Math.floor((current / total) * 100);
+      //   console.log("completed: ", percentCompleted);
+      // },
     };
 
-    const response = await axios(axiosConfig);
+    const response = await axios(config || axiosConfig);
     // if (!data.getRefreshAccessToken) {
     //   refreshAccessToken();
     // }
@@ -143,6 +148,14 @@ export const ServerPublic = (endpointType, data = null) => {
       products: import.meta.env.VITE_SERVER_PUBLIC_PRODUCT,
     },
   };
+
+  if (
+    endpointType == "admin" &&
+    endpointType == "user" &&
+    endpointType == "product"
+  ) {
+    endpointType = endpointType + "s";
+  }
 
   // PUBLIC SERVER
   if (ServerFolder.pictures.hasOwnProperty(endpointType)) {

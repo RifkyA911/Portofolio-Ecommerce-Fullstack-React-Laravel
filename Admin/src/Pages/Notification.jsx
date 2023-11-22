@@ -32,6 +32,7 @@ function Notification() {
   const [rows, setRows] = useState(10);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
 
   // REDUX
   const { DarkMode, BgColor, textColor, ContentBgColor } = useSelector(
@@ -52,7 +53,7 @@ function Notification() {
       setErrorMessage(null);
     } catch (error) {
       setErrorMessage(`Gagal Fetching '${url}'`);
-      console.error(message, error);
+      console.error(error);
     }
   };
 
@@ -60,44 +61,9 @@ function Notification() {
     fetchData(URL_NOTIFICATIONS);
   }, []);
 
-  useEffect(() => {
-    setLoading(true);
-    fetchData(URL_NOTIFICATIONS);
-  }, [paginate, rows]);
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    setFocus,
-    setError,
-    control,
-    formState: { errors, isValid, dirtyFields },
-    watch,
-  } = useForm({
-    mode: "onChange",
-  });
-
-  const NotificationContextValue = {
-    length,
-    paginate,
-    setPaginate,
-    rows,
-    setRows,
-    // react hook form
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    setFocus,
-    setError,
-    control,
-    errors,
-    isValid,
-    dirtyFields,
-    watch,
-  };
+  // useEffect(() => {
+  //   fetchData(URL_NOTIFICATIONS_FILTER);
+  // }, [getValues()]);
 
   const typeHandler = (type, part) => {
     return notificationTypes[type]?.[part] || notificationTypes.default[part];
@@ -122,6 +88,45 @@ function Notification() {
     }
   }, [notifications]);
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    setFocus,
+    setError,
+    control,
+    formState: { errors, isValid, dirtyFields },
+    watch,
+  } = useForm({
+    mode: "onChange",
+  });
+
+  useEffect(() => {
+    setLoading(true);
+    fetchData(URL_NOTIFICATIONS);
+  }, [paginate, rows]);
+
+  const NotificationContextValue = {
+    length,
+    paginate,
+    setPaginate,
+    rows,
+    setRows,
+    // react hook form
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    setFocus,
+    setError,
+    control,
+    errors,
+    isValid,
+    dirtyFields,
+    watch,
+  };
+
   return (
     <>
       <NotificationContext.Provider value={NotificationContextValue}>
@@ -131,8 +136,11 @@ function Notification() {
               <>LOADING </>
             ) : (
               <div className="notifications min-h-screen">
-                {loading &&
-                  "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"}
+                <progress
+                  className="progress progress-accent w-full"
+                  value={progress}
+                  max="100"
+                ></progress>
                 <div
                   className={`notifications-filter flex flex-col md:flex-row mb-2 w-full justify-between items-center md:max-h-[80px] md:overflow-y-hidden border-b pb-4  ${textColor} `}
                 >
