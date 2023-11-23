@@ -24,6 +24,8 @@ import { IsScreenResize } from "./utils/Solver";
 import RequestAPI, { getApiUrl } from "./Config/API";
 // import Summary from "./utils/Summary";
 
+const appMode = import.meta.env.MODE;
+
 function App() {
   // login component
   // const [fetch, setFetch] = useState(false); // need to change
@@ -37,8 +39,6 @@ function App() {
   // const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const appMode = import.meta.env.MODE;
 
   useEffect(() => {
     if (token == null) {

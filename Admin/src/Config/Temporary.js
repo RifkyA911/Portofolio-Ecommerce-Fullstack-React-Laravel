@@ -1,3 +1,5 @@
+import { DateFormatter } from "../utils/Formatter";
+
 export const infoMarket = [
   {
     flex: "row",
@@ -42,37 +44,6 @@ export const infoMarket = [
   //                   ))}
   //               </li> */
   // },
-];
-
-export const MarketNotification = [
-  {
-    id: "1",
-    name: "User B Complain",
-    status: "warning",
-    time: "4:00 PM",
-    img: "84719630_p0.jpg",
-  },
-  {
-    id: "2",
-    name: "Add Admin A",
-    status: "info",
-    time: "4:00 PM",
-    img: "85633671_p6.jpg",
-  },
-  {
-    id: "3",
-    name: "Sales Up!",
-    status: "success",
-    time: "4:00 PM",
-    img: "88129567_p0.jpg",
-  },
-  {
-    id: "4",
-    name: "Admin B is Dropped",
-    status: "danger",
-    time: "4:00 PM",
-    img: "89937713_p0.jpg",
-  },
 ];
 
 export const MarketInbox = [
@@ -159,5 +130,61 @@ export const MarketInbox = [
     role: "user",
     message: "test test",
     img: "89437506_p0.jpg",
+  },
+];
+
+export const orderData = [
+  {
+    x: DateFormatter("DD/MM", "2023-10-17T09:15:55.000000Z"),
+    y: 100,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-18T09:15:55.000000Z"),
+    y: 400,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-19T09:15:55.000000Z"),
+    y: 150,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-20T09:15:55.000000Z"),
+    y: 450,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-21T09:15:55.000000Z"),
+    y: 350,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-22T09:15:55.000000Z"),
+    y: 150,
+  },
+  // ...data order lainnya...
+];
+
+export const productData = [
+  {
+    // x: new Date("2023-09-01").getTime(),
+    x: DateFormatter("DD/MM", "2023-10-17T09:15:55.000000Z"),
+    y: 10,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-18T09:15:55.000000Z"),
+    y: 60,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-19T09:15:55.000000Z"),
+    y: 550,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-20T09:15:55.000000Z"),
+    y: 250,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-21T09:15:55.000000Z"),
+    y: 450,
+  },
+  {
+    x: DateFormatter("DD/MM", "2023-10-22T09:15:55.000000Z"),
+    y: 230,
   },
 ];
