@@ -29,6 +29,7 @@ return new class extends Migration {
             */
             $table->enum('type', ['Chat', 'Order', 'Invoice', 'Review', 'Add', 'Update', 'Delete', 'Info'])->nullable()->default('Info');
             $table->text('message');
+            $table->boolean('is_seen')->default(0);
             $table->timestamps();
         });
     }

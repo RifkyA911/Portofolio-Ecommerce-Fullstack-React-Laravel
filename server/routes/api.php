@@ -175,6 +175,8 @@ Route::controller(OrderController::class)->group(function () {
 Route::controller(ReviewController::class)->group(function () {
     Route::get('/reviews', 'index');
     Route::get('/review/{product_id}', 'getByProduct');
+    Route::get('/reviews/paginate/{page}/{perPage}', 'showLimit');
+
 });
 
 // Endpoint Dialog

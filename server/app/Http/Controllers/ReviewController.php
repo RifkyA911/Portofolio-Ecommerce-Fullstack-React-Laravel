@@ -17,13 +17,32 @@ class ReviewController extends Controller
         return new PostResource(true, 'List Review', Review::all());
     }
 
-    public function getByProduct($product_id) {
-        if (count($reviews = Review::Where('product_id', $product_id)->get())){
+    public function getByProduct($product_id)
+    {
+        if (count($reviews = Review::Where('product_id', $product_id)->get())) {
             return new PostResource(true, 'List Review Produk', $reviews);
         }
-        return response(new PostResource(false, 'Review Produk tidak ditemukan', null), 404);
+        return response(['status' => false, 'message' => 'Review Produk tidak ditemukan', 'data' => null], 404);
         // return new Response(new PostResource(false, 'Review Produk tidak ditemukan', null), 401);
     }
+
+    public function showLimit($page, $perPage)
+    {
+        $page = (int) $page; // halaman
+        $perPage = (int) $perPage; // jumlah data yang akan di kirim
+
+        $length = Review::count();
+
+        $offset = ($page - 1) * $perPage;
+
+        $Reviews = Review::orderBy('updated_at', 'desc')
+            ->skip($offset)
+            ->take($perPage)
+            ->get();
+
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $Reviews);
+    }
+
 
     /**
      * Show the form for creating a new resource.
