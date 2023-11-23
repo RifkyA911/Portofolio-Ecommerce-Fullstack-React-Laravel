@@ -190,7 +190,7 @@ class ProductController extends Controller
         return new PostResource(true, "Data products:", $products);
     }
 
-    public function showLimit($page, $perPage)
+    public function showLimit($page, $perPage, $sortBy = null, $sortOrder = "asc")
     {
         // Mengonversi halaman dan perPage yang diterima menjadi integer
         $page = (int) $page; // halaman
@@ -201,8 +201,11 @@ class ProductController extends Controller
         // Menghitung offset berdasarkan halaman yang diminta
         $offset = ($page - 1) * $perPage;
 
-        // Mengambil data Admin dengan paginasi dan offset
-        $products = Product::skip($offset)->take($perPage)->get();
+        if ($sortBy == "updated_at") {
+            $products = Product::orderBy('updated_at', $sortOrder)->skip($offset)->take($perPage)->get();
+        } else {
+            $products = Product::skip($offset)->take($perPage)->get();
+        }
 
         // Mengembalikan hasil dalam bentuk resource
         return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $products);

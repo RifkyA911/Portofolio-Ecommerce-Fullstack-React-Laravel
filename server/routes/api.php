@@ -56,7 +56,7 @@ Route::controller(AdminsController::class)->group(function () {
     Route::get('/admin/{id}', 'find'); // parameter id
     Route::get('/admin/image/{id}', 'getImage'); // parameter id
     // table utility
-    Route::get('/admins/paginate/{page}/{perPage}', 'showLimit');
+    Route::get('/admins/paginate/{page}/{perPage}/{sortBy?}/{orderBy?}', 'showLimit');
     // Route::post('/admins/print', 'print'); // parameter id
     Route::post('/admins/filter', 'filter'); // parameter id
     Route::post('/admins/search', 'search'); // parameter name, category, price(numeric), stok(numeric)
@@ -77,7 +77,7 @@ Route::controller(AdminsController::class)->group(function () {
 // Endpoint User
 Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'index');
-    Route::get('/users/paginate/{page}/{perPage}', 'showLimit');
+    Route::get('/users/paginate/{page}/{perPage}/{sortBy?}/{orderBy?}', 'showLimit');
     Route::get('/user/{id}', 'show'); // parameter id
     // create user
     // Route::post('/user', 'store'); // parameter email, username, password(min:6)
@@ -99,7 +99,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/product/{id}', 'getById'); // parameter id
     Route::get('/product/image/{id}', 'getImage'); // parameter id
     // table utility
-    Route::get('/products/paginate/{page}/{perPage}', 'showLimit');
+    Route::get('/products/paginate/{page}/{perPage}/{sortBy?}/{orderBy?}', 'showLimit');
     Route::post('/products/print', 'print'); // parameter id
     Route::post('/products/filter', 'filter'); // parameter id
     Route::post('/products/search', 'search'); // parameter name, category, price(numeric), stok(numeric)
@@ -194,7 +194,7 @@ Route::post('/dialog/new', [DialogController::class, 'store']);
 // product_id (can be null if sending direct message to admin)
 Route::controller(MessageController::class)->group(function () {
     Route::get('/messages', 'index');
-    Route::get('/messages/paginate/{page}/{perPage}', 'showLimit');
+    Route::get('/messages/paginate/{page}/{perPage}/{sortBy?}/{orderBy?}', 'showLimit');
     Route::post('/message/add', 'store');
     Route::post('/messages/getByUser', 'getByUser'); // return dialog and first message where user is involved
     // parameter : user_id
