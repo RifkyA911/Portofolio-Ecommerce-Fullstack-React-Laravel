@@ -309,7 +309,18 @@ export default function Order() {
                   )} */}
                   {/* ================ Table ================ */}
                   <div className="divider">Product List</div>
-
+                  <ul className="timeline timeline-vertical font-roboto-regular">
+                    <li>
+                      <div className="timeline-start">1984</div>
+                      <div className="timeline-middle">
+                        <ReactIcons iconName="FaCircleCheck" />
+                      </div>
+                      <div id="chart" className="timeline-end timeline-box">
+                        First Macintosh computer
+                      </div>
+                      <hr />
+                    </li>
+                  </ul>
                   <MyTableEngine
                     {...MyTableEngineProps}
                     className="rounded-sm mx-auto"

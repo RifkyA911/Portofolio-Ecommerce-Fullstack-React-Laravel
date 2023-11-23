@@ -1,7 +1,7 @@
 import { Fragment, React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 // Data
-import { MarketInbox, MarketNotification } from "../Config/Temporary";
+import { MarketInbox } from "../Config/Temporary";
 // UI
 import { Transition, Popover, Switch, Tab } from "@headlessui/react";
 // REDUX
@@ -53,18 +53,18 @@ export const NavbarComponent = () => {
       if (url == "notifications") {
         const notificationsDate = SortData(data.data, "date");
 
-        console.log(Object.keys(notificationsDate));
+        // console.log(Object.keys(notificationsDate));
 
         Object.keys(notificationsDate).forEach((date) => {
           const notificationsForDate = notificationsDate[date];
-          console.log(`Data for date ${date}:`, notificationsForDate);
+          // console.log(`Data for date ${date}:`, notificationsForDate);
         });
 
         // Jika Anda ingin menggabungkan semua data menjadi satu array, Anda dapat menggunakan flatMap
         const allNotifications = Object.values(notificationsDate).flatMap(
           (date) => date
         );
-        console.log("All notifications:", allNotifications);
+        // console.log("All notifications:", allNotifications);
 
         setNotifications(allNotifications);
       }
@@ -262,8 +262,8 @@ export const NavbarComponent = () => {
                         className={`min-h-[60px] max-h-[60px] flex flex-row items-center rounded-lg border-b shadow-sm 
                         ${
                           DarkMode
-                            ? "bg-slate-700 text-gray-100 hover:ring-slate-600 hover:bg-slate-400 focus-visible:ring-violet-500"
-                            : "bg-slate-100 text-gray-700 hover:ring-slate-300 hover:bg-slate-50 focus-visible:ring-violet-500"
+                            ? "bg-slate-700 hover:bg-slate-600 text-gray-100 hover:ring-slate-600  focus-visible:ring-violet-500"
+                            : "bg-slate-100 hover:bg-slate-50 text-gray-700 hover:ring-slate-300  focus-visible:ring-violet-500"
                         }
                          focus:ring-2 hover:ring-2 transition duration-150 ease-in-out focus:outline-none focus-visible:ring focus-visible:ring-opacity-50`}
                       >
@@ -372,7 +372,7 @@ export const NavbarComponent = () => {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className="-translate-x-[75%] lg:-translate-x-[85%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-2 absolute w-60">
+              <Popover.Panel className="-translate-x-[75%] lg:-translate-x-[80%] transform px-4 sm:px-0 lg:max-w-3xl z-10 mt-2 absolute w-60">
                 <div className="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5 shadow-sm shadow-sky-500/50">
                   <div
                     className={`lg:p-4 py-2 px-2 flex flex-col w-full ${
@@ -407,9 +407,9 @@ export const NavbarComponent = () => {
                     </div>
                   </div>
                   <div
-                    className={`relative bg-white  text-left overflow-y-scroll max-h-80`}
+                    className={`relative bg-white  text-left overflow-y-auto max-h-80`}
                   >
-                    <div className="flex flex-row items-center border-b py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
+                    <div className="flex flex-row items-center border-t border-b py-2 px-6 transition duration-150 ease-in-out hover:bg-sky-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
                       <div className="flex toggle-theme mb-1 py-1">
                         {BgColor != "bg-white" ? (
                           <ReactIcons
@@ -420,23 +420,23 @@ export const NavbarComponent = () => {
                         ) : (
                           <ReactIcons
                             iconName="MdSunny"
-                            className="text-yellow-500 mr-3 transition-transform duration-300"
+                            className="text-yellow-400 mr-3 transition-transform duration-300"
                             fontSize={24}
                           />
                         )}
                         <input
                           type="checkbox"
-                          className="toggle  checked:text-white"
+                          className="toggle text-amber-400 checked:text-sky-400"
                           onClick={() => {
                             dispatch(darkTheme());
                           }}
                         />
                         <div className="divider lg:divider-horizontal"></div>
-                        <div className="flex flex-row justify-center items-center p-0 text-yellow-500 ">
+                        <div className="flex flex-row justify-center items-center p-0  ">
                           <i className="text-2xl">
                             <ReactIcons
                               iconName="IoPartlySunnySharp"
-                              className="text-yellow-500 mr-3 transition-transform duration-300"
+                              className="text-yellow-400 mr-3 transition-transform duration-300"
                               fontSize={22}
                             />
                           </i>
@@ -446,10 +446,20 @@ export const NavbarComponent = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col mb-1 gap-1 justify-start items-start border-b transition duration-150 ease-in-out">
+                    <div
+                      className={` ${
+                        DarkMode
+                          ? "bg-slate-700 text-gray-100 border-slate-600"
+                          : "bg-white text-gray-700 border-slate-300"
+                      } flex flex-col pb-1 gap-1 justify-start items-start border-b transition duration-150 ease-in-out`}
+                    >
                       <Link
                         to="/myprofile"
-                        className="flex flex-row max-h-[40px] w-full items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                        className={`${
+                          DarkMode
+                            ? "hover:bg-slate-600 text-gray-100"
+                            : "hover:bg-slate-100 text-gray-700 "
+                        } flex flex-row max-h-[40px] w-full items-center py-2 px-6 transition duration-150 ease-in-out focus:outline-none focus-visible:ring focus-visible:ring-opacity-50`}
                       >
                         <ReactIcons
                           iconName="FaUserCog"
@@ -460,7 +470,11 @@ export const NavbarComponent = () => {
                       </Link>
                       <Link
                         to="/settings"
-                        className="flex flex-row max-h-[40px] w-full items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                        className={`${
+                          DarkMode
+                            ? "hover:bg-slate-600 text-gray-100"
+                            : "hover:bg-slate-100 text-gray-700 "
+                        } flex flex-row max-h-[40px] w-full items-center py-2 px-6 transition duration-150 ease-in-out focus:outline-none focus-visible:ring focus-visible:ring-opacity-50`}
                       >
                         <ReactIcons
                           iconName="FaGear"
@@ -473,7 +487,11 @@ export const NavbarComponent = () => {
                     <a
                       href="/login"
                       onClick={logOutUser}
-                      className="flex flex-row items-center py-2 px-6 transition duration-150 ease-in-out hover:bg-slate-200 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                      className={`${
+                        DarkMode
+                          ? "bg-gray-700 hover:bg-slate-600 text-gray-100"
+                          : "bg-white hover:bg-slate-100 text-gray-700 "
+                      } flex flex-row items-center py-2 px-6 transition duration-150 ease-in-out focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50`}
                     >
                       <ReactIcons
                         iconName="MdLogout"

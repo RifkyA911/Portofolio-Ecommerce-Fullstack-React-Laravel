@@ -36,13 +36,13 @@ export const SearchInput = (props) => {
 
   const debouncedOnChange = debounce(func, 1000);
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <input
         ref={searchInput}
         name="search"
         type="text"
         placeholder="Find inputData in this pagination"
-        className={`input input-bordered input-sm input-info w-full lg:w-[512px] lg:max-w-lg focus:outline-none cursor-text`}
+        className={`input input-bordered input-sm w-full input-info focus:outline-none cursor-text`}
         // value={setSearchTerm} this is useless
         onChange={debouncedOnChange}
       />

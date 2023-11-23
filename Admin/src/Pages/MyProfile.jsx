@@ -1,25 +1,22 @@
 import React, { useState, useEffect, createContext } from "react";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { debounce } from "lodash";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 // Config
 import RequestAPI from "../Config/API";
-import { getAccessToken, getUser, refreshAccessToken } from "../Config/Session";
+import { getUser } from "../Config/Session";
 // Layout
 import { Container, Content } from "../Layout";
 // Components
 import { SkeltonMyProfile } from "../components/Skelton";
-import { DangerAlert, SuccessAlert } from "../components/Alert";
+import { DangerAlert } from "../components/Alert";
 import { FilePictureInput, PasswordInput, TextInput } from "../components/Form";
 import { MotionButton } from "../components/Button";
 // Utils
 import { ReactIcons } from "./../utils/RenderIcons";
 import { IsThisAnImage } from "../utils/Solver";
 
-const URL_ADMIN = import.meta.env.VITE_API_ALL_ADMINS;
-const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const placeholder_password = import.meta.env.VITE_SUPER_ADMIN_PASSWORD;
 
 export const MyProfileContext = createContext();
@@ -55,7 +52,6 @@ export default function MyProfile() {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      superAuthorizationPassword: SuperAdminKey,
       pict: "default.png",
     },
   });

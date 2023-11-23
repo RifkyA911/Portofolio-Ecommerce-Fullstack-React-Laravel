@@ -5,128 +5,67 @@ import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 
 export const ActionButton = (props) => {
-  const { onClickView, onClickPrint, onClickDelete, onClickEdit } = props;
-
-  return (
-    <>
-      <div className="w-full gap-4 xflex-wrap flex lg:flex-row justify-around items-center">
-        {/* {
-          <button
-            onClick={onClickView}
-            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-lime-600 hover:to-lime-500 hover:outline-none outline outline-2 outline-amber-400 transition-all duration-200"
-          >
-            <MuiIcon iconName={"RemoveRedEyeRounded"} fontSize={26} />
-          </button>
-        )} */}
-        {onClickPrint && (
-          <button
-            onClick={onClickPrint}
-            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-amber-500 hover:to-yellow-500 hover:outline-none outline outline-2 outline-amber-400 transition-all duration-200"
-          >
-            <MuiIcon iconName={"LocalPrintshopRounded"} fontSize={26} />
-          </button>
-        )}
-        {onClickDelete && (
-          <button
-            onClick={onClickDelete}
-            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-red-600 hover:to-red-500 hover:outline-none outline outline-2 outline-red-400 transition-all duration-200"
-          >
-            <MuiIcon iconName={"DeleteForeverOutlined"} fontSize={26} />
-          </button>
-        )}
-        {onClickEdit && (
-          <button
-            onClick={onClickEdit}
-            className="p-2 rounded-md text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-indigo-500 hover:outline-none outline outline-2 outline-blue-400 transition-all duration-200"
-          >
-            <MuiIcon iconName={"AutoFixHighOutlined"} fontSize={26} />
-          </button>
-        )}
-      </div>
-    </>
-  );
-};
-
-export const ConfirmButton = (props) => {
-  // const debouncedOnChange = debounce(setSearchTerm, 1000);
-
   const {
-    stickyContainer = false,
+    disabled = false,
     className,
-    confirmType,
-    type = "submit",
-    onClick = null,
-    children,
+    onClickView,
+    onClickPrint,
+    onClickDelete,
+    onClickEdit,
+    fontSize = 22,
+    iconName,
   } = props;
+
+  const actionBtn = {
+    print: {
+      className:
+        "text-gray-500 hover:text-white hover:from-amber-500 hover:to-yellow-500 outline-amber-400",
+      iconName: "MdLocalPrintshop",
+      onClick: onClickPrint,
+    },
+    delete: {
+      className:
+        "text-gray-500 hover:text-white hover:from-red-600 hover:to-red-500 outline-red-400",
+      iconName: "MdDeleteForever",
+      onClick: onClickDelete,
+    },
+    edit: {
+      className:
+        "text-gray-500 hover:text-white hover:from-blue-500 hover:to-indigo-500 outline-blue-400",
+      iconName: "BiSolidEditAlt",
+      onClick: onClickEdit,
+    },
+    visibility: {
+      className:
+        "text-gray-500 hover:text-white hover:from-green-500 hover:to-lime-500 outline-teal-400",
+      iconName: "IoEye",
+      onClick: onClickView,
+    },
+  };
+
   return (
-    <>
-      <div
-        className={`${
-          stickyContainer &&
-          "sticky bottom-0 z-10 py-2 shadow-inner shadow-slate-50 bg-slate-100"
-        }`}
-      >
-        {confirmType === "confirm" && (
-          <button
-            onClick={onClick}
-            type={type}
-            className={`${className} btn px-6 my-4 bg-gradient-to-tr hover:from-green-500 hover:to-teal-500 transition-all duration-500 from-green-500 to-lime-500 rounded-lg text-white font-roboto-bold font-bold`}
-          >
-            <MuiIcon iconName="CheckRounded" /> Confirm
-            {children}
-          </button>
-        )}
-        {confirmType === "add" && (
-          <button
-            onClick={onClick}
-            type={type}
-            className={`${className} btn px-6 bg-gradient-to-tl hover:from-indigo-500 hover:to-teal-500 transition-all duration-500 from-blue-500 to-sky-500 rounded-lg text-white font-roboto-bold font-bold`}
-          >
-            <MuiIcon iconName="AddBoxRounde" /> Add New Data
-            {children}
-          </button>
-        )}
-        {confirmType === "alter" && (
-          <button
-            onClick={onClick}
-            type={type}
-            className={`${className} btn px-6 bg-gradient-to-tl hover:from-indigo-500 hover:to-violet-500 transition-all duration-500 bg-size-100 bg-pos-0 hover:bg-pos-100 from-blue-500 to-violet-500 rounded-lg text-white font-roboto-bold font-bold`}
-          >
-            <MuiIcon iconName="EditRounded" /> Save Changes
-          </button>
-        )}
-        {confirmType === "drop" && (
-          <button
-            onClick={onClick}
-            type={type}
-            // onClick={handleSubmit(onSubmit)}
-            className="btn transition-all duration-500 bg-gradient-to-tl from-pink-500 via-red-500 to-red-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-          >
-            <span id="showDelete" className="options px-[4px]">
-              <i className="font-xs">
-                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-              </i>
-            </span>
-            <span className="font-bold pr-2">Delete</span>
-          </button>
-        )}
-        {confirmType === "cancel" && (
-          <button
-            type="button"
-            // onClick={refresh}
-            onClick={onClick}
-            className="btn transition-all duration-500 bg-gradient-to-tl from-amber-500 via-orange-500 to-amber-400 bg-size-200 bg-pos-0 hover:bg-pos-100 px-6 py-3 rounded-lg text-white font-roboto-bold font-bold"
-          >
-            <span className="options px-[4px]">
-              <i className="font-xs ">
-                <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-              </i>
-              <span className="font-bold pr-2">Cancel</span>
-            </span>
-          </button>
-        )}
-      </div>
-    </>
+    <div className="w-full gap-4 xflex-wrap flex lg:flex-row justify-around items-center">
+      {Object.keys(actionBtn).map(
+        (key) =>
+          actionBtn[key].onClick && (
+            <MotionButton
+              key={key}
+              disabled={disabled}
+              className={
+                className ??
+                `p-2 rounded-md hover:bg-gradient-to-r hover:outline-none outline outline-2 transition-all duration-200 ${actionBtn[key].className}`
+              }
+              type="button"
+              onClick={actionBtn[key].onClick}
+            >
+              <ReactIcons
+                iconName={iconName ?? actionBtn[key].iconName}
+                fontSize={fontSize}
+              />
+            </MotionButton>
+          )
+      )}
+    </div>
   );
 };
 
@@ -136,6 +75,7 @@ export const MotionButton = (props) => {
     className,
     formType,
     icon,
+    iconSize = 20,
     span,
     style,
     noSpan = false,
@@ -286,7 +226,7 @@ export const MotionButton = (props) => {
             <span
               className={`${style} flex flex-row items-center justify-between px-1`}
             >
-              <ReactIcons iconName={styleButton.icon} fontSize={20} />
+              <ReactIcons iconName={styleButton.icon} fontSize={iconSize} />
               {!noSpan && <span className="px-1">{styleButton.span}</span>}
             </span>
           </>

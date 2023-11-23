@@ -183,7 +183,7 @@ export const MyTableHeader = (props) => {
       >
         {/* ====================== Header Area ====================== */}
         {/* left */}
-        <div className="flex justify-center lg:justify-start w-full lg:w-6/12 mb-4 lg:mb-0">
+        <div className="flex justify-center lg:justify-start w-full lg:w-5/12 mb-4 lg:mb-0">
           {hideHeaderBtn !== "filterBtn" && (
             <MyTableHeaderFilter
               refresh={refresh}
@@ -210,7 +210,7 @@ export const MyTableHeader = (props) => {
           />
         </div>
         {/* right */}
-        <div className="flex flex-row gap-2 md:gap-0 flex-wrap justify-center lg:justify-end lg:w-6/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
+        <div className="flex flex-row gap-2 md:gap-0 flex-wrap justify-center lg:justify-end lg:w-7/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
           {!hideHeaderBtn.includes("excelBtn") && !toggleSelect && (
             <>
               <ExportData data={inputData} />
@@ -427,10 +427,10 @@ export const Th = (props) => {
               className={`${className} min-h-[36px]`}
             >
               <div className="relative ">
-                <span className="absolute left-0 text-[14px] bottom-[-10px]">
+                <span className="absolute left-0 -translate-y-1/2 xbottom-[-10px]">
                   {name}
                 </span>
-                <i className="print:hidden absolute m-0 w-5 right-[-10px] top-[-10px] overflow-hidden text-lg">
+                <i className="print:hidden absolute m-0 w-5 right-[-10px] -translate-y-1/2 overflow-hidden">
                   {sortBy === column &&
                     (sortOrder === "asc" ? (
                       <ReactIcons iconName="HiArrowLongDown" className="" />

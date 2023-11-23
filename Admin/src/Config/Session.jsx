@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import jwtDecode from "jwt-decode";
-import axios from "axios";
 import RequestAPI from "./API";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -60,48 +59,20 @@ export function deleteCookie(cookieName) {
 // Fungsi untuk merefresh token
 export const refreshAccessToken = async () => {
   try {
-    const request = await RequestAPI("auth/refresh", "POST", {
-      getRefreshAccessToken: true,
-    });
-    const response = request.data;
-    console.log(response);
-    if (!response.access_token) {
+    const { data } = await RequestAPI("auth/refresh", "POST");
+    // console.log(data);
+    if (!data.access_token) {
       throw new Error("Failed to refresh token");
     }
-    sessionStorage.setItem("token", JSON.stringify(response.data));
+    sessionStorage.setItem("token", JSON.stringify(data));
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 1); // Expires in 1 day
     document.cookie = `token=${JSON.stringify(
-      response
+      data
     )}; expires=${expirationDate.toUTCString()}`;
   } catch (error) {
     console.error("Error fetching admin data:", error);
   }
-
-  // let getToken = JSON.parse(getCookie("token"));
-  // let access_token = getToken.access_token;
-
-  // return axios
-  //   .post(
-  //     import.meta.env.VITE_API_ID_ADMIN + "/refresh",
-  //     {},
-  //     {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: "Bearer " + access_token,
-  //       },
-  //     }
-  //   )
-  //   .then((response) => {
-  //     if (!response.data.access_token) {
-  //       throw new Error("Failed to refresh token");
-  //     }
-  //     // console.log("refreshedToken", response.data);
-  //     sessionStorage.setItem("token", JSON.stringify(response.data));
-  //   })
-  //   .catch((error) => {
-  //     console.error("Error refreshing token:", error);
-  //   });
 };
 
 export function logOutUser() {

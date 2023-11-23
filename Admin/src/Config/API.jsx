@@ -12,7 +12,9 @@ export const getApiUrl = (endpointType, data) => {
   // console.log("data", data);
 
   const apiEndpoints = {
-    session: { auth: `${SERVER_BASE_URL}/api/auth` },
+    session: {
+      auth: `${SERVER_BASE_URL}/api/auth`,
+    },
     id: {
       product: import.meta.env.VITE_API_ID_PRODUCT,
       category: import.meta.env.VITE_API_ID_CATEGORY,
@@ -128,9 +130,15 @@ const RequestAPI = async (endpoint, method = "GET", data = null, config) => {
     };
 
     const response = await axios(config || axiosConfig);
-    // if (!data.getRefreshAccessToken) {
-    //   refreshAccessToken();
-    // }
+    if (
+      // method == "POST" ||
+      method == "PUT" ||
+      method == "PATCH" ||
+      method == "DELETE"
+    ) {
+      console.log("refreshed token by", method);
+      await refreshAccessToken();
+    }
     return response;
   } catch (error) {
     // Handle errors (e.g., network issues, API errors)
