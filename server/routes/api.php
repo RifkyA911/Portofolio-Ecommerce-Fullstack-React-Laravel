@@ -154,7 +154,7 @@ Route::controller(OrderController::class)->group(function () {
     Route::get('/orders', 'index');
     Route::get('/orders/paginate/{page}/{perPage}', 'showLimit');
     Route::get('/order/{id}', 'show'); // parameter id
-    Route::post('/order/buy', 'store'); // parameter user_id, products_id(in array/json form), total_price. all required
+    Route::post('/order/buy', 'store'); // parameter user_id, order_item(in array/json form), address, contact, courier,shipment_cost. all required
     Route::post('/order/checkout', 'checkout'); // parameter id, user_id(same as trans' user), payment(pict proof of payment)
     Route::post('/order/sent', 'sent'); // parameter id, admin_id, role_admin
     Route::post('/order/done', 'done'); // parameter id. user_id OR (admin_id & role_admin)

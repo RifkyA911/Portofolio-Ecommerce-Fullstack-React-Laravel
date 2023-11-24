@@ -20,7 +20,7 @@ class OrderController extends Controller
     public function index()
     {
         //return collection of posts as a resource
-        return new PostResource(true, 'List Data Produk', Order::all());
+        return response(new PostResource(true, 'List Data Produk', $hasil=Order::all()))->header('Content-Lenght', strlen($hasil));
         // return new PostResource(true, 'List Data Produk', "/1/" . strtotime(now()));
     }
 
@@ -71,7 +71,7 @@ class OrderController extends Controller
         
         if ($validator->fails()) { // jika validasi gagal
             // return response(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()], 400);
-            return response(new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()]), 400);
+            return response(new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()]), 400)->header('Content-Lenght', strlen(strval($request->all())));;
         }
 
         $order_item = json_decode($request->input('order_item'), true);
@@ -109,7 +109,7 @@ class OrderController extends Controller
             'cost' => $request->input('shipment_cost'),
         ];
         if (!Shipment::create($parameterShipment)) {
-            return response(new PostResource(false, 'Transaksi gagal, something wrong in shipment', ['old_input' => $request->all()]), 400);
+            return response(new PostResource(false, 'Transaksi gagal, something wrong in shipment', ['old_input' => $request->all()]), 400)->header('Content-Lenght', strlen(strval($request->all())));
         }
 
         // ###### insert Order ######
@@ -120,9 +120,9 @@ class OrderController extends Controller
             'total_price' => $total_price,
         ];
         if ($hasil = Order::create($parameterOrder)) {
-            return response(new PostResource(true, 'Transaksi berhasil', $hasil), 201);
+            return response(new PostResource(true, 'Transaksi berhasil', $hasil), 201)->header('Content-Lenght', strlen($hasil));
         }
-        return response(new PostResource(false, 'Transaksi gagal', ['old_input' => $request->all()]), 400);
+        return response(new PostResource(false, 'Transaksi gagal', ['old_input' => $request->all()]), 400)->header('Content-Lenght', strlen(strval($request->all())));
     }
 
     /**
@@ -130,23 +130,23 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        return new PostResource(true, "data Transaksi berdasarkan id :", Order::find($id));
+        return response(new PostResource(true, "data Transaksi berdasarkan id :", $hasil=Order::find($id)))->header('Content-Lenght', strlen($hasil));;
     }
 
-    public function showByUser($uid, $tahap = null)
+    public function showByUser($user_id, $tahap = null)
     {
         $pesan = "data Transaksi berdasarkan user tahap " . $tahap . " :";
         // parameter tahap berisi null atau status pesanan
         if ($tahap !== null) {
             $trans = Order::where([
-                ['user_id', '=', $uid],
-                ['status', '==', $tahap]
+                ['user_id', '=', $user_id],
+                ['status', '=', $tahap]
             ])->get();
         } else {
-            $trans = Order::where('user_id', '=', $uid)->get();
+            $trans = Order::where('user_id', '=', $user_id)->get();
             $pesan = "data Transaksi berdasarkan user :";
         }
-        return new PostResource(true, $pesan, $trans);
+        return response(new PostResource(true, $pesan, $trans))->header('Content-Lenght', strlen($trans));
     }
 
     public function showByAdmin($admin_id, $tahap = null)
@@ -156,7 +156,7 @@ class OrderController extends Controller
         if ($tahap !== null) {
             $trans = Order::where([
                 ['admin_id', '=', $admin_id],
-                ['checked_out', '==', $tahap]
+                ['status', '=', $tahap]
             ])->get();
         } else {
             $trans = Order::where('admin_id', '=', $admin_id)->get();

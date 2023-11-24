@@ -12,7 +12,7 @@ class Order extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $with = ['admin.id', 'admin:id,email,username,pict', 'user:id,email,username,address,pict', 'items:product,sum_price', 'shipment:id,cost', 'payment:id,status'];
+    protected $with = ['admin', 'user', 'items'];
 
     // relation
     public function admin(): BelongsTo {

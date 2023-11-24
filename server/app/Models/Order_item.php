@@ -11,11 +11,12 @@ class Order_item extends Model
     use HasFactory;
     protected $guarded = ['id'];
     public $timestamps = false;
-    protected $with = ['product:id,name,price,category'];
+    // protected $with = ['product:name,price', 'order'];
+    protected $with = ['product'];
 
     // relation
     public function product(): BelongsTo {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->select(['id','name']);
     }
 
     public function order(): BelongsTo {
