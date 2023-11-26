@@ -24,6 +24,7 @@ import { useSelector } from "react-redux";
 import { CurrencyFormatter, TextFormatter } from "../utils/Formatter";
 import { ReactIcons } from "../utils/RenderIcons";
 import RequestAPI from "../Config/API";
+import { ListProduct, OrderStatus } from "../components/Orders/OrdersTableBody";
 
 export const OrdersContext = createContext();
 
@@ -397,24 +398,11 @@ export default function Orders() {
                             </>
                           )}
                           <Td className={`w-1/12 pl-2`}>{row.no_invoice}</Td>
-                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
-                            {row.status}
+                          <Td className={` ${table_styling.td} w-1/12`}>
+                            <OrderStatus status={row.status} />
                           </Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
-                            {row.items.length > 5 ? (
-                              <>
-                                {row.items.slice(0, 5).map((item, key) => (
-                                  <p key={key}>
-                                    {key}. {item.product.name}
-                                  </p>
-                                ))}
-                                <p>...</p>
-                              </>
-                            ) : (
-                              row.items.map((item, key) => (
-                                <p key={key}>{item.product.name}</p>
-                              ))
-                            )}
+                          <Td className={`${table_styling.td} w-2/12`}>
+                            <ListProduct row={row} />
                           </Td>
                           <Td className={`px-6 ${table_styling.td} w-1/12`}>
                             {row.user.username}
@@ -427,11 +415,13 @@ export default function Orders() {
                           <Td className={`${table_styling.td} w-1/12`}>
                             {CurrencyFormatter(row.total_price)}
                           </Td>
-                          <Td className={`px-6 ${table_styling.td} w-2/12`}>
+                          <Td
+                            className={`px-6 ${table_styling.td} w-2/12 text-center whitespace-pre-line`}
+                          >
                             {row.deadline_payment}
                           </Td>
 
-                          <Td className="border-l print:hidden py-2 px-6 w-3/12">
+                          <Td className="border-l print:hidden py-2 px-6 w-2/12">
                             {row.id && (
                               <>
                                 <ActionButton

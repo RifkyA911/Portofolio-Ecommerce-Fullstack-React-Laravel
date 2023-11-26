@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 import { debounce } from "lodash";
+import Tooltips from "./Tooltips";
 
 export const ActionButton = (props) => {
   const {
@@ -65,6 +66,7 @@ export const ActionButton = (props) => {
   };
 
   return (
+    // <Tooltips text="SDSD">
     <div className="w-full gap-4 xflex-wrap flex lg:flex-row justify-around items-center">
       {Object.keys(actionBtn).map(
         (key) =>
@@ -87,6 +89,7 @@ export const ActionButton = (props) => {
           )
       )}
     </div>
+    // </Tooltips>
   );
 };
 

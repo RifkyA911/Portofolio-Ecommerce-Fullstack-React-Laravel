@@ -424,7 +424,7 @@ export const Th = (props) => {
             <th
               key={customKey}
               onClick={() => handleSortClick(column)}
-              className={`${className} min-h-[36px]`}
+              className={`${className} min-h-[36px] truncate`}
             >
               <div className="relative ">
                 <span className="absolute left-0 -translate-y-1/2 xbottom-[-10px]">

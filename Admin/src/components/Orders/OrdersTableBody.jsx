@@ -14,73 +14,56 @@ const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
 const ServerAPIProductsImg = import.meta.env.VITE_API_ID_PRODUCT + "/image/";
 
-// export const ProductDetail = (props) => {
-//   const { inputData, onMouseEnter, onMouseLeave } = props;
-//   let componentRef = useRef(null);
+export const OrderStatus = (props) => {
+  const { status } = props;
+  // ['Pending', 'Awaiting Payment', 'Processing', 'Shipped', 'Delivered', 'Completed', 'Cancelled', 'On Hold', 'Returned', 'Partially Shipped', 'Backordered', 'Failed']
+  return (
+    <>
+      <span
+        className={`flex text-center justify-center self-center px-2 py-1 rounded-lg whitespace-nowrap 
+        ${status == "Pending" && "bg-green-500"}  
+        ${status == "Awaiting Payment" && "bg-orange-400"} 
+        ${status == "Processing" && "bg-cyan-500"} 
+        ${status == "Shipped" && "bg-blue-500"} 
+        ${status == "Delivered" && "bg-lime-500"} 
+        ${status == "Completed" && "bg-indigo-500"} 
+        ${status == "Cancelled" && "bg-red-500"} 
+        ${status == "On Hold" && "bg-slate-500"} 
+        ${status == "Returned" && "bg-pink-500"} 
+        ${status == "Partially Shipped" && "bg-zinc-500"} 
+        ${status == "Backordered" && "bg-amber-500"} 
+        ${status == "Failed" && "bg-red-700"} 
+        text-white`}
+      >
+        {status}
+      </span>
+    </>
+  );
+};
 
-//   return (
-//     <div
-//       onMouseEnter={onMouseEnter}
-//       onMouseLeave={onMouseLeave}
-//       className={`fixed top-20 bg-white shadow-lg mx-auto z-10 max-w-[760px] rounded-lg`}
-//     >
-//       <section className="w-full p-4 lg:p-8 " ref={componentRef}>
-//         <div className="body flex flex-row justify-between items-start m-8">
-//           <div className="flex w-1/2 justify-start">
-//             <img
-//               src={`${ServerAPIProductsImg}${inputData[0].id}`}
-//               alt="logo"
-//               className="w-60 sm:flex text-center shadow-lg rounded-md"
-//             />
-//           </div>
-//           <div className="flex w-1/2 justify-end">
-//             <table className="w-full border-gray-600 font-roboto">
-//               <tbody className="text-center">
-//                 <tr className="border-b-2">
-//                   <th className="bg-slate-300 h-12 w-36">Barcode</th>
-//                   <td className="bg-white text-center">
-//                     <Barcode
-//                       className={`p-0 m-0 mx-auto`}
-//                       value={23232323}
-//                       options={{
-//                         displayValue: true,
-//                         height: 30,
-//                         fontSize: 12,
-//                       }}
-//                     />
-//                   </td>
-//                 </tr>
-//                 <tr className="border-b-2">
-//                   <th className="bg-slate-300 h-12">Name</th>
-//                   <td className="bg-white">{inputData[0].name}</td>
-//                 </tr>
-//                 <tr className="border-b-2">
-//                   <th className="bg-slate-300 h-12">Category</th>
-//                   <td className="bg-white">{inputData[0].category.name}</td>
-//                 </tr>
-//                 <tr className="border-b-2">
-//                   <th className="bg-slate-300 h-12">Price</th>
-//                   <td className="bg-white">
-//                     {CurrencyFormatter(inputData[0].price)}
-//                   </td>
-//                 </tr>
-//                 <tr className="">
-//                   <th className="bg-slate-300 h-12">Discount</th>
-//                   <td className="bg-white">{inputData[0].discount}%</td>
-//                 </tr>
-//               </tbody>
-//             </table>
-//           </div>
-//         </div>
-//         <div className="text-left p-12">
-//           <h4 className="font-poppins-bold">Description : </h4>
-//           <p className="font-roboto-regular">{inputData[0].description}</p>
-//         </div>
-//         <small>{inputData[0].visible ? "visible" : "invisible"}</small>
-//       </section>
-//     </div>
-//   );
-// };
+export const ListProduct = (props) => {
+  const { row } = props;
+  return (
+    <>
+      {row.items.length > 3 ? (
+        <>
+          {row.items.slice(0, 3).map((item, key) => (
+            <p key={key}>
+              {key + 1}. {item.product.name}
+            </p>
+          ))}
+          <p>...</p>
+        </>
+      ) : (
+        row.items.map((item, key) => (
+          <p key={key}>
+            {key + 1}. {item.product.name}
+          </p>
+        ))
+      )}
+    </>
+  );
+};
 
 export const ProductImage = (props) => {
   const { data, onProductPictureClick } = props;
