@@ -26,13 +26,16 @@ return new class extends Migration {
                 // $table->timestamp('done')->nullable()->default(null);
                 /*
                 ------------------- kolom 'status' value states -------------------
+                -- Process --
                 1. Pending: Pesanan belum diproses atau menunggu konfirmasi.
                 2. Awaiting Payment: Menunggu pembayaran dari pelanggan.
                 3. Processing: Pesanan sedang diproses oleh penjual atau sistem.
                 4. Shipped/Dispatched: Pesanan telah dikirim atau telah diambil oleh pihak pengiriman.
+                -- On Destination --
                 5. Delivered: Pesanan telah berhasil diantarkan kepada pelanggan.
                 6. Completed: Seluruh proses pesanan selesai, termasuk pengiriman dan penerimaan.
                 7. Cancelled/Refunded: Pesanan dibatalkan oleh pelanggan atau penjual, dan mungkin ada pengembalian dana.
+                -- Exception --
                 8. On Hold: Pesanan ditunda atau ditahan sementara.
                 9. Returned: Produk dikembalikan oleh pelanggan.
                 10. Partially Shipped: Hanya sebagian dari pesanan yang telah dikirim.
