@@ -52,7 +52,9 @@ class OrderController extends Controller
         // Menambahkan kondisi where berdasarkan parameter 'status'
         if (!empty($statuses)) {
             $query->whereIn('status', $statuses);
+            $length = $query->count();
         }
+
 
         // Menambahkan pengurutan jika disediakan
         if ($sortBy == "updated_at") {
