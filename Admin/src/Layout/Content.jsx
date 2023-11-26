@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Layout
 // REDUX
@@ -7,6 +7,7 @@ import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utils
 import { getCurrentEndpoint } from "../utils/Navigation";
 import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
+import { sideNavigation } from "../Config/PagesLink";
 // Config
 
 export const Content = (props) => {
@@ -16,29 +17,34 @@ export const Content = (props) => {
   const { BgColor, textColor, ContentBgColor } = useSelector(
     (state) => state.UI
   );
-  const dispatch = useDispatch();
-  // dispatch(setCurrentSidebar(getCurrentEndpoint()));
+
+  useEffect(() => {
+    // Initialize pagesLink and pagesIcons arrays
+    const pagesLink = [];
+    const pagesIcons = [];
+
+    sideNavigation.forEach((groupPage) => {
+      groupPage.Links.forEach((page) => {
+        pagesLink.push(page.name);
+        pagesIcons.push(page.icon);
+      });
+    });
+  }, []); // Empty dependency array means this effect runs once on mount
+
   return (
     <>
       <div className="w-full h-full p-4 max-w-[1920px] mx-auto">
-        <div className="pages-title flex flex-row items-end justify-start text-xl font-roboto-medium mb-3 px-2">
-          <i className="pr-2 text-md">
-            {pageName == "Dashboard" && <MuiIcon iconName={"Home"} />}
-            {pageName == "Notifications" && (
-              <ReactIcons iconName="BsBellFill" />
-            )}
-            {pageName == "Statistic" && <MuiIcon iconName={"BarChart"} />}
-            {pageName == "Chat" && <MuiIcon iconName={"Sms"} />}
-            {pageName == "Products" && <MuiIcon iconName={"Store"} />}
-            {pageName == "Orders" && <MuiIcon iconName={"LocalShipping"} />}
-            {pageName == "Invoices" && <MuiIcon iconName={"ReceiptLong"} />}
-            {pageName == "Admins" && <MuiIcon iconName={"PeopleAlt"} />}
-            {pageName == "My Profile" && (
-              <MuiIcon iconName={"ManageAccounts"} />
-            )}
-            {pageName == "Settings" && <MuiIcon iconName={"Settings"} />}
-          </i>
-          <h1>{pageName}</h1>
+        <div className="pages-title flex flex-row items-center justify-start text-xl font-roboto-medium mb-3 px-2">
+          {sideNavigation.flatMap((groupPage) =>
+            groupPage.Links.map((page, index) => (
+              <i key={page.name}>
+                {page.name.toLowerCase() == pageName.toLowerCase() && (
+                  <ReactIcons iconName={page.icon} />
+                )}
+              </i>
+            ))
+          )}
+          <h1 className="ml-2 capitalize">{pageName}</h1>
         </div>
         <div className="div"></div>
         <div

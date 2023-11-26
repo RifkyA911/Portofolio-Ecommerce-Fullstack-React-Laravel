@@ -1,3 +1,21 @@
+export const TextFormatter = (data, separator = "_") => {
+  let result = "";
+
+  if (typeof data === "string") {
+    // Jika input berupa string, langsung pecah menggunakan pemisah
+    const split = data.split(separator);
+    result = split.join(" ");
+  } else if (Array.isArray(data)) {
+    // Jika input berupa array, langsung ubah menjadi string dengan pemisah
+    result = data.join(separator) + " ";
+  } else {
+    // Jika tipe data tidak dikenali, berikan pesan kesalahan
+    throw new Error("Tipe data tidak didukung");
+  }
+
+  return result;
+};
+
 export function DateFormatter(type, inputDate) {
   // const inputDate = '2023-10-28T10:20:51.000000Z';
 
