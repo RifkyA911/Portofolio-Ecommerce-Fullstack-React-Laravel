@@ -32,6 +32,11 @@ import { DateFormatter } from "../utils/Formatter";
 import { motionProps } from "../Config/MotionProps";
 import { AreaDropZone } from "./Area";
 import RequestAPI, { ServerPublic } from "../Config/API";
+import {
+  OrdersDetailsForm,
+  OrdersDropForm,
+  OrdersInputForm,
+} from "./Orders/OrdersForm";
 
 export const ModalContext = createContext();
 
@@ -99,6 +104,8 @@ export const MainModalHandler = (props) => {
         pict: "default.jpg",
       });
     } else if (
+      formType === "DETAILS_BY_ID" ||
+      formType === "VISIBILITY_BY_ID" ||
       formType === "ALTER_BY_ID" ||
       formType === "DROP_BY_ID" ||
       formType === "PRINT_BY_ID" ||
@@ -373,6 +380,8 @@ export const FormModal = (props) => {
           >
             <div className="w-5/12 font-bold text-lg text-left capitalize ">
               <Dialog.Title>
+                {formType === "VISIBILITY_BY_ID" && `${table} Visibility`}
+                {formType === "DETAILS_BY_ID" && `${table} Details`}
                 {formType === "INSERT" && `Add New ${table}`}
                 {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
                 {formType === "DROP_BY_ID" && `Delete This ${table}`}
@@ -428,22 +437,6 @@ export const FormModal = (props) => {
                       // =========================== Main Form ========================
                       <>
                         {/* Panggilan setValue diluar input */}
-                        {table === "admins" && (
-                          <>
-                            {(formType === "INSERT" ||
-                              formType === "ALTER_BY_ID") && (
-                              <>
-                                <AdminsInputForm />
-                              </>
-                            )}
-                            {(formType === "DROP_BY_ID" ||
-                              formType === "DROP_BY_SELECTED") && (
-                              <>
-                                <AdminsDropForm />
-                              </>
-                            )}
-                          </>
-                        )}
                         {table === "products" && (
                           <>
                             {(formType === "INSERT" ||
@@ -456,6 +449,44 @@ export const FormModal = (props) => {
                               formType === "DROP_BY_SELECTED") && (
                               <>
                                 <ProductsDropForm />
+                              </>
+                            )}
+                          </>
+                        )}
+                        {table === "orders" && (
+                          <>
+                            {(formType === "VISIBILITY_BY_ID" ||
+                              formType === "DETAILS_BY_ID") && (
+                              <>
+                                <OrdersDetailsForm />
+                              </>
+                            )}
+                            {(formType === "INSERT" ||
+                              formType === "ALTER_BY_ID") && (
+                              <>
+                                <OrdersInputForm />
+                              </>
+                            )}
+                            {(formType === "DROP_BY_ID" ||
+                              formType === "DROP_BY_SELECTED") && (
+                              <>
+                                <OrdersDropForm />
+                              </>
+                            )}
+                          </>
+                        )}
+                        {table === "admins" && (
+                          <>
+                            {(formType === "INSERT" ||
+                              formType === "ALTER_BY_ID") && (
+                              <>
+                                <AdminsInputForm />
+                              </>
+                            )}
+                            {(formType === "DROP_BY_ID" ||
+                              formType === "DROP_BY_SELECTED") && (
+                              <>
+                                <AdminsDropForm />
                               </>
                             )}
                           </>
@@ -569,7 +600,7 @@ export const PrintModal = (props) => {
     <>
       <Dialog.Panel
         as="div"
-        className={`flex flex-col w-[400px] md:w-[1200px] h-full justify-center ${BgColor} ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all`}
+        className={`flex flex-col w-[400px] md:w-[1000px] h-full justify-center ${BgColor} ${textColor} rounded-lg overflow-hidden shadow-xl transform transition-all`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-headline"
