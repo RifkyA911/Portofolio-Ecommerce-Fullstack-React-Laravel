@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,8 +13,8 @@ return new class extends Migration
         if (!Schema::hasTable('orders')) {
             Schema::create('orders', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('user_id');
-                $table->foreignId('admin_id')->nullable()->onDelete('set null')->default(null);
+                $table->foreignId('user_id')->constrained();
+                $table->foreignId('admin_id')->nullable()->constrained()->onDelete('set null')->default(null);
                 $table->foreignId('shipment_id')->nullable()->onDelete('set null')->default(null);
                 $table->foreignId('payment_id')->nullable()->default(null);     // isi bukti pembayaran
                 $table->text('no_invoice');     // format penomoran INV/tahunBulan/user_id/id_order
@@ -39,7 +38,7 @@ return new class extends Migration
                 10. Partially Shipped: Hanya sebagian dari pesanan yang telah dikirim.
                 11. Backordered: Barang atau produk dalam pesanan tidak tersedia saat ini dan akan dikirim kemudian. 
                 */
-                $table->text('status')->nullable()->default('Pending');
+                $table->enum('status', ['Pending', 'Processing', 'Shipped', 'Delivered', 'Completed', 'Cancelled', 'On Hold', 'Returned', 'Awaiting Payment', 'Partially Shipped', 'Backordered', 'Failed'])->nullable()->default('Pending');
                 $table->timestamp('deadline_payment')->default(now()->addDay());
                 // $table->text('comment')->nullable()->default(null); // moved to table order_items
                 $table->timestamps();

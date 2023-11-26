@@ -172,7 +172,7 @@ class DatabaseSeeder extends Seeder
             'admin_id' => 7,
             'shipment_id' => 5,
             'payment_id' => 5,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/5/6',
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/5/6',
             'total_price' => 30000 + (Product::where('id', 4)->value('price') * 2) + Product::where('id', 1)->value('price'),
             'status' => 'Completed',
         ]);
@@ -181,7 +181,7 @@ class DatabaseSeeder extends Seeder
             'admin_id' => 2,
             'shipment_id' => 6,
             'payment_id' => 8,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/3/7',
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/3/7',
             'total_price' => 20000 + (Product::where('id', 3)->value('price') * 25) + (Product::where('id', 5)->value('price') * 20) + (Product::where('id', 8)->value('price') * 30),
             'status' => 'Completed',
         ]);
@@ -190,7 +190,7 @@ class DatabaseSeeder extends Seeder
             'admin_id' => 3,
             'shipment_id' => 7,
             'payment_id' => 7,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/1/8',
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/1/8',
             'total_price' => 30000 + (Product::where('id', 6)->value('price') * 3),
             'deadline_payment' => now()->addHours(3),
             'status' => 'Shipped',
@@ -200,7 +200,7 @@ class DatabaseSeeder extends Seeder
             'admin_id' => 5,
             'shipment_id' => 8,
             'payment_id' => 6,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/4/9',
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/4/9',
             'total_price' => 20000 + (Product::where('id', 3)->value('price') * 4) + (Product::where('id', 7)->value('price') * 3),
             'status' => 'Shipped',
         ]);
@@ -209,9 +209,9 @@ class DatabaseSeeder extends Seeder
             'admin_id' => 4,
             'shipment_id' => null,
             'payment_id' => 9,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . '/2/10',
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/2/10',
             'total_price' => 20000 + (Product::where('id', 2)->value('price') * 2),
-            'status' => 'Canceled',
+            'status' => 'Cancelled',
         ]);
 
         // order_items
@@ -321,7 +321,7 @@ class DatabaseSeeder extends Seeder
             'quantity' => 2,
             'sum_price' => Product::where('id', 2)->value('price') * 2,
         ]);
-        
+
         // shipment
         Shipment::create([
             'consignee' => User::where('id', 1)->value('username'),
