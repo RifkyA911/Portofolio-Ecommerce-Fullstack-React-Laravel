@@ -55,10 +55,16 @@ class OrderController extends Controller
             $length = $query->count();
         }
 
-
-        // Menambahkan pengurutan jika disediakan
-        if ($sortBy == "updated_at") {
-            $query->orderBy('updated_at', $sortOrder);
+        // Menambahkan pengurutan khusus untuk kolom 'status'
+        if ($sortBy == "status") {
+            $statusOrder = ['Pending', 'Awaiting Payment', 'Processing', 'Shipped', 'Delivered', 'Completed', 'Cancelled', 'On Hold', 'Returned', 'Partially Shipped', 'Backordered', 'Failed'];
+            $orderByExpression = "FIELD(status, '" . implode("', '", $statusOrder) . "')";
+            $query->orderByRaw($orderByExpression . ' ' . $sortOrder);
+        } else {
+            // Menambahkan pengurutan jika disediakan
+            if ($sortBy == "updated_at" || $sortBy == "deadline_payment") {
+                $query->orderBy($sortBy, $sortOrder);
+            }
         }
 
         // Mengeksekusi query dengan offset dan perPage yang sesuai

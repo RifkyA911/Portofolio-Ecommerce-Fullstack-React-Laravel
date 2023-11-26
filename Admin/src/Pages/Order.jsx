@@ -73,13 +73,16 @@ export default function Orders() {
   } = useSelector((state) => state.UI);
 
   const table = "orders";
-  const URL_ORDERS = `${table}/paginate/${paginate}/${rows}`;
+  const orderStatuses = ["Pending", "Shipped", "Awaiting Payment", "Shipped"];
+
+  const URL_ORDERS = `${table}/paginate/${paginate}/${rows}/status/asc/`;
   const URL_ORDERS_SEARCH = `${table}/search`;
   const URL_ORDERS_FILTER = `${table}/filter`;
 
-  const fetchData = async (url, form = null) => {
+  const fetchData = async (url, form = null, params = null) => {
+    // console.log(url);
     try {
-      const { data } = await RequestAPI(url, form ? "POST" : "GET", form);
+      const { data } = await RequestAPI(url, "GET", form, params);
       // console.log(data.data);
       setLoading(false);
       setOrders(data.data);
@@ -94,7 +97,9 @@ export default function Orders() {
   // ===================== MyTableEngine =====================
   useEffect(() => {
     setLoading(true);
-    fetchData(URL_ORDERS);
+    fetchData(URL_ORDERS, null, {
+      status: orderStatuses,
+    });
     if (orders !== null && orders !== undefined) {
       setColspan(columnOrder.length + 1);
     }
@@ -118,7 +123,9 @@ export default function Orders() {
       if (searchTerm.length > 1 || searchTerm !== "") {
         fetchData(URL_ORDERS_SEARCH, { search: searchTerm });
       } else if (searchTerm == "") {
-        fetchData(URL_ORDERS);
+        fetchData(URL_ORDERS, null, {
+          status: orderStatuses,
+        });
       }
     }
   }, [searchTerm]);
@@ -128,7 +135,9 @@ export default function Orders() {
     context: OrdersContext,
     inputData: orders,
     refresh: () => {
-      fetchData(URL_ORDERS);
+      fetchData(URL_ORDERS, null, {
+        status: orderStatuses,
+      });
       setLoading(true);
       setTabPagination(true);
     },
@@ -222,7 +231,7 @@ export default function Orders() {
   const columnOrder = [
     "id",
     "No. Invoices",
-    "Status", // sent + done
+    "status", // sent + done
     "Products",
     "Customer",
     "Address",
@@ -238,7 +247,14 @@ export default function Orders() {
       tr: `h-8 text-left text-xs`,
       th: columnOrder.map((key, index) => ({
         key,
-        feature: ["id", "Customer", "Checked", "Total"].includes(key)
+        feature: [
+          "id",
+          "no_invoices",
+          "status",
+          "Customer",
+          "Checked",
+          "Total",
+        ].includes(key)
           ? "filter"
           : null,
         style: `capitalize px-4`,
@@ -264,7 +280,14 @@ export default function Orders() {
                       <SetErrorMessage
                         errorMessage={errorMessage}
                         refresh={() => {
-                          fetchData(URL_PRODUCT, "orders");
+                          fetchData(URL_ORDERS, null, {
+                            status: [
+                              "Pending",
+                              "Shipped",
+                              "Awaiting Payment",
+                              "Shipped",
+                            ],
+                          });
                           setLoading(true);
                         }}
                       >
@@ -429,31 +452,41 @@ export default function Orders() {
 
                           <Td className="border-l print:hidden py-2 px-6 w-3/12">
                             {row.id && (
-                              <ActionButton
-                                key={index}
-                                inputData={row}
-                                fontSize={18}
-                                onClickDetails={() => {
-                                  handleOpenModal(row.id, "DROP_BY_ID", "form");
-                                }}
-                                onClickPrint={() => {
-                                  handleOpenModal(
-                                    row.id,
-                                    "PRINT_BY_ID",
-                                    "print"
-                                  );
-                                }}
-                                onClickCancel={() => {
-                                  handleOpenModal(row.id, "DROP_BY_ID", "form");
-                                }}
-                                onClickApprove={() => {
-                                  handleOpenModal(
-                                    row.id,
-                                    "ALTER_BY_ID",
-                                    "form"
-                                  );
-                                }}
-                              />
+                              <>
+                                <ActionButton
+                                  key={index}
+                                  inputData={row}
+                                  fontSize={18}
+                                  onClickDetails={() => {
+                                    handleOpenModal(
+                                      row.id,
+                                      "DROP_BY_ID",
+                                      "form"
+                                    );
+                                  }}
+                                  onClickPrint={() => {
+                                    handleOpenModal(
+                                      row.id,
+                                      "PRINT_BY_ID",
+                                      "print"
+                                    );
+                                  }}
+                                  onClickCancel={() => {
+                                    handleOpenModal(
+                                      row.id,
+                                      "DROP_BY_ID",
+                                      "form"
+                                    );
+                                  }}
+                                  onClickApprove={() => {
+                                    handleOpenModal(
+                                      row.id,
+                                      "ALTER_BY_ID",
+                                      "form"
+                                    );
+                                  }}
+                                />
+                              </>
                             )}
                           </Td>
                         </Tr>
