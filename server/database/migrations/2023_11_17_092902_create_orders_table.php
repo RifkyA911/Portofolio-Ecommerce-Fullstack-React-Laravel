@@ -27,18 +27,18 @@ return new class extends Migration {
                 /*
                 ------------------- kolom 'status' value states -------------------
                 1. Pending: Pesanan belum diproses atau menunggu konfirmasi.
-                2. Processing: Pesanan sedang diproses oleh penjual atau sistem.
-                3. Shipped/Dispatched: Pesanan telah dikirim atau telah diambil oleh pihak pengiriman.
-                4. Delivered: Pesanan telah berhasil diantarkan kepada pelanggan.
-                5. Completed: Seluruh proses pesanan selesai, termasuk pengiriman dan penerimaan.
-                6. Cancelled/Refunded: Pesanan dibatalkan oleh pelanggan atau penjual, dan mungkin ada pengembalian dana.
-                7. On Hold: Pesanan ditunda atau ditahan sementara.
-                8. Returned: Produk dikembalikan oleh pelanggan.
-                9. Awaiting Payment: Menunggu pembayaran dari pelanggan.
+                2. Awaiting Payment: Menunggu pembayaran dari pelanggan.
+                3. Processing: Pesanan sedang diproses oleh penjual atau sistem.
+                4. Shipped/Dispatched: Pesanan telah dikirim atau telah diambil oleh pihak pengiriman.
+                5. Delivered: Pesanan telah berhasil diantarkan kepada pelanggan.
+                6. Completed: Seluruh proses pesanan selesai, termasuk pengiriman dan penerimaan.
+                7. Cancelled/Refunded: Pesanan dibatalkan oleh pelanggan atau penjual, dan mungkin ada pengembalian dana.
+                8. On Hold: Pesanan ditunda atau ditahan sementara.
+                9. Returned: Produk dikembalikan oleh pelanggan.
                 10. Partially Shipped: Hanya sebagian dari pesanan yang telah dikirim.
                 11. Backordered: Barang atau produk dalam pesanan tidak tersedia saat ini dan akan dikirim kemudian. 
                 */
-                $table->enum('status', ['Pending', 'Processing', 'Shipped', 'Delivered', 'Completed', 'Cancelled', 'On Hold', 'Returned', 'Awaiting Payment', 'Partially Shipped', 'Backordered', 'Failed'])->nullable()->default('Pending');
+                $table->enum('status', ['Pending', 'Awaiting Payment', 'Processing', 'Shipped', 'Delivered', 'Completed', 'Cancelled', 'On Hold', 'Returned', 'Partially Shipped', 'Backordered', 'Failed'])->nullable()->default('Pending');
                 $table->timestamp('deadline_payment')->default(now()->addDay());
                 // $table->text('comment')->nullable()->default(null); // moved to table order_items
                 $table->timestamps();

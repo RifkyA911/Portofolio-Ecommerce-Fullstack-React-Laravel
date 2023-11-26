@@ -129,7 +129,7 @@ class DatabaseSeeder extends Seeder
             'payment_id' => 1,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/1/1',
             'total_price' => 80000,
-            'status' => 'Completed',
+            'status' => 'Pending',
         ]);
         Order::create([
             'user_id' => '2',
@@ -138,7 +138,7 @@ class DatabaseSeeder extends Seeder
             'payment_id' => 2,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/2/2',
             'total_price' => 620000,
-            'status' => 'Shipped',
+            'status' => 'Awaiting Payment',
         ]);
         Order::create([
             'user_id' => '1',
@@ -147,7 +147,7 @@ class DatabaseSeeder extends Seeder
             'payment_id' => 3,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/1/3',
             'total_price' => 20000 + (Product::where('id', 6)->value('price') * 5) + (Product::where('id', 1)->value('price') * 3) + (Product::where('id', 2)->value('price') * 4),
-            'status' => 'Processing',
+            'status' => 'Awaiting Payment',
         ]);
         Order::create([
             'user_id' => '2',
@@ -156,7 +156,7 @@ class DatabaseSeeder extends Seeder
             'payment_id' => null,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/2/4',
             'total_price' => 20000 + (Product::where('id', 7)->value('price') * 135),
-            'status' => 'Pending',
+            'status' => 'Processing',
         ]);
         Order::create([
             'user_id' => '3',
@@ -165,7 +165,7 @@ class DatabaseSeeder extends Seeder
             'payment_id' => 4,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/3/5',
             'total_price' => 20000 + (Product::where('id', 3)->value('price') * 6),
-            'status' => 'Shipped',
+            'status' => 'Processing',
         ]);
         Order::create([
             'user_id' => '5',
@@ -174,7 +174,7 @@ class DatabaseSeeder extends Seeder
             'payment_id' => 5,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/5/6',
             'total_price' => 30000 + (Product::where('id', 4)->value('price') * 2) + Product::where('id', 1)->value('price'),
-            'status' => 'Completed',
+            'status' => 'Shipped',
         ]);
         Order::create([
             'user_id' => '3',
@@ -183,7 +183,7 @@ class DatabaseSeeder extends Seeder
             'payment_id' => 8,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/3/7',
             'total_price' => 20000 + (Product::where('id', 3)->value('price') * 25) + (Product::where('id', 5)->value('price') * 20) + (Product::where('id', 8)->value('price') * 30),
-            'status' => 'Completed',
+            'status' => 'Delivered',
         ]);
         Order::create([
             'user_id' => '1',
@@ -193,7 +193,7 @@ class DatabaseSeeder extends Seeder
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/1/8',
             'total_price' => 30000 + (Product::where('id', 6)->value('price') * 3),
             'deadline_payment' => now()->addHours(3),
-            'status' => 'Shipped',
+            'status' => 'Completed',
         ]);
         Order::create([
             'user_id' => '4',
@@ -202,7 +202,7 @@ class DatabaseSeeder extends Seeder
             'payment_id' => 6,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/4/9',
             'total_price' => 20000 + (Product::where('id', 3)->value('price') * 4) + (Product::where('id', 7)->value('price') * 3),
-            'status' => 'Shipped',
+            'status' => 'Cancelled',
         ]);
         Order::create([
             'user_id' => '2',
@@ -211,7 +211,7 @@ class DatabaseSeeder extends Seeder
             'payment_id' => 9,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/2/10',
             'total_price' => 20000 + (Product::where('id', 2)->value('price') * 2),
-            'status' => 'Cancelled',
+            'status' => 'Returned',
         ]);
 
         // order_items
