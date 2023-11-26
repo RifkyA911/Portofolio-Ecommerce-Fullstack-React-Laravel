@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 // UTILS
 import { getAccessToken, getUser, logOutUser } from "../Config/Session";
-import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
+import { ReactIcons } from "../utils/RenderIcons";
 import axios from "axios";
 import { SkeltonCircle } from "./Skelton";
 import { LoadingDaisyUI } from "./Loading";
@@ -107,10 +107,16 @@ export const NavbarComponent = () => {
                 rounded-md ${ComponentColor} font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500 focus:ring-0 focus:outline-none`}
             >
               <div className="relative">
-                <MuiIcon
-                  iconName="Sms"
+                <ReactIcons
+                  iconName="HiMiniChatBubbleOvalLeftEllipsis"
                   className="flex h-6 w-6 relative ring-0"
+                  fontSize={12}
                 />
+                {/* <ReactIcons
+                  iconName="HiOutlineChatBubbleOvalLeftEllipsis"
+                  className="flex h-6 w-6 relative ring-0"
+                  fontSize={12}
+                /> */}
                 <span className="absolute left-4 bottom-3.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-4 w-4 bg-sky-500 text-white font-semibold justify-center">
@@ -136,9 +142,9 @@ export const NavbarComponent = () => {
                   <div className="flex justify-between relative bg-slate-50 shadow-xl shadow-black w-full p-3">
                     <span className="text-base font-medium">List Chat</span>
                     <Popover.Button className="hover:origin-center hover:scale-150 transition delay-100 font-bold">
-                      <MuiIcon
-                        iconName="Close"
-                        sx={{ fontSize: 20 }}
+                      <ReactIcons
+                        iconName="CgClose"
+                        fontSize={20}
                         className="text-red-600 font-sm mr-2 hover:text-violet-600"
                       />
                     </Popover.Button>
@@ -163,8 +169,8 @@ export const NavbarComponent = () => {
                             {item.name}
                           </p>
                           <p className="w-64 overflow-hidden text-sm text-gray-500 truncate">
-                            <MuiIcon
-                              iconName="Circle"
+                            <ReactIcons
+                              iconName="GoDotFill"
                               fontSize={12}
                               className="text-red-600 font-sm mr-2"
                             />
@@ -174,20 +180,21 @@ export const NavbarComponent = () => {
                       </Link>
                     ))}
                     <Link to="/inbox" className="text-center p-3">
-                      <div className="font-semibold bg-slate-200 rounded-2xl p-2">
+                      <div className="flex flex-row  justify-center items-center font-semibold bg-slate-200 rounded-2xl p-2">
                         <span className="pr-3">Check more inbox</span>
-                        <MuiIcon iconName="MoreHoriz" />
+                        <ReactIcons iconName="HiDotsHorizontal" />
                       </div>
                     </Link>
                   </div>
                   <div className="bg-gray-50">
                     <Link
                       to="/"
-                      className="flex flex-1 justify-center items-center p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                      className="flex flex-row  justify-center items-center  p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                     >
-                      <MuiIcon
-                        iconName="RecordVoiceOver"
+                      <ReactIcons
+                        iconName="MdOutlineAnnouncement"
                         className="text-dark mr-4"
+                        fontSize={20}
                       />
                       Check Customer Complaints
                     </Link>
@@ -210,10 +217,17 @@ export const NavbarComponent = () => {
                 rounded-md ${ComponentColor} font-extralight text-dark p-2 rounded-xl bg-violet-200 hover:bg-violet-300 duration-500 focus:ring-0 focus:outline-none`}
             >
               <div className="relative">
-                <MuiIcon
-                  iconName="NotificationsNone"
-                  className="flex h-6 w-6 relative ring-0"
-                />
+                {notifications.length == 0 ? (
+                  <ReactIcons
+                    iconName="IoMdNotificationsOutline"
+                    className="flex h-6 w-6 relative ring-0"
+                  />
+                ) : (
+                  <ReactIcons
+                    iconName="IoMdNotifications"
+                    className="flex h-6 w-6 relative ring-0"
+                  />
+                )}
                 <span className="absolute left-4 bottom-3.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-4 w-4 bg-sky-500 text-white font-semibold justify-center">
@@ -242,8 +256,8 @@ export const NavbarComponent = () => {
                       List Notification
                     </span>
                     <Popover.Button className="hover:origin-center hover:scale-150 transition delay-100 font-bold">
-                      <MuiIcon
-                        iconName="Close"
+                      <ReactIcons
+                        iconName="CgClose"
                         fontSize={20}
                         className="text-red-600 font-sm mr-2 hover:text-violet-600"
                       />
@@ -289,7 +303,7 @@ export const NavbarComponent = () => {
                           </p>
                           <p className="flex flex-row mr-2 justify-between overflow-hidden text-xs text-gray-500 truncate">
                             <span className="text-xs flex items-center">
-                              <MuiIcon
+                              <ReactIcons
                                 iconName="Circle"
                                 fontSize={12}
                                 className="text-red-600 font-sm mr-2"
@@ -305,12 +319,12 @@ export const NavbarComponent = () => {
                     ))}
                     <Link to="/notification" className="text-center p-2">
                       <div
-                        className={`font-semibold ${
+                        className={`flex flex-row  justify-center items-center font-semibold ${
                           DarkMode ? "bg-slate-700" : "bg-slate-100"
                         } ${textColor} rounded-2xl p-2`}
                       >
                         <span className="pr-3">Check more Notification</span>
-                        <MuiIcon iconName="MoreHoriz" />
+                        <ReactIcons iconName="HiDotsHorizontal" />
                       </div>
                     </Link>
                   </div>
@@ -320,14 +334,15 @@ export const NavbarComponent = () => {
                     } ${textColor}`}
                   >
                     <Link
-                      to="/"
-                      className={`flex flex-1 justify-center items-center p-3 rounded-md transition duration-150 ease-in-out ${
+                      to="/notification"
+                      className={`flex flex-row  justify-center items-center  p-3 rounded-md transition duration-150 ease-in-out ${
                         DarkMode ? "hover:bg-slate-600" : "hover:bg-slate-200"
                       } ${textColor}`}
                     >
-                      <MuiIcon
-                        iconName="NotificationsActive"
+                      <ReactIcons
+                        iconName="MdOutlineAnnouncement"
                         className="text-dark mr-4"
+                        fontSize={16}
                       />
                       View All
                     </Link>

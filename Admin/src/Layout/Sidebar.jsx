@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, darkTheme } from "../Redux/Slices/UISlice";
 import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
 // Utility
-import { MuiIcon } from "../utils/RenderIcons";
+import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 import { getUser } from "../Config/Session";
 
 const Sidebar = () => {
@@ -88,7 +88,12 @@ const Sidebar = () => {
                                   }`}
                                 >
                                   <i className="mr-4">
-                                    {<MuiIcon iconName={link.icon} />}
+                                    {
+                                      <ReactIcons
+                                        iconName={link.icon}
+                                        fontSize={20}
+                                      />
+                                    }
                                   </i>
 
                                   <span className="text-sm">{link.name}</span>
