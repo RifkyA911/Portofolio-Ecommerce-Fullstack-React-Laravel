@@ -51,16 +51,25 @@ export const ApexCharts = ({ type, inputData }) => {
   } = useSelector((state) => state.UI);
 
   useEffect(() => {
+    // console.log(inputData);
     if (inputData) {
-      setSeries({
-        ...series,
-        first: simplifiedData(
-          inputData.map((obj) => ({
-            x: DateFormatter("DD/MM", obj.updated_at),
-            y: obj.price,
-          }))
-        ),
-      });
+      if ("products" in inputData) {
+        setSeries({
+          ...series,
+          first: simplifiedData(
+            inputData.products.map((obj) => ({
+              x: DateFormatter("DD/MM", obj.updated_at).slice(0, 6),
+              y: obj.price,
+            }))
+          ),
+          second: simplifiedData(
+            inputData.orders.map((obj) => ({
+              x: DateFormatter("DD/MM", obj.updated_at).slice(0, 6),
+              y: obj.total_price,
+            }))
+          ),
+        });
+      }
     }
 
     // console.log(inputData);
@@ -152,41 +161,21 @@ export const ApexCharts = ({ type, inputData }) => {
       width: 3,
     },
     grid: {
-      show: false, // you can either change hear to disable all grids
+      show: false,
       borderColor: "#555",
       clipMarkers: false,
       xaxis: {
         lines: {
-          show: true, //or just here to disable only x axis grids
+          show: true,
         },
       },
       yaxis: {
         lines: {
-          show: true, //or just here to disable only y axis
+          show: true,
         },
       },
     },
-    annotations: {
-      points: [
-        {
-          x: "19 Okt",
-          y: 550,
-          label: {
-            text: "Highest",
-            offsetY: 2,
-          },
-          // image: {
-          //   path: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/512px-Flat_tick_icon.svg.png",
-          //   width: undefined,
-          //   height: undefined,
-          //   offsetX: 0,
-          //   offsetY: -18,
-          // },
-        },
-      ],
-    },
     xaxis: {
-      // type: "datetime",
       tickAmount: 10,
       labels: {
         style: {
@@ -196,8 +185,12 @@ export const ApexCharts = ({ type, inputData }) => {
     },
     yaxis: {
       min: 0,
-      tickAmount: 10,
+      // max: 100000 ?? 1000000,
+      tickAmount: 12, // Jumlah patokan (ticks) pada sumbu Y
       labels: {
+        formatter: function (val) {
+          return Math.round(String(val).slice(0, 3)) + "K";
+        },
         style: {
           colors: chartStyle.text,
         },
@@ -254,7 +247,7 @@ export const ApexCharts = ({ type, inputData }) => {
     ],
   };
 
-  const BarStackedoptions = {
+  const xxxBarStackedoptions = {
     series: [
       {
         name: "Marine Sprite",
@@ -291,7 +284,7 @@ export const ApexCharts = ({ type, inputData }) => {
               enabled: true,
               offsetX: 0,
               style: {
-                fontSize: "13px",
+                fontSize: "12px",
                 fontWeight: 900,
               },
             },
@@ -311,6 +304,10 @@ export const ApexCharts = ({ type, inputData }) => {
           formatter: function (val) {
             return val + "K";
           },
+          // style: {
+          //   fontSize: "12px",
+          //   colors: chartStyle.text,
+          // },
         },
       },
       yaxis: {
@@ -336,6 +333,228 @@ export const ApexCharts = ({ type, inputData }) => {
     },
   };
 
+  const BarStackedoptions = {
+    annotations: {},
+    chart: {
+      animations: {
+        enabled: false,
+        easing: "swing",
+      },
+      background: "#fff",
+      dropShadow: {
+        left: 21,
+      },
+      foreColor: "#373D3F",
+      height: 361,
+      id: "Un2mw",
+      stacked: true,
+      toolbar: {
+        show: false,
+      },
+      type: "bar",
+      width: 473,
+      zoom: {
+        enabled: false,
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        barHeight: "36%",
+        distributed: true,
+        borderRadius: 8,
+        borderRadiusApplication: "end",
+        borderRadiusWhenStacked: "last",
+        hideZeroBarsWhenGrouped: false,
+        isDumbbell: false,
+        isFunnel: false,
+        isFunnel3d: true,
+        dataLabels: {
+          position: "center",
+          total: {
+            enabled: false,
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+              color: "#373d3f",
+              fontSize: "12px",
+              fontWeight: 600,
+            },
+          },
+        },
+      },
+      bubble: {
+        zScaling: true,
+      },
+      treemap: {
+        dataLabels: {
+          format: "scale",
+        },
+      },
+      radialBar: {
+        hollow: {
+          background: "#fff",
+        },
+        dataLabels: {
+          name: {},
+          value: {},
+          total: {},
+        },
+      },
+      pie: {
+        donut: {
+          labels: {
+            name: {},
+            value: {},
+            total: {},
+          },
+        },
+      },
+    },
+    dataLabels: {
+      offsetY: 1,
+      style: {
+        colors: ["#fff"],
+      },
+      background: {
+        enabled: false,
+      },
+    },
+    fill: {},
+    grid: {
+      padding: {
+        right: 25,
+        left: 15,
+      },
+    },
+    legend: {
+      fontSize: 14,
+      offsetY: -6,
+      markers: {
+        shape: "square",
+        size: 8,
+      },
+      itemMargin: {
+        vertical: 0,
+      },
+    },
+    series: [
+      {
+        name: "Bar 1",
+        data: [
+          {
+            x: "Item 1",
+            y: 10,
+          },
+          {
+            x: "Item 2",
+            y: 20,
+          },
+          {
+            x: "Item 3",
+            y: 30,
+          },
+          {
+            x: "Item 4",
+            y: 40,
+          },
+          {
+            x: "",
+            y: 10,
+          },
+        ],
+        zIndex: 0,
+      },
+      {
+        name: "Bar 2",
+        data: [
+          {
+            x: "Item 1",
+            y: 20,
+          },
+          {
+            x: "Item 2",
+            y: 10,
+          },
+          {
+            x: "Item 3",
+            y: 15,
+          },
+          {
+            x: "Item 4",
+            y: 25,
+          },
+          {
+            x: "",
+            y: 10,
+          },
+        ],
+        zIndex: 1,
+      },
+    ],
+    stroke: {
+      show: false,
+      width: 3,
+      colors: ["#fff"],
+      fill: {
+        type: "solid",
+        opacity: 0.85,
+        gradient: {
+          shade: "dark",
+          type: "horizontal",
+          shadeIntensity: 0.5,
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 50, 100],
+          colorStops: [],
+        },
+      },
+    },
+    tooltip: {
+      shared: false,
+      intersect: true,
+    },
+    xaxis: {
+      labels: {
+        trim: true,
+        style: {},
+      },
+      group: {
+        groups: [],
+        style: {
+          colors: [],
+          fontSize: "12px",
+          fontWeight: 400,
+          cssClass: "",
+        },
+      },
+      tickPlacement: "between",
+      title: {
+        style: {
+          fontWeight: 700,
+        },
+      },
+      tooltip: {
+        enabled: false,
+      },
+    },
+    yaxis: {
+      tickAmount: 5,
+      labels: {
+        style: {
+          colors: [null, null, null, null, null],
+        },
+      },
+      title: {
+        style: {},
+      },
+    },
+    theme: {
+      palette: "palette2",
+    },
+  };
+
   return (
     <>
       {data && series ? (
@@ -347,18 +566,7 @@ export const ApexCharts = ({ type, inputData }) => {
               options={areaOptions}
               series={[
                 { name: "ProductArea", data: series.first },
-                { name: "ProductArea", data: series.first },
-              ]}
-              sseries={[
-                {
-                  name: "OrderArea",
-                  data: orderData,
-                  // Mengatur gradient fill color
-                },
-                {
-                  name: "ProductArea",
-                  data: series.first,
-                },
+                { name: "OrderArea", data: series.second },
               ]}
               type={type} // Menggunakan tipe "area" untuk line chart dengan area diisi
               width="100%" // Atur lebar menjadi 100%
@@ -413,7 +621,7 @@ export const ApexCharts = ({ type, inputData }) => {
           {type == "bar" && (
             <Chart
               className="m-auto w-full"
-              options={BarStackedoptions.options}
+              options={BarStackedoptions}
               series={BarStackedoptions.series}
               type={type} // Menggunakan tipe "area" untuk line chart dengan area diisi
               width="100%" // Atur lebar menjadi 100%
