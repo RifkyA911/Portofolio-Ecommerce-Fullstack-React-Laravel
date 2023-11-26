@@ -20,7 +20,7 @@ class OrderController extends Controller
     public function index()
     {
         //return collection of posts as a resource
-        return response(new PostResource(true, 'List Data Produk', $hasil=Order::all()))->header('Content-Lenght', strlen($hasil));
+        return response(new PostResource(true, 'List Data Produk', $hasil = Order::all()))->header('Content-Length', strlen($hasil));
         // return new PostResource(true, 'List Data Produk', "/1/" . strtotime(now()));
     }
 
@@ -32,23 +32,40 @@ class OrderController extends Controller
         //
     }
 
-    public function showLimit($page, $perPage)
+    public function showLimit($page, $perPage, $sortBy = null, $sortOrder = "asc")
     {
         // Mengonversi halaman dan perPage yang diterima menjadi integer
         $page = (int) $page; // halaman
-        $perPage = (int) $perPage; // jumlah data yang akan di kirim
+        $perPage = (int) $perPage; // jumlah data yang akan dikirim
 
         $length = Order::count();
 
         // Menghitung offset berdasarkan halaman yang diminta
         $offset = ($page - 1) * $perPage;
 
-        // Mengambil data Admin dengan paginasi dan offset
-        $orders = Order::skip($offset)->take($perPage)->get();
+        // Mendapatkan parameter 'status' dari URL sebagai array
+        $statuses = request()->input('status', []);
+
+        // Membuat query dasar
+        $query = Order::query();
+
+        // Menambahkan kondisi where berdasarkan parameter 'status'
+        if (!empty($statuses)) {
+            $query->whereIn('status', $statuses);
+        }
+
+        // Menambahkan pengurutan jika disediakan
+        if ($sortBy == "updated_at") {
+            $query->orderBy('updated_at', $sortOrder);
+        }
+
+        // Mengeksekusi query dengan offset dan perPage yang sesuai
+        $orders = $query->skip($offset)->take($perPage)->get();
 
         // Mengembalikan hasil dalam bentuk resource
-        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length], $orders);
+        return new PostResource(true, ['Message' => 'Berhasil Melakukan Request Data', 'length' => $length, 'status' => $statuses], $orders);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -68,10 +85,11 @@ class OrderController extends Controller
             'shipment_cost' => 'required',
             // 'total_price' => 'required',
         ]);
-        
+
         if ($validator->fails()) { // jika validasi gagal
             // return response(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()], 400);
-            return response(new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()]), 400)->header('Content-Lenght', strlen(strval($request->all())));;
+            return response(new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()]), 400)->header('Content-Lenght', strlen(strval($request->all())));
+            ;
         }
 
         $order_item = json_decode($request->input('order_item'), true);
@@ -116,7 +134,7 @@ class OrderController extends Controller
         $parameterOrder = [
             'user_id' => $request->input('user_id'),
             'shipment_id' => $shipment_id,
-            'no_invoice' => 'INV/' . explode("-", now())[0]. explode("-", now())[1] . "/".$request->input('user_id')."/$order_id",
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . "/" . $request->input('user_id') . "/$order_id",
             'total_price' => $total_price,
         ];
         if ($hasil = Order::create($parameterOrder)) {
@@ -130,7 +148,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        return response(new PostResource(true, "data Transaksi berdasarkan id :", $hasil=Order::find($id)))->header('Content-Lenght', strlen($hasil));;
+        return response(new PostResource(true, "data Transaksi berdasarkan id :", $hasil = Order::find($id)))->header('Content-Lenght', strlen($hasil));
+        ;
     }
 
     public function showByUser($user_id, $tahap = null)

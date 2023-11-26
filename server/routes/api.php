@@ -152,7 +152,7 @@ Route::controller(WishlistController::class)->group(function () {
 // Endpoint Order
 Route::controller(OrderController::class)->group(function () {
     Route::get('/orders', 'index');
-    Route::get('/orders/paginate/{page}/{perPage}', 'showLimit');
+    Route::get('/orders/paginate/{page}/{perPage}/{sortBy?}/{orderBy?}/{where?}', 'showLimit');
     Route::get('/order/{id}', 'show'); // parameter id
     Route::post('/order/buy', 'store'); // parameter user_id, order_item(in array/json form), address, contact, courier,shipment_cost. all required
     Route::post('/order/checkout', 'checkout'); // parameter id, user_id(same as trans' user), payment(pict proof of payment)
