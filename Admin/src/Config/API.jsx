@@ -81,7 +81,9 @@ export const getApiUrl = (endpointType, data) => {
     if (URL_Segments[1] == "paginate") {
       return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}/${
         URL_Segments[2]
-      }/${URL_Segments[3]}`;
+      }/${URL_Segments[3]}${URL_Segments[4] ? "/" + URL_Segments[4] : ""}${
+        URL_Segments[5] ? "/" + URL_Segments[5] : ""
+      }`;
     } else if (
       URL_Segments[1] == "fetch" ||
       URL_Segments[1] == "update" ||
@@ -99,17 +101,18 @@ export const getApiUrl = (endpointType, data) => {
   return SERVER_BASE_URL;
 };
 
-const RequestAPI = async (endpoint, method = "GET", data = null, config) => {
+const RequestAPI = async (endpoint, method, form = null, params = null) => {
   let access_token = getAccessToken();
-  // console.log(endpoint, data);
-  // console.log(getApiUrl(endpoint, data));
+  // console.log(endpoint);
+  // console.log(getApiUrl(endpoint, form));
   try {
-    const url = `${getApiUrl(endpoint, data)}`;
+    const url = `${getApiUrl(endpoint, form)}`;
     const axiosConfig = {
-      method: method,
+      method: method ?? "GET",
       url: url,
+      params: params,
       data: {
-        ...data,
+        ...form,
         superAuthorizationPassword: superAuthorizationPassword,
         token: access_token,
       },
@@ -128,15 +131,16 @@ const RequestAPI = async (endpoint, method = "GET", data = null, config) => {
       //   console.log("completed: ", percentCompleted);
       // },
     };
+    // console.log(axiosConfig);
+    const response = await axios(axiosConfig);
 
-    const response = await axios(config || axiosConfig);
     if (
       // method == "POST" ||
       method == "PUT" ||
       method == "PATCH" ||
       method == "DELETE"
     ) {
-      console.log("refreshed token by", method);
+      console.log("refreshed token :", method);
       await refreshAccessToken();
     }
     return response;

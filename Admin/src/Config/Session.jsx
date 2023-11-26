@@ -56,6 +56,12 @@ export function deleteCookie(cookieName) {
   document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
 }
 
+export const validateAccessToken = async (props) => {
+  const { data } = await RequestAPI("admin/cek", "POST", null);
+  // console.log(data);
+  return data;
+};
+
 // Fungsi untuk merefresh token
 export const refreshAccessToken = async () => {
   try {
