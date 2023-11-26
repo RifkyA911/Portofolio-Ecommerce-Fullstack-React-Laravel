@@ -167,7 +167,7 @@ export const TextInput = (props) => {
             placeholder={placeholder.toLowerCase()}
             className={
               inputClassName ??
-              `input input-bordered input-info w-full input-md h-[38px] max-w-3xl text-gray-900 focus:outline-none` +
+              `input input-bordered input-info w-full input-md max-h-[38px] max-w-3xl text-gray-900 focus:outline-none` +
                 errorToggle
             }
             {...register(name, validationRules)}
@@ -281,7 +281,7 @@ export const NumberInput = (props) => {
             name={name}
             defaultValue={0}
             value={value}
-            className={`input input-bordered input-info input-md h-[38px] ${style} max-w-3xl text-gray-900 focus:outline-none ${
+            className={`input input-bordered input-info input-md max-h-[38px] ${style} max-w-3xl text-gray-900 focus:outline-none ${
               errors[name] ? "border-pink-500" : "border-sky-500"
             }`}
             displayType={"input"}

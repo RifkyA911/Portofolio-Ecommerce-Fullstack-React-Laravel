@@ -87,6 +87,7 @@ export const AuthorityToggle = (props) => {
 
   // const toggleTypes = ["chat", "sort_warehouse", "alter_price"];
   const toggleColors = ["toggle-info", "toggle-success", "toggle-warning"];
+  // const toggleColors = ["text-sky-500", "text-lime-500", "text-amber-500"];
 
   const isComponentMounted = useRef(true);
 
@@ -143,7 +144,7 @@ export const AuthorityToggle = (props) => {
               <input
                 // name="authority"
                 type="checkbox"
-                className={`toggle ${toggleColors[index]} m-2`}
+                className={`toggle ${toggleColors[index]}  m-2`}
                 onChange={() => {
                   setThisAdmin((prevAdmin) => ({
                     ...prevAdmin,

@@ -16,7 +16,12 @@ import { navLink } from "./Redux/Slices/NavigationSlice";
 
 // Utils
 import MyAppRoutes from "./Config/MyAppRoutes";
-import { getAccessToken, getCookie, getUser } from "./Config/Session";
+import {
+  getAccessToken,
+  getCookie,
+  getUser,
+  validateAccessToken,
+} from "./Config/Session";
 import LoginRouter from "./Config/LoginRouter";
 import MyJump from "./utils/MyJump";
 import { clearSession, updateCredentials } from "./Redux/Slices/UserSlice";
@@ -30,6 +35,7 @@ function App() {
   // login component
   // const [fetch, setFetch] = useState(false); // need to change
   const [token, setToken] = useState(getCookie("token"));
+  const [session, setSession] = useState(validateAccessToken());
 
   // REDUX
   const { BgColor, textColor, screenHeigth, screenWidth } = useSelector(
@@ -39,6 +45,14 @@ function App() {
   // const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const dod = validateAccessToken();
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log(session);
+  // }, [session]);
 
   useEffect(() => {
     if (token == null) {

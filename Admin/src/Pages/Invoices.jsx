@@ -25,12 +25,11 @@ import { CurrencyFormatter } from "../utils/Formatter";
 import { ReactIcons } from "../utils/RenderIcons";
 import RequestAPI from "../Config/API";
 
-export const InvoicesContext = createContext();
+export const OrdersContext = createContext();
 
-export default function Invoices() {
-  // ---- Admins Basic States ----
-  const [invoices, setInvoices] = useState([]);
-  const [categories, setCategories] = useState();
+export default function Orders() {
+  // ---- Orders Basic States ----
+  const [orders, setOrders] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +49,7 @@ export default function Invoices() {
   const [selectedRows, setSelectedRows] = useState([]);
 
   // ---- Modal States ----
-  const [product, setProduct] = useState("");
+  const [order, setOrder] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(false);
   const [formType, setFormType] = useState(null);
@@ -74,42 +73,37 @@ export default function Invoices() {
   } = useSelector((state) => state.UI);
 
   const table = "orders";
-  const URL_PRODUCT = `${table}/paginate/${paginate}/${rows}`;
-  const URL_PRODUCT_SEARCH = `${table}/search`;
-  const URL_PRODUCT_FILTER = `${table}/filter`;
+  const URL_ORDERS = `${table}/paginate/${paginate}/${rows}`;
+  const URL_ORDERS_SEARCH = `${table}/search`;
+  const URL_ORDERS_FILTER = `${table}/filter`;
 
-  const fetchData = async (url, table, form = null) => {
+  const fetchData = async (url, form = null) => {
     try {
       const { data } = await RequestAPI(url, form ? "POST" : "GET", form);
       // console.log(data.data);
       setLoading(false);
-      if (table === "orders") {
-        setInvoices(data.data);
-        setLengthData(data.message.length);
-      } else if (table === "categories") {
-        setCategories(data.data);
-      }
+      setOrders(data.data);
+      setLengthData(data.message.length);
       setErrorMessage(null);
     } catch (error) {
-      setLoading(false);
       setErrorMessage(`Gagal Fetching '${url}'`);
-      console.error(errorMessage, error);
+      console.error(error);
     }
   };
 
   // ===================== MyTableEngine =====================
   useEffect(() => {
-    fetchData(URL_PRODUCT, "invoices");
-    fetchData(URL_ALL_CATEGORIES, "categories");
-    if (invoices !== null && invoices !== undefined) {
+    setLoading(true);
+    fetchData(URL_ORDERS);
+    if (orders !== null && orders !== undefined) {
       setColspan(columnOrder.length + 1);
     }
   }, [paginate, rows]);
 
   // Fungsi handler saat checkbox di klik
-  const handleCheckboxChange = (id, name, pict) => {
+  const handleCheckboxChange = (id, username, pict) => {
     const isSelected = selectedRows.some((item) => item.id === id);
-    const newRow = { id, name, pict };
+    const newRow = { id, username, pict };
     if (!isSelected) {
       setSelectedRows([...selectedRows, newRow]);
     } else {
@@ -120,21 +114,21 @@ export default function Invoices() {
   // ---- MyTableEngine Search Filter ----
   useEffect(() => {
     // console.log("sd", searchTerm);
-    if (invoices !== null && invoices.length > 0) {
+    if (orders !== null && orders.length > 0) {
       if (searchTerm.length > 1 || searchTerm !== "") {
-        fetchData(URL_PRODUCT_SEARCH, "invoices", { search: searchTerm });
+        fetchData(URL_ORDERS_SEARCH, { search: searchTerm });
       } else if (searchTerm == "") {
-        fetchData(URL_PRODUCT, "invoices");
+        fetchData(URL_ORDERS);
       }
     }
   }, [searchTerm]);
 
   const MyTableEngineProps = {
-    table: "invoices",
-    context: InvoicesContext,
-    inputData: invoices,
+    table,
+    context: OrdersContext,
+    inputData: orders,
     refresh: () => {
-      fetchData(URL_PRODUCT, "invoices");
+      fetchData(URL_ORDERS);
       setLoading(true);
       setTabPagination(true);
     },
@@ -148,15 +142,14 @@ export default function Invoices() {
       }),
     // ------------- Table Header Menu -------------
     TabHeader: true,
-    hideHeaderBtn: "",
-    selectFilter: categories,
+    hideHeaderBtn: [],
     applyFilter: (form) => {
-      fetchData(URL_PRODUCT_FILTER, "invoices", form);
+      fetchData(URL_ORDERS_FILTER, form);
     },
-    showFixedBtn: showFixedBtn,
-    setShowFixedBtn: setShowFixedBtn,
-    searchTerm: searchTerm,
-    setSearchTerm: setSearchTerm,
+    showFixedBtn,
+    setShowFixedBtn,
+    searchTerm,
+    setSearchTerm,
     setPrintBatchModal: () => {
       setShowModal(true);
       handleOpenModal(selectedRows, "PRINT_BATCH", "print");
@@ -170,29 +163,23 @@ export default function Invoices() {
       handleOpenModal(null, "INSERT", "form");
     },
     // ------------- Table Body -------------
-    toggleSelect: toggleSelect,
-    setToggleSelect: setToggleSelect,
-    selectedRows: selectedRows,
-    setSelectedRows: setSelectedRows,
+    toggleSelect,
+    setToggleSelect,
+    selectedRows,
+    setSelectedRows,
     // Sorting Filter
     sortData: (newSortedData) => {
-      setInvoices(newSortedData);
+      setOrders(newSortedData);
     },
     // ------------ Table Pagination-------------
-    tabPagination: tabPagination,
-    setTabPagination: setTabPagination,
+    tabPagination,
+    setTabPagination,
     colSpan: colspan == null ? 5 : colspan,
-    paginate: paginate,
-    onChangePaginate: (newPaginate) => {
-      setLoading(true);
-      setPaginate(newPaginate);
-    },
-    rows: rows,
-    onRowsChange: (newRows) => {
-      setLoading(true);
-      setRows(newRows);
-    },
-    length: length,
+    paginate,
+    setPaginate,
+    rows,
+    setRows,
+    length,
   };
 
   // ===================== Modal =====================
@@ -200,20 +187,20 @@ export default function Invoices() {
   const handleOpenModal = (id, formType, modalType) => {
     setShowModal(true);
     setModalType(modalType);
-    setProduct(id);
+    setOrder(id);
     setFormType(formType);
   };
 
   const ModalProps = {
-    table: "invoices",
-    table_id: product,
-    showModal: showModal,
-    setShowModal: setShowModal,
-    modalType: modalType,
-    formType: formType,
+    table,
+    table_id: order,
+    showModal,
+    setShowModal,
+    modalType,
+    formType,
     refresh: () => {
-      fetchData(URL_PRODUCT, "invoices");
       setLoading(true);
+      fetchData(URL_ORDERS);
     },
     setResultStatus: (type, state, message) =>
       setResultStatus({
@@ -222,9 +209,9 @@ export default function Invoices() {
         state: state,
         message: message,
       }),
-    select: categories,
+    select: orders,
     clearData: () => {
-      setInvoices(null);
+      setOrders(null);
       setToggleSelect(false);
       setSelectedRows([]);
       setFormType(null);
@@ -235,16 +222,17 @@ export default function Invoices() {
   const columnOrder = [
     "id",
     "No. Invoices",
+    "Status", // sent + done
     "Products",
     "Customer",
     "Checked",
     "Address",
     "Total",
-    "Status", // sent + done
   ];
 
   let table_styling = {};
-  if (invoices !== null && invoices.length > 0) {
+  if (orders !== null && orders.length > 0) {
+    console.log();
     table_styling = {
       tbody: `${BgTable}`,
       tr: `h-8 text-left`,
@@ -262,21 +250,21 @@ export default function Invoices() {
   return (
     <>
       <Container>
-        <Content pageName={"invoices"}>
+        <Content pageName={"Invoices"}>
           {loading == true ? (
             <SkeltonTable />
           ) : (
             <>
-              {invoices !== null ? (
-                // <InvoicesContext.Provider value={MyTableEngineProps}>
-                <div id="invoices" className="rounded-lg text-sm ">
+              {orders !== null ? (
+                // <ordersContext.Provider value={MyTableEngineProps}>
+                <div id="orders" className="rounded-lg text-sm ">
                   {/* ================ Error ================ */}
                   <div>
                     {errorMessage && (
                       <SetErrorMessage
                         errorMessage={errorMessage}
                         refresh={() => {
-                          fetchData(URL_PRODUCT, "invoices");
+                          fetchData(URL_PRODUCT, "orders");
                           setLoading(true);
                         }}
                       >
@@ -296,7 +284,18 @@ export default function Invoices() {
                   )} */}
                   {/* ================ Table ================ */}
                   <div className="divider">Product List</div>
-
+                  <ul className="timeline timeline-vertical font-roboto-regular">
+                    <li>
+                      <div className="timeline-start">1984</div>
+                      <div className="timeline-middle">
+                        <ReactIcons iconName="FaCircleCheck" />
+                      </div>
+                      <div id="chart" className="timeline-end timeline-box">
+                        First Macintosh computer
+                      </div>
+                      <hr />
+                    </li>
+                  </ul>
                   <MyTableEngine
                     {...MyTableEngineProps}
                     className="rounded-sm mx-auto"
@@ -322,10 +321,10 @@ export default function Invoices() {
                         ></Th>
                       </Tr>
                     </Thead>
-                    {/* {row.no_invoices ? <>Data</> : <>No Data</>} */}
+                    {/* {row.no_orders ? <>Data</> : <>No Data</>} */}
 
                     <Tbody className={table_styling.tbody}>
-                      {invoices.map((row, index) => (
+                      {orders.map((row, index) => (
                         <Tr
                           key={index}
                           className={`${table_styling.tr} divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50`}
@@ -394,22 +393,6 @@ export default function Invoices() {
                             </>
                           )}
                           <Td className={`w-1/12`}>{row.no_invoice}</Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
-                            {row.products_id}
-                          </Td>
-                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
-                            {row.user.username}
-                            {row.address}
-                          </Td>
-                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
-                            {row.checked_out}
-                          </Td>
-                          <Td className={`${table_styling.td} w-2/12`}>
-                            {row.address}
-                          </Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
-                            {CurrencyFormatter(row.total_price)}
-                          </Td>
                           <Td className={`px-6 ${table_styling.td} w-1/12`}>
                             {!row.done ? (
                               <>{!row.sent ? <>In Order</> : <>Proceed</>}</>
@@ -417,11 +400,32 @@ export default function Invoices() {
                               <>Sent</>
                             )}
                           </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {row.items.map((item, key) => (
+                              <>{item.product.name}</>
+                            ))}
+                          </Td>
+                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
+                            {row.user.username}
+                          </Td>
+                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
+                            {row.deadline_payment}
+                          </Td>
+                          <Td className={`${table_styling.td} w-2/12`}>
+                            {row.user.address}
+                          </Td>
+                          <Td className={`${table_styling.td} w-1/12`}>
+                            {CurrencyFormatter(row.total_price)}
+                          </Td>
+
                           <Td className="print:hidden px-4">
                             {row.id && (
                               <ActionButton
                                 key={index}
                                 inputData={row}
+                                onClickDetails={() => {
+                                  handleOpenModal(row.id, "DROP_BY_ID", "form");
+                                }}
                                 onClickPrint={() => {
                                   handleOpenModal(
                                     row.id,
@@ -446,17 +450,9 @@ export default function Invoices() {
                       ))}
                     </Tbody>
                   </MyTableEngine>
-                  <div className="divider">Category List</div>
-                  {categories && (
-                    <>
-                      {categories.map((cat, index) => (
-                        <p key={index}>{cat.name}</p>
-                      ))}
-                    </>
-                  )}
                 </div>
               ) : (
-                // </InvoicesContext.Provider>
+                // </ordersContext.Provider>
                 "tidak ada data"
               )}
             </>

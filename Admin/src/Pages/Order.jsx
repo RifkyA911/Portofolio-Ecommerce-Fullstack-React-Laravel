@@ -21,7 +21,7 @@ import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import { CurrencyFormatter } from "../utils/Formatter";
+import { CurrencyFormatter, TextFormatter } from "../utils/Formatter";
 import { ReactIcons } from "../utils/RenderIcons";
 import RequestAPI from "../Config/API";
 
@@ -79,10 +79,19 @@ export default function Orders() {
   const URL_ORDERS_SEARCH = `${table}/search`;
   const URL_ORDERS_FILTER = `${table}/filter`;
 
-  const fetchData = async (url, form = null, params = null) => {
+  const fetchData = async (url, method = "GET", form = null, params = null) => {
     // console.log(url);
     try {
-      const { data } = await RequestAPI(url, "GET", form, params);
+      const { data } = await RequestAPI(
+        url,
+        method,
+        form,
+        form
+          ? null
+          : {
+              status: orderStatuses,
+            }
+      );
       // console.log(data.data);
       setLoading(false);
       setOrders(data.data);
@@ -97,9 +106,7 @@ export default function Orders() {
   // ===================== MyTableEngine =====================
   useEffect(() => {
     setLoading(true);
-    fetchData(URL_ORDERS, null, {
-      status: orderStatuses,
-    });
+    fetchData(URL_ORDERS);
     if (orders !== null && orders !== undefined) {
       setColspan(columnOrder.length + 1);
     }
@@ -135,9 +142,7 @@ export default function Orders() {
     context: OrdersContext,
     inputData: orders,
     refresh: () => {
-      fetchData(URL_ORDERS, null, {
-        status: orderStatuses,
-      });
+      fetchData(URL_ORDERS);
       setLoading(true);
       setTabPagination(true);
     },
@@ -230,13 +235,13 @@ export default function Orders() {
   // Urutan kolom yang diinginkan
   const columnOrder = [
     "id",
-    "No. Invoices",
+    "no_invoice",
     "status", // sent + done
-    "Products",
-    "Customer",
-    "Address",
-    "Total",
-    "Deadline",
+    "products",
+    "customer",
+    "address",
+    "total_price",
+    "deadline_payment",
   ];
 
   let table_styling = {};
@@ -249,11 +254,12 @@ export default function Orders() {
         key,
         feature: [
           "id",
-          "no_invoices",
+          "no_invoice",
           "status",
-          "Customer",
-          "Checked",
-          "Total",
+          "customer",
+          "address",
+          "total_price",
+          "deadline_payment",
         ].includes(key)
           ? "filter"
           : null,
@@ -266,28 +272,21 @@ export default function Orders() {
   return (
     <>
       <Container>
-        <Content pageName={"Orders"}>
+        <Content pageName={table}>
           {loading == true ? (
             <SkeltonTable />
           ) : (
             <>
               {orders !== null ? (
                 // <ordersContext.Provider value={MyTableEngineProps}>
-                <div id="orders" className="rounded-lg text-sm ">
+                <div id={table} className="rounded-lg text-sm ">
                   {/* ================ Error ================ */}
                   <div>
                     {errorMessage && (
                       <SetErrorMessage
                         errorMessage={errorMessage}
                         refresh={() => {
-                          fetchData(URL_ORDERS, null, {
-                            status: [
-                              "Pending",
-                              "Shipped",
-                              "Awaiting Payment",
-                              "Shipped",
-                            ],
-                          });
+                          fetchData(URL_ORDERS);
                           setLoading(true);
                         }}
                       >
@@ -299,26 +298,8 @@ export default function Orders() {
                   </div>
                   {/* ================ Modal ================= */}
                   <MainModalHandler {...ModalProps} />
-                  {/* {resultStatus.type && resultStatus.state == true && (
-                    <FormToast
-                      formType={resultStatus.type}
-                      span={resultStatus.message}
-                    />
-                  )} */}
                   {/* ================ Table ================ */}
                   <div className="divider">Customer Orders List</div>
-                  <ul className="timeline timeline-vertical font-roboto-regular">
-                    <li>
-                      <div className="timeline-start">1984</div>
-                      <div className="timeline-middle">
-                        <ReactIcons iconName="FaCircleCheck" />
-                      </div>
-                      <div id="chart" className="timeline-end timeline-box">
-                        First Macintosh computer
-                      </div>
-                      <hr />
-                    </li>
-                  </ul>
                   <MyTableEngine
                     {...MyTableEngineProps}
                     className="rounded-sm mx-auto "
@@ -328,7 +309,7 @@ export default function Orders() {
                         {table_styling.th.map((th, index) => (
                           <Th
                             key={index}
-                            name={th.key === "id" ? "" : th.key}
+                            name={th.key === "id" ? "" : TextFormatter(th.key)}
                             column={th.key}
                             feature={th.feature}
                             sortOrder="asc"
@@ -460,7 +441,7 @@ export default function Orders() {
                                   onClickDetails={() => {
                                     handleOpenModal(
                                       row.id,
-                                      "DROP_BY_ID",
+                                      "DETAILS_BY_ID",
                                       "form"
                                     );
                                   }}

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useId, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 import { debounce } from "lodash";
@@ -8,15 +8,30 @@ export const ActionButton = (props) => {
   const {
     disabled = false,
     className,
-    onClickView,
+    onClickVisibilty,
+    onClickDetails,
     onClickPrint,
     onClickDelete,
+    onClickCancel,
     onClickEdit,
+    onClickApprove,
     fontSize = 22,
     iconName,
   } = props;
 
   const actionBtn = {
+    visibility: {
+      className:
+        "text-gray-500 hover:text-white hover:from-green-500 hover:to-lime-500 outline-teal-400",
+      iconName: "IoEye",
+      onClick: onClickVisibilty,
+    },
+    details: {
+      className:
+        "text-gray-500 hover:text-white hover:from-cyan-500 hover:to-sky-500 outline-cyan-400",
+      iconName: "BiMessageDetail",
+      onClick: onClickDetails,
+    },
     print: {
       className:
         "text-gray-500 hover:text-white hover:from-amber-500 hover:to-yellow-500 outline-amber-400",
@@ -29,17 +44,23 @@ export const ActionButton = (props) => {
       iconName: "MdDeleteForever",
       onClick: onClickDelete,
     },
+    cancel: {
+      className:
+        "text-red-500 hover:text-white hover:from-red-600 hover:to-red-500 outline-red-400",
+      iconName: "IoCloseSharp",
+      onClick: onClickCancel,
+    },
     edit: {
       className:
         "text-gray-500 hover:text-white hover:from-blue-500 hover:to-indigo-500 outline-blue-400",
       iconName: "BiSolidEditAlt",
       onClick: onClickEdit,
     },
-    visibility: {
+    approve: {
       className:
-        "text-gray-500 hover:text-white hover:from-green-500 hover:to-lime-500 outline-teal-400",
-      iconName: "IoEye",
-      onClick: onClickView,
+        "text-lime-600 hover:text-white hover:from-lime-500 hover:to-green-500 outline-green-400",
+      iconName: "IoMdCheckmark",
+      onClick: onClickApprove,
     },
   };
 
@@ -251,5 +272,60 @@ export const ListMenu = (props) => {
         {text}
       </button>
     </>
+  );
+};
+
+export const TabsMenu = (props) => {
+  const {
+    onClick,
+    checked,
+    tabs = ["Tab 1", "Tab 2", "Tab 3"],
+    children,
+  } = props;
+
+  const [selectedTab, setSelectedTab] = useState(tabs[0]);
+
+  const id = useId();
+  const renderTabs = () => {
+    return Array.from({ length: tabs.length }, (_, index) => {
+      const tabIndex = index + 1;
+      const tabLabel = `Tab ${tabIndex}`;
+
+      return (
+        <>
+          <input
+            key={tabIndex}
+            type="radio"
+            name="my_tabs_2"
+            role="tab"
+            className="tab"
+            aria-label={tabLabel}
+            checked={checked === tabIndex}
+            onChange={() => onClick(tabIndex)}
+          />
+          <motion.div
+            role="tabpanel"
+            key={selectedTab ? selectedTab.label : "empty"}
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -10, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="tab-content bg-base-100 border-base-300 rounded-box p-6"
+          >
+            {children ?? `Tab content ${tabs[index]}`}
+          </motion.div>
+        </>
+      );
+    });
+  };
+
+  return (
+    // <div role="tablist" className="tabs tabs-lifted">
+    <AnimatePresence>
+      <div role="tablist" className="tabs tabs-lifted">
+        {renderTabs()}
+      </div>
+    </AnimatePresence>
+    // </div>
   );
 };

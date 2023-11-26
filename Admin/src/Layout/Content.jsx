@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
-
-// Layout
+import React, { useEffect } from "react";
 // REDUX
-import { useDispatch, useSelector } from "react-redux";
-import { setCurrentSidebar } from "../Redux/Slices/NavigationSlice";
-// Utils
-import { getCurrentEndpoint } from "../utils/Navigation";
-import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
-import { sideNavigation } from "../Config/PagesLink";
+import { useSelector } from "react-redux";
 // Config
+import { sideNavigation } from "../Config/PagesLink";
+// Utils
+import { ReactIcons } from "../utils/RenderIcons";
 
 export const Content = (props) => {
   const { pageName, Bg, children } = props;

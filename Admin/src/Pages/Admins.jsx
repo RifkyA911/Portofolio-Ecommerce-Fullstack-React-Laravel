@@ -88,7 +88,7 @@ export default function Admins() {
       setErrorMessage(null);
     } catch (error) {
       setErrorMessage(`Gagal Fetching '${url}'`);
-      console.error(message, error);
+      console.error(error);
     }
   };
 
