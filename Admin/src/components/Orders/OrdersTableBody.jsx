@@ -26,7 +26,7 @@ export const OrderStatus = (props) => {
         ${status == "Processing" && "bg-cyan-500"} 
         ${status == "Shipped" && "bg-blue-500"} 
         ${status == "Delivered" && "bg-lime-500"} 
-        ${status == "Completed" && "bg-indigo-500"} 
+        ${status == "Completed" && "bg-gray-400"} 
         ${status == "Cancelled" && "bg-red-500"} 
         ${status == "On Hold" && "bg-slate-500"} 
         ${status == "Returned" && "bg-pink-500"} 
