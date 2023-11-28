@@ -12,6 +12,7 @@ import { TableContext } from "./MyTableEngine";
 import { ProductFilter } from "../Products/ProductsTableBody";
 import { MotionButton } from "../Button";
 import { AdminFilter } from "../Admins/AdminsTableBody";
+import { OrdersFilter } from "../Orders/OrdersTableBody";
 
 export const MyTableFilterContext = createContext();
 
@@ -88,7 +89,7 @@ export const MyTableHeaderFilter = (props) => {
         {inputData && inputData.length > 0 && inputData !== undefined ? (
           <>
             {table === "admins" && <AdminFilter />}
-            {table === "invoices" && <ProductFilter />}
+            {table === "invoices" || (table === "orders" && <OrdersFilter />)}
             {table === "products" && <ProductFilter />}
           </>
         ) : (

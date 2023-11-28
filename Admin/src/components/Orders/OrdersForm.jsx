@@ -22,7 +22,7 @@ import {
   DropBySelectedForm,
 } from "../Form";
 import { ReactIcons } from "../../utils/RenderIcons";
-import { TextFormatter } from "../../utils/Formatter";
+import { DateFormatter, TextFormatter } from "../../utils/Formatter";
 import { sumData } from "../../utils/Solver";
 
 export const OrdersDetailsForm = (props) => {
@@ -36,7 +36,7 @@ export const OrdersDetailsForm = (props) => {
     // newPasswordRef,
     register,
     getValues,
-    // setValue,
+    setValue,
     // setFocus,
     // setError,
     // control,
@@ -49,29 +49,15 @@ export const OrdersDetailsForm = (props) => {
 
   // console.log(getValues());
 
-  const options = [
-    "Pending",
-    "Awaiting Payment",
-    "Processing",
-    "Shipped",
-    "Delivered",
-    "Completed",
-    "Cancelled",
-    "On Hold",
-    "Returned",
-    "Partially Shipped",
-    "Backordered",
-    "Failed",
-  ];
+  useEffect(() => {
+    const totalQuantitiy = sumData(data.items);
 
-  const convertedOptions = options.map((option, index) => ({
-    id: TextFormatter(option.replace(/\s/g, "_")), // Atau gunakan nilai unik sesuai kebutuhan
-    name: TextFormatter(option.replace(/\s/g, "_")), // Mengubah ke huruf kecil dan ganti spasi dengan _
-  }));
+    setValue("total_quantity", totalQuantitiy);
+  }, []);
 
-  const totalQuantitiy = sumData(data.items);
-
-  console.log(getValues());
+  // useEffect(() => {
+  //   console.log(getValues());
+  // }, [getValues()]);
 
   return (
     <>
@@ -172,19 +158,18 @@ export const OrdersDetailsForm = (props) => {
               label="Status"
               name="status"
               style="w-[160px] lg:w-full h-[38px]"
-              options={convertedOptions}
+              // options={convertedOptions}
             />
             <NumberInput
               formContext={ModalContext}
               className={`flex gap-4 flex-col w-[160px] lg:w-auto`}
               prefix=""
-              label="Quantity"
-              name="items.quantity"
+              label="Total Items"
+              name="total_quantity"
               limitDigits={1000}
               placeholder="Masukkan Harga"
             />
           </div>
-
           <TextArea
             formContext={ModalContext}
             className={`flex gap-4 flex-col w-full text-xs`}
@@ -193,6 +178,42 @@ export const OrdersDetailsForm = (props) => {
             name="user.address"
             placeholder="tamnbahkan deskripsi"
           />
+          {data && (
+            <table className="w-full text-center border">
+              <thead className={`bg-gray-200 font-roboto-regular`}>
+                <tr>
+                  <th>No</th>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Quantity</th>
+                  <th>Discount</th>
+                  <th>Summary Price</th>
+                </tr>
+              </thead>
+              <tbody className="font-roboto-medium max-h-20 overflow-y-scroll">
+                {data.items.map((product, index) => (
+                  <tr key={product.id} className="divide-y p">
+                    <td className="p-0 w-0 bg-slate-100">{index + 1}</td>
+                    <td className="px-4 py-1">
+                      <p>{product.product.name}</p>
+                    </td>
+                    <td className="px-4 py-1">
+                      <p>{product.product.category ?? "???"}</p>
+                    </td>
+                    <td className="px-4 py-1">
+                      <p>{product.quantity}</p>
+                    </td>
+                    <td className="px-4 py-1">
+                      <p>{product.discount ?? 0}%</p>
+                    </td>
+                    <td className="px-4 py-1">
+                      <p>{product.sum_price}</p>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </>

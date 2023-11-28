@@ -195,6 +195,7 @@ export const NumberInput = (props) => {
     label,
     labelSize = "text-sm",
     name,
+    inputClassName,
     placeholder,
     type = name,
     decimalOptions = 0,

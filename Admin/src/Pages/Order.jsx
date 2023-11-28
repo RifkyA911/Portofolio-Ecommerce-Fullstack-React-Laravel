@@ -74,8 +74,6 @@ export default function Orders() {
   } = useSelector((state) => state.UI);
 
   const table = "orders";
-  const orderStatuses = ["Pending", "Shipped", "Awaiting Payment", "Shipped"];
-
   const URL_ORDERS = `${table}/paginate/${paginate}/${rows}/status/asc/`;
   const URL_ORDERS_SEARCH = `${table}/search`;
   const URL_ORDERS_FILTER = `${table}/filter`;
@@ -104,12 +102,39 @@ export default function Orders() {
     }
   };
 
+  const orderStatuses = [
+    "Pending",
+    "Shipped",
+    "Awaiting Payment",
+    "Processing",
+  ];
+
+  const statuses = [
+    "Pending",
+    "Awaiting Payment",
+    "Processing",
+    "Shipped",
+    "Delivered",
+    "Completed",
+    "Cancelled",
+    "On Hold",
+    "Returned",
+    "Partially Shipped",
+    "Backordered",
+    "Failed",
+  ];
+
+  const convertedStatuses = statuses.map((option, index) => ({
+    id: TextFormatter(option.replace(/\s/g, "_")), // Atau gunakan nilai unik sesuai kebutuhan
+    name: TextFormatter(option.replace(/\s/g, "_")), // Mengubah ke huruf kecil dan ganti spasi dengan _
+  }));
+
   // ===================== MyTableEngine =====================
   useEffect(() => {
     setLoading(true);
     fetchData(URL_ORDERS);
     if (orders !== null && orders !== undefined) {
-      setColspan(columnOrder.length + 1);
+      setColspan(columnOrder.length + 2);
     }
   }, [paginate, rows]);
 
@@ -131,9 +156,7 @@ export default function Orders() {
       if (searchTerm.length > 1 || searchTerm !== "") {
         fetchData(URL_ORDERS_SEARCH, { search: searchTerm });
       } else if (searchTerm == "") {
-        fetchData(URL_ORDERS, null, {
-          status: orderStatuses,
-        });
+        fetchData(URL_ORDERS);
       }
     }
   }, [searchTerm]);
@@ -158,6 +181,7 @@ export default function Orders() {
     // ------------- Table Header Menu -------------
     TabHeader: true,
     hideHeaderBtn: [],
+    selectFilter: convertedStatuses,
     applyFilter: (form) => {
       fetchData(URL_ORDERS_FILTER, form);
     },
@@ -224,7 +248,7 @@ export default function Orders() {
         state: state,
         message: message,
       }),
-    // select: orders,
+    select: convertedStatuses,
     clearData: () => {
       setOrders(null);
       setToggleSelect(false);
@@ -321,6 +345,13 @@ export default function Orders() {
                           key={55}
                           name="Action"
                           column="Action"
+                          feature={null}
+                          className="print:hidden capitalize px-4"
+                        ></Th>
+                        <Th
+                          key={55}
+                          name="Details"
+                          column="Details"
                           feature={null}
                           className="print:hidden capitalize px-4"
                         ></Th>
@@ -421,7 +452,35 @@ export default function Orders() {
                             {row.deadline_payment}
                           </Td>
 
-                          <Td className="border-l print:hidden py-2 px-6 w-2/12">
+                          <Td className="border-l print:hidden py-2 px-6 w-1/12">
+                            {row.id && (
+                              <>
+                                <ActionButton
+                                  key={index}
+                                  inputData={row}
+                                  fontSize={18}
+                                  onClickCancel={
+                                    orderStatuses.includes(row.status) &&
+                                    (() => {
+                                      handleOpenModal(
+                                        row.id,
+                                        "CANCEL_BY_ID",
+                                        "form"
+                                      );
+                                    })
+                                  }
+                                  onClickApprove={() => {
+                                    handleOpenModal(
+                                      row.id,
+                                      "APPROVE_BY_ID",
+                                      "form"
+                                    );
+                                  }}
+                                />
+                              </>
+                            )}
+                          </Td>
+                          <Td className="border-l print:hidden py-2 px-6 w-1/12">
                             {row.id && (
                               <>
                                 <ActionButton
@@ -440,20 +499,6 @@ export default function Orders() {
                                       row.id,
                                       "PRINT_BY_ID",
                                       "print"
-                                    );
-                                  }}
-                                  onClickCancel={() => {
-                                    handleOpenModal(
-                                      row.id,
-                                      "CANCEL_BY_ID",
-                                      "form"
-                                    );
-                                  }}
-                                  onClickApprove={() => {
-                                    handleOpenModal(
-                                      row.id,
-                                      "APPROVE_BY_ID",
-                                      "form"
                                     );
                                   }}
                                 />

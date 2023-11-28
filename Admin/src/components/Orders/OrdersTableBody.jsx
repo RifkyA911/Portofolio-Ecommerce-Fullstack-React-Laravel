@@ -120,7 +120,7 @@ export const ProductImage = (props) => {
   );
 };
 
-export const ProductFilter = (props) => {
+export const OrdersFilter = (props) => {
   const [isHovered, setIsHovered] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
@@ -176,6 +176,29 @@ export const ProductFilter = (props) => {
     setValue("selectedFilter", selectedItems);
     // console.log(getValues("selectedFilter"));
   }, [selectedItems]);
+
+  const StatusesBackgroundColor = (index) => {
+    const defaultColor = "bg-slate-200 hover:bg-slate-300 text-black";
+
+    // Menentukan warna latar belakang berdasarkan indeks
+    const colorMap = {
+      Pending: "bg-green-500 hover:bg-green-400 text-white",
+      "Awaiting Payment": "bg-orange-400 hover:bg-orange-500 text-white",
+      Processing: "bg-cyan-500 hover:bg-fuchsia-500 text-white",
+      Shipped: "bg-blue-500 hover:bg-fuchsia-500 text-white",
+      Delivered: "bg-lime-500 hover:bg-fuchsia-500 text-white",
+      Completed: "bg-gray-400 hover:bg-fuchsia-500 text-white",
+      Cancelled: "bg-red-400 hover:bg-fuchsia-500 text-white",
+      "On Hold": "bg-slate-500 hover:bg-red-500 text-white",
+      Returned: "bg-pink-500 hover:bg-fuchsia-500 text-white",
+      "Partially Shipped": "bg-zinc-500 hover:bg-green-500 text-white",
+      Backordered: "bg-amber-500 hover:bg-fuchsia-500 text-white",
+      Failed: "bg-red-600 hover:bg-fuchsia-500 text-white",
+    };
+
+    // Menggunakan warna sesuai dengan indeks, atau default jika indeks tidak ditemukan
+    return colorMap[index] || defaultColor;
+  };
 
   return (
     <>
@@ -300,7 +323,8 @@ export const ProductFilter = (props) => {
                 name="minPrice"
                 limitDigits={MaxLimit}
                 placeholder="Masukkan Harga"
-                style="h-[28px]"
+                inputClassName=""
+                style="input input-bordered input-sm w-full max-w-xs"
                 onInputChange={(value) => setMinPrice(value)}
               />
               <NumberInput
@@ -312,28 +336,28 @@ export const ProductFilter = (props) => {
                 name="maxPrice"
                 limitDigits={MaxLimit}
                 placeholder="Masukkan Harga"
-                style="h-[28px]"
+                style="input input-bordered input-sm w-full max-w-xs"
                 onInputChange={(value) => setMaxPrice(value)}
               />
             </div>
           </div>
           <div className="category-filter flex flex-col gap-4 pb-2">
-            <label className="pt-2 text-left text-sm">
-              <MuiIcon iconName="AutoAwesomeMosaicRounded" fontSize={16} />{" "}
-              Category
+            <label className="pt-2 text-left text-sm inline-flex items-center gap-2">
+              <ReactIcons iconName="FaTruckFast" fontSize={16} />
+              <span>Status</span>
             </label>
             {selectFilter ? (
               <div className="inline-flex justify-start flex-wrap gap-2">
                 {selectFilter
-                  .sort((a, b) => a.name.localeCompare(b.name))
+                  // .sort((a, b) => a.name.localeCompare(b.name))
                   .map((select, index) => (
                     <MotionButton
                       key={select.id}
                       className={`p-2 ${
                         selectedItems.some((id) => id === select.id)
-                          ? "bg-green-500 text-white"
+                          ? StatusesBackgroundColor(select.id)
                           : "bg-slate-200 "
-                      } rounded-lg hover:bg-green-600 capitalize hover:text-white transition-all delay-100`}
+                      } rounded-lg hover:bg-slate-600 capitalize hover:text-white transition-all delay-100`}
                       type="button"
                       onClick={() => {
                         !selectedItems.some((id) => id === select.id)
@@ -370,6 +394,7 @@ export const ProductFilter = (props) => {
                   // console.log("selected_date", ":", getValues("selected_date"));
                 }}
               >
+                <option value="deadline_payment">Deadline Payment</option>
                 <option value="created_at">Created Date</option>
                 <option value="updated_at">Updated Date</option>
               </select>

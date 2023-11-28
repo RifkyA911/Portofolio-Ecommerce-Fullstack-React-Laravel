@@ -407,9 +407,11 @@ export const FormModal = (props) => {
                 </>
               ) : (
                 <>
-                  {formType === "ALTER_BY_ID" && (
-                    <DateRecord className="" data={data} />
-                  )}
+                  {formType === "ALTER_BY_ID" ||
+                    formType === "VISIBILITY_BY_ID" ||
+                    (formType === "DETAILS_BY_ID" && (
+                      <DateRecord className="" data={data} />
+                    ))}
                 </>
               )}
               <div className="w-12 text-right text-indigo-500">
