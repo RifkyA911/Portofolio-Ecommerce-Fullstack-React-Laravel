@@ -33,6 +33,7 @@ import { motionProps } from "../Config/MotionProps";
 import { AreaDropZone } from "./Area";
 import RequestAPI, { ServerPublic } from "../Config/API";
 import {
+  OrdersAdminForm,
   OrdersDetailsForm,
   OrdersDropForm,
   OrdersInputForm,
@@ -109,6 +110,8 @@ export const MainModalHandler = (props) => {
       formType === "ALTER_BY_ID" ||
       formType === "DROP_BY_ID" ||
       formType === "PRINT_BY_ID" ||
+      formType === "CANCEL_BY_ID" ||
+      formType === "APPROVE_BY_ID" ||
       formType === "SHOW_PRODUCT_BARCODE" ||
       formType === "SHOW_PRODUCT_PICTURE" ||
       formType === "SHOW_ADMIN_PROFILE_PICTURE" ||
@@ -386,6 +389,8 @@ export const FormModal = (props) => {
                 {formType === "ALTER_BY_ID" && `Edit Data ${table}`}
                 {formType === "DROP_BY_ID" && `Delete This ${table}`}
                 {formType === "DROP_BY_SELECTED" && `Delete Multiple ${table}`}
+                {formType === "CANCEL_BY_ID" && `Cancel This ${table}`}
+                {formType === "APPROVE_BY_ID" && `Approve This ${table}`}
               </Dialog.Title>
             </div>
             <div className="w-6/12 flex flex-col md:flex-row justify-end items-center">
@@ -471,6 +476,12 @@ export const FormModal = (props) => {
                               formType === "DROP_BY_SELECTED") && (
                               <>
                                 <OrdersDropForm />
+                              </>
+                            )}
+                            {(formType === "APPROVE_BY_ID" ||
+                              formType === "CANCEL_BY_ID") && (
+                              <>
+                                <OrdersAdminForm />
                               </>
                             )}
                           </>

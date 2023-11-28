@@ -273,16 +273,20 @@ const BodyOfOrdersInvoices = (props) => {
     total_prices: null,
   });
 
-  // useEffect(() => {
-  //   if (inputData) {
-  //     setSummary({
-  //       ...summary,
-  //       products: inputData.items.products.length(),
-  //       categories: null,
-  //       total_prices: null,
-  //     });
-  //   }
-  // }, [inputData]);
+  useEffect(() => {
+    if (inputData) {
+      setSummary((prevValue) => ({
+        ...summary,
+        products: inputData.items.length,
+        categories: null,
+        total_prices: null,
+      }));
+    }
+  }, [inputData]);
+
+  const totalQuantity = inputData.items.reduce((accumulator, currentItem) => {
+    return accumulator + currentItem.quantity;
+  }, 0);
 
   return (
     <>
@@ -388,7 +392,7 @@ const BodyOfOrdersInvoices = (props) => {
                   <Text style={styles.tableCell}></Text>
                 </View>
                 <View style={styles.tableWidth.quantity}>
-                  <Text style={styles.tableCell}></Text>
+                  <Text style={styles.tableCell}>{totalQuantity}</Text>
                 </View>
                 <View style={styles.tableWidth.total_price}>
                   <Text style={styles.tableCell}>

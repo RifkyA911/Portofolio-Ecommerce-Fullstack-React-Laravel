@@ -68,6 +68,7 @@ export const TextInput = (props) => {
   const {
     formContext,
     className,
+    disabled = false,
     label,
     labelClassName,
     labelSize = "text-sm",
@@ -162,6 +163,7 @@ export const TextInput = (props) => {
           </label>
           <input
             id={id}
+            disabled={disabled}
             autoFocus={autoFocus}
             type={type}
             placeholder={placeholder.toLowerCase()}
@@ -188,6 +190,7 @@ export const NumberInput = (props) => {
     required = true,
     formContext,
     inputRef,
+    disabled = false,
     className,
     label,
     labelSize = "text-sm",
@@ -279,6 +282,7 @@ export const NumberInput = (props) => {
         render={({ field: { onChange, name, value, ref, defaultValue } }) => (
           <NumericFormat
             name={name}
+            disabled={disabled}
             defaultValue={0}
             value={value}
             className={`input input-bordered input-info input-md max-h-[38px] ${style} max-w-3xl text-gray-900 focus:outline-none ${
@@ -368,6 +372,10 @@ export const SelectInput = (props) => {
       setOptionsList(newOptions);
     }
   };
+
+  // useEffect(() => {
+  //   console.log(optionsList);
+  // }, [optionsList]);
 
   useEffect(() => {
     if (options) {
@@ -593,158 +601,6 @@ export const PasswordInput = (props) => {
   );
 };
 
-export const ToggleInput = (props) => {
-  const {
-    inputRef,
-    className,
-    label,
-    name,
-    autoFocus = false,
-    placeholder,
-    type = name,
-    formContext,
-    onChange,
-    // register,
-    // setValue,
-    // setFocus,
-    // errors,
-  } = props;
-
-  // react-hook-form
-  const {
-    // data,
-    // formType,
-    getValues,
-    register,
-    setValue,
-    setFocus,
-    errors,
-    setError,
-    control,
-    isValid,
-    dirtyFields,
-    watch,
-  } = useContext(formContext);
-
-  const [thisAdmin, setThisAdmin] = useState({
-    superAuthorizationPassword: null,
-    adminsId: null,
-    authority: {
-      chat: false,
-      sort_warehouse: false,
-      alter_price: false,
-    },
-  });
-  const [toggleTypes, setToggleTypes] = useState([]);
-  const [toggle, setToggle] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const id = useId();
-
-  const validationRules = {
-    required: `This ${label} field is required`,
-    maxLength: {
-      value: 200,
-      message: label + " input must not exceed 200 characters",
-    },
-    minLength: {
-      value: 4,
-      message: label + " input must exceed 4 characters",
-    },
-  };
-
-  const isComponentMounted = useRef(true);
-
-  useEffect(() => {
-    // Hanya jalankan jika komponen sudah dimuat
-    if (data.authority) {
-      if (!isComponentMounted.current) {
-        // console.log(Object.keys(thisAdmin.authority));
-        setToggleTypes(Object.keys(thisAdmin.authority));
-        const parsedAuthority = JSON.parse(data.authority);
-        setThisAdmin((prevAdmin) => ({
-          ...prevAdmin,
-          superAuthorizationPassword: "superAdmin",
-          adminsId: data.id,
-          authority: {
-            chat: parsedAuthority.chat,
-            sort_warehouse: parsedAuthority.sort_warehouse,
-            alter_price: parsedAuthority.alter_price,
-          },
-        }));
-      }
-    }
-  }, [data]);
-
-  const handleToggleChange = (toggleType) => {
-    setThisAdmin((prevAdmin) => ({
-      ...prevAdmin,
-      authority: {
-        ...prevAdmin.authority, // Tetapkan properti authority sebelumnya
-        [toggleType]: !prevAdmin.authority[toggleType], // Perbarui properti sesuai dengan toggleType
-      },
-    }));
-    setToggle(!toggle);
-    setIsUpdated(true);
-  };
-
-  const updateAdminsAuthority = async (data) => {
-    await axios
-      .patch(URL_PUT, data)
-      .then((data) => {
-        console.info(data.data);
-      })
-      .catch((error) => {
-        setToggle(!toggle);
-        setErrorMessage(error.response.data.message);
-        console.error(error);
-      });
-  };
-
-  useEffect(() => {
-    // Ketika komponen selesai dimuat, set ref ke false
-    isComponentMounted.current = false;
-
-    if (
-      thisAdmin.superAuthorizationPassword &&
-      thisAdmin.adminsId &&
-      isUpdated // Hanya jalankan jika belum diupdate
-    ) {
-      console.info(data.username + " => " + data.authority);
-      setToggle(!toggle);
-      setIsUpdated(false); // Set state isUpdated ke true agar tidak dijalankan lagi
-      updateAdminsAuthority(thisAdmin);
-    }
-  }, [thisAdmin]);
-
-  return (
-    <div className="w-full flex lg:flex-row justify-around items-center">
-      <div className="bg-red-400 rounded-lg line-clamp-6 font-semibold text-red-900">
-        {errorMessage}
-      </div>
-      {thisAdmin && (
-        <>
-          {toggleTypes.map((toggleType, index) => (
-            <div key={toggleType}>
-              <input
-                // name="authority"
-                type="checkbox"
-                className={`toggle ${toggleColors[index]} m-2`}
-                onChange={() => handleToggleChange(toggleType)}
-                checked={thisAdmin?.authority?.[toggleType] || false}
-              />
-              <label htmlFor={toggleType}>
-                {/* {console.info(thisAdmin.authority)} */}
-              </label>
-            </div>
-          ))}
-        </>
-      )}
-    </div>
-  );
-};
-
 export const TextArea = (props) => {
   const {
     formContext,
@@ -752,6 +608,7 @@ export const TextArea = (props) => {
     className,
     label,
     labelSize = "text-sm",
+    inputClassName,
     name,
     placeholder,
     type = name,
@@ -822,19 +679,17 @@ export const TextArea = (props) => {
           </span>
         )}
       </label>
-      <div className="relative">
-        <textarea
-          ref={inputRef}
-          className={`textarea textarea-info resize-y border rounded-md p-2 w-full h-60 text-gray-900 focus:outline-none 
+      <textarea
+        ref={inputRef}
+        className={`${inputClassName} textarea textarea-info resize-y border rounded-md p-2 w-full min-h-[100px] text-gray-900 focus:outline-none 
         ${errors[name] ? "border-pink-500" : "border-sky-500"}`}
-          placeholder={placeholder}
-          {...register(name, validationRules)}
-          onChange={(e) => {
-            // console.log(name, ":", e.target.value);
-            setValue(name, e.target.value);
-          }}
-        ></textarea>
-      </div>
+        placeholder={placeholder}
+        {...register(name, validationRules)}
+        onChange={(e) => {
+          // console.log(name, ":", e.target.value);
+          setValue(name, e.target.value);
+        }}
+      ></textarea>
     </div>
   );
 };

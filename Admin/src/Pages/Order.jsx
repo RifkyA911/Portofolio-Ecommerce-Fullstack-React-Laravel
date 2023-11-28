@@ -224,7 +224,7 @@ export default function Orders() {
         state: state,
         message: message,
       }),
-    select: orders,
+    // select: orders,
     clearData: () => {
       setOrders(null);
       setToggleSelect(false);
@@ -445,14 +445,14 @@ export default function Orders() {
                                   onClickCancel={() => {
                                     handleOpenModal(
                                       row.id,
-                                      "DROP_BY_ID",
+                                      "CANCEL_BY_ID",
                                       "form"
                                     );
                                   }}
                                   onClickApprove={() => {
                                     handleOpenModal(
                                       row.id,
-                                      "ALTER_BY_ID",
+                                      "APPROVE_BY_ID",
                                       "form"
                                     );
                                   }}

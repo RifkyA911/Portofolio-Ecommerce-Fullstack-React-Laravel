@@ -162,3 +162,11 @@ export const IsResponsive = (props) => {
 
   return screenWidth;
 };
+
+export const sumData = (inputData) => {
+  const totalQuantity = inputData.reduce((accumulator, currentItem) => {
+    return accumulator + currentItem.quantity;
+  }, 0);
+
+  return totalQuantity;
+};
