@@ -134,7 +134,7 @@ export default function Orders() {
     setLoading(true);
     fetchData(URL_ORDERS);
     if (orders !== null && orders !== undefined) {
-      setColspan(columnOrder.length + 2);
+      setColspan(columnOrder.length + 1);
     }
   }, [paginate, rows]);
 
@@ -348,13 +348,6 @@ export default function Orders() {
                           feature={null}
                           className="print:hidden capitalize px-4"
                         ></Th>
-                        <Th
-                          key={55}
-                          name="Details"
-                          column="Details"
-                          feature={null}
-                          className="print:hidden capitalize px-4"
-                        ></Th>
                       </Tr>
                     </Thead>
                     {/* {row.no_orders ? <>Data</> : <>No Data</>} */}
@@ -451,36 +444,7 @@ export default function Orders() {
                           >
                             {row.deadline_payment}
                           </Td>
-
-                          <Td className="border-l print:hidden py-2 px-6 w-1/12">
-                            {row.id && (
-                              <>
-                                <ActionButton
-                                  key={index}
-                                  inputData={row}
-                                  fontSize={18}
-                                  onClickCancel={
-                                    orderStatuses.includes(row.status) &&
-                                    (() => {
-                                      handleOpenModal(
-                                        row.id,
-                                        "CANCEL_BY_ID",
-                                        "form"
-                                      );
-                                    })
-                                  }
-                                  onClickApprove={() => {
-                                    handleOpenModal(
-                                      row.id,
-                                      "APPROVE_BY_ID",
-                                      "form"
-                                    );
-                                  }}
-                                />
-                              </>
-                            )}
-                          </Td>
-                          <Td className="border-l print:hidden py-2 px-6 w-1/12">
+                          <Td className="border-l print:hidden py-2 px-4 w-1/12">
                             {row.id && (
                               <>
                                 <ActionButton

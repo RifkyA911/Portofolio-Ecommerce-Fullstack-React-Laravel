@@ -321,6 +321,7 @@ export const SelectInput = (props) => {
     className,
     newStyle,
     style,
+    customControlStyles,
     required = true,
     label,
     labelSize = "text-sm",
@@ -609,6 +610,7 @@ export const TextArea = (props) => {
     className,
     label,
     labelSize = "text-sm",
+    disabled = false,
     inputClassName,
     name,
     placeholder,
@@ -682,6 +684,7 @@ export const TextArea = (props) => {
       </label>
       <textarea
         ref={inputRef}
+        disabled={disabled}
         className={`${inputClassName} textarea textarea-info resize-y border rounded-md p-2 w-full min-h-[100px] text-gray-900 focus:outline-none 
         ${errors[name] ? "border-pink-500" : "border-sky-500"}`}
         placeholder={placeholder}

@@ -117,111 +117,79 @@ export const MotionButton = (props) => {
     icon: null,
     span: null,
   });
-  // Konten komponen
 
   useEffect(() => {
     setFormButton(formType);
-    if (formType == "default") {
-      setStyleButton({
-        ...styleButton,
+
+    const getDefaultStyle = (bg, text, icon, span) => ({
+      Bg: !disabled ? bg : `${bg} hover:bg-red-100 border border-gray-300`,
+      text: !disabled ? text : "text-gray-500",
+      size: null,
+      icon: icon,
+      span: span,
+    });
+
+    const getStyle = (bg, icon, span) => ({
+      Bg: !disabled
+        ? bg
+        : `${bg} hover:${bg.replace(/\d+/, (match) => +match + 100)}`,
+      text: "text-white",
+      size: null,
+      icon: icon ?? styleButton.icon,
+      span: span ?? styleButton.span,
+    });
+
+    const formStyles = {
+      default: getDefaultStyle("bg-white", "text-black", icon, span),
+      apply: getStyle(
+        "bg-gradient-to-r from-green-500 to-lime-500",
+        icon ?? "FiCheck",
+        span ?? "Apply"
+      ),
+      reject: getStyle(
+        "bg-gradient-to-r from-red-500 to-pink-500",
+        icon ?? "IoClose",
+        span ?? "Reject"
+      ),
+      insert: getStyle(
+        "bg-sky-500",
+        icon ?? "BiSolidAddToQueue",
+        span ?? "Insert"
+      ),
+      alter: getStyle(
+        "bg-indigo-500",
+        icon ?? "RiEdit2Fill",
+        span ?? "Save Changes"
+      ),
+      delete: getStyle(
+        "bg-red-500",
+        icon ?? "MdDeleteForever",
+        span ?? "Delete"
+      ),
+      print: getStyle("bg-lime-500", icon ?? "PiPrinterFill", span ?? "Print"),
+      confirm: getStyle("bg-lime-500", icon ?? "FiCheck", span ?? "Confirm"),
+      cancel: {
         Bg: !disabled
-          ? `bg-white hover:bg-slate-50 border border-gray-300`
-          : `bg-white hover:bg-red-100 border border-gray-300`,
-        text: !disabled ? `text-black` : `text-gray-500`,
-        size: null,
-        icon: icon,
-        span: span,
-      });
-    } else if (formType == "apply") {
-      setStyleButton({
-        ...styleButton,
-        Bg: !disabled
-          ? `bg-teal-500 hover:bg-teal-600`
-          : `bg-teal-300 hover:bg-teal-400`,
-        text: `text-white`,
-        size: null,
-        icon: icon ?? `DeleteForeverSharp`,
-        span: span ?? `Apply`,
-      });
-    } else if (formType == "insert") {
-      setStyleButton({
-        ...styleButton,
-        Bg: !disabled
-          ? `bg-sky-500 hover:bg-sky-600`
-          : `bg-sky-300 hover:bg-sky-400`,
-        text: `text-white`,
-        size: null,
-        icon: icon ?? `BiSolidAddToQueue`,
-        span: span ?? `Insert`,
-      });
-    } else if (formType == "alter") {
-      setStyleButton({
-        ...styleButton,
-        Bg: !disabled
-          ? `bg-indigo-500 hover:bg-violet-600`
-          : `bg-indigo-300 hover:bg-violet-400`,
-        text: `text-white`,
-        size: null,
-        icon: icon ?? `RiEdit2Fill`,
-        span: span ?? `Save Changes`,
-      });
-    } else if (formType == "delete") {
-      setStyleButton({
-        ...styleButton,
-        Bg: !disabled
-          ? `bg-red-500 hover:bg-red-600`
-          : `bg-red-300 hover:bg-red-400`,
-        text: `text-white`,
-        size: null,
-        icon: icon ?? `MdDeleteForever`,
-        span: span ?? `Delete`,
-      });
-    } else if (formType == "print") {
-      setStyleButton({
-        ...styleButton,
-        Bg: !disabled
-          ? `bg-lime-500 hover:bg-lime-600`
-          : `bg-lime-300 hover:bg-lime-400`,
-        text: `text-white`,
-        size: null,
-        icon: icon ?? `PiPrinterFill`,
-        span: span ?? `Print`,
-      });
-    } else if (formType == "confirm") {
-      setStyleButton({
-        ...styleButton,
-        Bg: !disabled
-          ? `bg-lime-500 hover:bg-lime-600`
-          : `bg-lime-300 hover:bg-lime-400`,
-        text: `text-white`,
-        size: null,
-        icon: icon ?? `FiCheck`,
-        span: span ?? `Confirm`,
-      });
-    } else if (formType == "cancel") {
-      setStyleButton({
-        ...styleButton,
-        Bg: !disabled
-          ? `bg-slate-50 hover:bg-amber-500 border border-gray-300`
-          : `bg-slate-50 hover:bg-amber-400`,
+          ? "bg-slate-50 hover:bg-amber-500 border"
+          : "bg-slate-50 hover:bg-slate-200 border",
         text: !disabled
-          ? `text-black hover:text-white hover:border-orange-300`
-          : `text-gray-500 hover:text-gray-700 hover:border-orange-100`,
+          ? "text-black hover:text-white hover:border-orange-300"
+          : "text-gray-500 hover:text-gray-700 hover:border-orange-100",
         size: null,
-        icon: icon ?? `CgClose`,
-        span: span ?? `Cancel`,
-      });
-    } else {
-      setStyleButton({
-        ...styleButton,
+        icon: icon ?? "CgClose",
+        span: span ?? "Cancel",
+      },
+      defaultFallback: {
         Bg: null,
         text: null,
         size: null,
         icon: icon,
         span: span,
-      });
-    }
-  }, [formType, onClick, disabled]);
+      },
+    };
+
+    setStyleButton(formStyles[formType] || formStyles.defaultFallback);
+  }, [formType, onClick, disabled, styleButton.icon, styleButton.span]);
 
   return (
     <>

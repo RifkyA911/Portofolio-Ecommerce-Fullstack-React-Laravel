@@ -544,14 +544,22 @@ export const FormModal = (props) => {
             {(formType === "DROP_BY_ID" || formType === "DROP_BY_SELECTED") && (
               <MotionButton formType="delete" disabled={proceed} />
             )}
-            <MotionButton
-              formType="cancel"
-              onClick={() => {
-                setShowModal(false);
-                refresh();
-                clearData();
-              }}
-            />
+            {formType === "DETAILS_BY_ID" && (
+              <div className="flex flex-row justify-center w-full gap-4">
+                <MotionButton formType="reject" disabled={proceed} />
+                <MotionButton formType="apply" disabled={proceed} />
+              </div>
+            )}
+            {formType !== "DETAILS_BY_ID" && (
+              <MotionButton
+                formType="cancel"
+                onClick={() => {
+                  setShowModal(false);
+                  refresh();
+                  clearData();
+                }}
+              />
+            )}
           </div>
         </form>
       </Dialog.Panel>

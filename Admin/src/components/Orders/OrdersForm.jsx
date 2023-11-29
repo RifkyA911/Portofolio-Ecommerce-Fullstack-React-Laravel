@@ -59,6 +59,9 @@ export const OrdersDetailsForm = (props) => {
   //   console.log(getValues());
   // }, [getValues()]);
 
+  const inputClassName =
+    "input input-bordered input-info w-full input-sm max-w-3xl text-gray-900 focus:outline-none w-1/2";
+
   return (
     <>
       <div className="flex flex-col md:flex-row justify-center items-start py-2 px-6 text-xs min-h-[500px]">
@@ -115,6 +118,7 @@ export const OrdersDetailsForm = (props) => {
               disabled
               className={`flex gap-4 flex-col w-full`}
               label="No. Invoice"
+              inputClassName={inputClassName}
               name="no_invoice"
               placeholder="Masukkan Kode No. Invoice"
             />
@@ -123,6 +127,7 @@ export const OrdersDetailsForm = (props) => {
               disabled
               className={`flex gap-4 flex-col w-full`}
               label="Customer Name"
+              inputClassName={inputClassName}
               name="user.username"
               placeholder="Masukkan Nama Customer"
             />
@@ -130,13 +135,14 @@ export const OrdersDetailsForm = (props) => {
           <div className="w-full flex flex-row justify-between">
             <NumberInput
               formContext={ModalContext}
+              disabled
               className={`flex gap-4 flex-col w-1/2 mr-2 `}
               prefix="Rp. "
               label="Total Price (IDR)"
               name="total_price"
               limitDigits={MaxLimit}
               placeholder="Masukkan Harga"
-              style="w-full"
+              style={inputClassName}
             />
             <NumberInput
               formContext={ModalContext}
@@ -148,32 +154,38 @@ export const OrdersDetailsForm = (props) => {
               limitDigits={1000}
               decimalOptions={3}
               placeholder="Masukkan Harga"
-              style="w-full"
+              style={inputClassName}
             />
           </div>
           <div className="w-full flex flex-row gap-4 justify-between items-center">
             <SelectInput
               formContext={ModalContext}
-              className={`w-full flex gap-4 flex-col `}
+              className={`flex gap-4 flex-col w-1/2`}
               label="Status"
               name="status"
-              style="w-[160px] lg:w-full h-[38px]"
+              customControlStyles={(base) => ({
+                ...base,
+                maxHeight: 12,
+              })}
+              // style="h-[38px]"
               // options={convertedOptions}
             />
             <NumberInput
               formContext={ModalContext}
-              className={`flex gap-4 flex-col w-[160px] lg:w-auto`}
+              disabled
+              className={`flex gap-4 flex-col w-1/2`}
               prefix=""
               label="Total Items"
               name="total_quantity"
               limitDigits={1000}
               placeholder="Masukkan Harga"
+              style={inputClassName}
             />
           </div>
           <TextArea
             formContext={ModalContext}
+            disabled
             className={`flex gap-4 flex-col w-full text-xs`}
-            inputClassName="h-20"
             label="Address"
             name="user.address"
             placeholder="tamnbahkan deskripsi"
