@@ -141,6 +141,7 @@ export const MotionButton = (props) => {
 
     const formStyles = {
       default: getDefaultStyle("bg-white", "text-black", icon, span),
+      // ACTION
       apply: getStyle(
         "bg-gradient-to-r from-green-500 to-lime-500",
         icon ?? "FiCheck",
@@ -151,6 +152,7 @@ export const MotionButton = (props) => {
         icon ?? "IoClose",
         span ?? "Reject"
       ),
+      // CRUD
       insert: getStyle(
         "bg-sky-500",
         icon ?? "BiSolidAddToQueue",
@@ -166,6 +168,7 @@ export const MotionButton = (props) => {
         icon ?? "MdDeleteForever",
         span ?? "Delete"
       ),
+      // UTILITY
       print: getStyle("bg-lime-500", icon ?? "PiPrinterFill", span ?? "Print"),
       confirm: getStyle("bg-lime-500", icon ?? "FiCheck", span ?? "Confirm"),
       cancel: {
@@ -179,6 +182,68 @@ export const MotionButton = (props) => {
         icon: icon ?? "CgClose",
         span: span ?? "Cancel",
       },
+      // ORDERS
+      Pending: getStyle(
+        "bg-gradient-to-r from-green-500 to-green-400",
+        icon ?? "BiDotsHorizontalRounded",
+        span ?? "???"
+      ),
+      "Awaiting Payment": getStyle(
+        "bg-gradient-to-r from-orange-400 to-orange-500",
+        icon ?? "MdOutlinePayment",
+        span ?? "???"
+      ),
+      Processing: getStyle(
+        "bg-gradient-to-r from-cyan-500 to-cyan-500",
+        icon ?? "IoCartSharp",
+        span ?? "???"
+      ),
+      Shipped: getStyle(
+        "bg-gradient-to-r from-blue-500 to-cyan-500",
+        icon ?? "FaTruck",
+        span ?? "???"
+      ),
+      Delivered: getStyle(
+        "bg-gradient-to-r from-green-500 to-lime-500",
+        icon ?? "MdCloudDone",
+        span ?? "???"
+      ),
+      Completed: getStyle(
+        "bg-gradient-to-r from-gray-500 to-gray-400",
+        icon ?? "IoCheckmarkCircle",
+        span ?? "???"
+      ),
+      Cancelled: getStyle(
+        "bg-gradient-to-r from-red-500 to-red-600",
+        icon ?? "MdCancel",
+        span ?? "???"
+      ),
+      "On Hold": getStyle(
+        "bg-gradient-to-r from-green-500 to-lime-500",
+        icon ?? "FaHandPaper",
+        span ?? "???"
+      ),
+      Returned: getStyle(
+        "bg-gradient-to-r from-pink-500 to-pink-500",
+        icon ?? "MdAssignmentReturn",
+        span ?? "???"
+      ),
+      "Partially Shipped": getStyle(
+        "bg-gradient-to-r from-green-500 to-lime-500",
+        icon ?? "AiOutlineApartment",
+        span ?? "???"
+      ),
+      Backordered: getStyle(
+        "bg-gradient-to-r from-green-500 to-lime-500",
+        icon ?? "TbTruckReturn",
+        span ?? "???"
+      ),
+      Failed: getStyle(
+        "bg-gradient-to-r from-green-500 to-lime-500",
+        icon ?? "MdSmsFailed",
+        span ?? "???"
+      ),
+
       defaultFallback: {
         Bg: null,
         text: null,
@@ -195,7 +260,7 @@ export const MotionButton = (props) => {
     <>
       {/* {formType && ( */}
       <motion.button
-        disabled={disabled}
+        disabled={disabled ?? formType == "OnCompleted" ? true : false}
         type={type}
         tabIndex={0}
         className={

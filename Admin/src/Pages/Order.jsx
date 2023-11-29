@@ -103,10 +103,12 @@ export default function Orders() {
   };
 
   const orderStatuses = [
+    // queue ordered
     "Pending",
-    "Shipped",
     "Awaiting Payment",
     "Processing",
+    "Shipped",
+    "Delivered",
   ];
 
   const statuses = [

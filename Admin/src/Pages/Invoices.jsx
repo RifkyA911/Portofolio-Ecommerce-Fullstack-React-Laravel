@@ -21,13 +21,14 @@ import { Container, Content } from "../Layout";
 // REDUX
 import { useSelector } from "react-redux";
 // UTILS
-import { CurrencyFormatter } from "../utils/Formatter";
+import { CurrencyFormatter, TextFormatter } from "../utils/Formatter";
 import { ReactIcons } from "../utils/RenderIcons";
 import RequestAPI from "../Config/API";
+import { ListProduct, OrderStatus } from "../components/Orders/OrdersTableBody";
 
 export const OrdersContext = createContext();
 
-export default function Orders() {
+export default function Invoices() {
   // ---- Orders Basic States ----
   const [orders, setOrders] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -73,13 +74,23 @@ export default function Orders() {
   } = useSelector((state) => state.UI);
 
   const table = "orders";
-  const URL_ORDERS = `${table}/paginate/${paginate}/${rows}`;
+  const URL_ORDERS = `${table}/paginate/${paginate}/${rows}/status/asc/`;
   const URL_ORDERS_SEARCH = `${table}/search`;
   const URL_ORDERS_FILTER = `${table}/filter`;
 
-  const fetchData = async (url, form = null) => {
+  const fetchData = async (url, method = "GET", form = null, params = null) => {
+    // console.log(url);
     try {
-      const { data } = await RequestAPI(url, form ? "POST" : "GET", form);
+      const { data } = await RequestAPI(
+        url,
+        method,
+        form,
+        form
+          ? null
+          : {
+              status: orderStatuses,
+            }
+      );
       // console.log(data.data);
       setLoading(false);
       setOrders(data.data);
@@ -90,6 +101,36 @@ export default function Orders() {
       console.error(error);
     }
   };
+
+  const orderStatuses = [
+    "Completed",
+    "Cancelled",
+    "On Hold",
+    "Returned",
+    "Partially Shipped",
+    "Backordered",
+    "Failed",
+  ];
+
+  const statuses = [
+    "Pending",
+    "Awaiting Payment",
+    "Processing",
+    "Shipped",
+    "Delivered",
+    "Completed",
+    "Cancelled",
+    "On Hold",
+    "Returned",
+    "Partially Shipped",
+    "Backordered",
+    "Failed",
+  ];
+
+  const convertedStatuses = statuses.map((option, index) => ({
+    id: TextFormatter(option.replace(/\s/g, "_")), // Atau gunakan nilai unik sesuai kebutuhan
+    name: TextFormatter(option.replace(/\s/g, "_")), // Mengubah ke huruf kecil dan ganti spasi dengan _
+  }));
 
   // ===================== MyTableEngine =====================
   useEffect(() => {
@@ -143,6 +184,7 @@ export default function Orders() {
     // ------------- Table Header Menu -------------
     TabHeader: true,
     hideHeaderBtn: [],
+    selectFilter: convertedStatuses,
     applyFilter: (form) => {
       fetchData(URL_ORDERS_FILTER, form);
     },
@@ -209,7 +251,7 @@ export default function Orders() {
         state: state,
         message: message,
       }),
-    select: orders,
+    select: convertedStatuses,
     clearData: () => {
       setOrders(null);
       setToggleSelect(false);
@@ -221,13 +263,13 @@ export default function Orders() {
   // Urutan kolom yang diinginkan
   const columnOrder = [
     "id",
-    "No. Invoices",
-    "Status", // sent + done
-    "Products",
-    "Customer",
-    "Checked",
-    "Address",
-    "Total",
+    "no_invoice",
+    "status", // sent + done
+    "products",
+    "customer",
+    "address",
+    "total_price",
+    "deadline_payment",
   ];
 
   let table_styling = {};
@@ -235,10 +277,18 @@ export default function Orders() {
     console.log();
     table_styling = {
       tbody: `${BgTable}`,
-      tr: `h-8 text-left`,
+      tr: `h-8 text-left text-xs`,
       th: columnOrder.map((key, index) => ({
         key,
-        feature: ["id", "Customer", "Checked", "Total"].includes(key)
+        feature: [
+          "id",
+          "no_invoice",
+          "status",
+          "customer",
+          "address",
+          "total_price",
+          "deadline_payment",
+        ].includes(key)
           ? "filter"
           : null,
         style: `capitalize px-4`,
@@ -250,21 +300,21 @@ export default function Orders() {
   return (
     <>
       <Container>
-        <Content pageName={"Invoices"}>
+        <Content pageName="invoices">
           {loading == true ? (
             <SkeltonTable />
           ) : (
             <>
               {orders !== null ? (
                 // <ordersContext.Provider value={MyTableEngineProps}>
-                <div id="orders" className="rounded-lg text-sm ">
+                <div id={table} className="rounded-lg text-sm ">
                   {/* ================ Error ================ */}
                   <div>
                     {errorMessage && (
                       <SetErrorMessage
                         errorMessage={errorMessage}
                         refresh={() => {
-                          fetchData(URL_PRODUCT, "orders");
+                          fetchData(URL_ORDERS);
                           setLoading(true);
                         }}
                       >
@@ -276,36 +326,18 @@ export default function Orders() {
                   </div>
                   {/* ================ Modal ================= */}
                   <MainModalHandler {...ModalProps} />
-                  {/* {resultStatus.type && resultStatus.state == true && (
-                    <FormToast
-                      formType={resultStatus.type}
-                      span={resultStatus.message}
-                    />
-                  )} */}
                   {/* ================ Table ================ */}
-                  <div className="divider">Product List</div>
-                  <ul className="timeline timeline-vertical font-roboto-regular">
-                    <li>
-                      <div className="timeline-start">1984</div>
-                      <div className="timeline-middle">
-                        <ReactIcons iconName="FaCircleCheck" />
-                      </div>
-                      <div id="chart" className="timeline-end timeline-box">
-                        First Macintosh computer
-                      </div>
-                      <hr />
-                    </li>
-                  </ul>
+                  <div className="divider">Customer Orders List</div>
                   <MyTableEngine
                     {...MyTableEngineProps}
-                    className="rounded-sm mx-auto"
+                    className="rounded-sm mx-auto "
                   >
                     <Thead className={`${BgOuterTable} ${textColor} `}>
                       <Tr key="TableHead" className={table_styling.tr}>
                         {table_styling.th.map((th, index) => (
                           <Th
                             key={index}
-                            name={th.key === "id" ? "" : th.key}
+                            name={th.key === "id" ? "" : TextFormatter(th.key)}
                             column={th.key}
                             feature={th.feature}
                             sortOrder="asc"
@@ -327,7 +359,7 @@ export default function Orders() {
                       {orders.map((row, index) => (
                         <Tr
                           key={index}
-                          className={`${table_styling.tr} divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50`}
+                          className={`${table_styling.tr} text-xs divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50`}
                         >
                           {toggleSelect ? (
                             <>
@@ -392,58 +424,52 @@ export default function Orders() {
                               </Th>
                             </>
                           )}
-                          <Td className={`w-1/12`}>{row.no_invoice}</Td>
-                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
-                            {!row.done ? (
-                              <>{!row.sent ? <>In Order</> : <>Proceed</>}</>
-                            ) : (
-                              <>Sent</>
-                            )}
+                          <Td className={`w-1/12 pl-2`}>{row.no_invoice}</Td>
+                          <Td className={` ${table_styling.td} w-1/12`}>
+                            <OrderStatus status={row.status} />
                           </Td>
-                          <Td className={`${table_styling.td} w-1/12`}>
-                            {row.items.map((item, key) => (
-                              <>{item.product.name}</>
-                            ))}
+                          <Td className={`${table_styling.td} w-2/12`}>
+                            <ListProduct row={row} />
                           </Td>
                           <Td className={`px-6 ${table_styling.td} w-1/12`}>
                             {row.user.username}
                           </Td>
-                          <Td className={`px-6 ${table_styling.td} w-1/12`}>
-                            {row.deadline_payment}
-                          </Td>
                           <Td className={`${table_styling.td} w-2/12`}>
-                            {row.user.address}
+                            <span className="line-clamp-2">
+                              {row.user.address}
+                            </span>
                           </Td>
                           <Td className={`${table_styling.td} w-1/12`}>
                             {CurrencyFormatter(row.total_price)}
                           </Td>
-
-                          <Td className="print:hidden px-4">
+                          <Td
+                            className={`px-6 ${table_styling.td} w-2/12 text-center whitespace-pre-line`}
+                          >
+                            {row.deadline_payment}
+                          </Td>
+                          <Td className="border-l print:hidden py-2 px-4 w-1/12">
                             {row.id && (
-                              <ActionButton
-                                key={index}
-                                inputData={row}
-                                onClickDetails={() => {
-                                  handleOpenModal(row.id, "DROP_BY_ID", "form");
-                                }}
-                                onClickPrint={() => {
-                                  handleOpenModal(
-                                    row.id,
-                                    "PRINT_BY_ID",
-                                    "print"
-                                  );
-                                }}
-                                onClickDelete={() => {
-                                  handleOpenModal(row.id, "DROP_BY_ID", "form");
-                                }}
-                                onClickEdit={() => {
-                                  handleOpenModal(
-                                    row.id,
-                                    "ALTER_BY_ID",
-                                    "form"
-                                  );
-                                }}
-                              />
+                              <>
+                                <ActionButton
+                                  key={index}
+                                  inputData={row}
+                                  fontSize={18}
+                                  onClickDetails={() => {
+                                    handleOpenModal(
+                                      row.id,
+                                      "DETAILS_BY_ID",
+                                      "form"
+                                    );
+                                  }}
+                                  onClickPrint={() => {
+                                    handleOpenModal(
+                                      row.id,
+                                      "PRINT_BY_ID",
+                                      "print"
+                                    );
+                                  }}
+                                />
+                              </>
                             )}
                           </Td>
                         </Tr>

@@ -34,6 +34,7 @@ import { AreaDropZone } from "./Area";
 import RequestAPI, { ServerPublic } from "../Config/API";
 import {
   OrdersAdminForm,
+  OrdersButtonForm,
   OrdersDetailsForm,
   OrdersDropForm,
   OrdersInputForm,
@@ -198,6 +199,8 @@ export const MainModalHandler = (props) => {
           setData([]);
           console.error("Terjadi kesalahan saat menghapus batch data:", error);
         }
+      } else if (formType === "DETAILS_BY_ID") {
+        await fetchData(URL_ALL + "/update", "PUT", table, form); //////////////////////////////////////
       } else {
         console.warning("no formtype");
       }
@@ -212,7 +215,7 @@ export const MainModalHandler = (props) => {
       clearData(); // parent props
       refresh(); // parent props
     } catch (error) {
-      setResultStatus("error", false, error.response.data.message);
+      // setResultStatus("error", false, error.response.data.message);
       setSending(false);
       setErrorMessage(error.response.data.message);
       console.info(error);
@@ -547,7 +550,8 @@ export const FormModal = (props) => {
             {formType === "DETAILS_BY_ID" && (
               <div className="flex flex-row justify-center w-full gap-4">
                 <MotionButton formType="reject" disabled={proceed} />
-                <MotionButton formType="apply" disabled={proceed} />
+                {/* <MotionButton formType="apply" disabled={proceed} /> */}
+                <OrdersButtonForm proceed={proceed} />
               </div>
             )}
             {formType !== "DETAILS_BY_ID" && (

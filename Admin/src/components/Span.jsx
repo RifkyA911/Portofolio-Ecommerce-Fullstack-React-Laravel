@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { DateFormatter } from "../utils/Formatter";
+import { ReactIcons } from "../utils/RenderIcons";
 
 export const DateRecord = (props) => {
   const { className, data } = props;
@@ -145,5 +146,40 @@ export const DaisyUITimeline = (props) => {
         </li>
       </ul>
     </>
+  );
+};
+
+export const Timeline = (props) => {
+  const { className, events } = props;
+
+  return (
+    <div className={`${className} flex flex-col items-center gap-6`}>
+      {events.map((event, index) => (
+        <div
+          key={index}
+          className="flex flex-rows gap-2 items-center justify-center"
+        >
+          <div className="font-bold max-w-[200px] overflow-clip line-clamp-3">
+            {event.date}
+          </div>
+          <div className="relative flex items-center justify-center">
+            {index < events.length - 1 && (
+              <div
+                id="liner"
+                className="absolute top-1 h-16 w-1 bg-gray-300 "
+              ></div>
+            )}
+            <span className="rounded-xl bg-red-400 z-[1] ">
+              <ReactIcons
+                className="text-green-500 bg-white"
+                iconName="FaCheckCircle"
+                fontSize={16}
+              />
+            </span>
+          </div>
+          <div className="">{event.description}</div>
+        </div>
+      ))}
+    </div>
   );
 };
