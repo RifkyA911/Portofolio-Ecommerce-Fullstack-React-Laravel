@@ -12,7 +12,7 @@ import { ReactIcons } from "./../utils/RenderIcons.jsx";
 import RequestAPI from "../Config/API.jsx";
 import { refreshAccessToken, validateAccessToken } from "../Config/Session.jsx";
 import TableReview from "../components/Table/MyTableContent.jsx";
-import { TabsMenu } from "../components/Button.jsx";
+import { MotionTabs } from "../components/Button.jsx";
 
 const Dashboard = (props) => {
   const [charts, setCharts] = useState({
@@ -103,10 +103,10 @@ const Dashboard = (props) => {
     fetchData("products", "products" + URL_TABLE);
   }, []);
 
-  useEffect(() => {
-    console.log("charts.products", charts.products);
-    console.log("charts.orders", charts.orders);
-  }, [charts]);
+  // useEffect(() => {
+  //   console.log("charts.products", charts.products);
+  //   console.log("charts.orders", charts.orders);
+  // }, [charts]);
 
   return (
     <>
@@ -130,17 +130,33 @@ const Dashboard = (props) => {
                   <div className="flex lg:max-h-[900px]">
                     <div className="flex flex-col lg:flex-row w-full py-2 h-20 lg:h-[450px] overflow-clip">
                       <div
-                        className={`${BgColor} ${textColor} rounded-xl w-full lg:w-7/12 mr-4 overflow-clip border`}
+                        className={`${BgColor} ${textColor} rounded-md w-full lg:w-7/12 mr-4 overflow-clip border`}
                       >
                         <div className="w-full h-full m-auto py-2">
                           <ApexCharts type="area" inputData={charts} />
                         </div>
                       </div>
-                      <div className="rounded-xl flex flex-col justify-start w-full lg:w-5/12 bg-white border">
-                        <TabsMenu
+                      <div className="rounded-md flex flex-col justify-start w-full lg:w-5/12 bg-white border">
+                        <MotionTabs
                           onClick={(tabIndex) => setActiveTab(tabIndex)}
                           checked={activeTab}
-                          tabs={["Orders", "Tab 2", "Tab 3"]}
+                          tabs={[
+                            {
+                              name: "Orders",
+                              label: "Tab 1",
+                              render: () => <p>Content for Tab 1</p>,
+                            },
+                            {
+                              name: "Sales",
+                              label: "Tab 2",
+                              render: () => <p>Content for Tab 2</p>,
+                            },
+                            {
+                              name: "Reviews",
+                              label: "Tab 3",
+                              render: () => <p>Content for Tab 3</p>,
+                            },
+                          ]}
                         />
                         {/* {activeTab === 1 && <div>Tab content 1</div>} */}
                       </div>
@@ -151,13 +167,13 @@ const Dashboard = (props) => {
                   <div className="flex lg:max-h-[900px]">
                     <div className="flex flex-col lg:flex-row w-full py-2">
                       <div
-                        className={`${BgColor} ${textColor} rounded-xl h-20 lg:h-96 w-full lg:w-7/12 mr-4`}
+                        className={`${BgColor} ${textColor} rounded-md h-20 lg:h-96 w-full lg:w-7/12 mr-4 border`}
                       >
-                        <div className="overflow-x-auto border">
+                        <div className="my-auto overflow-x-auto border h-full">
                           <TableReview />
                         </div>
                       </div>
-                      <div className="rounded-xl h-20 lg:h-96 w-full lg:w-5/12 bg-white border">
+                      <div className="rounded-md h-20 lg:h-96 w-full lg:w-5/12 bg-white border">
                         <ApexCharts type="bar" inputData={charts} />
                       </div>
                     </div>
