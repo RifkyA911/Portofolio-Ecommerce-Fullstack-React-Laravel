@@ -140,6 +140,7 @@ const Dashboard = (props) => {
                         <TabsMenu
                           onClick={(tabIndex) => setActiveTab(tabIndex)}
                           checked={activeTab}
+                          tabs={["Orders", "Tab 2", "Tab 3"]}
                         />
                         {/* {activeTab === 1 && <div>Tab content 1</div>} */}
                       </div>

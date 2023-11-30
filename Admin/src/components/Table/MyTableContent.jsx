@@ -153,7 +153,7 @@ export default function TableReview() {
       }),
     // ------------- Table Header Menu -------------
     TabHeader: true,
-    hideHeaderBtn: "",
+    hideHeaderBtn: ["ALL"],
     selectFilter: categories,
     applyFilter: (form) => {
       fetchData(URL_CATEGORIES_FILTER, table, form);

@@ -177,100 +177,111 @@ export const MyTableHeader = (props) => {
 
   return (
     <>
-      <div
-        // ref={targetRef}
-        className="print:hidden flex flex-col min-h-[48px] w-full lg:flex-row my-2 lg:my-b justify-between items-center overflow-x-scroll focus:touch-pan-x"
-      >
-        {/* ====================== Header Area ====================== */}
-        {/* left */}
-        <div className="flex justify-center lg:justify-start w-full lg:w-5/12 mb-4 lg:mb-0">
-          {hideHeaderBtn !== "filterBtn" && (
-            <MyTableHeaderFilter
-              refresh={refresh}
-              table={table}
-              selectFilter={selectFilter}
-              applyFilter={applyFilter}
-              inputData={inputData}
-              isDialogOpen={isDialogOpen}
-              closeFunction={() => {
-                setDialogOpen({
-                  ...isDialogOpen,
-                  filter: !isDialogOpen.filter,
-                });
-              }}
-              setTabPagination={setTabPagination}
-            />
-          )}
-          <SearchInput
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            // func={(e) => {
-            //   setSearchTerm(e.target.value);
-            // }}
-          />
-        </div>
-        {/* right */}
-        <div className="flex flex-row gap-2 md:gap-0 flex-wrap justify-center lg:justify-end lg:w-7/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
-          {!hideHeaderBtn.includes("excelBtn") && !toggleSelect && (
-            <>
-              <ExportData data={inputData} />
-            </>
-          )}
-          {!hideHeaderBtn.includes("printBtn") && !toggleSelect && (
-            <MyTableHeaderPrint
-              btnType="PRINT"
-              showFixedBtn={showFixedBtn}
-              setShowFixedBtn={setShowFixedBtn}
-              inputData={inputData}
-              isDialogOpen={isDialogOpen}
-              setPrintBatchModal={setPrintBatchModal}
-              toggleSelect={toggleSelect}
-              setToggleSelect={setToggleSelect}
-              setSelectedRows={setSelectedRows}
-              closeFunction={() => {
-                setDialogOpen({
-                  ...isDialogOpen,
-                  print: !isDialogOpen.print,
-                });
-              }}
-              handlePrint={handlePrint}
-            />
-          )}
-          {!hideHeaderBtn.includes("deleteBtn") && (
-            <MyTableHeaderDelete
-              btnType="DELETE"
-              showFixedBtn={showFixedBtn}
-              setShowFixedBtn={(value) => setShowFixedBtn(value)}
-              setDeleteBatchModal={setDeleteBatchModal}
-              toggleSelect={toggleSelect}
-              setToggleSelect={setToggleSelect}
-              setSelectedRows={setSelectedRows}
-            />
-          )}
-          {!hideHeaderBtn.includes("addBtn") && !toggleSelect && (
-            <>
-              <MotionButton
-                type="button"
-                formType="insert"
-                className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center"
-                onClick={setAddModal}
-                span="Add"
-              />
-            </>
-          )}
-          {!hideHeaderBtn.includes("refreshBtn") && !toggleSelect && (
-            <>
-              <MotionButton
-                type="button"
-                className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 py-[6px] px-[4px] rounded-md font-roboto-medium text-white items-center "
-                onClick={refresh}
-                icon="MdOutlineRefresh"
-                noSpan
-                style="p-0"
-              />
-            </>
-          )}
-          {/* {!hideHeaderBtn.includes("menuBtn") && !toggleSelect && (
+      {!hideHeaderBtn.includes("ALL") && (
+        <div
+          // ref={targetRef}
+          className="print:hidden flex flex-col min-h-[48px] w-full lg:flex-row my-2 lg:my-b justify-between items-center overflow-x-scroll focus:touch-pan-x"
+        >
+          {/* ====================== Header Area ====================== */}
+          {/* left */}
+          {!hideHeaderBtn.includes("ALL") &&
+            !hideHeaderBtn.includes("filterBtn") && (
+              <div className="flex justify-center lg:justify-start w-full lg:w-5/12 mb-4 lg:mb-0">
+                <MyTableHeaderFilter
+                  refresh={refresh}
+                  table={table}
+                  selectFilter={selectFilter}
+                  applyFilter={applyFilter}
+                  inputData={inputData}
+                  isDialogOpen={isDialogOpen}
+                  closeFunction={() => {
+                    setDialogOpen({
+                      ...isDialogOpen,
+                      filter: !isDialogOpen.filter,
+                    });
+                  }}
+                  setTabPagination={setTabPagination}
+                />
+                <SearchInput
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  // func={(e) => {
+                  //   setSearchTerm(e.target.value);
+                  // }}
+                />
+              </div>
+            )}
+          {/* right */}
+          <div className="flex flex-row gap-2 md:gap-0 flex-wrap justify-center lg:justify-end lg:w-7/12 mb-4 lg:mb-0 lg:overflow-hidden overflow-x-scroll">
+            {!hideHeaderBtn.includes("ALL") &&
+              !hideHeaderBtn.includes("excelBtn") &&
+              !toggleSelect && (
+                <>
+                  <ExportData data={inputData} />
+                </>
+              )}
+            {!hideHeaderBtn.includes("ALL") &&
+              !hideHeaderBtn.includes("printBtn") &&
+              !toggleSelect && (
+                <MyTableHeaderPrint
+                  btnType="PRINT"
+                  showFixedBtn={showFixedBtn}
+                  setShowFixedBtn={setShowFixedBtn}
+                  inputData={inputData}
+                  isDialogOpen={isDialogOpen}
+                  setPrintBatchModal={setPrintBatchModal}
+                  toggleSelect={toggleSelect}
+                  setToggleSelect={setToggleSelect}
+                  setSelectedRows={setSelectedRows}
+                  closeFunction={() => {
+                    setDialogOpen({
+                      ...isDialogOpen,
+                      print: !isDialogOpen.print,
+                    });
+                  }}
+                  handlePrint={handlePrint}
+                />
+              )}
+            {!hideHeaderBtn.includes("ALL") &&
+              !hideHeaderBtn.includes("deleteBtn") && (
+                <MyTableHeaderDelete
+                  btnType="DELETE"
+                  showFixedBtn={showFixedBtn}
+                  setShowFixedBtn={(value) => setShowFixedBtn(value)}
+                  setDeleteBatchModal={setDeleteBatchModal}
+                  toggleSelect={toggleSelect}
+                  setToggleSelect={setToggleSelect}
+                  setSelectedRows={setSelectedRows}
+                />
+              )}
+            {!hideHeaderBtn.includes("ALL") &&
+              !hideHeaderBtn.includes("addBtn") &&
+              !toggleSelect && (
+                <>
+                  <MotionButton
+                    type="button"
+                    formType="insert"
+                    className="mx-1 grow-0 shrink-0 focus:outline-none bg-blue-500 hover:bg-gradient-to-r hover:from-sky-500 hover:to-cyan-500 py-[6px] px-[6px] rounded-md font-roboto-medium text-white items-center"
+                    onClick={setAddModal}
+                    span="Add"
+                  />
+                </>
+              )}
+            {!hideHeaderBtn.includes("ALL") &&
+              !hideHeaderBtn.includes("refreshBtn") &&
+              !toggleSelect && (
+                <>
+                  <MotionButton
+                    type="button"
+                    className="mx-1 grow-0 shrink-0 focus:outline-none bg-gradient-to-r from-lime-500 to-green-400 py-[6px] px-[4px] rounded-md font-roboto-medium text-white items-center "
+                    onClick={refresh}
+                    icon="MdOutlineRefresh"
+                    noSpan
+                    style="p-0"
+                  />
+                </>
+              )}
+            {/* {!hideHeaderBtn.includes("ALL") && !hideHeaderBtn.includes("menuBtn") && !toggleSelect && (
             <MyTableHeaderMenu
               setDialogOpen={setDialogOpen}
               isDialogOpen={isDialogOpen}
@@ -278,71 +289,72 @@ export const MyTableHeader = (props) => {
               setToggleSelect={setToggleSelect}
             />
           )} */}
-          {toggleSelect && (
-            <>
-              <MotionButton
+            {toggleSelect && (
+              <>
+                <MotionButton
+                  onClick={() => {
+                    // setToggleSelect(false);
+                    setSelectedRows([]);
+                  }}
+                  className="mx-1 grow-0 shrink-0 focus:outline-none text-white py-2 px-2 hover:bg-gradient-to-r bg-gray-500 hover:from-yellow-500 hover:to-orange-400 rounded-md font-roboto-medium items-center transition-colors duration-200"
+                  icon="MdOutlineDeselect"
+                  span="Select None"
+                  type="button"
+                ></MotionButton>
+              </>
+            )}
+          </div>
+          {/* ====================== FIXED AREA ====================== */}
+          {toggleSelect && showFixedBtn && (
+            <div className=" drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
+              {showFixedBtn === "DELETE" && (
+                <button
+                  disabled={selectedRows.length === 0}
+                  onClick={setDeleteBatchModal}
+                  className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
+                    selectedRows.length === 0
+                      ? "from-red-400 to-pink-400 btn-disable"
+                      : "from-red-500 to-pink-500"
+                  } hover:from-red-600 hover:to-pink-600 border-none`}
+                >
+                  <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
+                  <span id="showDelete" className="options px-[4px]">
+                    Delete
+                  </span>
+                </button>
+              )}
+              {showFixedBtn === "PRINT" && (
+                <button
+                  disabled={selectedRows.length === 0}
+                  onClick={setPrintBatchModal}
+                  className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
+                    selectedRows.length === 0
+                      ? "from-orange-300 to-red-300 btn-disable"
+                      : "from-orange-500 to-red-500"
+                  } hover:from-amber-600 hover:to-pink-600 border-none`}
+                >
+                  <MuiIcon iconName={"PrintSharp"} fontSize={20} />
+                  <span id="showDelete" className="options px-[4px]">
+                    Print
+                  </span>
+                </button>
+              )}
+              <button
                 onClick={() => {
-                  // setToggleSelect(false);
+                  setToggleSelect(false);
                   setSelectedRows([]);
                 }}
-                className="mx-1 grow-0 shrink-0 focus:outline-none text-white py-2 px-2 hover:bg-gradient-to-r bg-gray-500 hover:from-yellow-500 hover:to-orange-400 rounded-md font-roboto-medium items-center transition-colors duration-200"
-                icon="MdOutlineDeselect"
-                span="Select None"
-                type="button"
-              ></MotionButton>
-            </>
+                className="flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
+              >
+                <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
+                <span id="showCancelDelete" className="options px-[4px]">
+                  Cancel
+                </span>
+              </button>
+            </div>
           )}
         </div>
-        {/* ====================== FIXED AREA ====================== */}
-        {toggleSelect && showFixedBtn && (
-          <div className=" drop-shadow-md py-2 fixed flex gap-12 left-1/2 -translate-x-1/2 transition-all duration-300 top-[10px] z-[50]">
-            {showFixedBtn === "DELETE" && (
-              <button
-                disabled={selectedRows.length === 0}
-                onClick={setDeleteBatchModal}
-                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
-                  selectedRows.length === 0
-                    ? "from-red-400 to-pink-400 btn-disable"
-                    : "from-red-500 to-pink-500"
-                } hover:from-red-600 hover:to-pink-600 border-none`}
-              >
-                <MuiIcon iconName={"DeleteForeverSharp"} fontSize={20} />
-                <span id="showDelete" className="options px-[4px]">
-                  Delete
-                </span>
-              </button>
-            )}
-            {showFixedBtn === "PRINT" && (
-              <button
-                disabled={selectedRows.length === 0}
-                onClick={setPrintBatchModal}
-                className={`flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr ${
-                  selectedRows.length === 0
-                    ? "from-orange-300 to-red-300 btn-disable"
-                    : "from-orange-500 to-red-500"
-                } hover:from-amber-600 hover:to-pink-600 border-none`}
-              >
-                <MuiIcon iconName={"PrintSharp"} fontSize={20} />
-                <span id="showDelete" className="options px-[4px]">
-                  Print
-                </span>
-              </button>
-            )}
-            <button
-              onClick={() => {
-                setToggleSelect(false);
-                setSelectedRows([]);
-              }}
-              className="flex text-white hover:mt-[2px] justify-center items-center btn min-h-0 py-2 h-10 bg-gradient-to-tr from-yellow-500 to-amber-500 hover:from-amber-500 hover:to-orange-500 border-none"
-            >
-              <MuiIcon iconName={"ClearTwoTone"} fontSize={20} />
-              <span id="showCancelDelete" className="options px-[4px]">
-                Cancel
-              </span>
-            </button>
-          </div>
-        )}
-      </div>
+      )}
     </>
   );
 };
