@@ -249,7 +249,7 @@ export default function TableReview() {
         feature: ["id", "customer", "product", "rating"].includes(key)
           ? "filter"
           : null,
-        style: `capitalize px-4`,
+        style: `capitalize px-4 sticky top-0`,
       })),
       td: `xborder-2 py-2 px-4 `,
     };
@@ -263,7 +263,7 @@ export default function TableReview() {
         <>
           {categories !== null ? (
             // <CategorisContext.Provider value={MyTableEngineProps}>
-            <div id="Categories" className="rounded-lg text-sm ">
+            <div id="Categories" className="rounded-lg text-sm overflow-x-auto">
               {/* ================ Error ================ */}
               <div>
                 {errorMessage && (
@@ -292,7 +292,7 @@ export default function TableReview() {
 
               <MyTableEngine
                 {...MyTableEngineProps}
-                className="rounded-sm mx-auto "
+                className="rounded-sm mx-auto min-w-full"
               >
                 <Thead
                   className={`bg-white {BgOuterTable} ${textColor} text-xs`}
