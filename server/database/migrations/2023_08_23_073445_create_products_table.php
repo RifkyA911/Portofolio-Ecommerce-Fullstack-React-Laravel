@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,6 +18,7 @@ return new class extends Migration
             $table->integer('price');
             $table->integer('stock');
             $table->string('discount')->nullable();
+            $table->integer('viewed');
             $table->string('pict')->nullable();
             $table->text('description')->nullable()->default(null);
             $table->boolean('visible')->default(false);

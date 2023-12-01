@@ -32,7 +32,8 @@ class ProductFactory extends Factory
             'discount' => $this->faker->randomNumber(3),
             // 'pict' => Str::random(6) . '.jpg',
             // 'pict' => 'default.jpg',
-            'pict' =>  $randomImage->getFilename(), // Menggunakan nama file acak
+            'viewed' => $this->faker->randomNumber(6), // Menggunakan nama file acak
+            'pict' => $randomImage->getFilename(), // Menggunakan nama file acak
             // 'description' => $this->faker->paragraphs(3, true),
             'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus luctus lacus sit amet lacus aliquam sagittis. Ut posuere mauris a lacus faucibus, eu convallis sapien varius. Phasellus tincidunt felis nec est efficitur placerat. Curabitur viverra felis magna, egestas dignissim sem mollis eu. Donec ornare eros at odio dapibus, ut aliquet orci faucibus. Phasellus mattis, nunc eu imperdiet ornare, enim sem egestas lectus, nec vehicula metus nisl sit amet diam. In nunc sem, sagittis at massa non, molestie aliquam ipsum.
 
