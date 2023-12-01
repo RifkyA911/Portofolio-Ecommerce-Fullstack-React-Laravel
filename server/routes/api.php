@@ -96,6 +96,7 @@ Route::controller(UserController::class)->group(function () {
 // Endpoint Product
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'getAll');
+    Route::get('/products/most/viewed', 'mostViewed'); // parameter id
     Route::get('/product/{id}', 'getById'); // parameter id
     Route::get('/product/image/{id}', 'getImage'); // parameter id
     // table utility

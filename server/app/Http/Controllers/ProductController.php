@@ -63,6 +63,36 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function mostViewed($page = 1, $perPage = 5, $sortBy = null, $sortOrder = "asc")
+    {
+        // Mengonversi halaman dan perPage yang diterima menjadi integer
+        $page = (int) $page; // halaman
+        $perPage = (int) $perPage; // jumlah data yang akan di kirim
+
+        $length = Product::count();
+        // Menghitung offset berdasarkan halaman yang diminta
+        $offset = ($page - 1) * $perPage;
+
+        if ($sortBy) {
+            $products = Product::orderBy($sortBy, $sortOrder)->skip($offset)->take($perPage)->get();
+        }
+
+        $products = Product::orderBy('viewed', 'desc')->skip($offset)->take($perPage)
+            ->select('id', 'name', 'viewed', /* kolom lainnya */)
+            ->get();
+
+        $products->transform(function ($item) {
+            return [
+                // 'id' => $item->id,
+                'x' => $item->name,
+                'y' => $item->viewed,
+                // Kolom lainnya
+            ];
+        });
+
+        return response()->json(['message' => 'berhasil fetching', 'length' => $length, 'data' => $products]);
+    }
+
     public function getImage($id)
     {
         $product = Product::find($id);

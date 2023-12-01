@@ -13,6 +13,7 @@ import RequestAPI from "../Config/API.jsx";
 import { refreshAccessToken, validateAccessToken } from "../Config/Session.jsx";
 import TableReview from "../components/Table/MyTableContent.jsx";
 import { MotionTabs } from "../components/Button.jsx";
+import { MostViewedProducts } from "../components/Dashboard/DashboardCharts.jsx";
 
 const Dashboard = (props) => {
   const [charts, setCharts] = useState({
@@ -33,6 +34,7 @@ const Dashboard = (props) => {
 
   const {
     DarkMode,
+    container,
     BgColor,
     textTable,
     textColor,
@@ -43,33 +45,6 @@ const Dashboard = (props) => {
     BorderRowTable,
     BorderOuterTable,
   } = useSelector((state) => state.UI);
-
-  // const table = {
-  //   product: {
-  //     all: "products",
-  //     id: "product",
-  //   },
-  //   category: {
-  //     all: "categories",
-  //     id: "category",
-  //   },
-  //   order: {
-  //     all: "orders",
-  //     id: "order",
-  //   },
-  //   review: {
-  //     all: "reviews",
-  //     id: "review",
-  //   },
-  //   admin: {
-  //     all: "admins",
-  //     id: "admin",
-  //   },
-  //   customer: {
-  //     all: "users",
-  //     id: "user",
-  //   },
-  // };
 
   const URL_TABLE = `/paginate/${paginate}/${rows}/updated_at/asc`;
   // const URL_TABLE_FILTER = `${table}/filter`;
@@ -111,21 +86,21 @@ const Dashboard = (props) => {
   return (
     <>
       <button
-        className="bg-red-300 absolute left-1/2 bottom-1/2"
+        className="bg-red-300 absolute left-1/2 top-12 z-[99]"
         onClick={() => validateAccessToken()}
       >
-        FFFFFFF
+        Check Token
       </button>
 
       <Container>
-        <Content pageName="Dashboard">
+        <Content pageName="Dashboard" Bg={`${container}`}>
           {loading == false ? (
             <>
               {charts ? (
                 <div className="">
                   {/* baris-1 */}
                   <DashboardHeader />
-                  <div className="divider mb-0"></div>
+                  <div className="my-4"></div>
                   {/* baris-2 */}
                   <div className="flex lg:max-h-[900px]">
                     <div className="flex flex-col lg:flex-row w-full py-2 h-20 lg:h-[450px] overflow-clip">
@@ -143,18 +118,20 @@ const Dashboard = (props) => {
                           tabs={[
                             {
                               name: "Orders",
-                              label: "Tab 1",
+                              label: "Orders",
                               render: () => <p>Content for Tab 1</p>,
                             },
                             {
-                              name: "Sales",
-                              label: "Tab 2",
+                              name: "Products",
+                              label: "Products",
                               render: () => <p>Content for Tab 2</p>,
                             },
                             {
                               name: "Reviews",
-                              label: "Tab 3",
-                              render: () => <p>Content for Tab 3</p>,
+                              label: "Reviews",
+                              render: () => (
+                                <ApexCharts type="bar" inputData={charts} />
+                              ),
                             },
                           ]}
                         />
@@ -167,14 +144,15 @@ const Dashboard = (props) => {
                   <div className="flex lg:max-h-[900px]">
                     <div className="flex flex-col lg:flex-row w-full py-2">
                       <div
-                        className={`${BgColor} ${textColor} rounded-md h-20 lg:h-96 w-full lg:w-7/12 mr-4 border`}
+                        className={`${BgColor} ${textColor} rounded-md h-20 lg:h-96 w-full lg:w-7/12 mr-4 `}
                       >
                         <div className="my-auto overflow-x-auto border h-full">
                           <TableReview />
                         </div>
                       </div>
                       <div className="rounded-md h-20 lg:h-96 w-full lg:w-5/12 bg-white border">
-                        <ApexCharts type="bar" inputData={charts} />
+                        <h1>Top Products Sells</h1>
+                        <MostViewedProducts inputData={charts} />
                       </div>
                     </div>
                   </div>
