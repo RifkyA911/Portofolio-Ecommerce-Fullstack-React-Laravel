@@ -2,12 +2,14 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Str;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Shipment_log>
  */
-class ShipmentLogFactory extends Factory
+class Shipment_logFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +20,7 @@ class ShipmentLogFactory extends Factory
     {
         return [
             'shipment_id' => $this->faker->randomNumber(),
-            'log' => fake()->sentences()
+            'log' => implode(' ', $this->faker->sentences())
         ];
     }
 }
