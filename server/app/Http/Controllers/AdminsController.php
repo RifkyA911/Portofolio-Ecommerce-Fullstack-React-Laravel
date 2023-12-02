@@ -78,7 +78,7 @@ class AdminsController extends Controller
 
     public function find(Request $request, $id)
     {
-        if (AuthController::check($request)) {
+        if (AuthController::check($request) === 'admin') {
             return response(["message" => "Data admin " . $id . " :", "data" => Admin::find($id), 'result' => $this->me($request)], 200);
         }
         return response(['error' => 'Validasi gagal', 'message' => 'forbidden action detected', 'result' => $this->me($request)], 403);
@@ -125,7 +125,7 @@ class AdminsController extends Controller
 
     public function search(Request $request)
     {
-        if (AuthController::check($request)) {
+        if (AuthController::check($request) === 'admin') {
             $searchTerm = $request->input('search'); // Ambil parameter pencarian dari input form
 
             $admins = Admin::where(function ($query) use ($searchTerm) {
@@ -167,7 +167,7 @@ class AdminsController extends Controller
 
     public function filter(Request $request) //////////////////////////////////////////////////
     {
-        if (AuthController::check($request)) {
+        if (AuthController::check($request) === 'admin') {
             $SuperAdminKey = $request->input('superAuthorizationPassword');
             $authorities = $request->input('selectedAuthorities');
             $roles = $request->input('selectedRoles') ?? [0, 1];
@@ -230,12 +230,11 @@ class AdminsController extends Controller
 
         }
         return response(['error' => 'Validasi gagal', "message" => 'forbidden action detected'], 403);
-
     }
 
     public function store(Request $request)
     {
-        if (AuthController::check($request)) {
+        if (AuthController::check($request) === 'admin') {
             if ($request->input('superAuthorizationPassword') === "superAdmin") {
                 $admin = new stdClass(); // membuat objek php baru
                 $admin->id = Admin::max('id') + 1; // mencari nilai id tertinggi lalu ditambah 1 untuk unique
@@ -279,11 +278,9 @@ class AdminsController extends Controller
 
     public function update(Request $request)
     {
-        if (AuthController::check($request)) {
+        if (AuthController::check($request) === 'admin') {
+            // return 'update yes';
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
-
-            $updateAdmin = Admin::find($request->input('id'));
-            // return $request;
 
             // initiate rule for validation
             // jika yang mengedit adalah superAdmin 
@@ -299,7 +296,6 @@ class AdminsController extends Controller
                     "password" => 'required|min:6'
                 ]);
 
-
             // if an Admin issuing newPassword then add rule list
             if ($request->input("newPassword") !== null) {
                 $rule = array_merge($rule, ["newPassword" => "min:6|confirmed"]);
@@ -310,6 +306,7 @@ class AdminsController extends Controller
                 return response(['message' => "validasi data error", 'errors' => $validator->errors(), 'old_input' => $request->except('id')], 400);
             }
 
+            $updateAdmin = Admin::find($request->input('id'));
             // cek password lama
             // jika yang mengedit bukan superAdmin 
             if ($getSuperAuthorizationPassword !== 'superAdmin') {
@@ -359,8 +356,8 @@ class AdminsController extends Controller
             if ($request->input('newPassword') !== null) {
                 $updateAdmin->password = $request->input('newPassword');
             } /*else {
-$updateAdmin->password = $request->input('password');
-} */
+            $updateAdmin->password = $request->input('password');
+            } */
             if ($updateAdmin->role == 1) { // jika admin role = admin
                 $updateAdmin->role = $request->input('role');
             }
@@ -372,7 +369,7 @@ $updateAdmin->password = $request->input('password');
 
     public function patch(Request $request)
     {
-        if (AuthController::check($request)) {
+        if (AuthController::check($request) === 'admin') {
             $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
             $adminsId = $request->input('id');
 
@@ -402,13 +399,13 @@ $updateAdmin->password = $request->input('password');
 
     public function drop(Request $request)
     {
-        if (AuthController::check($request)) {
-            $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
+        if ((AuthController::check($request) === 'admin') && ($request->input('superAuthorizationPassword') == "superAdmin")) {
+            // $getSuperAuthorizationPassword = $request->input('superAuthorizationPassword');
             $adminsId = $request->input('id');
 
-            if ($getSuperAuthorizationPassword !== "superAdmin") {
-                return response(['message' => "Authorization gagal, pengenalan kredensial tidak tepat, abort.", 'old_input' => $request->except('id')], 401);
-            }
+            // if ($getSuperAuthorizationPassword !== "superAdmin") {
+            //     return response(['message' => "Authorization gagal, pengenalan kredensial tidak tepat, abort.", 'old_input' => $request->except('id')], 401);
+            // }
 
             if (is_array($adminsId)) {
                 // Batch delete
@@ -428,7 +425,7 @@ $updateAdmin->password = $request->input('password');
             }
 
         }
-        return response(['error' => 'Validasi gagal', "message" => 'forbidden action detected'], 403);
+        return response(['message' => "Authorization gagal, pengenalan kredensial tidak tepat, abort.", 'old_input' => $request->except('id')], 403);
 
     }
 

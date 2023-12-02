@@ -18,6 +18,7 @@ use App\Models\Shipment;
 use App\Models\Wishlist;
 use App\Models\Order_item;
 use App\Models\Payment;
+use App\Models\Shipment_log;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -322,7 +323,7 @@ class DatabaseSeeder extends Seeder
             'sum_price' => Product::where('id', 2)->value('price') * 2,
         ]);
 
-        // shipment
+        // shipment & shipment_log
         Shipment::create([
             'consignee' => User::where('id', 1)->value('username'),
             'address' => User::where('id', 1)->value('address'),
@@ -330,11 +331,11 @@ class DatabaseSeeder extends Seeder
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'SiHalu',
             'cost' => 20000,
-            'log' => 'Y',
             'status' => 'Delivered',
             'sent' => '2023-11-10 09:34:34',
             'done' => now(),
         ]);
+        Shipment_log::create(['shipment_id' => 1]);
         Shipment::create([
             'consignee' => User::where('id', 2)->value('username'),
             'address' => User::where('id', 2)->value('address'),
@@ -342,11 +343,11 @@ class DatabaseSeeder extends Seeder
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'SiHalu',
             'cost' => 20000,
-            'log' => 'Y',
             'status' => 'Shipping',
             'sent' => '2023-11-13 09:34:34',
             'done' => null,
         ]);
+        Shipment_log::create(['shipment_id' => 2]);
         Shipment::create([
             'consignee' => User::where('id', 3)->value('username'),
             'address' => User::where('id', 3)->value('address'),
@@ -354,11 +355,11 @@ class DatabaseSeeder extends Seeder
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'SiHalu',
             'cost' => 20000,
-            'log' => 'Y',
             'status' => 'Delivered',
             'sent' => '2023-11-14 09:34:34',
             'done' => now(),
         ]);
+        Shipment_log::create(['shipment_id' => 3]);
         Shipment::create([
             'consignee' => User::where('id', 5)->value('username'),
             'address' => User::where('id', 5)->value('address'),
@@ -366,11 +367,11 @@ class DatabaseSeeder extends Seeder
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'Sicepat',
             'cost' => 30000,
-            'log' => 'Y',
             'status' => 'Delivered',
             'sent' => '2023-11-15 09:34:34',
             'done' => now(),
         ]);
+        Shipment_log::create(['shipment_id' => 4]);
         Shipment::create([
             'consignee' => User::where('id', 3)->value('username'),
             'address' => User::where('id', 3)->value('address'),
@@ -378,11 +379,11 @@ class DatabaseSeeder extends Seeder
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'JNE',
             'cost' => 20000,
-            'log' => 'Y',
             'status' => 'Delivered',
             'sent' => '2023-11-14 11:44:34',
             'done' => now(),
         ]);
+        Shipment_log::create(['shipment_id' => 5]);
         Shipment::create([
             'consignee' => User::where('id', 1)->value('username'),
             'address' => User::where('id', 1)->value('address'),
@@ -390,11 +391,11 @@ class DatabaseSeeder extends Seeder
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'FedEx',
             'cost' => 30000,
-            'log' => 'Y',
             'status' => 'Shipping',
             'sent' => '2023-11-20 16:44:34',
             'done' => null,
         ]);
+        Shipment_log::create(['shipment_id' => 6]);
         Shipment::create([
             'consignee' => User::where('id', 4)->value('username'),
             'address' => User::where('id', 4)->value('address'),
@@ -402,11 +403,11 @@ class DatabaseSeeder extends Seeder
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'FedEx',
             'cost' => 20000,
-            'log' => 'Y',
             'status' => 'Shipping',
             'sent' => '2023-11-20 16:44:34',
             'done' => null,
         ]);
+        Shipment_log::create(['shipment_id' => 7]);
         Shipment::create([
             'consignee' => User::where('id', 2)->value('username'),
             'address' => User::where('id', 2)->value('address'),
@@ -414,11 +415,12 @@ class DatabaseSeeder extends Seeder
             'tracking_number' => fake()->randomNumber(7),
             'courier_service' => 'FedEx',
             'cost' => 20000,
-            'log' => 'Y',
             'status' => 'Pending',
             'sent' => '2023-11-20 16:44:34',
             'done' => null,
         ]);
+        Shipment_log::create(['shipment_id' => 8]);
+        Shipment_log::factory(20)->create();
 
         Payment::create([
             'transaction_id' => "TF/" . fake()->regexify('[A-Za-z0-9]{9}'),

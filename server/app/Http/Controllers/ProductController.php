@@ -287,7 +287,10 @@ class ProductController extends Controller
     public function getById($id)
     {
         // return new PostResource(true, "data Produk :", Product::find($id)->makeHidden('category_id'));
-        return new PostResource(true, "data Produk :", Product::find($id));
+        $product = Product::find($id);
+        $product->viewed += 1;
+        $product->update();
+        return new PostResource(true, "data Produk :", $product);
     }
 
     /**

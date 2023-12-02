@@ -19,7 +19,6 @@ return new class extends Migration
             $table->text('tracking_number')->default(null);
             $table->text('courier_service');
             $table->integer('cost');
-            $table->text('log')->default('Preparing Shipment');
             $table->text('status')->default('Pending');
             $table->timestamp('sent')->nullable()->default(null);
             $table->timestamp('done')->nullable()->default(null);

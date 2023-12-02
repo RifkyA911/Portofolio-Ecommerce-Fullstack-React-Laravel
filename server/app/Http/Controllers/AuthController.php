@@ -88,7 +88,7 @@ class AuthController extends Controller
     public function registerAdmin(Request $request)
     {
         if ($this->check($request)) {
-            return 'yay';
+            // return 'yay';
             if ($request->input('superAuthorizationPassword') === "superAdmin") {
                 $admin = new stdClass(); // membuat objek php baru
                 $admin->id = Admin::max('id') + 1; // mencari nilai id tertinggi lalu ditambah 1 untuk unique
@@ -137,9 +137,9 @@ class AuthController extends Controller
     {
         // return auth('admin')->user();
         if (strlen(strval(auth('admin')->user())) > 5) {
-            return true;
+            return 'admin';
         } elseif (strlen(strval(auth()->user())) > 5) {
-            return true;
+            return 'user';
         } return false;
         // return response()->json(auth('admin')->user());
     }
