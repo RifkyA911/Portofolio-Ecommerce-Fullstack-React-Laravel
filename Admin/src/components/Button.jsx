@@ -1,9 +1,9 @@
 import React, { useEffect, useId, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-
 import { MuiIcon, ReactIcons } from "../utils/RenderIcons";
 import { debounce } from "lodash";
 import Tooltips from "./Tooltips";
+import { useSelector } from "react-redux";
 
 export const ActionButton = (props) => {
   const {
@@ -311,7 +311,7 @@ export const ListMenu = (props) => {
   );
 };
 
-export const TabsMenu = (props) => {
+export const DaisyUITabsMenu = (props) => {
   const {
     onClick,
     checked,
@@ -325,7 +325,7 @@ export const TabsMenu = (props) => {
   const renderTabs = () => {
     return Array.from({ length: tabs.length }, (_, index) => {
       const tabIndex = index + 1;
-      const tabLabel = `Tab ${tabIndex}`;
+      const tabLabel = `${tabs[index]}`;
 
       return (
         <>
@@ -346,9 +346,11 @@ export const TabsMenu = (props) => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -10, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="tab-content bg-base-100 border-base-300 rounded-box p-6"
+            className="tab-content bg-base-100 border-base-300 rounded-box p-6  "
           >
-            {children ?? `Tab content ${tabs[index]}`}
+            <div className="min-h-[400px] bg-slate-50">
+              {children ?? `Tab content ${tabs[index]}`}
+            </div>
           </motion.div>
         </>
       );
@@ -358,10 +360,112 @@ export const TabsMenu = (props) => {
   return (
     // <div role="tablist" className="tabs tabs-lifted">
     <AnimatePresence>
-      <div role="tablist" className="tabs tabs-lifted">
+      <div role="tablist" className="tabs tabs-lifted ">
         {renderTabs()}
       </div>
     </AnimatePresence>
     // </div>
+  );
+};
+
+export const MotionTabs = (props) => {
+  const {
+    tabs = [
+      { name: "tab1", label: "Tab 1", render: () => <p>Content for Tab 1</p> },
+      { name: "tab2", label: "Tab 2", render: () => <p>Content for Tab 2</p> },
+      { name: "tab3", label: "Tab 3", render: () => <p>Content for Tab 3</p> },
+    ],
+    onClick,
+    checked,
+    children,
+  } = props;
+
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+
+  // REDUX UI
+  const {
+    DarkMode,
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  const handleClick = (e, tab) => {
+    e.preventDefault();
+    setActiveTab(tab);
+  };
+
+  const isSelected = (tab) => activeTab.name === tab.name;
+
+  return (
+    <div
+      className={`w-full min-h-full ${
+        DarkMode ? "bg-gray-700" : "bg-gray-100"
+      } rounded-lg overflow-hidden flex flex-col`}
+    >
+      <div className="flex gap-4 px-2 border-b">
+        {tabs.map((tab) => (
+          <div
+            key={tab.name}
+            className={`relative ${
+              isSelected(tab) ? "text-blue-500" : `${textColor}`
+            }`}
+          >
+            <a
+              href="#"
+              className="block px-4 py-2"
+              onClick={(e) => handleClick(e, tab)}
+            >
+              {tab.label}
+            </a>
+
+            {isSelected(tab) && (
+              <motion.div
+                layoutId="indicator"
+                className="absolute bottom-0 left-0 right-0 h-1 bg-blue-500"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div
+        className={`flex flex-col p-4 ${BgColor} ${textColor} overflow-auto h-full`}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab.name || "empty"}
+            variants={{
+              initial: {
+                y: 10,
+                opacity: 0,
+              },
+              enter: {
+                y: 0,
+                opacity: 1,
+              },
+              exit: {
+                y: -10,
+                opacity: 0,
+              },
+            }}
+            initial="initial"
+            animate="enter"
+            exit="exit"
+            transition={{
+              duration: 0.3,
+            }}
+          >
+            {activeTab && activeTab?.render()}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
   );
 };

@@ -182,7 +182,7 @@ export default function Orders() {
       }),
     // ------------- Table Header Menu -------------
     TabHeader: true,
-    hideHeaderBtn: [],
+    hideHeaderBtn: ["deleteBtn"],
     selectFilter: convertedStatuses,
     applyFilter: (form) => {
       fetchData(URL_ORDERS_FILTER, form);

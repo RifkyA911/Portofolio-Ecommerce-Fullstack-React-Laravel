@@ -90,9 +90,12 @@ export const getApiUrl = (endpointType, data) => {
       URL_Segments[1] == "delete" ||
       URL_Segments[1] == "search" ||
       URL_Segments[1] == "filter" ||
+      URL_Segments[1] == "most" ||
       URL_Segments[1] == "print"
     ) {
-      return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}`;
+      return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}${
+        URL_Segments[2] ? "/" + URL_Segments[2] : ""
+      }`;
     } else {
       return apiEndpoints.all[URL_Segments[0]];
     }

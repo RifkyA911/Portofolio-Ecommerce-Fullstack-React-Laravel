@@ -13,12 +13,15 @@ class Product extends Model
     // protected $fillable = ['name', 'category', 'price', 'stock', 'discount', 'pict', 'description'];
     protected $guarded = ['id'];
     protected $with = ['category'];
+    protected $fillable = ['viewed', /* kolom lainnya */];
 
     // relation
-    public function review(): HasMany {
+    public function review(): HasMany
+    {
         return $this->hasMany(Review::class);
     }
-    public function category(): BelongsTo {
+    public function category(): BelongsTo
+    {
         return $this->belongsTo(Category::class);
     }
 }
