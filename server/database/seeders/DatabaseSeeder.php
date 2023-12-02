@@ -135,7 +135,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => '2',
             'admin_id' => '1',
             'shipment_id' => 2,
-            'payment_id' => 2,
+            'payment_id' => null,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/2/2',
             'total_price' => 620000,
             'status' => 'Awaiting Payment',
@@ -151,9 +151,9 @@ class DatabaseSeeder extends Seeder
         ]);
         Order::create([
             'user_id' => '2',
-            'admin_id' => null,
-            'shipment_id' => null,
-            'payment_id' => null,
+            'admin_id' => 2,
+            'shipment_id' => 9,
+            'payment_id' => 2,
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . '/2/4',
             'total_price' => 20000 + (Product::where('id', 7)->value('price') * 135),
             'status' => 'Processing',
@@ -407,6 +407,18 @@ class DatabaseSeeder extends Seeder
             'sent' => '2023-11-20 16:44:34',
             'done' => null,
         ]);
+        Shipment::create([
+            'consignee' => User::where('id', 2)->value('username'),
+            'address' => User::where('id', 2)->value('address'),
+            'contact' => fake()->phoneNumber(),
+            'tracking_number' => fake()->randomNumber(7),
+            'courier_service' => 'FedEx',
+            'cost' => 20000,
+            'log' => 'Y',
+            'status' => 'Pending',
+            'sent' => '2023-11-20 16:44:34',
+            'done' => null,
+        ]);
 
         Payment::create([
             'transaction_id' => "TF/" . fake()->regexify('[A-Za-z0-9]{9}'),
@@ -416,7 +428,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Payment::create([
             'transaction_id' => "GO/" . fake()->regexify('[A-Za-z0-9]{9}'),
-            'amount' => 620000,
+            'amount' => 20000 + (Product::where('id', 7)->value('price') * 135),
             'payment_method' => 'Gopay',
             'status' => 'success'
         ]);

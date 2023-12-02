@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Shipment;
 use App\Models\Order_item;
-use App\Models\Product;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Console\Input\Input;
 
@@ -97,7 +98,6 @@ class OrderController extends Controller
         if ($validator->fails()) { // jika validasi gagal
             // return response(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()], 400);
             return response(new PostResource(false, 'validasi data eror', ['error' => $validator->errors(), 'old_input' => $request->all()]), 400)->header('Content-Lenght', strlen(strval($request->all())));
-            ;
         }
 
         $order_item = json_decode($request->input('order_item'), true);
@@ -108,7 +108,8 @@ class OrderController extends Controller
         $total_price = 0;
         foreach ($order_item as $item) {
             array_push($product_id, $item['product_id']);
-            $item_price = Product::find($item['product_id'])->price * $item['quantity'];
+            $product = Product::find($item['product_id']);
+            $item_price = $product->price * $item['quantity'];
             //##########insert tabel order_items#############
             $insertOrder_item = new Order_item;
             $insertOrder_item->order_id = $order_id;
@@ -122,7 +123,9 @@ class OrderController extends Controller
                 $insertOrder_item->discount = $item['discount'];
                 $item_price *= (100 - $item['discount']) / 100;
             }
-            $insertOrder_item->save();
+            if ($insertOrder_item->save()) {
+                $product->stock -= $item['quantity'];
+            }
             $total_price += ceil($item_price);  // bulatkan keatas hehe :v
         }
         // return ['product_id' => $product_id, 'total_price' =>$total_price];
@@ -142,6 +145,7 @@ class OrderController extends Controller
         $parameterOrder = [
             'user_id' => $request->input('user_id'),
             'shipment_id' => $shipment_id,
+            'status' => 'Awaiting Payment',
             'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . "/" . $request->input('user_id') . "/$order_id",
             'total_price' => $total_price,
         ];
@@ -157,7 +161,6 @@ class OrderController extends Controller
     public function show($id)
     {
         return response(new PostResource(true, "data Transaksi berdasarkan id :", $hasil = Order::find($id)))->header('Content-Lenght', strlen($hasil));
-        ;
     }
 
     public function showByUser($user_id, $tahap = null)
@@ -208,58 +211,76 @@ class OrderController extends Controller
         //
     }
 
-    // update comment by admin
-    public function comment(Request $request)
+    /**
+     * update order to cancel by admin or user
+     * parameter for admin : token(jwt token), order_id
+     * parameter for user : token(jwt token), order_id, user_id
+     */
+    public function cancel(Request $request)
     {
-        $transaksi = Order::find($request->input('id'));
-        if ($request->has('role_admin') && $request->has('admin_id')) {
-            $transaksi->comment = $request->input('comment');
-            return new PostResource(true, 'Comment berhasil diubah', $transaksi->update());
-        } else {
-            return response(new PostResource(false, 'Comment gagal diubah', 'forbidden action detected'), 403);
+        // $order = Order::find($request->input('order_id'))->only(['payment_id', 'status', 'deadline_payment']);
+        $order = Order::find($request->input('order_id'));
+        $allowedCancel = ['pending', 'awaiting payment'];   // for user
+        $forbiddenCancel = ['completed', 'delivered', 'shipped', 'returned', 'partially shipped', 'failed'];    // for admin
+        
+        // for admin
+        if ((AuthController::check($request) === 'admin') && ($order->deadline_payment < now()) && !in_array(strtolower($order->status), $forbiddenCancel)) {
+            $order->status = 'Cancelled';
+            return new PostResource(true, 'Order berhasil dibatalkan', $order->update());
         }
+        // for user
+        if ((AuthController::check($request) === 'user') && in_array(strtolower($order->status), $allowedCancel) ) {
+            if ($request->input('id') == $order->user_id) {
+                $order->status = 'Cancelled';
+                return new PostResource(true, 'Order berhasil dibatalkan', $order->update());
+            }
+            return response(new PostResource(false, 'Akun anda tidak bisa membatalkan pesanan akun lain', 'forbidden action detected'), 403);
+        }
+        return response(new PostResource(false, 'Order gagal dibatalkan', 'forbidden action detected'), 403);
     }
 
-
-    // update status checkout - for user
-    public function checkout(Request $request)
-    {
-        $id = $request->input('id');
-        $user_id = $request->input('user_id');
-        $transaksi = Order::find($id);
-        if ($transaksi->user_id == $user_id) {
-            $time = now();
-            $transaksi->checked_out = $time;
-            $transaksi->no_invoice = 'INV/' . explode("-", $time)[0] . explode("-", $time)[1] . "/$user_id/$id";
-            $transaksi->payment = $request->input('payment');
-            return new PostResource(true, 'Transaksi berhasil', $transaksi->update());
-        } else {
-            return response(new PostResource(false, 'Gagal check out, forbidden action detected', $request->all()), 403);
-        }
-    }
-    // update status sent - for admin
-    public function sent(Request $request)
-    {
-        $transaksi = Order::find($request->input('id'));
-        if ($request->has('role_admin') && $request->has('admin_id') && ($transaksi->sent == null)) {
-            $transaksi->sent = now();
-            $transaksi->admin_id = $request->input('admin_id');
-            return new PostResource(true, 'Status transaksi berhasil diubah', $transaksi->update());
-        } else {
-            return response(new PostResource(false, 'Status transaksi gagal diubah', 'forbidden action detected'), 403);
-        }
-    }
-    // update status done - for user or automatically(?)
+    /** update status completed - for user or automatically(?)
+     * parameter : admin_id/user_id, token, id(as order's id)
+     * condition for user : Shipment's status == 'Shipping' or 'Delivered'; order's user_id == user's id
+     * condition for admin : Shipment's status == 'Delivered'; order's admin_id == admin's id
+     */
     public function done(Request $request)
     {
-        $transaksi = Order::find($request->input('id'));
+        $order = Order::find($request->input('id'));
         // check if admin is same as Order's admin_id, or th user is same as Order's user_id
-        if (($request->has('role_admin') && ($request->input('admin_id') == $transaksi->admin_id)) || ($transaksi->user_id == $request->input('user_id'))) {
-            $transaksi->done = now();
-            return new PostResource(true, 'Status transaksi berhasil diubah', $transaksi->update());
+        if (((AuthController::check($request) === 'admin') && ($request->input('admin_id') == $order->admin_id) && (Shipment::find($request->input('id'))->value('status') == 'Delivered')) 
+        || ($order->user_id == $request->input('user_id') && in_array(Shipment::find($request->input('id'))->value('status'), ['Shipping', 'Delivered']))) {
+            $order->status = 'Completed';
+            return new PostResource(true, 'Status transaksi berhasil diubah', $order->update());
         } else {
             return response(new PostResource(false, 'Status transaksi gagal diubah', 'forbidden action detected'), 403);
         }
+    }
+
+    // update status except for cancelled & completed- for user or admin
+    public function updateStatus(Request $request)
+    {
+        $id = $request->input('id');
+        $order = Order::find($id);
+
+        $forbiddenStatus_admin = ['completed', 'cancelled'];
+        // for admin
+        if ((AuthController::check($request) === 'admin') && !in_array(strtolower($order->status), $forbiddenStatus_admin)) {
+            $order->status = $request->input('status');
+            return new PostResource(true, 'Transaksi berhasil', $order->update());
+        }
+            return response(new PostResource(false, 'Gagal check out, forbidden action detected', $request->all()), 403);
+    }
+
+    /**show orders that need to cancel
+     * due to deadline_payment
+     */
+    public function deadline_payment(Request $request)
+    {
+        if (AuthController::check($request) === 'admin') {
+            // return date("Y-m-d H:i:s", time());
+            return new PostResource(true, 'Status transaksi berhasil diubah', Order::where('deadline_payment', '<', date("Y-m-d H:i:s", time()))->get());
+        } return response(new PostResource(false, 'forbidden action detected', null), 403);
     }
 
     /**

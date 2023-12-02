@@ -43,6 +43,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('cek', [AuthController::class, 'check']);
 });
 
 // Endpoint Images for image's stuff
@@ -63,7 +64,7 @@ Route::controller(AdminsController::class)->group(function () {
     //  create admin
     Route::post('/admin/store', 'store'); //NEED TOKEN parameter role_admin == 0; data => email, username, password, role
     // update admin
-    Route::put('/admins/update', 'update'); //NEED TOKEN parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
+    Route::put('/admin/update', 'update'); //NEED TOKEN parameter id, email, username, password, newPassword(optional, min=6), newPassword_confirmation(req and must same if newPassword exist)
     // Route::post('admin/login', 'login'); // parameter email, password
     // Route::post('admin/logout', 'logout');
     // Route::post('admin/refresh', 'refresh'); // parameter 'token' with value jwt token
@@ -154,11 +155,12 @@ Route::controller(OrderController::class)->group(function () {
     Route::get('/orders', 'index');
     Route::get('/orders/paginate/{page}/{perPage}/{sortBy?}/{orderBy?}/{where?}', 'showLimit');
     Route::get('/order/{id}', 'show'); // parameter id
+    Route::get('/deadline', 'deadline_payment'); // parameter token
     Route::post('/order/buy', 'store'); // parameter user_id, order_item(in array/json form), address, contact, courier,shipment_cost. all required
     Route::post('/order/checkout', 'checkout'); // parameter id, user_id(same as trans' user), payment(pict proof of payment)
     Route::post('/order/sent', 'sent'); // parameter id, admin_id, role_admin
     Route::post('/order/done', 'done'); // parameter id. user_id OR (admin_id & role_admin)
-    Route::post('/order/comment', 'comment'); // parameter id, admin_id, role_admin, comment
+    Route::post('/order/cancel', 'cancel'); // parameter id, admin_id, role_admin, comment
     // Endpoint tahap order by user
     // parameter tahap berisi null, checkedout, sent, atau done
     // tahap = null -> user belum bayar/checkout (tiga kolom pada tabel berisi null)
