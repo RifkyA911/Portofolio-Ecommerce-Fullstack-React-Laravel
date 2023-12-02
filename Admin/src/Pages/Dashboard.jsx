@@ -13,7 +13,10 @@ import RequestAPI from "../Config/API.jsx";
 import { refreshAccessToken, validateAccessToken } from "../Config/Session.jsx";
 import TableReview from "../components/Table/MyTableContent.jsx";
 import { MotionTabs } from "../components/Button.jsx";
-import { MostViewedProducts } from "../components/Dashboard/DashboardCharts.jsx";
+import {
+  AreaCharts,
+  MostViewedProducts,
+} from "../components/Dashboard/DashboardCharts.jsx";
 
 const Dashboard = (props) => {
   const [charts, setCharts] = useState({
@@ -108,7 +111,8 @@ const Dashboard = (props) => {
                         className={`${BgColor} ${textColor} rounded-md w-full lg:w-7/12 mr-4 overflow-clip border`}
                       >
                         <div className="w-full h-full m-auto py-2">
-                          <ApexCharts type="area" inputData={charts} />
+                          {/* <ApexCharts type="area" inputData={charts} /> */}
+                          <AreaCharts />
                         </div>
                       </div>
                       <div className="rounded-md flex flex-col justify-start w-full lg:w-5/12 bg-white border">
@@ -150,7 +154,9 @@ const Dashboard = (props) => {
                           <TableReview />
                         </div>
                       </div>
-                      <div className="rounded-md h-20 lg:h-96 w-full lg:w-5/12 bg-white border">
+                      <div
+                        className={`${BgColor} ${textColor} rounded-md h-20 px-4 lg:h-96 w-full lg:w-5/12 border`}
+                      >
                         <h1>Top Products Sells</h1>
                         <MostViewedProducts inputData={charts} />
                       </div>

@@ -1,3 +1,199 @@
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { DateFormatter } from "../../utils/Formatter";
+
+export const areaOptions = () => {
+  const [chartStyle, setChartStyle] = useState({
+    text: "black",
+    areaChart: ["#00BAEC", "#6c22b1"],
+  });
+
+  // REDUX
+  //   import * as ReduxState from './path-to-redux-state';
+  // console.log(ReduxState.anotherState);
+
+  const {
+    DarkMode,
+    container,
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  useEffect(() => {
+    DarkMode
+      ? setChartStyle({
+          ...chartStyle,
+          text: "white",
+        })
+      : setChartStyle({
+          ...chartStyle,
+          text: "black",
+        });
+  }, [DarkMode]);
+  return {
+    chart: {
+      id: "area-chart",
+      fontFamily: "Helvetica, Arial, sans-serif",
+      toolbar: {
+        show: true,
+        foreColor: "#ccc",
+        offsetX: 0,
+        offsetY: 0,
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true | '<img src="/static/icons/reset.png" width="20">',
+          customIcons: [],
+        },
+        export: {
+          csv: {
+            filename: undefined,
+            columnDelimiter: ",",
+            headerCategory: "category",
+            headerValue: "value",
+            dateFormatter(timestamp) {
+              return new Date(timestamp).toDateString();
+            },
+          },
+          svg: {
+            filename: undefined,
+          },
+          png: {
+            filename: undefined,
+          },
+        },
+        autoSelected: "zoom",
+      },
+    },
+    title: {
+      text: "Product Orders Monitor",
+      align: "left",
+      // margin: 10,
+      offsetX: 0,
+      offsetY: 0,
+      floating: false,
+      style: {
+        fontSize: "14px",
+        fontWeight: 300,
+        color: chartStyle.text,
+      },
+    },
+    colors: ["#00BAEC", "#6e44eb"], // Line color
+    legend: {
+      show: true,
+      labels: {
+        colors: chartStyle.text,
+        useSeriesColors: false,
+      },
+      onItemClick: {
+        toggleDataSeries: true,
+      },
+      onItemHover: {
+        highlightDataSeries: true,
+      },
+    },
+    stroke: {
+      width: 3,
+    },
+    grid: {
+      show: false,
+      borderColor: "#555",
+      clipMarkers: false,
+      xaxis: {
+        lines: {
+          show: true,
+        },
+      },
+      yaxis: {
+        lines: {
+          show: true,
+        },
+      },
+    },
+    xaxis: {
+      tickAmount: 10,
+      labels: {
+        style: {
+          colors: chartStyle.text,
+        },
+      },
+    },
+    yaxis: {
+      min: 0,
+      // max: 100000 ?? 1000000,
+      tickAmount: 12, // Jumlah patokan (ticks) pada sumbu Y
+      labels: {
+        formatter: function (val) {
+          return Math.round(String(val).slice(0, 3)) + "K";
+        },
+        style: {
+          colors: chartStyle.text,
+        },
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    markers: {
+      size: 3,
+      colors: chartStyle.areaChart,
+      strokeColor: "#ffffff",
+      strokeWidth: 2,
+    },
+    tooltip: {
+      theme: "dark",
+    },
+    fill: {
+      type: "gradient",
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.2,
+        opacityTo: 0.8,
+        colorStops: [
+          {
+            offset: 0,
+            color: "#00ffab",
+            opacity: 0.2,
+          },
+          {
+            offset: 20,
+            color: "#00d4ff",
+            opacity: 0.2,
+          },
+          {
+            offset: 60,
+            color: "#5c6bdb",
+            opacity: 0.2,
+          },
+          {
+            offset: 100,
+            color: "#6c22b1",
+            opacity: 0.2,
+          },
+        ],
+      },
+    },
+
+    responsive: [
+      {
+        breakpoint: undefined,
+        options: {},
+      },
+    ],
+  };
+};
+
 export const BarStackedoptions = {
   annotations: {},
   chart: {
@@ -10,7 +206,7 @@ export const BarStackedoptions = {
       left: 21,
     },
     foreColor: "#373D3F",
-    height: 361,
+    height: 200,
     id: "Un2mw",
     stacked: true,
     toolbar: {
@@ -94,6 +290,7 @@ export const BarStackedoptions = {
     },
   },
   legend: {
+    show: false,
     fontSize: 14,
     offsetY: -6,
     markers: {

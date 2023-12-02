@@ -33,6 +33,8 @@ export const getApiUrl = (endpointType, data) => {
       message: import.meta.env.VITE_API_ID_MESSAGE,
     },
     all: {
+      dashboard: import.meta.env.VITE_API_ALL_DASHBOARD,
+
       products: import.meta.env.VITE_API_ALL_PRODUCTS,
       categories: import.meta.env.VITE_API_ALL_CATEGORIES,
       admins: import.meta.env.VITE_API_ALL_ADMINS,
@@ -85,6 +87,7 @@ export const getApiUrl = (endpointType, data) => {
         URL_Segments[5] ? "/" + URL_Segments[5] : ""
       }`;
     } else if (
+      URL_Segments[1] == "chart" ||
       URL_Segments[1] == "fetch" ||
       URL_Segments[1] == "update" ||
       URL_Segments[1] == "delete" ||
@@ -134,6 +137,7 @@ const RequestAPI = async (endpoint, method, form = null, params = null) => {
       //   console.log("completed: ", percentCompleted);
       // },
     };
+    // console.log(url);
     // console.log(axiosConfig);
     const response = await axios(axiosConfig);
 

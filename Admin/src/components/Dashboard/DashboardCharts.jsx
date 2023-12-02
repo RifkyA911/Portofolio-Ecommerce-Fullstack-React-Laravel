@@ -7,13 +7,67 @@ import Chart from "react-apexcharts";
 import { ApexCharts } from "../Chart/ApexCharts.jsx";
 // Utils
 import RequestAPI from "../../Config/API.jsx";
-import { BarStackedoptions } from "../Chart/Options.jsx";
+import { BarStackedoptions, areaOptions } from "../Chart/Options.jsx";
 // Data
 
-export const ProductsCharts = (props) => {
+export const AreaCharts = (props) => {
+  const [chart, setChart] = useState();
+  const [loading, setLoading] = useState(true);
+
+  // REDUX
+  const {
+    DarkMode,
+    container,
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  const URL_TABLE = `/chart/area`;
+  // const URL_TABLE_FILTER = `${table}/filter`;
+
+  const fetchData = async (table, url, form = null) => {
+    try {
+      const { data } = await RequestAPI(url, "GET", form);
+      // console.log(data);
+      setLoading(false);
+      setChart(data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData("products", "dashboard" + URL_TABLE);
+  }, []);
+
+  useEffect(() => {
+    console.log(chart);
+  }, [chart]);
+
+  let chartOptions = areaOptions();
   return (
     <>
-      <div></div>
+      {!chart ? (
+        <p>s</p>
+      ) : (
+        <>
+          <Chart
+            className="m-auto w-full"
+            options={chartOptions}
+            series={[chart.products, chart.orders]}
+            type="area" // Menggunakan tipe "area" untuk line chart dengan area diisi
+            width="100%" // Atur lebar menjadi 100%
+            height={400}
+          />
+        </>
+      )}
     </>
   );
 };
@@ -44,9 +98,6 @@ export const MostViewedProducts = (props) => {
   const [loading, setLoading] = useState(true);
 
   // REDUX
-  //   import * as ReduxState from './path-to-redux-state';
-  // console.log(ReduxState.anotherState);
-
   const {
     DarkMode,
     container,
@@ -61,7 +112,7 @@ export const MostViewedProducts = (props) => {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
-  const URL_TABLE = `/most/viewed`;
+  const URL_TABLE = `/chart/bars`;
   // const URL_TABLE_FILTER = `${table}/filter`;
 
   const fetchData = async (table, url, form = null) => {
@@ -96,12 +147,8 @@ export const MostViewedProducts = (props) => {
 
   useEffect(() => {
     // fetchData("orders", "orders" + URL_TABLE);
-    fetchData("products", "products" + URL_TABLE);
+    fetchData("products", "dashboard" + URL_TABLE);
   }, []);
-
-  useEffect(() => {
-    console.log(charts.products[0].data.slice(0, 5));
-  }, [charts]);
 
   return (
     <>
@@ -109,22 +156,13 @@ export const MostViewedProducts = (props) => {
         <p>s</p>
       ) : (
         <>
-          {/* {charts.products[0].data.map((d, i) => (
-            <p key={i}>{d.x}</p>
-          ))} */}
-          {/* <ApexCharts
-            type="bar"
-            inputData={charts}
-            series2={charts.products.data}
-          /> */}
-          {/* {!charts.products ? ( */}
           <Chart
             className="m-auto w-full"
             options={BarStackedoptions}
             series={charts.products}
             type="bar" // Menggunakan tipe "area" untuk line chart dengan area diisi
             width="100%" // Atur lebar menjadi 100%
-            height={380}
+            height={300}
           />
           {/* ) : (
             <>Loading</>
