@@ -58,20 +58,64 @@ class DashboardController extends Controller
                 $products = Product::orderBy($sortBy, $sortOrder)->skip($offset)->take($perPage)->get();
             }
 
-            $products = Product::orderBy('updated_at', 'desc')->skip($offset)->take($perPage)
+            // Mendapatkan data produk
+            $products = Product::orderBy('updated_at', 'desc')
+                ->skip($offset)
+                ->take($perPage)
                 ->select('id', 'name', 'price', 'updated_at', /* kolom lainnya */)
                 ->get();
 
-            $products->transform(function ($item) {
-                return [
-                    // 'id' => $item->id,
-                    'x' => $item->price,
-                    'y' => $item->updated_at,
-                    // Kolom lainnya
-                ];
+            // Mendapatkan data pesanan
+            $orders = Order::orderBy('updated_at', 'desc')
+                ->skip($offset)
+                ->take($perPage)
+                ->select('id', 'no_invoice', 'total_price', 'updated_at', /* kolom lainnya */)
+                ->get();
+
+            // Inisialisasi array untuk menyimpan hasil per tanggal untuk produk
+            $productsByDate = [];
+            $products->each(function ($item) use (&$productsByDate) {
+                $date = $item->updated_at->format('Y-m-d');
+                if (!isset($productsByDate[$date])) {
+                    $productsByDate[$date] = 0;
+                }
+                $productsByDate[$date] += $item->price;
             });
 
-            return response()->json(['message' => 'berhasil fetching', 'length' => ['product' => $productLength, 'order' => $orderLength], 'data' => $products]);
+            // Inisialisasi array untuk menyimpan hasil per tanggal untuk pesanan
+            $ordersByDate = [];
+            $orders->each(function ($item) use (&$ordersByDate) {
+                $date = $item->updated_at->format('Y-m-d');
+                if (!isset($ordersByDate[$date])) {
+                    $ordersByDate[$date] = 0;
+                }
+                $ordersByDate[$date] += $item->total_price;
+            });
+
+            // Transform hasil produk ke dalam format yang diinginkan
+            $productsResult = [];
+            foreach ($productsByDate as $date => $totalX) {
+                $productsResult[] = [
+                    'x' => $totalX,
+                    'y' => $date,
+                ];
+            }
+
+            // Transform hasil pesanan ke dalam format yang diinginkan
+            $ordersResult = [];
+            foreach ($ordersByDate as $date => $totalX) {
+                $ordersResult[] = [
+                    'x' => $totalX,
+                    'y' => $date,
+                ];
+            }
+
+            return response()->json([
+                'message' => 'berhasil fetching',
+                'length' => ['products' => count($products), 'orders' => count($orders)],
+                'data' => ['products' => $productsResult, 'orders' => $ordersResult],
+            ]);
+
         }
         return response(['message' => 'no matched chart types', 'length' => 0, 'data' => []], 404);
     }

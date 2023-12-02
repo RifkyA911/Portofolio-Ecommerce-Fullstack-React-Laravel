@@ -19,6 +19,10 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $currentDate = now(); // Mendapatkan tanggal dan waktu sekarang
+
+        // Mengurangkan 1 hari dari tanggal sekarang
+        $updatedDate = $currentDate->subDay();
 
         $imageDirectory = public_path('img/product_images'); // Ganti dengan lokasi direktori gambar Anda
         $imageFiles = File::allFiles($imageDirectory);
@@ -44,6 +48,7 @@ class ProductFactory extends Factory
             Aenean hendrerit non arcu sed consectetur. Duis purus ligula, ornare a luctus ut, pretium ac libero. Aenean pellentesque tortor ac nisl tincidunt finibus. In vel orci elementum, porta ligula rutrum, hendrerit eros. Quisque pharetra libero nec odio mollis, non consequat mauris ultrices. Maecenas eget egestas quam, at malesuada leo. Aliquam sit amet ipsum vitae tortor facilisis consectetur in sit amet sem. Curabitur sodales ullamcorper magna, sit amet venenatis elit cursus eu.
             
             Donec ullamcorper maximus eros, non viverra elit dapibus non. Suspendisse potenti. Sed orci sapien, efficitur consequat metus nec, mattis porttitor nibh. Cras ac dui eu turpis ullamcorper ultrices ut id sem. Vestibulum dignissim sagittis dolor at semper. Ut vehicula, est ac vehicula faucibus, libero augue consectetur sem, a venenatis augue diam eget sem. Phasellus sollicitudin turpis a tempus sollicitudin. Vivamus ex quam, lacinia non turpis ac, faucibus euismod purus. Proin bibendum odio ut mattis lobortis. Quisque euismod nunc id velit mattis, a gravida est scelerisque. Nulla vel aliquet metus. Sed faucibus at nulla vel dictum. Nunc in sapien tortor.',
+            'updated_at' => $updatedDate, // Menambahkan updated_at
         ];
     }
 }

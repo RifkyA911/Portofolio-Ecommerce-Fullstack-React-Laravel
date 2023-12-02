@@ -21,17 +21,23 @@ class OrderFactory extends Factory
         // Mengurangkan 1 hari dari tanggal sekarang
         $updatedDate = $currentDate->subDay();
 
-        function randomAngka()
-        {
-            // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
-            return rand(1, 10);
-        }
-
         return [
-            'user_id' => randomAngka(),
-            'admin_id' => randomAngka(),
-            'shipment_id' => randomAngka(),
-            'payment_id' => randomAngka(),
+            'user_id' => function () {
+                // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
+                return rand(1, 10);
+            },
+            'admin_id' => function () {
+                // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
+                return rand(1, 10);
+            },
+            'shipment_id' => function () {
+                // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
+                return rand(1, 10);
+            },
+            'payment_id' => function () {
+                // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
+                return rand(1, 10);
+            },
             'no_invoice' => function () {
                 // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
                 return 'INV/202312/' . rand(1, 10) . '/' . rand(1, 100);
