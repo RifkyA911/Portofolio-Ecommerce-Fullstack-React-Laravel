@@ -34,7 +34,7 @@ const DashboardHeader = (props) => {
   const fetchData = async (url, form = null) => {
     try {
       const { data } = await RequestAPI(url, "GET", form);
-      console.log(data);
+      // console.log(data);
       setLoading(false);
       setSummary(data.data);
     } catch (error) {
