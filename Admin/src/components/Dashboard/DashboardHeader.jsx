@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-// Utils
-import { MuiIcon } from "./../../utils/RenderIcons";
-// Data
-import { infoMarket } from "./../../Config/Temporary"; //Data
 import { useSelector } from "react-redux";
+// Utils
+import { ReactIcons } from "./../../utils/RenderIcons";
+// Data
 import RequestAPI from "../../Config/API";
+import { DateFormatter } from "../../utils/Formatter";
 
 const DashboardHeader = (props) => {
-  const [chart, setChart] = useState();
+  const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // REDUX
@@ -25,15 +25,18 @@ const DashboardHeader = (props) => {
     BorderOuterTable,
   } = useSelector((state) => state.UI);
 
+  const thisYear = DateFormatter("thisYear");
+  const thisMonth = DateFormatter("thisMonth");
+
   const URL_TABLE = `/summary/headers`;
   // const URL_TABLE_FILTER = `${table}/filter`;
 
   const fetchData = async (url, form = null) => {
     try {
       const { data } = await RequestAPI(url, "GET", form);
-      // console.log(data);
+      console.log(data);
       setLoading(false);
-      setChart(data.data);
+      setSummary(data.data);
     } catch (error) {
       console.error(error);
     }
@@ -43,19 +46,29 @@ const DashboardHeader = (props) => {
     fetchData("dashboard" + URL_TABLE);
   }, []);
 
+  // useEffect(() => {
+  //   if (summary) {
+  //     console.log(summary[thisYear][thisMonth]);
+  //   }
+  // }, [summary]);
+
   return (
     <>
-      <div className="font-bold justify-center lg:max-h-64 ">
-        <div className="flex flex-wrap lg:flex-nowrap flex-row">
-          <ul className="flex flex-col lg:flex-row lg:justify-between w-full ">
-            {infoMarket.map((item) =>
-              item.flex === "row" || item.flex === "col" ? (
+      {!summary ? (
+        <div className=" ">Loading...</div>
+      ) : (
+        <div className="flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-64">
+          {!summary[thisYear][thisMonth] ? (
+            <>fetching by Date are not Match</>
+          ) : (
+            <ul className="flex flex-col lg:flex-row lg:justify-between w-full ">
+              {summary[thisYear][thisMonth].map((item, index) => (
                 <li
                   key={item.name}
                   className={`relative text-left text-xl text-gray-50 overflow-hidden basis-2/6 shrink rounded-xl ${
                     item.color
                   } p-2 xl:px-8 lg:px-4 lg:py-2 w-full lg:w-96 h-24 lg:h-40 mb-2 lg:mb-0 ${
-                    item.name != "User" ? "lg:mr-4" : "lg:mr-0"
+                    item.name != "Users" ? "lg:mr-4" : "lg:mr-0"
                   }`}
                 >
                   {/* <span className="absolute top-[20%] right-0">
@@ -64,94 +77,47 @@ const DashboardHeader = (props) => {
                   <div className="px-7 lg:px-0 flex lg:block relative bg-transparent w-full h-full bg-opacity-100 z-10">
                     <div className="flex flex-row lg:block">
                       <h1 className="flex product-center text-lg line-clamp-2 py-4 font-roboto-bold z-10">
-                        {/* <Link to=""> </Link> */}
                         <i
                           className={`mr-2 text-gray-100 bg-white rounded-lg lg:text-sm lg:p-1 xl:py-1 xl:px-2 bg-opacity-20 backdrop-blur-xl shadow-sm subpixel-antialiased`}
                         >
-                          {item.name == "Income" && (
-                            <MuiIcon iconName="StoreOutlined" />
-                          )}
-                          {item.name == "Sales" && (
-                            <MuiIcon iconName="SellOutlined" />
-                          )}
-                          {item.name == "Order" && (
-                            <MuiIcon iconName="ShoppingCartOutlined" />
-                          )}
-                          {item.name == "User" && (
-                            <MuiIcon iconName="GroupAddOutlined" />
-                          )}
+                          <ReactIcons iconName={item.icon} fontSize={24} />
                         </i>
                         <span className="capitalize text-2xl lg:text-base xl:text-xl">
                           {item.name}
                         </span>
                         <i className="px-2 lg:text-sm xl:text-xl text-lime-50">
-                          {<MuiIcon iconName="TrendingUp" />}
+                          {
+                            <ReactIcons
+                              iconName={
+                                item.growth.startsWith("-")
+                                  ? "MdOutlineTrendingDown"
+                                  : "MdOutlineTrendingUp"
+                              }
+                              fontSize={22}
+                            />
+                          }
                         </i>
-                        {/* <i className="px-2 text-red-500">
-                              {<MuiIcon iconName="TrendingDown" />}
-                            </i> */}
                       </h1>
                       <div className="relative text-xl line-clamp-2 ">
-                        {item.name == "Income" && (
-                          <div className=" xl:flex-col">
-                            <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
-                              $ {item.value}
-                            </div>
-                            <div className="lg:flex-col py-2 font-roboto-bold shadow-sm xl:line-clamp-1">
-                              <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
-                                4.20%
-                              </span>
-                              <small className="text-xs font-roboto-reguler ">
-                                Since Last Month
-                              </small>
-                            </div>
+                        <div className="flex xl:flex-col">
+                          <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
+                            {`${item.prefix} ${item.value}`}
                           </div>
-                        )}
-                        {item.name == "Sales" && (
-                          <div className="flex-col">
-                            <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
-                              $ {item.value}
-                            </div>
-                            <div className=" py-2 font-roboto-bold shadow-sm line-clamp-1">
-                              <span className="text-xs text-red-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
-                                -1.20%
-                              </span>
-                              <small className="text-xs font-roboto-reguler">
-                                Since Last Month
-                              </small>
-                            </div>
+                          <div className="lg:flex-col py-2 font-roboto-bold shadow-sm xl:line-clamp-1">
+                            <span
+                              className={`text-xs ${
+                                item.growth.startsWith("-")
+                                  ? "text-red-500"
+                                  : "text-green-600"
+                              }  bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2`}
+                            >
+                              {item.growth}
+                            </span>
+                            <small className="text-xs font-roboto-reguler ">
+                              {item.period}
+                            </small>
                           </div>
-                        )}
-                        {item.name == "Order" && (
-                          <div className="flex-col">
-                            <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
-                              + {item.value}
-                            </div>
-                            <div className="py-2 font-roboto-bold shadow-sm line-clamp-1">
-                              <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
-                                160%
-                              </span>
-                              <small className="text-xs font-roboto-reguler">
-                                Since Last Month
-                              </small>
-                            </div>
-                          </div>
-                        )}
-                        {item.name == "User" && (
-                          <div className="flex-col">
-                            <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
-                              + {item.value}
-                            </div>
-                            <div className="py-2 font-roboto-bold shadow-sm line-clamp-1">
-                              <span className="text-xs text-green-600 bg-white px-[4px] py-[2px] bg-opacity-80 rounded-sm mr-2">
-                                102%
-                              </span>
-                              <small className="text-xs font-roboto-reguler">
-                                Since Last Month
-                              </small>
-                            </div>
-                          </div>
-                        )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -164,13 +130,11 @@ const DashboardHeader = (props) => {
                     <div className="absolute right-[-100px] bottom-[-150px] w-56 h-56 rounded-full bg-slate-800 bg-opacity-[0.05]  backdrop-blur-[0px] z-0"></div>
                   </div>
                 </li>
-              ) : (
-                ""
-              )
-            )}
-          </ul>
+              ))}
+            </ul>
+          )}
         </div>
-      </div>
+      )}
     </>
   );
 };
