@@ -167,8 +167,8 @@ class DashboardController extends Controller
     {
         $thisYear = Carbon::now()->year;
         $thisMonth = Carbon::now()->month;
-        // Mendapatkan nama bulan berdasarkan angka bulan
-        $monthName = Str::lower(Carbon::create()->month($thisMonth)->format('F'));
+        // Mendapatkan nama bulan berdasarkan angka bulan Str::lower()
+        $monthName = Carbon::create()->month($thisMonth)->format('F');
         $startDate = Carbon::now()->startOfMonth(); // Mulai dari tanggal 1 bulan ini
         $endDate = Carbon::now()->endOfMonth(); // Akhir dari bulan ini
 
@@ -190,15 +190,6 @@ class DashboardController extends Controller
                 }
             }
 
-            // $orders->transform(function ($item) {
-            //     return [
-            //         // 'id' => $item->id,
-            //         'x' => $item->name,
-            //         'y' => $item->viewed,
-            //         // Kolom lainnya
-            //     ];
-            // });
-
             return response()->json(
                 [
                     'message' => 'berhasil fetching',
@@ -207,11 +198,43 @@ class DashboardController extends Controller
                         [
                             $thisYear => [
                                 $monthName => [
-                                    'income' => intval($income),
-                                    'sales' => $totalQuantity,
-                                    'orders' => $orderlength,
-                                    'users' => $users
-                                ]
+                                    [
+                                        'name' => 'Income',
+                                        'prefix' => '$',
+                                        'value' => strval($income),
+                                        'growth' => '4.20%', ////
+                                        'period' => 'Since Last Month', /////
+                                        'icon' => 'MdOutlineStoreMallDirectory',
+                                        'color' => 'bg-gradient-to-r from-indigo-500 to-purple-500',
+                                    ],
+                                    [
+                                        'name' => 'Sales',
+                                        'prefix' => '$',
+                                        'value' => strval($totalQuantity),
+                                        'growth' => '-1.40%', ///// temp
+                                        'period' => 'Since Last Month', /////
+                                        'icon' => 'MdOutlineSell',
+                                        'color' => 'bg-gradient-to-r from-blue-500 to-cyan-500',
+                                    ],
+                                    [
+                                        'name' => 'Orders',
+                                        'prefix' => '+', /////
+                                        'value' => strval($orderlength), /////
+                                        'growth' => '72%', ///
+                                        'period' => 'Since Last Month', ////
+                                        'icon' => 'MdOutlineShoppingCart',
+                                        'color' => 'bg-gradient-to-r from-orange-400 from-[-40%] via-yellow-500 to-yellow-400 to-[100%]',
+                                    ],
+                                    [
+                                        'name' => 'Users',
+                                        'prefix' => '+', /////
+                                        'value' => strval($users), /////
+                                        'growth' => '20.20%', ////
+                                        'period' => 'Since Last Month', ////
+                                        'icon' => 'MdOutlineGroupAdd',
+                                        'color' => 'bg-gradient-to-r from-green-500 to-lime-400',
+                                    ],
+                                ],
                             ]
                         ],
                 ]
