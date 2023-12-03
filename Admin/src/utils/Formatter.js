@@ -74,6 +74,12 @@ export function DateFormatter(type, inputDate) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   } else if (type == "Day") {
     return `${dayName}, ${monthName} ${day}, ${year} `;
+  } else if (type == "thisDay") {
+    return `${dayName}`;
+  } else if (type == "thisMonth") {
+    return `${monthName}`;
+  } else if (type == "thisYear") {
+    return `${year}`;
   } else {
     console.error("Failed: Date Formatter conditions not matched");
   }
