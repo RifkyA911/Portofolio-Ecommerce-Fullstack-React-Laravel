@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
+
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use stdClass;
 
@@ -47,9 +51,8 @@ class DashboardController extends Controller
 
             // $data = new stdClass(); // membuat objek php baru
 
-            $productLength = Product::count();
-            $orderLength = Order::count();
-            // $length = Order::count();
+            // $productLength = Product::count();
+            // $orderLength = Order::count();
 
             // Menghitung offset berdasarkan halaman yang diminta
             $offset = ($page - 1) * $perPage;
@@ -75,7 +78,7 @@ class DashboardController extends Controller
             // Inisialisasi array untuk menyimpan hasil per tanggal untuk produk
             $productsByDate = [];
             $products->each(function ($item) use (&$productsByDate) {
-                $date = $item->updated_at->format('Y-m-d');
+                $date = $item->updated_at->format('m-d');
                 if (!isset($productsByDate[$date])) {
                     $productsByDate[$date] = 0;
                 }
@@ -85,7 +88,7 @@ class DashboardController extends Controller
             // Inisialisasi array untuk menyimpan hasil per tanggal untuk pesanan
             $ordersByDate = [];
             $orders->each(function ($item) use (&$ordersByDate) {
-                $date = $item->updated_at->format('Y-m-d');
+                $date = $item->updated_at->format('m-d');
                 if (!isset($ordersByDate[$date])) {
                     $ordersByDate[$date] = 0;
                 }
@@ -96,8 +99,8 @@ class DashboardController extends Controller
             $productsResult = [];
             foreach ($productsByDate as $date => $totalX) {
                 $productsResult[] = [
-                    'x' => $totalX,
-                    'y' => $date,
+                    'x' => $date,
+                    'y' => $totalX,
                 ];
             }
 
@@ -105,18 +108,142 @@ class DashboardController extends Controller
             $ordersResult = [];
             foreach ($ordersByDate as $date => $totalX) {
                 $ordersResult[] = [
-                    'x' => $totalX,
-                    'y' => $date,
+                    'x' => $date,
+                    'y' => $totalX,
                 ];
             }
 
             return response()->json([
                 'message' => 'berhasil fetching',
                 'length' => ['products' => count($products), 'orders' => count($orders)],
-                'data' => ['products' => $productsResult, 'orders' => $ordersResult],
+                // 'data' => ['products' => $productsResult, 'orders' => $ordersResult],
+                'data' => array(
+
+                    'products' => [
+                        'name' => "Products",
+                        'data' => $productsResult,
+                        'zIndex' => 0,
+                    ],
+                    'orders' => [
+                        'name' => "Orders",
+                        'data' => $ordersResult,
+                        'zIndex' => 0,
+                    ]
+
+                )
             ]);
 
+        } else if ($type == 'line') {
+            // Mengonversi halaman dan perPage yang diterima menjadi integer
+            $page = (int) 1; // halaman
+            $perPage = (int) 5; // jumlah data yang akan di kirim
+
+            $length = Product::count();
+            // Menghitung offset berdasarkan halaman yang diminta
+            $offset = ($page - 1) * $perPage;
+
+            if ($sortBy) {
+                $products = Product::orderBy($sortBy, $sortOrder)->skip($offset)->take($perPage)->get();
+            }
+
+            $products = Product::orderBy('viewed', 'desc')->skip($offset)->take($perPage)
+                ->select('id', 'name', 'viewed', /* kolom lainnya */)
+                ->get();
+
+            $products->transform(function ($item) {
+                return [
+                    // 'id' => $item->id,
+                    'x' => $item->name,
+                    'y' => $item->viewed,
+                    // Kolom lainnya
+                ];
+            });
+
+            return response()->json(['message' => 'berhasil fetching', 'length' => $length, 'data' => $products]);
+        }
+        return response(['message' => 'no matched chart types', 'length' => 0, 'data' => []], 404);
+    }
+    public function getSummary($type, $sortOrder = "asc")
+    {
+        $thisYear = Carbon::now()->year;
+        $thisMonth = Carbon::now()->month;
+        // Mendapatkan nama bulan berdasarkan angka bulan
+        $monthName = Str::lower(Carbon::create()->month($thisMonth)->format('F'));
+        $startDate = Carbon::now()->startOfMonth(); // Mulai dari tanggal 1 bulan ini
+        $endDate = Carbon::now()->endOfMonth(); // Akhir dari bulan ini
+
+        $sortBy = null;
+        $productlength = Product::count();
+        $orderlength = Order::count();
+
+        if ($type == 'headers') {
+            $income = Order::whereBetween('created_at', [$startDate, $endDate])->sum('total_price');
+            $users = User::whereBetween('created_at', [$startDate, $endDate])->count();
+            $sales = Order::with('items.product')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->get();
+
+            $totalQuantity = 0;
+            foreach ($sales as $order) {
+                foreach ($order->items as $item) {
+                    $totalQuantity += $item->quantity;
+                }
+            }
+
+            // $orders->transform(function ($item) {
+            //     return [
+            //         // 'id' => $item->id,
+            //         'x' => $item->name,
+            //         'y' => $item->viewed,
+            //         // Kolom lainnya
+            //     ];
+            // });
+
+            return response()->json(
+                [
+                    'message' => 'berhasil fetching',
+                    'length' => ['orders' => $orderlength, 'product' => $productlength],
+                    'data' =>
+                        [
+                            $thisYear => [
+                                $monthName => [
+                                    'income' => intval($income),
+                                    'sales' => $totalQuantity,
+                                    'orders' => $orderlength,
+                                    'users' => $users
+                                ]
+                            ]
+                        ],
+                ]
+            );
+        } else if ($type == 'quantity') {
+            $sales = Order::with('items.product')->get();
+
+            $ordersData = [];
+            foreach ($sales as $order) {
+                $totalQuantity = 0;
+                foreach ($order->items as $item) {
+                    $totalQuantity += $item->quantity;
+                }
+
+                $ordersData[] = [
+                    'order_id' => $order->id,
+                    'total_quantity' => $totalQuantity,
+                ];
+            }
+
+            return response()->json(
+                [
+                    'message' => 'berhasil fetching',
+                    'length' => ['orders' => $orderlength, 'product' => $productlength],
+                    'data' => [
+                        'sales-' . $monthName => $sales,
+                        'order_data' => $ordersData,
+                    ],
+                ]
+            );
         }
         return response(['message' => 'no matched chart types', 'length' => 0, 'data' => []], 404);
     }
 }
+
