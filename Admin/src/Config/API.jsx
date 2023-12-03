@@ -88,6 +88,7 @@ export const getApiUrl = (endpointType, data) => {
       }`;
     } else if (
       URL_Segments[1] == "chart" ||
+      URL_Segments[1] == "summary" ||
       URL_Segments[1] == "fetch" ||
       URL_Segments[1] == "update" ||
       URL_Segments[1] == "delete" ||
@@ -98,6 +99,8 @@ export const getApiUrl = (endpointType, data) => {
     ) {
       return `${apiEndpoints.all[URL_Segments[0]]}/${URL_Segments[1]}${
         URL_Segments[2] ? "/" + URL_Segments[2] : ""
+      }${URL_Segments[3] ? "/" + URL_Segments[3] : ""}${
+        URL_Segments[4] ? "/" + URL_Segments[4] : ""
       }`;
     } else {
       return apiEndpoints.all[URL_Segments[0]];
