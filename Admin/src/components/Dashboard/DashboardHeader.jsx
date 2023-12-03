@@ -3,9 +3,46 @@ import React, { useState, useEffect } from "react";
 import { MuiIcon } from "./../../utils/RenderIcons";
 // Data
 import { infoMarket } from "./../../Config/Temporary"; //Data
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import RequestAPI from "../../Config/API";
 
 const DashboardHeader = (props) => {
+  const [chart, setChart] = useState();
+  const [loading, setLoading] = useState(true);
+
+  // REDUX
+  const {
+    DarkMode,
+    container,
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  const URL_TABLE = `/summary/headers`;
+  // const URL_TABLE_FILTER = `${table}/filter`;
+
+  const fetchData = async (url, form = null) => {
+    try {
+      const { data } = await RequestAPI(url, "GET", form);
+      // console.log(data);
+      setLoading(false);
+      setChart(data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData("dashboard" + URL_TABLE);
+  }, []);
+
   return (
     <>
       <div className="font-bold justify-center lg:max-h-64 ">
@@ -21,8 +58,11 @@ const DashboardHeader = (props) => {
                     item.name != "User" ? "lg:mr-4" : "lg:mr-0"
                   }`}
                 >
+                  {/* <span className="absolute top-[20%] right-0">
+                    <LineCharts height={100} width="60%" />
+                  </span> */}
                   <div className="px-7 lg:px-0 flex lg:block relative bg-transparent w-full h-full bg-opacity-100 z-10">
-                    <div className="flex-row lg:block">
+                    <div className="flex flex-row lg:block">
                       <h1 className="flex product-center text-lg line-clamp-2 py-4 font-roboto-bold z-10">
                         {/* <Link to=""> </Link> */}
                         <i
@@ -51,7 +91,7 @@ const DashboardHeader = (props) => {
                               {<MuiIcon iconName="TrendingDown" />}
                             </i> */}
                       </h1>
-                      <h2 className="text-xl line-clamp-2 ">
+                      <div className="relative text-xl line-clamp-2 ">
                         {item.name == "Income" && (
                           <div className=" xl:flex-col">
                             <div className="pl-4 lg:pl-0 text-4xl lg:text-2xl font-roboto-regular">
@@ -112,7 +152,7 @@ const DashboardHeader = (props) => {
                             </div>
                           </div>
                         )}
-                      </h2>
+                      </div>
                     </div>
                   </div>
 

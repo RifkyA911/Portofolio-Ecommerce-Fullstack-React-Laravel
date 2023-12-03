@@ -3,9 +3,75 @@ import Chart from "react-apexcharts";
 import { format } from "date-fns"; // Import format dari date-fns
 import { ResponsiveContainer } from "recharts";
 import { DateFormatter } from "../../utils/Formatter";
-import { BarStackedoptions, sareaOptions } from "./Options";
+import { BarStackedoptions } from "./Options";
 import { useSelector } from "react-redux";
 import { orderData } from "../../Config/Temporary";
+
+export const ComponentName = (props) => {
+  const [charts, setCharts] = useState({
+    products: [],
+    orders: [],
+  });
+  const [length, setLengthData] = useState();
+  const [paginate, setPaginate] = useState(1);
+  const [rows, setRows] = useState(10);
+
+  const [activeTab, setActiveTab] = useState(1);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // REDUX
+  const {
+    DarkMode,
+    container,
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  const URL_TABLE = `/paginate/${paginate}/${rows}/updated_at/asc`;
+  // const URL_TABLE_FILTER = `${table}/filter`;
+
+  const fetchData = async (table, url, form = null) => {
+    try {
+      const { data } = await RequestAPI(url, form ? "POST" : "GET", form);
+      // console.log(data.data);
+      setLoading(false);
+      if (table === "products") {
+        setCharts((prevCharts) => ({
+          ...prevCharts,
+          products: data.data,
+        }));
+      } else if (table === "orders") {
+        setCharts((prevCharts) => ({
+          ...prevCharts,
+          orders: data.data,
+        }));
+      }
+      setLengthData(data.message.length);
+      setErrorMessage(null);
+    } catch (error) {
+      setErrorMessage(`Gagal Fetching '${url}'`);
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData("orders", "orders" + URL_TABLE);
+    fetchData("products", "products" + URL_TABLE);
+  }, []);
+  return (
+    <>
+      <div></div>
+    </>
+  );
+};
 
 export const simplifiedData = (inputObject) => {
   // Menggunakan objek untuk menyimpan nilai y berdasarkan nilai x
@@ -295,17 +361,6 @@ export const ApexCharts = ({ type, inputData }) => {
                 },
               ]}
               type={type} // Menggunakan tipe "area" untuk line chart dengan area diisi
-              width="100%" // Atur lebar menjadi 100%
-              height={400}
-            />
-          )}
-          {type == "radialBar" && (
-            <Chart
-              className="m-auto"
-              // options={areaOptions}
-              options={sareaOptions}
-              type={type} // Menggunakan tipe "area" untuk line chart dengan area diisi
-              series={[74]}
               width="100%" // Atur lebar menjadi 100%
               height={400}
             />

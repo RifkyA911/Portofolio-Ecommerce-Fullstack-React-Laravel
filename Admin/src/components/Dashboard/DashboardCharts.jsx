@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import Chart from "react-apexcharts";
-
-// Layout
-// Components
-import { ApexCharts } from "../Chart/ApexCharts.jsx";
-// Utils
+// Config
 import RequestAPI from "../../Config/API.jsx";
-import { BarStackedoptions, areaOptions } from "../Chart/Options.jsx";
-// Data
+import {
+  BarStackedoptions,
+  LineOptions,
+  areaOptions,
+} from "../Chart/Options.jsx";
+// Layout
+import Chart from "react-apexcharts";
+// Components
+// Utils
 
 export const AreaCharts = (props) => {
   const [chart, setChart] = useState();
@@ -47,9 +49,9 @@ export const AreaCharts = (props) => {
     fetchData("products", "dashboard" + URL_TABLE);
   }, []);
 
-  useEffect(() => {
-    console.log(chart);
-  }, [chart]);
+  // useEffect(() => {
+  //   console.log(chart);
+  // }, [chart]);
 
   let chartOptions = areaOptions();
   return (
@@ -150,6 +152,8 @@ export const MostViewedProducts = (props) => {
     fetchData("products", "dashboard" + URL_TABLE);
   }, []);
 
+  let chartOptions = BarStackedoptions();
+
   return (
     <>
       {!charts.products[0].data ? (
@@ -158,7 +162,7 @@ export const MostViewedProducts = (props) => {
         <>
           <Chart
             className="m-auto w-full"
-            options={BarStackedoptions}
+            options={chartOptions}
             series={charts.products}
             type="bar" // Menggunakan tipe "area" untuk line chart dengan area diisi
             width="100%" // Atur lebar menjadi 100%
@@ -167,6 +171,70 @@ export const MostViewedProducts = (props) => {
           {/* ) : (
             <>Loading</>
           )} */}
+        </>
+      )}
+    </>
+  );
+};
+
+export const LineCharts = (props) => {
+  const { height = 300, width = "100%" } = props;
+
+  const [chart, setChart] = useState();
+  const [loading, setLoading] = useState(true);
+
+  // REDUX
+  const {
+    DarkMode,
+    container,
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  const URL_TABLE = `/chart/line`;
+  // const URL_TABLE_FILTER = `${table}/filter`;
+
+  const fetchData = async (table, url, form = null) => {
+    try {
+      const { data } = await RequestAPI(url, "GET", form);
+      // console.log(data);
+      setLoading(false);
+      setChart(data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData("products", "dashboard" + URL_TABLE);
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(chart);
+  // }, [chart]);
+
+  let chartOptions = LineOptions();
+  return (
+    <>
+      {!chart ? (
+        <p>s</p>
+      ) : (
+        <>
+          <Chart
+            className="m-auto w-full"
+            options={chartOptions}
+            series={chartOptions.series}
+            type="line" // Menggunakan tipe "area" untuk line chart dengan area diisi
+            width={width} // Atur lebar menjadi 100%
+            height={height}
+          />
         </>
       )}
     </>

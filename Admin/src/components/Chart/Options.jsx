@@ -9,9 +9,6 @@ export const areaOptions = () => {
   });
 
   // REDUX
-  //   import * as ReduxState from './path-to-redux-state';
-  // console.log(ReduxState.anotherState);
-
   const {
     DarkMode,
     container,
@@ -194,278 +191,513 @@ export const areaOptions = () => {
   };
 };
 
-export const BarStackedoptions = {
-  annotations: {},
-  chart: {
-    animations: {
-      enabled: false,
-      easing: "swing",
+export const BarStackedoptions = () => {
+  const [chartStyle, setChartStyle] = useState({
+    text: "black",
+    areaChart: ["#00BAEC", "#6c22b1"],
+  });
+
+  // REDUX
+  const {
+    DarkMode,
+    container,
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  useEffect(() => {
+    DarkMode
+      ? setChartStyle({
+          ...chartStyle,
+          text: "white",
+        })
+      : setChartStyle({
+          ...chartStyle,
+          text: "black",
+        });
+  }, [DarkMode]);
+  return {
+    annotations: {},
+    chart: {
+      animations: {
+        enabled: false,
+        easing: "swing",
+      },
+      background: "#fff",
+      dropShadow: {
+        left: 21,
+      },
+      foreColor: "#373D3F",
+      height: 200,
+      id: "Un2mw",
+      stacked: true,
+      toolbar: {
+        show: false,
+      },
+      type: "bar",
+      width: 473,
+      zoom: {
+        enabled: false,
+      },
     },
-    background: "#fff",
-    dropShadow: {
-      left: 21,
-    },
-    foreColor: "#373D3F",
-    height: 200,
-    id: "Un2mw",
-    stacked: true,
-    toolbar: {
-      show: false,
-    },
-    type: "bar",
-    width: 473,
-    zoom: {
-      enabled: false,
-    },
-  },
-  plotOptions: {
-    bar: {
-      horizontal: true,
-      barHeight: "36%",
-      distributed: true,
-      borderRadius: 8,
-      borderRadiusApplication: "end",
-      borderRadiusWhenStacked: "last",
-      hideZeroBarsWhenGrouped: false,
-      isDumbbell: false,
-      isFunnel: false,
-      isFunnel3d: true,
-      dataLabels: {
-        position: "center",
-        total: {
-          enabled: false,
-          offsetX: 0,
-          offsetY: 0,
-          style: {
-            color: "#373d3f",
-            fontSize: "12px",
-            fontWeight: 600,
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        barHeight: "36%",
+        distributed: true,
+        borderRadius: 8,
+        borderRadiusApplication: "end",
+        borderRadiusWhenStacked: "last",
+        hideZeroBarsWhenGrouped: false,
+        isDumbbell: false,
+        isFunnel: false,
+        isFunnel3d: true,
+        dataLabels: {
+          position: "center",
+          total: {
+            enabled: false,
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+              color: "#373d3f",
+              fontSize: "12px",
+              fontWeight: 600,
+            },
           },
         },
       },
-    },
-    bubble: {
-      zScaling: true,
-    },
-    treemap: {
-      dataLabels: {
-        format: "scale",
+      bubble: {
+        zScaling: true,
       },
-    },
-    radialBar: {
-      hollow: {
-        background: "#fff",
+      treemap: {
+        dataLabels: {
+          format: "scale",
+        },
       },
-      dataLabels: {
-        name: {},
-        value: {},
-        total: {},
-      },
-    },
-    pie: {
-      donut: {
-        labels: {
+      radialBar: {
+        hollow: {
+          background: "#fff",
+        },
+        dataLabels: {
           name: {},
           value: {},
           total: {},
         },
       },
-    },
-  },
-  dataLabels: {
-    offsetY: 1,
-    style: {
-      colors: ["#fff"],
-    },
-    background: {
-      enabled: false,
-    },
-  },
-  fill: {},
-  grid: {
-    show: false,
-    padding: {
-      right: 25,
-      left: 15,
-    },
-  },
-  legend: {
-    show: false,
-    fontSize: 14,
-    offsetY: -6,
-    markers: {
-      shape: "square",
-      size: 8,
-    },
-    itemMargin: {
-      vertical: 0,
-    },
-  },
-  series: [
-    {
-      name: "Bar 1",
-      data: [
-        {
-          x: "Item 1",
-          y: 10,
+      pie: {
+        donut: {
+          labels: {
+            name: {},
+            value: {},
+            total: {},
+          },
         },
-        {
-          x: "Item 2",
-          y: 20,
-        },
-        {
-          x: "Item 3",
-          y: 30,
-        },
-        {
-          x: "Item 4",
-          y: 40,
-        },
-        {
-          x: "",
-          y: 10,
-        },
-      ],
-      zIndex: 0,
-    },
-    {
-      name: "Bar 2",
-      data: [
-        {
-          x: "Item 1",
-          y: 20,
-        },
-        {
-          x: "Item 2",
-          y: 10,
-        },
-        {
-          x: "Item 3",
-          y: 15,
-        },
-        {
-          x: "Item 4",
-          y: 25,
-        },
-        {
-          x: "",
-          y: 10,
-        },
-      ],
-      zIndex: 1,
-    },
-  ],
-  stroke: {
-    show: false,
-    width: 3,
-    colors: ["#fff"],
-    fill: {
-      type: "solid",
-      opacity: 0.85,
-      gradient: {
-        shade: "dark",
-        type: "horizontal",
-        shadeIntensity: 0.5,
-        inverseColors: true,
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 50, 100],
-        colorStops: [],
       },
     },
-  },
-  tooltip: {
-    shared: false,
-    intersect: true,
-  },
-  xaxis: {
-    labels: {
-      trim: true,
-      style: {},
-    },
-    group: {
-      groups: [],
+    dataLabels: {
+      offsetY: 1,
       style: {
-        colors: [],
-        fontSize: "12px",
-        fontWeight: 400,
-        cssClass: "",
+        colors: ["#fff"],
+      },
+      background: {
+        enabled: false,
       },
     },
-    tickPlacement: "between",
-    title: {
+    fill: {},
+    grid: {
+      show: false,
+      padding: {
+        right: 25,
+        left: 15,
+      },
+    },
+    legend: {
+      show: false,
+      fontSize: 14,
+      offsetY: -6,
+      markers: {
+        shape: "square",
+        size: 8,
+      },
+      itemMargin: {
+        vertical: 0,
+      },
+    },
+    series: [
+      {
+        name: "Bar 1",
+        data: [
+          {
+            x: "Item 1",
+            y: 10,
+          },
+          {
+            x: "Item 2",
+            y: 20,
+          },
+          {
+            x: "Item 3",
+            y: 30,
+          },
+          {
+            x: "Item 4",
+            y: 40,
+          },
+          {
+            x: "",
+            y: 10,
+          },
+        ],
+        zIndex: 0,
+      },
+      {
+        name: "Bar 2",
+        data: [
+          {
+            x: "Item 1",
+            y: 20,
+          },
+          {
+            x: "Item 2",
+            y: 10,
+          },
+          {
+            x: "Item 3",
+            y: 15,
+          },
+          {
+            x: "Item 4",
+            y: 25,
+          },
+          {
+            x: "",
+            y: 10,
+          },
+        ],
+        zIndex: 1,
+      },
+    ],
+    stroke: {
+      show: false,
+      width: 3,
+      colors: ["#fff"],
+      fill: {
+        type: "solid",
+        opacity: 0.85,
+        gradient: {
+          shade: "dark",
+          type: "horizontal",
+          shadeIntensity: 0.5,
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 50, 100],
+          colorStops: [],
+        },
+      },
+    },
+    tooltip: {
+      shared: false,
+      intersect: true,
+    },
+    xaxis: {
+      labels: {
+        trim: true,
+        style: {},
+      },
+      group: {
+        groups: [],
+        style: {
+          colors: [],
+          fontSize: "12px",
+          fontWeight: 400,
+          cssClass: "",
+        },
+      },
+      tickPlacement: "between",
+      title: {
+        style: {
+          fontWeight: 700,
+        },
+      },
+      tooltip: {
+        enabled: false,
+      },
+    },
+    yaxis: {
+      tickAmount: 5,
+      labels: {
+        style: {
+          colors: [null, null, null, null, null],
+        },
+      },
+      title: {
+        style: {},
+      },
+    },
+    theme: {
+      palette: "palette2",
+    },
+  };
+};
+
+export const LineOptions = () => {
+  const [chartStyle, setChartStyle] = useState({
+    text: "black",
+    areaChart: ["#00BAEC", "#6c22b1"],
+  });
+
+  // REDUX
+  const {
+    DarkMode,
+    container,
+    BgColor,
+    textTable,
+    textColor,
+    screenHeigth,
+    screenWidth,
+    BgTable,
+    BgOuterTable,
+    BorderRowTable,
+    BorderOuterTable,
+  } = useSelector((state) => state.UI);
+
+  useEffect(() => {
+    DarkMode
+      ? setChartStyle({
+          ...chartStyle,
+          text: "white",
+        })
+      : setChartStyle({
+          ...chartStyle,
+          text: "black",
+        });
+  }, [DarkMode]);
+  return {
+    annotations: {},
+    chart: {
+      animations: {
+        enabled: false,
+        easing: "swing",
+      },
+      // background: "#fff",
+      dropShadow: {
+        enabled: true,
+        color: "#FFFFFF",
+      },
+      foreColor: "#373D3F",
+      fontFamily: "Roboto",
+      height: 250,
+      id: "UJUCY",
+      toolbar: {
+        show: false,
+      },
+      width: 500,
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 10,
+        borderRadiusApplication: "end",
+        borderRadiusWhenStacked: "last",
+        hideZeroBarsWhenGrouped: false,
+        isDumbbell: false,
+        isFunnel: false,
+        isFunnel3d: true,
+        dataLabels: {
+          total: {
+            enabled: false,
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+              color: "#373d3f",
+              fontSize: "12px",
+              fontWeight: 600,
+            },
+          },
+        },
+      },
+      bubble: {
+        zScaling: true,
+      },
+      treemap: {
+        dataLabels: {
+          format: "scale",
+        },
+      },
+      radialBar: {
+        hollow: {
+          background: "#fff",
+        },
+        dataLabels: {
+          name: {},
+          value: {},
+          total: {},
+        },
+      },
+      pie: {
+        donut: {
+          labels: {
+            name: {},
+            value: {},
+            total: {},
+          },
+        },
+      },
+    },
+    colors: ["#16B6EB", "#c7f464", "#81D4FA", "#fd6a6a", "#546E7A"],
+    dataLabels: {
+      enabled: false,
       style: {
         fontWeight: 700,
       },
     },
-    tooltip: {
-      enabled: false,
-    },
-  },
-  yaxis: {
-    tickAmount: 5,
-    labels: {
-      style: {
-        colors: [null, null, null, null, null],
-      },
-    },
-    title: {
-      style: {},
-    },
-  },
-  theme: {
-    palette: "palette2",
-  },
-};
-
-export const sareaOptions = {
-  chart: {
-    height: 280,
-    type: "radialBar",
-  },
-
-  colors: ["#20E647"],
-  plotOptions: {
-    radialBar: {
-      hollow: {
-        margin: 0,
-        size: "70%",
-        background: "#293450",
-      },
-      track: {
-        dropShadow: {
-          enabled: true,
-          top: 2,
-          left: 0,
-          blur: 4,
-          opacity: 0.15,
+    grid: {
+      show: false,
+      yaxis: {
+        lines: {
+          show: false,
         },
       },
-      dataLabels: {
-        name: {
-          offsetY: -10,
-          color: "#fff",
-          fontSize: "13px",
-        },
-        value: {
-          color: "#fff",
-          fontSize: "30px",
-          show: true,
+      padding: {
+        right: 20,
+        left: 0,
+      },
+    },
+    legend: {
+      show: false,
+      fontSize: 14,
+      offsetY: 0,
+      itemMargin: {
+        vertical: 0,
+      },
+    },
+    markers: {
+      hover: {
+        sizeOffset: 6,
+      },
+    },
+    series: [
+      {
+        name: "Likes",
+        data: [
+          {
+            x: "1/11",
+            y: 4,
+          },
+          {
+            x: "2/11",
+            y: 3,
+          },
+          {
+            x: "3/11",
+            y: 10,
+          },
+          {
+            x: "4/11",
+            y: 9,
+          },
+          {
+            x: "5/11",
+            y: 29,
+          },
+          {
+            x: "6/11",
+            y: 19,
+          },
+          {
+            x: "7/11",
+            y: 22,
+          },
+          {
+            x: "8/11",
+            y: 9,
+          },
+          {
+            x: "9/11",
+            y: 12,
+          },
+          {
+            x: "10/11",
+            y: 7,
+          },
+          {
+            x: "11/11",
+            y: 19,
+          },
+          {
+            x: "12/11",
+            y: 5,
+          },
+        ],
+      },
+    ],
+    stroke: {
+      lineCap: "round",
+      width: 4,
+      curve: "smooth",
+      fill: {
+        type: "solid",
+        opacity: 0.85,
+        gradient: {
+          shade: "dark",
+          type: "horizontal",
+          shadeIntensity: 0.5,
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 50, 100],
+          colorStops: [],
         },
       },
     },
-  },
-  fill: {
-    type: "gradient",
-    gradient: {
-      shade: "light",
-      type: "vertical",
-      gradientToColors: ["#87D4F9"],
-      stops: [0, 100],
+    xaxis: {
+      type: "numeric",
+      labels: {
+        show: false,
+        style: {
+          fontSize: 15,
+        },
+      },
+      group: {
+        groups: [],
+        style: {
+          colors: [],
+          fontSize: "12px",
+          fontWeight: 400,
+          cssClass: "",
+        },
+      },
+      axisBorder: {
+        show: false,
+      },
+      axisTicks: {
+        show: false,
+      },
+      tickAmount: "dataPoints",
+      title: {
+        style: {
+          fontWeight: 700,
+        },
+      },
     },
-  },
-  stroke: {
-    lineCap: "round",
-  },
-  labels: ["Progress"],
+    yaxis: {
+      show: false,
+      tickAmount: 5,
+      labels: {
+        style: {},
+      },
+      title: {
+        style: {
+          fontWeight: 700,
+        },
+      },
+    },
+  };
 };

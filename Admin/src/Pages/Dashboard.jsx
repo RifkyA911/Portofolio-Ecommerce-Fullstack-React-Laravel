@@ -5,8 +5,6 @@ import { useSelector } from "react-redux";
 import { Container, Content } from "../Layout"; // ./components/index.jsx
 // Components
 import DashboardHeader from "../components/Dashboard/DashboardHeader";
-import { RenderAreaChart } from "./../components/Chart/Recharts.jsx";
-import { ApexCharts } from "../components/Chart/ApexCharts";
 // Utils
 import { ReactIcons } from "./../utils/RenderIcons.jsx";
 import RequestAPI from "../Config/API.jsx";
@@ -15,6 +13,7 @@ import TableReview from "../components/Table/MyTableContent.jsx";
 import { MotionTabs } from "../components/Button.jsx";
 import {
   AreaCharts,
+  LineCharts,
   MostViewedProducts,
 } from "../components/Dashboard/DashboardCharts.jsx";
 
@@ -32,9 +31,6 @@ const Dashboard = (props) => {
   const [loading, setLoading] = useState(true);
 
   // REDUX
-  //   import * as ReduxState from './path-to-redux-state';
-  // console.log(ReduxState.anotherState);
-
   const {
     DarkMode,
     container,
@@ -82,8 +78,7 @@ const Dashboard = (props) => {
   }, []);
 
   // useEffect(() => {
-  //   console.log("charts.products", charts.products);
-  //   console.log("charts.orders", charts.orders);
+  //   console.log("charts", charts);
   // }, [charts]);
 
   return (
@@ -108,14 +103,14 @@ const Dashboard = (props) => {
                   <div className="flex lg:max-h-[900px]">
                     <div className="flex flex-col lg:flex-row w-full py-2 h-20 lg:h-[450px] overflow-clip">
                       <div
-                        className={`${BgColor} ${textColor} rounded-md w-full lg:w-7/12 mr-4 overflow-clip border`}
+                        className={`${BgColor} ${textColor} rounded-xl w-full lg:w-7/12 mr-4 overflow-clip border`}
                       >
                         <div className="w-full h-full m-auto py-2">
                           {/* <ApexCharts type="area" inputData={charts} /> */}
                           <AreaCharts />
                         </div>
                       </div>
-                      <div className="rounded-md flex flex-col justify-start w-full lg:w-5/12 bg-white border">
+                      <div className="rounded-xl flex flex-col justify-start w-full lg:w-5/12 bg-white border">
                         <MotionTabs
                           onClick={(tabIndex) => setActiveTab(tabIndex)}
                           checked={activeTab}
@@ -133,9 +128,7 @@ const Dashboard = (props) => {
                             {
                               name: "Reviews",
                               label: "Reviews",
-                              render: () => (
-                                <ApexCharts type="bar" inputData={charts} />
-                              ),
+                              render: () => <p>Content for Tab 3</p>,
                             },
                           ]}
                         />
@@ -148,17 +141,17 @@ const Dashboard = (props) => {
                   <div className="flex lg:max-h-[900px]">
                     <div className="flex flex-col lg:flex-row w-full py-2">
                       <div
-                        className={`${BgColor} ${textColor} rounded-md h-20 lg:h-96 w-full lg:w-7/12 mr-4 `}
+                        className={`${BgColor} ${textColor} rounded-xl h-20 lg:h-96 w-full lg:w-7/12 mr-4 `}
                       >
                         <div className="my-auto overflow-x-auto border h-full">
                           <TableReview />
                         </div>
                       </div>
                       <div
-                        className={`${BgColor} ${textColor} rounded-md h-20 px-4 lg:h-96 w-full lg:w-5/12 border`}
+                        className={`${BgColor} ${textColor} rounded-xl h-20 px-4 lg:h-96 w-full lg:w-5/12 border`}
                       >
                         <h1>Top Products Sells</h1>
-                        <MostViewedProducts inputData={charts} />
+                        <MostViewedProducts />
                       </div>
                     </div>
                   </div>
