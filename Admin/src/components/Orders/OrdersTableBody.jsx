@@ -41,6 +41,71 @@ export const OrderStatus = (props) => {
   );
 };
 
+export const OrderIconStatus = (props) => {
+  const { status, fontSize = 30 } = props;
+
+  const statusColors = {
+    Pending: {
+      color: "text-green-500",
+      icon: "IoCartSharp",
+    },
+    "Awaiting Payment": {
+      color: "text-orange-400",
+      icon: "MdOutlinePayment",
+    },
+    Processing: {
+      color: "text-cyan-500",
+      icon: "MdOutlinePendingActions",
+    },
+    Shipped: {
+      color: "text-blue-500",
+      icon: "FaTruck",
+    },
+    Delivered: {
+      color: "text-lime-500",
+      icon: "MdCloudDone",
+    },
+    Completed: {
+      color: "text-gray-400",
+      icon: "IoCheckmarkCircle",
+    },
+    Cancelled: {
+      color: "text-red-500",
+      icon: "MdCancel",
+    },
+    "On Hold": {
+      color: "text-slate-500",
+      icon: "FaHandPaper",
+    },
+    Returned: {
+      color: "text-pink-500",
+      icon: "MdAssignmentReturn",
+    },
+    "Partially Shipped": {
+      color: "text-zinc-500",
+      icon: "AiOutlineApartment",
+    },
+    Backordered: {
+      color: "text-amber-500",
+      icon: "TbTruckReturn",
+    },
+    Failed: {
+      color: "text-red-700",
+      icon: "MdSmsFailed",
+    },
+  };
+
+  const statusColor = statusColors[status] || "bg-gray-400"; // Jika status tidak ditemukan, gunakan warna default
+
+  return (
+    <ReactIcons
+      iconName={statusColor.icon ?? "FaQuestion"}
+      fontSize={fontSize}
+      className={statusColor.color}
+    />
+  );
+};
+
 export const ListProduct = (props) => {
   const { row } = props;
   return (
