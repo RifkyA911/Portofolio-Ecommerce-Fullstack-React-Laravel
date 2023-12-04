@@ -5,6 +5,7 @@ import { ReactIcons } from "./../../utils/RenderIcons";
 // Data
 import RequestAPI from "../../Config/API";
 import { DateFormatter } from "../../utils/Formatter";
+import { SkeltonBox } from "../Skelton";
 
 const DashboardHeader = (props) => {
   const [summary, setSummary] = useState(null);
@@ -51,13 +52,22 @@ const DashboardHeader = (props) => {
   //     console.log(summary[thisYear][thisMonth]);
   //   }
   // }, [summary]);
+  const colors = {
+    Income: "bg-gradient-to-r from-indigo-500 to-purple-500",
+    Sales: "bg-gradient-to-r from-blue-500 to-cyan-500",
+    Orders:
+      "bg-gradient-to-r from-orange-400 from-[-40%] via-yellow-500 to-yellow-400 to-[100%]",
+    Users: "bg-gradient-to-r from-green-500 to-lime-400",
+  };
 
   return (
     <>
       {!summary ? (
-        <div className=" ">Loading...</div>
+        <div className="flex flex-row min-h-[160px] gap-4">
+          <SkeltonBox className="min-h-[160px] w-full rounded-xl" count={4} />
+        </div>
       ) : (
-        <div className="flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-64">
+        <div className="flex flex-wrap lg:flex-nowrap flex-row font-bold justify-center lg:max-h-64 min-h-[160px]">
           {!summary[thisYear][thisMonth] ? (
             <>fetching by Date are not Match</>
           ) : (
@@ -65,9 +75,9 @@ const DashboardHeader = (props) => {
               {summary[thisYear][thisMonth].map((item, index) => (
                 <li
                   key={item.name}
-                  className={`relative text-left text-xl text-gray-50 overflow-hidden basis-2/6 shrink rounded-xl ${
-                    item.color
-                  } p-2 xl:px-8 lg:px-4 lg:py-2 w-full lg:w-96 h-24 lg:h-40 mb-2 lg:mb-0 ${
+                  className={`${
+                    colors[item.name]
+                  } relative text-left text-xl text-gray-50 overflow-hidden basis-2/6 shrink rounded-xl p-2 xl:px-8 lg:px-4 lg:py-2 w-full lg:w-96 h-24 lg:h-40 mb-2 lg:mb-0 ${
                     item.name != "Users" ? "lg:mr-4" : "lg:mr-0"
                   }`}
                 >
