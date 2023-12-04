@@ -89,6 +89,7 @@ export const areaOptions = () => {
     colors: ["#00BAEC", "#6e44eb"], // Line color
     legend: {
       show: true,
+      offsetY: -2,
       labels: {
         colors: chartStyle.text,
         useSeriesColors: false,
@@ -156,26 +157,26 @@ export const areaOptions = () => {
       gradient: {
         shadeIntensity: 1,
         opacityFrom: 0.2,
-        opacityTo: 0.8,
+        opacityTo: 0.3,
         colorStops: [
           {
             offset: 0,
-            color: "#00ffab",
+            color: "#6c22b1",
             opacity: 0.2,
           },
           {
             offset: 20,
-            color: "#00d4ff",
-            opacity: 0.2,
-          },
-          {
-            offset: 60,
             color: "#5c6bdb",
             opacity: 0.2,
           },
           {
+            offset: 60,
+            color: "#0088ec",
+            opacity: 0.2,
+          },
+          {
             offset: 100,
-            color: "#6c22b1",
+            color: "#00edff",
             opacity: 0.2,
           },
         ],
@@ -226,23 +227,21 @@ export const BarStackedoptions = () => {
   return {
     annotations: {},
     chart: {
+      fontFamily: "Helvetica, Arial, sans-serif",
+      fontSize: 22,
       animations: {
         enabled: false,
         easing: "swing",
       },
-      background: "#fff",
-      dropShadow: {
-        left: 21,
-      },
       foreColor: "#373D3F",
-      height: 200,
+      height: 300,
       id: "Un2mw",
       stacked: true,
       toolbar: {
         show: false,
       },
       type: "bar",
-      width: 473,
+      width: 500,
       zoom: {
         enabled: false,
       },
@@ -250,7 +249,7 @@ export const BarStackedoptions = () => {
     plotOptions: {
       bar: {
         horizontal: true,
-        barHeight: "36%",
+        barHeight: "50%",
         distributed: true,
         borderRadius: 8,
         borderRadiusApplication: "end",
@@ -259,48 +258,9 @@ export const BarStackedoptions = () => {
         isDumbbell: false,
         isFunnel: false,
         isFunnel3d: true,
-        dataLabels: {
-          position: "center",
-          total: {
-            enabled: false,
-            offsetX: 0,
-            offsetY: 0,
-            style: {
-              color: "#373d3f",
-              fontSize: "12px",
-              fontWeight: 600,
-            },
-          },
-        },
-      },
-      bubble: {
-        zScaling: true,
-      },
-      treemap: {
-        dataLabels: {
-          format: "scale",
-        },
-      },
-      radialBar: {
-        hollow: {
-          background: "#fff",
-        },
-        dataLabels: {
-          name: {},
-          value: {},
-          total: {},
-        },
-      },
-      pie: {
-        donut: {
-          labels: {
-            name: {},
-            value: {},
-            total: {},
-          },
-        },
       },
     },
+    colors: ["#893FD3", "#7A31E8", "#5D3FD3", "#3F44D3", "#2B55EB"],
     dataLabels: {
       offsetY: 1,
       style: {
@@ -330,60 +290,6 @@ export const BarStackedoptions = () => {
         vertical: 0,
       },
     },
-    series: [
-      {
-        name: "Bar 1",
-        data: [
-          {
-            x: "Item 1",
-            y: 10,
-          },
-          {
-            x: "Item 2",
-            y: 20,
-          },
-          {
-            x: "Item 3",
-            y: 30,
-          },
-          {
-            x: "Item 4",
-            y: 40,
-          },
-          {
-            x: "",
-            y: 10,
-          },
-        ],
-        zIndex: 0,
-      },
-      {
-        name: "Bar 2",
-        data: [
-          {
-            x: "Item 1",
-            y: 20,
-          },
-          {
-            x: "Item 2",
-            y: 10,
-          },
-          {
-            x: "Item 3",
-            y: 15,
-          },
-          {
-            x: "Item 4",
-            y: 25,
-          },
-          {
-            x: "",
-            y: 10,
-          },
-        ],
-        zIndex: 1,
-      },
-    ],
     stroke: {
       show: false,
       width: 3,
@@ -410,7 +316,9 @@ export const BarStackedoptions = () => {
     xaxis: {
       labels: {
         trim: true,
-        style: {},
+        style: {
+          colors: DarkMode ? "#fff" : "#000",
+        },
       },
       group: {
         groups: [],
@@ -435,7 +343,8 @@ export const BarStackedoptions = () => {
       tickAmount: 5,
       labels: {
         style: {
-          colors: [null, null, null, null, null],
+          // colors: [null, null, null, null, null],
+          colors: DarkMode ? "#fff" : "#000",
         },
       },
       title: {

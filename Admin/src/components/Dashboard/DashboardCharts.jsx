@@ -9,10 +9,12 @@ import {
 } from "../Chart/Options.jsx";
 // Layout
 import Chart from "react-apexcharts";
+import { SkeltonBox } from "../Skelton.jsx";
 // Components
 // Utils
 
 export const AreaCharts = (props) => {
+  const { title } = props;
   const [chart, setChart] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -57,18 +59,21 @@ export const AreaCharts = (props) => {
   return (
     <>
       {!chart ? (
-        <p>s</p>
+        <SkeltonBox className="h-20 lg:h-[450px] w-full rounded-xl" count={1} />
       ) : (
-        <>
+        <div className="px-2">
+          <div className="flex flex-row items-center text-left font-roboto-bold pt-2 px-2">
+            {title}
+          </div>
           <Chart
             className="m-auto w-full"
             options={chartOptions}
             series={[chart.products, chart.orders]}
             type="area" // Menggunakan tipe "area" untuk line chart dengan area diisi
             width="100%" // Atur lebar menjadi 100%
-            height={400}
+            height={380}
           />
-        </>
+        </div>
       )}
     </>
   );
@@ -157,7 +162,7 @@ export const MostViewedProducts = (props) => {
   return (
     <>
       {!charts.products[0].data ? (
-        <p>s</p>
+        <SkeltonBox className="h-20 lg:h-[450px] w-full rounded-xl" count={1} />
       ) : (
         <>
           <Chart
@@ -166,7 +171,7 @@ export const MostViewedProducts = (props) => {
             series={charts.products}
             type="bar" // Menggunakan tipe "area" untuk line chart dengan area diisi
             width="100%" // Atur lebar menjadi 100%
-            height={300}
+            height={320}
           />
           {/* ) : (
             <>Loading</>
