@@ -28,6 +28,26 @@ export const SkeltonCircle = (props) => {
   );
 };
 
+export const SkeltonBox = (props) => {
+  const {
+    className,
+    Bg = "bg-slate-200",
+    height = "h-12",
+    weight = "w-12",
+    count = 1,
+  } = props;
+  return (
+    <>
+      {Array.from({ length: count }, (_, index) => (
+        <div
+          key={index}
+          className={`animate-pulse ${className} ${Bg} ${height} ${weight}`}
+        ></div>
+      ))}
+    </>
+  );
+};
+
 export const SkeltonMyProfile = ({ children }) => {
   return (
     <div className="flex flex-col items-center justify-center h-[800px] w-full">
