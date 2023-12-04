@@ -205,7 +205,6 @@ class DashboardController extends Controller
                                         'growth' => '4.20%', ////
                                         'period' => 'Since Last Month', /////
                                         'icon' => 'MdOutlineStoreMallDirectory',
-                                        'color' => 'bg-gradient-to-r from-indigo-500 to-purple-500',
                                     ],
                                     [
                                         'name' => 'Sales',
@@ -214,7 +213,6 @@ class DashboardController extends Controller
                                         'growth' => '-1.40%', ///// temp
                                         'period' => 'Since Last Month', /////
                                         'icon' => 'MdOutlineSell',
-                                        'color' => 'bg-gradient-to-r from-blue-500 to-cyan-500',
                                     ],
                                     [
                                         'name' => 'Orders',
@@ -223,7 +221,6 @@ class DashboardController extends Controller
                                         'growth' => '72%', ///
                                         'period' => 'Since Last Month', ////
                                         'icon' => 'MdOutlineShoppingCart',
-                                        'color' => 'bg-gradient-to-r from-orange-400 from-[-40%] via-yellow-500 to-yellow-400 to-[100%]',
                                     ],
                                     [
                                         'name' => 'Users',
@@ -232,7 +229,6 @@ class DashboardController extends Controller
                                         'growth' => '20.20%', ////
                                         'period' => 'Since Last Month', ////
                                         'icon' => 'MdOutlineGroupAdd',
-                                        'color' => 'bg-gradient-to-r from-green-500 to-lime-400',
                                     ],
                                 ],
                             ]
