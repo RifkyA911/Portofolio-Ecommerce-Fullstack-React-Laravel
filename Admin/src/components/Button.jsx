@@ -185,7 +185,7 @@ export const MotionButton = (props) => {
       // ORDERS
       Pending: getStyle(
         "bg-gradient-to-r from-green-500 to-green-400",
-        icon ?? "BiDotsHorizontalRounded",
+        icon ?? "IoCartSharp",
         span ?? "???"
       ),
       "Awaiting Payment": getStyle(
@@ -195,7 +195,7 @@ export const MotionButton = (props) => {
       ),
       Processing: getStyle(
         "bg-gradient-to-r from-cyan-500 to-cyan-500",
-        icon ?? "IoCartSharp",
+        icon ?? "MdOutlinePendingActions",
         span ?? "???"
       ),
       Shipped: getStyle(
@@ -406,8 +406,8 @@ export const MotionTabs = (props) => {
   return (
     <div
       className={`w-full min-h-full ${
-        DarkMode ? "bg-gray-700" : "bg-gray-100"
-      } rounded-lg overflow-hidden flex flex-col`}
+        DarkMode ? "bg-gray-700" : "bg-gray-50"
+      } rounded-xl overflow-hidden flex flex-col`}
     >
       <div className="flex gap-4 px-2 border-b">
         {tabs.map((tab) => (
@@ -419,7 +419,7 @@ export const MotionTabs = (props) => {
           >
             <a
               href="#"
-              className="block px-4 py-2"
+              className="block px-4 py-2 font-roboto-regular"
               onClick={(e) => handleClick(e, tab)}
             >
               {tab.label}
