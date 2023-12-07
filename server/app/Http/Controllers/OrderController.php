@@ -84,6 +84,11 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        // $order_itemID = [3, 6];
+        // foreach ($order_itemID as $id) {
+        //     array_push($order_itemID, $id+1);
+        // }
+        // return $order_itemID;
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'order_item' => 'required',
@@ -101,10 +106,11 @@ class OrderController extends Controller
         }
 
         $order_item = json_decode($request->input('order_item'), true);
-        $order_id = Order::max('id') + 1;
-        $shipment_id = Shipment::max('id') + 1;
+        // $order_id = Order::max('id') + 1;
+        // $shipment_id = Shipment::max('id') + 1;
 
         $product_id = [];
+        $order_itemID = [];
         $total_price = 0;
         foreach ($order_item as $item) {
             array_push($product_id, $item['product_id']);
@@ -112,7 +118,7 @@ class OrderController extends Controller
             $item_price = $product->price * $item['quantity'];
             //##########insert tabel order_items#############
             $insertOrder_item = new Order_item;
-            $insertOrder_item->order_id = $order_id;
+            // $insertOrder_item->order_id = $order_id;
             $insertOrder_item->product_id = $item['product_id'];
             $insertOrder_item->quantity = $item['quantity'];
             $insertOrder_item->sum_price = $item_price;
@@ -124,7 +130,9 @@ class OrderController extends Controller
                 $item_price *= (100 - $item['discount']) / 100;
             }
             if ($insertOrder_item->save()) {
+                array_push($order_itemID, $insertOrder_item->id);
                 $product->stock -= $item['quantity'];
+                $product->update();
             }
             $total_price += ceil($item_price);  // bulatkan keatas hehe :v
         }
@@ -137,19 +145,26 @@ class OrderController extends Controller
             'courier_service' => $request->input('courier'),
             'cost' => $request->input('shipment_cost'),
         ];
-        if (!Shipment::create($parameterShipment)) {
+        if (!$shipment = Shipment::create($parameterShipment)) {
             return response(new PostResource(false, 'Transaksi gagal, something wrong in shipment', ['old_input' => $request->all()]), 400)->header('Content-Lenght', strlen(strval($request->all())));
         }
 
         // ###### insert Order ######
         $parameterOrder = [
             'user_id' => $request->input('user_id'),
-            'shipment_id' => $shipment_id,
+            'shipment_id' => $shipment->id,
             'status' => 'Awaiting Payment',
-            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . "/" . $request->input('user_id') . "/$order_id",
+            'no_invoice' => 'INV/' . explode("-", now())[0] . explode("-", now())[1] . "/$request->user_id",
             'total_price' => $total_price,
         ];
         if ($hasil = Order::create($parameterOrder)) {
+            $hasil->no_invoice = $hasil->no_invoice . "/$hasil->id";
+            $hasil->update();
+            foreach ($order_itemID as $id) {
+                $orderItem = Order_item::find($id);
+                $orderItem->order_id = $hasil->id;
+                $orderItem->update();
+            }
             return response(new PostResource(true, 'Transaksi berhasil', $hasil), 201)->header('Content-Lenght', strlen($hasil));
         }
         return response(new PostResource(false, 'Transaksi gagal', ['old_input' => $request->all()]), 400)->header('Content-Lenght', strlen(strval($request->all())));
@@ -218,7 +233,6 @@ class OrderController extends Controller
      */
     public function cancel(Request $request)
     {
-        // $order = Order::find($request->input('order_id'))->only(['payment_id', 'status', 'deadline_payment']);
         $order = Order::find($request->input('order_id'));
         $allowedCancel = ['pending', 'awaiting payment'];   // for user
         $forbiddenCancel = ['completed', 'delivered', 'shipped', 'returned', 'partially shipped', 'failed'];    // for admin
@@ -226,13 +240,33 @@ class OrderController extends Controller
         // for admin
         if ((AuthController::check($request) === 'admin') && ($order->deadline_payment < now()) && !in_array(strtolower($order->status), $forbiddenCancel)) {
             $order->status = 'Cancelled';
-            return new PostResource(true, 'Order berhasil dibatalkan', $order->update());
+            $order->update();
+            // mengubah comment pada order_item
+            if($hasil = Order_item::where('order_id', $order->id)->update(['comment' => 'CANCELLED'])){
+                // mengubah stok product: menambah stok sesuai jumlah pada order_item
+                foreach ($order->items as $row) {
+                    $product = Product::find($row->product_id);
+                    $product->stock += $row['quantity'];
+                    $product->update();
+                }
+            }
+            return new PostResource(true, 'Order berhasil dibatalkan', "row affected: " . $hasil*2+1);
         }
         // for user
         if ((AuthController::check($request) === 'user') && in_array(strtolower($order->status), $allowedCancel) ) {
             if ($request->input('id') == $order->user_id) {
                 $order->status = 'Cancelled';
-                return new PostResource(true, 'Order berhasil dibatalkan', $order->update());
+                $order->update();
+                // mengubah comment pada order_item
+                if($hasil = Order_item::where('order_id', $order->id)->update(['comment' => 'CANCELLED'])){
+                    // mengubah stok product: menambah stok sesuai jumlah pada order_item
+                    foreach ($order->items as $row) {
+                        $product = Product::find($row->product_id);
+                        $product->stock += $row['quantity'];
+                        $product->update();
+                    }
+                }
+                return new PostResource(true, 'Order berhasil dibatalkan', "row affected: " . $hasil*2+1);
             }
             return response(new PostResource(false, 'Akun anda tidak bisa membatalkan pesanan akun lain', 'forbidden action detected'), 403);
         }
@@ -248,7 +282,7 @@ class OrderController extends Controller
     {
         $order = Order::find($request->input('id'));
         // check if admin is same as Order's admin_id, or th user is same as Order's user_id
-        if (((AuthController::check($request) === 'admin') && ($request->input('admin_id') == $order->admin_id) && (Shipment::find($request->input('id'))->value('status') == 'Delivered')) 
+        if (((AuthController::check($request) === 'admin') && ($request->input('admin_id') == $order->admin_id) && (Shipment::find($order->payment_id)->value('status') == 'Delivered')) 
         || ($order->user_id == $request->input('user_id') && in_array(Shipment::find($request->input('id'))->value('status'), ['Shipping', 'Delivered']))) {
             $order->status = 'Completed';
             return new PostResource(true, 'Status transaksi berhasil diubah', $order->update());

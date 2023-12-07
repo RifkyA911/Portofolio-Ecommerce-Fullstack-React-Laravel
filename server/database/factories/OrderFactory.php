@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,16 +18,16 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        $currentDate = now(); // Mendapatkan tanggal dan waktu sekarang
+        $randomDay = rand(1, 31); // get substraction number to varies te date
+        $currentDate = now()->subDays($randomDay); // Mendapatkan tanggal dan waktu dikurangi $randomDay
+        $deadlinePayment_date = now()->subDays($randomDay - 1); // tanggal deadline payment sehari setelah
 
-        // Mengurangkan 1 hari dari tanggal sekarang
-        $updatedDate = $currentDate->subDay();
+        // random user_id
+        $userID = rand(1, 10);
+        // $idOrder = Order::max('id') + 1;
 
         return [
-            'user_id' => function () {
-                // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
-                return rand(1, 10);
-            },
+            'user_id' => $userID,
             'admin_id' => function () {
                 // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
                 return rand(1, 10);
@@ -38,14 +40,20 @@ class OrderFactory extends Factory
                 // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
                 return rand(1, 10);
             },
-            'no_invoice' => function () {
-                // return random user_id, atau sesuaikan dengan kebutuhan aplikasi Anda
-                return 'INV/202312/' . rand(1, 10) . '/' . rand(1, 100);
-            },
+            'no_invoice' => 'INV/' . explode("-", $currentDate)[0] . explode("-", $currentDate)[1] . "/$userID",
             'total_price' => $this->faker->randomNumber(4),
             'status' => $this->faker->randomElement(['Pending', 'Awaiting Payment', 'Processing', 'Shipped', 'Delivered', 'Completed', 'Cancelled', 'On Hold', 'Returned', 'Partially Shipped', 'Backordered', 'Failed']),
-            // 'deadline' => $this->faker->randomNumber(3),
-            'updated_at' => $updatedDate, // Menambahkan updated_at
+            'deadline_payment' => $deadlinePayment_date,
+            'updated_at' => $currentDate, // Menambahkan updated_at
         ];
+    }
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Order $order){
+            $order->timestamps = false;
+            $order->no_invoice = $order->no_invoice . "/$order->id";
+            $order->update();
+            $order->timestamps = true;
+        });
     }
 }

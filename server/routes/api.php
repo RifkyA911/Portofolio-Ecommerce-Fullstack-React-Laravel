@@ -1,22 +1,24 @@
 <?php
 
+use App\Models\Message;
+use App\Models\Shipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AdminsController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoriesController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DialogController;
 use App\Http\Controllers\ImagesController;
-use App\Http\Controllers\MessageController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\OrderController;
-use App\Models\Message;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -178,6 +180,15 @@ Route::controller(OrderController::class)->group(function () {
     // Endpoint tahap order by admin
     // ketentuan sama dengan endpoint user
     Route::get('/order/admin/{admin_id}/{tahap?}', 'showByAdmin'); // parameter admin_id, tahap(optional)
+});
+
+// Endpoint Shipment
+// all of them need 'token' parameter
+Route::controller(ShipmentController::class)->group(function () {
+    Route::get('/shipments', 'index');
+    Route::post('/shipment/{shipment}/{status?}', 'show');    // shipment = shipment's ID
+    Route::post('/shipment/update/{shipment}', 'update');   // shipment = shipment's ID
+    Route::post('/shipment/addlog/{shipment}', 'addLog');   // shipment = shipment's ID
 });
 
 // Endpoint Review
