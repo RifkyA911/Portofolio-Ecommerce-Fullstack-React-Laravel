@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -259,6 +260,29 @@ class DashboardController extends Controller
                         'sales-' . $monthName => $sales,
                         'order_data' => $ordersData,
                     ],
+                ]
+            );
+        }
+        return response(['message' => 'no matched chart types', 'length' => 0, 'data' => []], 404);
+    }
+
+    public function getRanking($type, $sortOrder = "asc")
+    {
+        $page = 1; // halaman
+        $perPage = 10; // jumlah data yang akan di kirim
+        $offset = ($page - 1) * $perPage;
+
+        if ($type == 'reviews') {
+            $length = Review::count();
+            $Reviews = Review::groupBy('product_id')
+                ->selectRaw('id,user_id, product_id, AVG(rating) as rating')
+                ->orderBy('product_id', 'desc')
+                ->get();
+            return response()->json(
+                [
+                    'message' => 'berhasil fetching',
+                    'length' => ['reviews' => $length, 'product' => $length],
+                    'data' => $Reviews
                 ]
             );
         }

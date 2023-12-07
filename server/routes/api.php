@@ -57,6 +57,7 @@ Route::controller(ImagesController::class)->group(function () {
 Route::controller(DashboardController::class)->group(function () {
     Route::get('/dashboard/chart/{type}/{orderBy?}', 'getCharts'); // parameter id
     Route::get('/dashboard/summary/{type}/{orderBy?}', 'getSummary'); // parameter id
+    Route::get('/dashboard/ranking/{type}/{orderBy?}', 'getRanking'); // parameter id
 });
 
 // Endpoint Admin
