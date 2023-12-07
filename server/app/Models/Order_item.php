@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Order_item extends Model
-{
+class Order_item extends Model {
     use HasFactory;
     protected $guarded = ['id'];
     public $timestamps = false;
@@ -16,7 +15,7 @@ class Order_item extends Model
 
     // relation
     public function product(): BelongsTo {
-        return $this->belongsTo(Product::class)->select(['id','name']);
+        return $this->belongsTo(Product::class)->select(['id', 'name', 'pict', 'category_id']);
     }
 
     public function order(): BelongsTo {
