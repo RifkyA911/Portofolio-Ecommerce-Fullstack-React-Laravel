@@ -214,6 +214,11 @@ class DatabaseSeeder extends Seeder
             'total_price' => 20000 + (Product::where('id', 2)->value('price') * 2),
             'status' => 'Returned',
         ]);
+        $orderFactory = Order::factory(5)->create();
+        // foreach ($orderFactory as $order) {
+        //     $order->no_invoice += strval($order->id);
+        //     $order->update();
+        // }
 
         // order_items
         Order_item::create([

@@ -19,7 +19,7 @@ class Shipment_logFactory extends Factory
     public function definition(): array
     {
         return [
-            'shipment_id' => $this->faker->randomNumber(1),
+            'shipment_id' => rand(1,10),
             'log' => implode(' ', $this->faker->sentences())
         ];
     }

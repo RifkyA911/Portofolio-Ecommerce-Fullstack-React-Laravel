@@ -16,12 +16,10 @@ class Product extends Model
     protected $fillable = ['viewed', /* kolom lainnya */];
 
     // relation
-    public function review(): HasMany
-    {
+    public function review(): HasMany {
         return $this->hasMany(Review::class);
     }
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class);
+    public function category(): BelongsTo {
+        return $this->belongsTo(Category::class)->select(['id','name']);
     }
 }

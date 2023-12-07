@@ -33,7 +33,7 @@ class ProductFactory extends Factory
             'category_id' => $this->faker->randomDigitNot(0),
             'price' => $this->faker->randomNumber(4),
             'stock' => $this->faker->randomNumber(3),
-            'discount' => $this->faker->randomNumber(3),
+            'discount' => $this->faker->randomNumber(2),
             // 'pict' => Str::random(6) . '.jpg',
             // 'pict' => 'default.jpg',
             'viewed' => $this->faker->randomNumber(6), // Menggunakan nama file acak

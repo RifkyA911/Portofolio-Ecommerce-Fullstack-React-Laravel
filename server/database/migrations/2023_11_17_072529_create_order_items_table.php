@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Order::class); //order_id
+            $table->foreignIdFor(Order::class)->nullable()->default(null); //order_id
             $table->foreignIdFor(Product::class);   //product_id
             $table->integer('quantity');    // number of bought product
             $table->integer('sum_price');   // quantity X price per unit
