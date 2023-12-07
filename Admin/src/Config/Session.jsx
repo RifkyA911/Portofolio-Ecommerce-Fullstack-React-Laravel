@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import jwtDecode from "jwt-decode";
 import RequestAPI from "./API";
+import { deleteCookie, getCookie } from "./Cookies";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -37,24 +38,6 @@ export const getAccessToken = () => {
     return null;
   }
 };
-
-export function getCookie(cookieName) {
-  const cookies = document.cookie.split(";");
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i].trim();
-    // Check if the cookie starts with the specified name
-    if (cookie.startsWith(`${cookieName}=`)) {
-      // Return the value of the cookie
-      return cookie.substring(cookieName.length + 1);
-    }
-  }
-  // Return null if the cookie is not found
-  return null;
-}
-
-export function deleteCookie(cookieName) {
-  document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
-}
 
 export const validateAccessToken = async (props) => {
   const { data } = await RequestAPI("admin/cek", "POST", null);

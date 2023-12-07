@@ -89,6 +89,7 @@ export const getApiUrl = (endpointType, data) => {
     } else if (
       URL_Segments[1] == "chart" ||
       URL_Segments[1] == "summary" ||
+      URL_Segments[1] == "ranking" ||
       URL_Segments[1] == "fetch" ||
       URL_Segments[1] == "update" ||
       URL_Segments[1] == "delete" ||

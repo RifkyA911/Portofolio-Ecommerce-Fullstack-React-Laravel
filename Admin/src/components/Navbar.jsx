@@ -511,7 +511,7 @@ export const NavbarComponent = () => {
                   >
                     <div className="flex flex-row items-center border-t border-b py-2 px-6 transition duration-150 ease-in-out hover:bg-sky-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
                       <div className="flex toggle-theme mb-1 py-1">
-                        {BgColor != "bg-white" ? (
+                        {DarkMode == true ? (
                           <ReactIcons
                             iconName="MdNightsStay"
                             className="text-sky-800 mr-3 transition-transform fade duration-300"

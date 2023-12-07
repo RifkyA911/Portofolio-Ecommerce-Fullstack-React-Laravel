@@ -283,10 +283,11 @@ const Dashboard = (props) => {
             <div className="flex lg:max-h-[900px]">
               <div className="flex flex-col lg:flex-row w-full ">
                 <div
-                  className={`${BgColor} ${textColor} rounded-xl h-20 lg:h-[500px] w-full lg:w-7/12 mr-4 `}
+                  className={`${BgColor} ${textColor} rounded-xl h-20 lg:h-[500px] w-full lg:w-7/12 mr-4 border`}
                 >
-                  <div className="my-auto overflow-x-auto border h-full py-2">
+                  <div className="my-auto overflow-x-auto h-full py-2">
                     <TableReview
+                      url="dashboard/ranking/reviews"
                       title={
                         <>
                           <ReactIcons
@@ -301,9 +302,9 @@ const Dashboard = (props) => {
                   </div>
                 </div>
                 <div
-                  className={`${BgColor} ${textColor} rounded-xl h-20 px-4 lg:h-[500px] w-full lg:w-5/12 border`}
+                  className={`${BgColor} ${textColor} rounded-xl h-20 px-0 lg:h-[500px] w-full lg:w-5/12 border`}
                 >
-                  <OrdersStatistic
+                  <LineCharts
                     title={
                       <>
                         <ReactIcons
@@ -317,7 +318,7 @@ const Dashboard = (props) => {
                   <ol role="list" className="divide-y divide-slate-200">
                     <li className="flex items-center py-2 first:pt-0 last:pb-0">
                       <ReactIcons
-                        iconName="IoBarChart"
+                        iconName="FaPaypal"
                         className="text-indigo-500"
                       />
                       <p className="pl-2 font-roboto-medium">

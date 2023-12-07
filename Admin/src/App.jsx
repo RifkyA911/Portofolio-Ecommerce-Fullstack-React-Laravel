@@ -9,24 +9,19 @@ import {
   Link,
 } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { navLink } from "./Redux/Slices/NavigationSlice";
-
-// Utils
-import MyAppRoutes from "./Config/MyAppRoutes";
-import {
-  getAccessToken,
-  getCookie,
-  getUser,
-  validateAccessToken,
-} from "./Config/Session";
-import LoginRouter from "./Config/LoginRouter";
-import MyJump from "./utils/MyJump";
 import { clearSession, updateCredentials } from "./Redux/Slices/UserSlice";
-import { IsScreenResize } from "./utils/Solver";
+// Config
+import MyAppRoutes from "./Config/MyAppRoutes";
+import { getAccessToken, getUser, validateAccessToken } from "./Config/Session";
+import LoginRouter from "./Config/LoginRouter";
 import RequestAPI, { getApiUrl } from "./Config/API";
+// Utils
+import MyJump from "./utils/MyJump";
+import { IsScreenResize } from "./utils/Solver";
+import { getCookie } from "./Config/Cookies";
 // import Summary from "./utils/Summary";
 
 const appMode = import.meta.env.MODE;
