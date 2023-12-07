@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { refreshScreen } from "./../Redux/Slices/UISlice.js";
+import { refreshScreen } from "./../Redux/Slices/UISlice";
 import { DateFormatter } from "./Formatter.js";
 
 // Fungsi untuk membandingkan objek secara mendalam
