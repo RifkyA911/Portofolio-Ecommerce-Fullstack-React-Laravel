@@ -31,7 +31,8 @@ import RequestAPI from "./../../Config/API";
 
 export const CategorisContext = createContext();
 
-export default function TableReview() {
+export default function TableReview(props) {
+  const { url, title, className } = props;
   // ---- Basic States ----
   const [categories, setCategories] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -104,7 +105,7 @@ export default function TableReview() {
 
   // ===================== MyTableEngine =====================
   useEffect(() => {
-    fetchData(URL_CATEGORIES, table);
+    fetchData(url ?? URL_CATEGORIES, table);
     // fetchData(URL_ALL_CATEGORIES, table);
     if (categories !== null && categories !== undefined) {
       setColspan(columnOrder.length + 1);
@@ -289,127 +290,134 @@ export default function TableReview() {
                 />
               )}
               {/* ================ Table ================ */}
-
-              <MyTableEngine
-                {...MyTableEngineProps}
-                className="rounded-sm mx-auto min-w-full"
-              >
-                <Thead
-                  className={`bg-white {BgOuterTable} ${textColor} text-xs`}
+              <div className={`px-2`}>
+                <div
+                  className={`${className} flex flex-row items-center font-roboto-bold py-2 px-2 border-b mb-2`}
                 >
-                  <Tr key="TableHead" className={table_styling.tr}>
-                    {table_styling.th.map((th, index) => (
+                  {title}
+                </div>
+                <MyTableEngine
+                  {...MyTableEngineProps}
+                  className="rounded-sm mx-auto min-w-full"
+                >
+                  <Thead
+                    className={`bg-white {BgOuterTable} ${textColor} text-xs`}
+                  >
+                    <Tr key="TableHead" className={table_styling.tr}>
+                      {table_styling.th.map((th, index) => (
+                        <Th
+                          key={index}
+                          name={th.key === "id" ? "" : th.key}
+                          column={th.key}
+                          feature={th.feature}
+                          sortOrder="asc"
+                          className={th.style}
+                          // hidden={
+                          //   th.key === "created_at" || th.key === "updated_at"
+                          //     ? true
+                          //     : false
+                          // }
+                        ></Th>
+                      ))}
                       <Th
-                        key={index}
-                        name={th.key === "id" ? "" : th.key}
-                        column={th.key}
-                        feature={th.feature}
-                        sortOrder="asc"
-                        className={th.style}
-                        // hidden={
-                        //   th.key === "created_at" || th.key === "updated_at"
-                        //     ? true
-                        //     : false
-                        // }
+                        key={55}
+                        name="Action"
+                        column="Action"
+                        feature={null}
+                        className="print:hidden capitalize px-4"
                       ></Th>
-                    ))}
-                    <Th
-                      key={55}
-                      name="Action"
-                      column="Action"
-                      feature={null}
-                      className="print:hidden capitalize px-4"
-                    ></Th>
-                  </Tr>
-                </Thead>
-                <Tbody className={table_styling.tbody}>
-                  {categories.map((row, index) => (
-                    <Tr
-                      key={index}
-                      className={`${table_styling.tr} divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50`}
-                    >
-                      {toggleSelect ? (
-                        <>
-                          {row.role != 0 ? (
-                            <>
-                              <Th
-                                key={index}
-                                feature={"select"}
-                                onChange={() =>
-                                  handleCheckboxChange(
-                                    row.id,
-                                    row.name,
-                                    row.pict
-                                  )
-                                }
-                                selectedRows={selectedRows}
-                                rowId={row.id}
-                                className=""
-                              >
-                                {selectedRows.some(
-                                  (item) => item.id === row.id
-                                ) ? (
-                                  <button
-                                    onClick={() =>
-                                      handleCheckboxChange(
-                                        row.id,
-                                        row.name,
-                                        row.pict
-                                      )
-                                    }
-                                    className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
-                                  ></button>
-                                ) : (
-                                  <button
-                                    onClick={() =>
-                                      handleCheckboxChange(
-                                        row.id,
-                                        row.name,
-                                        row.pict
-                                      )
-                                    }
-                                    className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
-                                  ></button>
-                                )}
-                              </Th>
-                            </>
-                          ) : (
-                            <th className="cursor-not-allowed">
-                              <MuiIcon iconName="BlockRounded" />
-                            </th>
-                          )}
-                        </>
-                      ) : (
-                        <>
-                          <Th
-                            key={index}
-                            className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-[1%] p-0 font-roboto-bold text-xs border-b-[2px] border-white`}
-                          >
-                            {parseInt(row.id) == 0
-                              ? parseInt(row.id) + 1
-                              : row.id}
-                          </Th>
-                        </>
-                      )}
-                      <Td className={` w-3/12`}>{row.user.username}</Td>
-                      <Td className={`${table_styling.td} w-3/12`}>
-                        {row.product.name}
-                      </Td>
-                      <Td className={`px-6 ${table_styling.td} w-3/12`}>
-                        <Rating
-                          size="small"
-                          name="read-only"
-                          value={row.rating}
-                          readOnly
-                        />
-                      </Td>
-                      <Td className="">
-                        <small>{DateFormatter("Day", row.updated_at)}</small>
-                      </Td>
                     </Tr>
-                  ))}
-                </Tbody>
-              </MyTableEngine>
+                  </Thead>
+                  <Tbody className={table_styling.tbody}>
+                    {categories.map((row, index) => (
+                      <Tr
+                        key={index}
+                        className={`${table_styling.tr} divide-y font-roboto-medium capitalize text-gray-900 odd:bg-white even:bg-slate-50`}
+                      >
+                        {toggleSelect ? (
+                          <>
+                            {row.role != 0 ? (
+                              <>
+                                <Th
+                                  key={index}
+                                  feature={"select"}
+                                  onChange={() =>
+                                    handleCheckboxChange(
+                                      row.id,
+                                      row.name,
+                                      row.pict
+                                    )
+                                  }
+                                  selectedRows={selectedRows}
+                                  rowId={row.id}
+                                  className=""
+                                >
+                                  {selectedRows.some(
+                                    (item) => item.id === row.id
+                                  ) ? (
+                                    <button
+                                      onClick={() =>
+                                        handleCheckboxChange(
+                                          row.id,
+                                          row.name,
+                                          row.pict
+                                        )
+                                      }
+                                      className="absolute top-0 left-0 w-full h-full bg-gray-500 opacity-20 cursor-pointer"
+                                    ></button>
+                                  ) : (
+                                    <button
+                                      onClick={() =>
+                                        handleCheckboxChange(
+                                          row.id,
+                                          row.name,
+                                          row.pict
+                                        )
+                                      }
+                                      className="absolute top-0 left-0 w-full h-full bg-transparent hover:bg-gray-500 opacity-10 cursor-pointer"
+                                    ></button>
+                                  )}
+                                </Th>
+                              </>
+                            ) : (
+                              <th className="cursor-not-allowed">
+                                <MuiIcon iconName="BlockRounded" />
+                              </th>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <Th
+                              key={index}
+                              className={`{BgOuterTable} bg-slate-100 text-gray-600 text-center w-[1%] p-0 font-roboto-bold text-xs border-b-[2px] border-white`}
+                            >
+                              {/* {parseInt(row.id) == 0
+                                ? parseInt(row.id) + 1
+                                : row.id} */}
+                              {index + 1}
+                            </Th>
+                          </>
+                        )}
+                        <Td className={` w-3/12`}>{row.user.username}</Td>
+                        <Td className={`${table_styling.td} w-3/12`}>
+                          {row.product.name}
+                        </Td>
+                        <Td className={`px-6 ${table_styling.td} w-3/12`}>
+                          <Rating
+                            size="small"
+                            name="read-only"
+                            value={row.rating}
+                            readOnly
+                          />
+                        </Td>
+                        <Td className="">
+                          <small>{DateFormatter("Day", row.updated_at)}</small>
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </MyTableEngine>
+              </div>
             </div>
           ) : (
             // </CategorisContext.Provider>

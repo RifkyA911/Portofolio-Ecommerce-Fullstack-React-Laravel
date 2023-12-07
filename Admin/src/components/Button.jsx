@@ -185,7 +185,7 @@ export const MotionButton = (props) => {
       // ORDERS
       Pending: getStyle(
         "bg-gradient-to-r from-green-500 to-green-400",
-        icon ?? "IoCartSharp",
+        icon ?? "BsCartCheckFill",
         span ?? "???"
       ),
       "Awaiting Payment": getStyle(
@@ -409,12 +409,12 @@ export const MotionTabs = (props) => {
         DarkMode ? "bg-gray-700" : "bg-gray-50"
       } rounded-xl overflow-hidden flex flex-col`}
     >
-      <div className="flex gap-4 px-2 border-b">
+      <div className="flex flex-row justify-between gap-4 px-2 border-b max-h-[40px]">
         {tabs.map((tab) => (
           <div
             key={tab.name}
             className={`relative ${
-              isSelected(tab) ? "text-blue-500" : `${textColor}`
+              isSelected(tab) ? "text-blue-700" : `${textColor}`
             }`}
           >
             <a
@@ -436,7 +436,7 @@ export const MotionTabs = (props) => {
       </div>
 
       <div
-        className={`flex flex-col p-4 ${BgColor} ${textColor} overflow-auto h-full`}
+        className={`flex flex-col px-4 py-3 ${BgColor} ${textColor} overflow-auto h-full shadow-inner`}
       >
         <AnimatePresence mode="wait">
           <motion.div

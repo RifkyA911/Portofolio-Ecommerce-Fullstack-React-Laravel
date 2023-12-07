@@ -42,12 +42,12 @@ export const OrderStatus = (props) => {
 };
 
 export const OrderIconStatus = (props) => {
-  const { status, fontSize = 30 } = props;
+  const { status, fontSize = 28 } = props;
 
   const statusColors = {
     Pending: {
       color: "text-green-500",
-      icon: "IoCartSharp",
+      icon: "BsCartCheckFill",
     },
     "Awaiting Payment": {
       color: "text-orange-400",
@@ -98,11 +98,13 @@ export const OrderIconStatus = (props) => {
   const statusColor = statusColors[status] || "bg-gray-400"; // Jika status tidak ditemukan, gunakan warna default
 
   return (
-    <ReactIcons
-      iconName={statusColor.icon ?? "FaQuestion"}
-      fontSize={fontSize}
-      className={statusColor.color}
-    />
+    <span className="">
+      <ReactIcons
+        iconName={statusColor.icon ?? "FaQuestion"}
+        fontSize={fontSize}
+        className={statusColor.color}
+      />
+    </span>
   );
 };
 

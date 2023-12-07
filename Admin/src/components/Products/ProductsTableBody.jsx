@@ -9,6 +9,7 @@ import { CurrencyFormatter, DateFormatter } from "../../utils/Formatter";
 import ReactSlider from "react-slider";
 import { NumberInput, SelectInput } from "../Form";
 import { isClickedOutside } from "../../utils/Solver";
+import { ServerPublic } from "../../Config/API";
 
 const SuperAdminKey = import.meta.env.VITE_SUPER_AUTHORIZATION_PASSWORD;
 const ServerProductsImg = import.meta.env.VITE_SERVER_PUBLIC_PRODUCT;
@@ -129,7 +130,9 @@ export const ProductImage = (props) => {
         <img
           // src={`${ServerAPIProductsImg}${data.id ? data.id : "not_found.jpg"}`} // will cause too many req issue
           // src={`${ServerProductsImg}${data.pict ? data.pict : "not_found.jpg"}`}
-          src={`${ServerProductsImg}${data.pict ? data.pict : "not_found.jpg"}`}
+          src={`${ServerPublic("products")}${
+            data.pict ? data.pict : "not_found.jpg"
+          }`}
           className={`w-[50px] h-full text-center`}
         />
       </div>

@@ -69,13 +69,13 @@ export const OrdersDetailsForm = (props) => {
     <>
       {data && (
         <div className="flex flex-col md:flex-row justify-center items-start py-2 px-6 text-xs min-h-[500px] gap-4">
-          {/* Form */}
-          <div className="flex flex-col gap-3 justify-start items-center w-full md:w-8/12 lg:w-6/12 font-roboto-medium ">
-            <div className="w-full flex flex-row gap-4 justify-between items-center">
+          <div className="flex flex-col gap-4 justify-start items-center w-full md:w-8/12 lg:w-6/12 font-roboto-medium divide-y first:pt-0 last:pb-0">
+            {/* ----------- id -----------*/}
+            <div className="w-full flex flex-row gap-4 justify-between items-center ">
               <TextInput
                 formContext={ModalContext}
                 disabled
-                className={`flex gap-4 flex-col w-full`}
+                className={`flex gap-4 flex-col w-4/12`}
                 label="No. Invoice"
                 inputClassName={inputClassName}
                 name="no_invoice"
@@ -84,70 +84,21 @@ export const OrdersDetailsForm = (props) => {
               <TextInput
                 formContext={ModalContext}
                 disabled
-                className={`flex gap-4 flex-col w-full`}
+                className={`flex gap-4 flex-col w-4/12`}
                 label="Customer Name"
                 inputClassName={inputClassName}
                 name="user.username"
                 placeholder="Masukkan Nama Customer"
               />
-              <div className="flex flex-col justify-between gap-4">
+              <div className="flex flex-col justify-between gap-4 w-3/12">
                 <label className="font-roboto-bold text-sm text-left">
                   Status{" "}
                 </label>
                 <OrderStatus status={data ? data.status : "Pending"} />
               </div>
             </div>
-            <div className="w-full flex flex-row justify-between items-center">
-              {/* <NumberInput
-                formContext={ModalContext}
-                disabled
-                className={`flex gap-4 flex-col w-1/2 mr-2 `}
-                prefix="Rp. "
-                label="Total Price (IDR)"
-                name="total_price"
-                limitDigits={MaxLimit}
-                placeholder="Masukkan Harga"
-                style={inputClassName}
-              /> */}
-              {/* <NumberInput
-              formContext={ModalContext}
-              disabled
-              className={`flex gap-4 flex-col w-1/2 ml-2`}
-              suffix=" %"
-              label="Discount %"
-              name="items.discount"
-              limitDigits={1000}
-              decimalOptions={3}
-              placeholder="Masukkan Harga"
-              style={inputClassName}
-            /> */}
-            </div>
-            <div className="w-full flex flex-row gap-4 justify-between items-center">
-              {/* <SelectInput
-              formContext={ModalContext}
-              className={`flex gap-4 flex-col w-1/2`}
-              label="Status"
-              name="status"
-              customControlStyles={(base) => ({
-                ...base,
-                maxHeight: 12,
-              })}
-              // style="h-[38px]"
-              // options={convertedOptions}
-            /> */}
-              {/* <NumberInput
-              formContext={ModalContext}
-              disabled
-              className={`flex gap-4 flex-col w-1/2`}
-              prefix=""
-              label="Total Items"
-              name="total_quantity"
-              limitDigits={1000}
-              placeholder="Masukkan Harga"
-              style={inputClassName}
-            /> */}
-            </div>
-            <div className="flex flex-col justify-start w-full gap-4 pb-2">
+            {/* ----------- Products -----------*/}
+            <div className="flex flex-col justify-start w-full gap-4 py-2">
               <label className="font-roboto-bold text-sm text-left">
                 List Products
               </label>
@@ -167,15 +118,11 @@ export const OrdersDetailsForm = (props) => {
                     <tr key={product.id} className="divide-y p">
                       <td className="p-0 w-0 bg-slate-100">{index + 1}</td>
                       <td className="px-4 py-1 flex flex-row items-center">
-                        {/* <img src="" /> */}
-                        <ProductImage
-                          data={data}
-                          onProductPictureClick={() => console.log("")}
-                        />
+                        <ProductImage data={product.product} />
                         <p>{product.product.name}</p>
                       </td>
                       <td className="px-4 py-1">
-                        <p>{product.product.category ?? "???"}</p>
+                        <p>{product.product.category.name ?? "???"}</p>
                       </td>
                       <td className="px-4 py-1">
                         <p>{product.quantity}</p>
@@ -190,35 +137,36 @@ export const OrdersDetailsForm = (props) => {
                   ))}
                 </tbody>
               </table>
-              <TextArea
-                formContext={ModalContext}
-                disabled
-                className={`flex gap-4 flex-col w-full text-xs`}
-                label="Address"
-                name="user.address"
-                placeholder="tamnbahkan deskripsi"
-              />
             </div>
+            <TextArea
+              formContext={ModalContext}
+              disabled
+              className={`flex gap-4 flex-col w-full text-xs py-2`}
+              label="Address"
+              name="user.address"
+              placeholder="tamnbahkan deskripsi"
+            />
           </div>
           {/* Timeline */}
-          <div className="flex flex-col gap-4 justify-start items-start w-full md:w-4/12 lg:w-6/12">
-            <label className="font-roboto-bold text-sm text-left">
-              Info Pembayaran
-            </label>
-            {data && (
-              <table className="w-full text-center border">
-                <thead className={`bg-gray-200 font-roboto-regular`}>
-                  <tr>
-                    <th>No</th>
-                    <th>Transaction ID</th>
-                    <th>Amount</th>
-                    <th>Payment Method</th>
-                    <th>Status</th>
-                    <th>Updated At</th>
-                  </tr>
-                </thead>
-                <tbody className="font-roboto-medium max-h-20 overflow-y-scroll">
-                  {data.items.map((product, index) => (
+          <div className="flex flex-col gap-4 justify-start items-start w-full md:w-4/12 lg:w-6/12 divide-y">
+            <div className="w-full flex flex-col gap-4 justify-between">
+              <label className="font-roboto-bold text-sm text-left">
+                Info Pembayaran
+              </label>
+              {data && (
+                <table className="w-full text-center border">
+                  <thead className={`bg-gray-200 font-roboto-regular`}>
+                    <tr>
+                      <th>No</th>
+                      <th>Transaction ID</th>
+                      <th>Amount</th>
+                      <th>Payment Method</th>
+                      <th>Status</th>
+                      <th>Updated At</th>
+                    </tr>
+                  </thead>
+                  <tbody className="font-roboto-medium max-h-20 overflow-y-scroll">
+                    {/* {data.items.map((product, index) => (
                     <tr key={product.id} className="divide-y p">
                       <td className="p-0 w-0 bg-slate-100">{index + 1}</td>
                       <td className="px-4 py-1">
@@ -237,30 +185,32 @@ export const OrdersDetailsForm = (props) => {
                         <p>{product.sum_price}</p>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-            <label className="font-roboto-bold text-sm text-left">
-              Info Pengiriman
-            </label>
-            {data && (
-              <table className="w-full text-center border">
-                <thead className={`bg-gray-200 font-roboto-regular`}>
-                  <tr>
-                    <th>No</th>
-                    <th>Tracking ID</th>
-                    <th>Courier</th>
-                    <th>Consignee</th>
-                    <th>Adress</th>
-                    <th>Contact</th>
-                    <th>Cost</th>
-                    <th>Created At</th>
-                    {/* SHIPEMTNS LOG */}
-                  </tr>
-                </thead>
-                <tbody className="font-roboto-medium max-h-20 overflow-y-scroll">
-                  {data.items.map((product, index) => (
+                  ))} */}
+                  </tbody>
+                </table>
+              )}
+            </div>
+            <div className="w-full flex flex-col gap-4 justify-between py-2">
+              <label className="font-roboto-bold text-sm text-left">
+                Info Pengiriman
+              </label>
+              {data && (
+                <table className="w-full text-center border">
+                  <thead className={`bg-gray-200 font-roboto-regular`}>
+                    <tr>
+                      <th>No</th>
+                      <th>Tracking ID</th>
+                      <th>Courier</th>
+                      <th>Consignee</th>
+                      <th>Adress</th>
+                      <th>Contact</th>
+                      <th>Cost</th>
+                      <th>Created At</th>
+                      {/* SHIPEMTNS LOG */}
+                    </tr>
+                  </thead>
+                  <tbody className="font-roboto-medium max-h-20 overflow-y-scroll">
+                    {/* {data.items.map((product, index) => (
                     <tr key={product.id} className="divide-y p">
                       <td className="p-0 w-0 bg-slate-100">{index + 1}</td>
                       <td className="px-4 py-1">
@@ -279,11 +229,12 @@ export const OrdersDetailsForm = (props) => {
                         <p>{product.sum_price}</p>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-            <div className="flex flex-row m-4">
+                  ))} */}
+                  </tbody>
+                </table>
+              )}
+            </div>
+            <div className="w-full flex flex-row">
               <ul className="timeline timeline-vertical w-3/4">
                 <li>
                   <div className="timeline-start">1984</div>
