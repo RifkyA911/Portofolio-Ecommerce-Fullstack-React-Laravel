@@ -38,7 +38,7 @@ build with https://readme.so/editor
 Install my-project with npm
 
 ```bash
-  npm install my-project
+  npm install
   cd my-project
 ```
 
