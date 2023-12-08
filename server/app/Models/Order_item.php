@@ -10,7 +10,6 @@ class Order_item extends Model {
     use HasFactory;
     protected $guarded = ['id'];
     public $timestamps = false;
-    // protected $with = ['product:name,price', 'order'];
     protected $with = ['product'];
 
     // relation

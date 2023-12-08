@@ -26,7 +26,11 @@ class ShipmentController extends Controller
      */
     public function showByStatus(Request $request)
     {
-        //
+        if (AuthController::check($request)) {
+            $data = Shipment::where('status', 'LIKE', ucwords($request->input('status')))->with('ship_log:id,shipment_id,log,updated_at')->get();
+            return response(new PostResource(true, 'Data Pengiriman', $data))->header('Content-Lenght', strlen(strval($data)));
+        }
+        return response(new PostResource(false, 'Access forbidden', null), 403)->header('Content-Lenght', strlen('Access forbidden'));
     }
 
     /**
@@ -40,14 +44,10 @@ class ShipmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Shipment $shipment, Request $request, $status = null)
+    public function show(Shipment $shipment, Request $request)
     {
         if (AuthController::check($request)) {
-            if ($status == null) {
-                return response(new PostResource(true, 'Data Pengiriman', $shipment->load('ship_log:id,shipment_id,log,updated_at')))->header('Content-Lenght', strlen(strval($shipment)));
-            }
-            $data = $shipment->where('status', 'LIKE', ucwords($status))->with('ship_log:id,shipment_id,log,updated_at')->get();
-            return response(new PostResource(true, 'Data Pengiriman', $data))->header('Content-Lenght', strlen(strval($data)));
+            return response(new PostResource(true, 'Data Pengiriman', $shipment->load('ship_log:id,shipment_id,log,updated_at')))->header('Content-Lenght', strlen(strval($shipment)));
         }
         return response(new PostResource(false, 'Access forbidden', null), 403)->header('Content-Lenght', strlen('Access forbidden'));
     }

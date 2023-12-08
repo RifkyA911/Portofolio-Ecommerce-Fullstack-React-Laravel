@@ -13,6 +13,7 @@ use App\Http\Controllers\DialogController;
 use App\Http\Controllers\ImagesController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\WishlistController;
@@ -171,6 +172,7 @@ Route::controller(OrderController::class)->group(function () {
     Route::post('/order/sent', 'sent'); // parameter id, admin_id, role_admin
     Route::post('/order/done', 'done'); // parameter id. user_id OR (admin_id & role_admin)
     Route::post('/order/cancel', 'cancel'); // parameter id, admin_id, role_admin, comment
+    Route::post('/order/status', 'updateStatus'); // parameter token, id(oredr's ID), status
     // Endpoint tahap order by user
     // parameter tahap berisi null, checkedout, sent, atau done
     // tahap = null -> user belum bayar/checkout (tiga kolom pada tabel berisi null)
@@ -187,9 +189,20 @@ Route::controller(OrderController::class)->group(function () {
 // all of them need 'token' parameter
 Route::controller(ShipmentController::class)->group(function () {
     Route::get('/shipments', 'index');
-    Route::post('/shipment/{shipment}/{status?}', 'show');    // shipment = shipment's ID
+    Route::post('/shipment/{shipment}', 'show');    // shipment = shipment's ID
+    Route::post('/shipment/status', 'showByStatus');
     Route::post('/shipment/update/{shipment}', 'update');   // shipment = shipment's ID
     Route::post('/shipment/addlog/{shipment}', 'addLog');   // shipment = shipment's ID
+});
+
+// Endpoint Payment
+// all of them need 'token' parameter
+Route::controller(PaymentController::class)->group(function () {
+    Route::get('/payments', 'index');
+    Route::get('/payment/{payment}', 'show');    // payment = payment's ID
+    Route::get('/payment-by-status', 'showByStatus');
+    Route::post('/payment/pay', 'store');   
+    Route::post('/payment/update/{payment}', 'update');    // payment = payment's ID
 });
 
 // Endpoint Review
