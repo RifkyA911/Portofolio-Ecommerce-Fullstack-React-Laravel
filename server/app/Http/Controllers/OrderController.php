@@ -10,6 +10,7 @@ use App\Models\Order_item;
 use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use App\Http\Controllers\AuthController;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Console\Input\Input;
 
@@ -301,6 +302,11 @@ class OrderController extends Controller
         // for admin
         if ((AuthController::check($request) === 'admin') && !in_array(strtolower($order->status), $forbiddenStatus_admin)) {
             $order->status = $request->input('status');
+
+            // otomatis update status payment untuk pengubahan status 'Processing' dan order sudah terbayar
+            if (($request->input('status') == 'Processing') && ($order->payment_id != null)) {
+                Payment::where('id','=',$order->payment_id)->update(['status'=>'success']);
+            }
             return new PostResource(true, 'Transaksi berhasil', $order->update());
         }
             return response(new PostResource(false, 'Gagal check out, forbidden action detected', $request->all()), 403);
