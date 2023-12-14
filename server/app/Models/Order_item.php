@@ -15,7 +15,7 @@ class Order_item extends Model {
 
     // relation
     public function product(): BelongsTo {
-        return $this->belongsTo(Product::class)->select(['id', 'category_id', 'name', 'price']);
+        return $this->belongsTo(Product::class)->select(['id', 'category_id', 'name', 'price', 'pict']);
     }
 
     public function order(): BelongsTo {
