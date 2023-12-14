@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { DateFormatter } from "../../utils/Formatter";
 
-export const areaOptions = () => {
+export const areaOptions = (text) => {
   const [chartStyle, setChartStyle] = useState({
     text: "black",
     areaChart: ["#00BAEC", "#9e4ee8"],
@@ -74,7 +74,7 @@ export const areaOptions = () => {
       },
     },
     title: {
-      text: "Product Orders Monitor",
+      text: text ?? "Area Chart",
       align: "left",
       // margin: 10,
       offsetX: 0,
@@ -206,7 +206,8 @@ export const areaOptions = () => {
   };
 };
 
-export const BarStackedoptions = () => {
+export const BarStackedoptions = (object) => {
+  const { colors } = object;
   const [chartStyle, setChartStyle] = useState({
     text: "black",
     areaChart: ["#00BAEC", "#6c22b1"],
@@ -277,7 +278,7 @@ export const BarStackedoptions = () => {
         },
       },
     },
-    colors: ["#893FD3", "#7A31E8", "#5D3FD3", "#3F44D3", "#2B55EB"],
+    colors: colors ?? ["#893FD3", "#7A31E8", "#5D3FD3", "#3F44D3", "#2B55EB"],
     dataLabels: {
       offsetY: 1,
       style: {
@@ -390,7 +391,7 @@ export const BarStackedoptions = () => {
   };
 };
 
-export const LineOptions = () => {
+export const LineOptions = (props) => {
   const [chartStyle, setChartStyle] = useState({
     text: "black",
     areaChart: ["#00BAEC", "#6c22b1"],
@@ -459,7 +460,7 @@ export const LineOptions = () => {
         },
       },
       padding: {
-        right: 20,
+        right: 0,
         left: 0,
       },
     },

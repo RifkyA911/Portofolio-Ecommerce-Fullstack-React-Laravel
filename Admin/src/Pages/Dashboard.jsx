@@ -13,6 +13,7 @@ import TableReview from "../components/Table/MyTableContent.jsx";
 import { MotionTabs } from "../components/Button.jsx";
 import {
   AreaCharts,
+  BestSellerProducts,
   LineCharts,
   MostViewedProducts,
   OrdersStatistic,
@@ -116,7 +117,7 @@ const Dashboard = (props) => {
                             iconName="MdCalendarMonth"
                           />
                           <p className="pl-2 font-roboto-medium">
-                            Monthly Product Sales
+                            Market Income
                           </p>
                         </>
                       }
@@ -240,7 +241,22 @@ const Dashboard = (props) => {
                               <p>Products</p>
                             </span>
                           ),
-                          render: () => <p>Content for Tab 3</p>,
+                          render: () => (
+                            <div className="">
+                              <BestSellerProducts
+                                classname="justify-center text-center"
+                                title={
+                                  <>
+                                    <ReactIcons
+                                      iconName="IoBarChart"
+                                      className="text-indigo-500"
+                                    />
+                                    <p className="pl-2">Best Seller Products</p>
+                                  </>
+                                }
+                              />
+                            </div>
+                          ),
                         },
                         {
                           name: "Popularity",

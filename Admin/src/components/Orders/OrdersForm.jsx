@@ -400,9 +400,7 @@ export const OrdersInputForm = (props) => {
   // console.log(getValues());
 
   useEffect(() => {
-    const totalQuantitiy = sumData(data.items);
-
-    setValue("total_quantity", totalQuantitiy);
+    setValue("total_quantity", 0);
   }, []);
 
   // useEffect(() => {
@@ -422,7 +420,6 @@ export const OrdersInputForm = (props) => {
           <div className="w-full flex flex-row gap-4 justify-between items-center">
             <TextInput
               formContext={ModalContext}
-              disabled
               className={`flex gap-4 flex-col w-full`}
               label="No. Invoice"
               inputClassName={inputClassName}
@@ -431,7 +428,6 @@ export const OrdersInputForm = (props) => {
             />
             <TextInput
               formContext={ModalContext}
-              disabled
               className={`flex gap-4 flex-col w-full`}
               label="Customer Name"
               inputClassName={inputClassName}
@@ -439,10 +435,9 @@ export const OrdersInputForm = (props) => {
               placeholder="Masukkan Nama Customer"
             />
           </div>
-          <div className="w-full flex flex-row justify-between">
+          {/* <div className="w-full flex flex-row justify-between">
             <NumberInput
               formContext={ModalContext}
-              disabled
               className={`flex gap-4 flex-col w-1/2 mr-2 `}
               prefix="Rp. "
               label="Total Price (IDR)"
@@ -453,7 +448,6 @@ export const OrdersInputForm = (props) => {
             />
             <NumberInput
               formContext={ModalContext}
-              disabled
               className={`flex gap-4 flex-col w-1/2 ml-2`}
               suffix=" %"
               label="Discount %"
@@ -463,23 +457,10 @@ export const OrdersInputForm = (props) => {
               placeholder="Masukkan Harga"
               style={inputClassName}
             />
-          </div>
+          </div> */}
           <div className="w-full flex flex-row gap-4 justify-between items-center">
-            <SelectInput
-              formContext={ModalContext}
-              className={`flex gap-4 flex-col w-1/2`}
-              label="Status"
-              name="status"
-              customControlStyles={(base) => ({
-                ...base,
-                maxHeight: 12,
-              })}
-              // style="h-[38px]"
-              // options={convertedOptions}
-            />
             <NumberInput
               formContext={ModalContext}
-              disabled
               className={`flex gap-4 flex-col w-1/2`}
               prefix=""
               label="Total Items"
@@ -505,7 +486,7 @@ export const OrdersInputForm = (props) => {
                     <th>Summary Price</th>
                   </tr>
                 </thead>
-                <tbody className="font-roboto-medium max-h-20 overflow-y-scroll">
+                {/* <tbody className="font-roboto-medium max-h-20 overflow-y-scroll">
                   {data.items.map((product, index) => (
                     <tr key={product.id} className="divide-y p">
                       <td className="p-0 w-0 bg-slate-100">{index + 1}</td>
@@ -513,7 +494,7 @@ export const OrdersInputForm = (props) => {
                         <p>{product.product.name}</p>
                       </td>
                       <td className="px-4 py-1">
-                        <p>{product.product.category ?? "???"}</p>
+                        <p>{product.product.category.name ?? "???"}</p>
                       </td>
                       <td className="px-4 py-1">
                         <p>{product.quantity}</p>
@@ -526,12 +507,11 @@ export const OrdersInputForm = (props) => {
                       </td>
                     </tr>
                   ))}
-                </tbody>
+                </tbody> */}
               </table>
             )}
             <TextArea
               formContext={ModalContext}
-              disabled
               className={`flex gap-4 flex-col w-full text-xs`}
               label="Address"
               name="user.address"
