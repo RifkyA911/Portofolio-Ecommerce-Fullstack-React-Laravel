@@ -207,7 +207,7 @@ export const areaOptions = (text) => {
 };
 
 export const BarStackedoptions = (object) => {
-  const { colors } = object;
+  const { colors, plotOptions } = object;
   const [chartStyle, setChartStyle] = useState({
     text: "black",
     areaChart: ["#00BAEC", "#6c22b1"],
@@ -263,7 +263,8 @@ export const BarStackedoptions = (object) => {
     },
     plotOptions: {
       bar: {
-        horizontal: true,
+        vertical: plotOptions.bar.vertical ?? true,
+        horizontal: plotOptions.bar.horizontal ?? false,
         barHeight: "50%",
         distributed: true,
         borderRadius: 8,

@@ -13,10 +13,8 @@ import TableReview from "../components/Table/MyTableContent.jsx";
 import { MotionTabs } from "../components/Button.jsx";
 import {
   AreaCharts,
-  BestSellerProducts,
+  BarsChart,
   LineCharts,
-  MostViewedProducts,
-  OrdersStatistic,
 } from "../components/Dashboard/DashboardCharts.jsx";
 import { SkeltonBox } from "../components/Skelton.jsx";
 import { CurrencyFormatter, DateFormatter } from "../utils/Formatter.js";
@@ -243,7 +241,8 @@ const Dashboard = (props) => {
                           ),
                           render: () => (
                             <div className="">
-                              <BestSellerProducts
+                              <BarsChart
+                                segments="bestSeller"
                                 classname="justify-center text-center"
                                 title={
                                   <>
@@ -272,7 +271,8 @@ const Dashboard = (props) => {
                           ),
                           render: () => (
                             <div className="">
-                              <MostViewedProducts
+                              <BarsChart
+                                segments="mostViewed"
                                 classname="justify-center text-center"
                                 title={
                                   <>
