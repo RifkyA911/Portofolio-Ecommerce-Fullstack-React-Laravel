@@ -12,7 +12,7 @@ class Order extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $with = ['admin', 'user', 'items'];
+    protected $with = ['admin', 'user', 'items', 'shipment', 'payment'];
 
     // relation
     public function admin(): BelongsTo {
@@ -25,9 +25,9 @@ class Order extends Model
         return $this->hasMany(Order_item::class);
     }
     public function shipment(): HasOne {
-        return $this->hasOne(Shipment::class);
+        return $this->hasOne(Shipment::class, 'id', 'shipment_id');
     }
     public function payment(): HasOne {
-        return $this->hasOne(Payment::class);
+        return $this->hasOne(Payment::class, 'id', 'payment_id');
     }
 }
