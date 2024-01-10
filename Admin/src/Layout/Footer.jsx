@@ -13,7 +13,7 @@ function Footer() {
         className={`${BgColor} ${textColor} ${transitionColor} footer footer-center p-2 backdrop-blur-sm bg-opacity-90 text-xs`}
       >
         <aside>
-          <p>Copyright © 2023 - All right reserved by @RifkyA911</p>
+          <p>Copyright © 2024 - All right reserved by @RifkyA911</p>
         </aside>
       </footer>
     </>
