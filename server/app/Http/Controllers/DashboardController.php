@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Str;
 
 use App\Models\Order;
+use App\Models\Order_item;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
@@ -14,38 +15,60 @@ use stdClass;
 
 class DashboardController extends Controller
 {
-    public function getCharts($type, $sortOrder = "asc")
+    public function getCharts($chart, $type, $sortOrder = "asc")
     {
         $sortBy = null;
 
-        if ($type == 'bars') {
+        if ($chart == 'bars') {
             // Mengonversi halaman dan perPage yang diterima menjadi integer
             $page = (int) 1; // halaman
             $perPage = (int) 5; // jumlah data yang akan di kirim
 
-            $length = Product::count();
             // Menghitung offset berdasarkan halaman yang diminta
             $offset = ($page - 1) * $perPage;
+            if ($type == 'bestSeller') {
+                $length = Order_item::count();
 
-            if ($sortBy) {
-                $products = Product::orderBy($sortBy, $sortOrder)->skip($offset)->take($perPage)->get();
+                if ($sortBy) {
+                    $result = Order_item::orderBy($sortBy, $sortOrder)->skip($offset)->take($perPage)->get();
+                }
+
+                // Ambil semua data dari tabel Order_item
+                $items = Order_item::all();
+
+                // Gunakan groupBy untuk mengelompokkan berdasarkan product_id, dan kemudian hitung jumlahnya
+                $result = $items->groupBy('product.name')->map->count()->skip($offset)->take($perPage);
+
+                $result = $result->map(function ($value, $key) {
+                    return [
+                        'x' => $key,
+                        'y' => $value,
+                        // Kolom lainnya
+                    ];
+                })->values();
+            } else if ($type == 'mostViewed') {
+                $length = Product::count();
+
+                if ($sortBy) {
+                    $result = Product::orderBy($sortBy, $sortOrder)->skip($offset)->take($perPage)->get();
+                }
+
+                $result = Product::orderBy('viewed', 'desc')->skip($offset)->take($perPage)
+                    ->select('id', 'name', 'viewed', /* kolom lainnya */)
+                    ->get();
+
+                $result->transform(function ($item) {
+                    return [
+                        // 'id' => $item->id,
+                        'x' => $item->name,
+                        'y' => $item->viewed,
+                        // Kolom lainnya
+                    ];
+                });
             }
 
-            $products = Product::orderBy('viewed', 'desc')->skip($offset)->take($perPage)
-                ->select('id', 'name', 'viewed', /* kolom lainnya */)
-                ->get();
-
-            $products->transform(function ($item) {
-                return [
-                    // 'id' => $item->id,
-                    'x' => $item->name,
-                    'y' => $item->viewed,
-                    // Kolom lainnya
-                ];
-            });
-
-            return response()->json(['message' => 'berhasil fetching', 'length' => $length, 'data' => $products]);
-        } else if ($type == 'area') {
+            return response()->json(['message' => 'berhasil fetching', 'length' => $length, 'data' => $result]);
+        } else if ($chart == 'area') {
             // Mengonversi halaman dan perPage yang diterima menjadi integer
             $page = (int) 1; // halaman
             $perPage = (int) 30; // jumlah data yang akan di kirim
@@ -134,12 +157,16 @@ class DashboardController extends Controller
                 )
             ]);
 
-        } else if ($type == 'line') {
+        } else if ($chart == 'line') {
             // Mengonversi halaman dan perPage yang diterima menjadi integer
             $page = (int) 1; // halaman
-            $perPage = (int) 5; // jumlah data yang akan di kirim
+            $perPage = (int) 30; // jumlah data yang akan di kirim
 
-            $length = Product::count();
+            // $data = new stdClass(); // membuat objek php baru
+
+            // $productLength = Product::count();
+            // $orderLength = Order::count();
+
             // Menghitung offset berdasarkan halaman yang diminta
             $offset = ($page - 1) * $perPage;
 
@@ -147,20 +174,48 @@ class DashboardController extends Controller
                 $products = Product::orderBy($sortBy, $sortOrder)->skip($offset)->take($perPage)->get();
             }
 
-            $products = Product::orderBy('viewed', 'desc')->skip($offset)->take($perPage)
-                ->select('id', 'name', 'viewed', /* kolom lainnya */)
+            // Mendapatkan data pesanan
+            $orders = Order::orderBy('updated_at', 'desc')
+                ->skip($offset)
+                ->take($perPage)
+                ->select('id', 'no_invoice', 'total_price', 'updated_at', /* kolom lainnya */)
+                // ->where('status', 'Completed')
                 ->get();
 
-            $products->transform(function ($item) {
-                return [
-                    // 'id' => $item->id,
-                    'x' => $item->name,
-                    'y' => $item->viewed,
-                    // Kolom lainnya
-                ];
+            // Inisialisasi array untuk menyimpan hasil per tanggal untuk pesanan
+            $ordersByDate = [];
+            $orders->each(function ($item) use (&$ordersByDate) {
+                $date = $item->updated_at->format('m-d');
+                if (!isset($ordersByDate[$date])) {
+                    $ordersByDate[$date] = 0;
+                }
+                $ordersByDate[$date]++;
             });
 
-            return response()->json(['message' => 'berhasil fetching', 'length' => $length, 'data' => $products]);
+            // Transform hasil pesanan ke dalam format yang diinginkan
+            $ordersResult = [];
+            foreach ($ordersByDate as $date => $totalX) {
+                $ordersResult[] = [
+                    'x' => $date,
+                    'y' => $totalX,
+                ];
+            }
+
+            return response()->json([
+                'message' => 'berhasil fetching',
+                'length' => ['orders' => count($orders)],
+                // 'data' => ['products' => $productsResult, 'orders' => $ordersResult],
+                'data' => array(
+                    'orders' => [
+                        'name' => "Orders",
+                        'data' => $ordersResult,
+                        'xx' => $ordersByDate,
+                        'zIndex' => 0,
+                    ]
+
+                )
+            ]);
+
         }
         return response(['message' => 'no matched chart types', 'length' => 0, 'data' => []], 404);
     }
