@@ -15,24 +15,24 @@ export const sideNavigation = [
         href: "/notification",
         icon: "FaRegBell",
       },
-      {
-        id: 2,
-        name: "Statistic",
-        href: "/statistic",
-        icon: "MdOutlineBarChart",
-      },
+      // {
+      //   id: 2,
+      //   name: "Statistic",
+      //   href: "/statistic",
+      //   icon: "MdOutlineBarChart",
+      // },
     ],
   },
   {
     GroupID: 1,
     GroupName: "Market",
     Links: [
-      {
-        id: 0,
-        name: "Chat",
-        href: "/chat",
-        icon: "BsChatDotsFill",
-      },
+      // {
+      //   id: 0,
+      //   name: "Chat",
+      //   href: "/chat",
+      //   icon: "BsChatDotsFill",
+      // },
       {
         id: 1,
         name: "Products",
