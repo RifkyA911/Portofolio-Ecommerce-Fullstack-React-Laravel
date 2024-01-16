@@ -158,8 +158,8 @@ export const BarsChart = (props) => {
       colors: ["#9F3EDB", "#645AEC", "#246ADB", "#329DE0", "#27B0D6"],
       plotOptions: {
         bar: {
-          vertical: true,
-          horizontal: false,
+          vertical: false,
+          horizontal: true,
         },
       },
     };
@@ -354,9 +354,9 @@ export const LineCharts = (props) => {
     fetchData("products", "dashboard" + URL_TABLE);
   }, []);
 
-  // useEffect(() => {
-  //   console.log(chart);
-  // }, [chart]);
+  useEffect(() => {
+    console.log(chart);
+  }, [chart]);
 
   let chartOptions = LineOptions();
   return (
@@ -371,7 +371,7 @@ export const LineCharts = (props) => {
           <Chart
             className="m-auto w-full"
             options={chartOptions}
-            series={chartOptions.series}
+            series={chart.orders.data ?? chartOptions.series}
             type="line" // Menggunakan tipe "area" untuk line chart dengan area diisi
             width={width} // Atur lebar menjadi 100%
             height={height}

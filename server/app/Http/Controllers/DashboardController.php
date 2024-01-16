@@ -209,7 +209,7 @@ class DashboardController extends Controller
                     'orders' => [
                         'name' => "Orders",
                         'data' => $ordersResult,
-                        'xx' => $ordersByDate,
+                        'date' => $ordersByDate,
                         'zIndex' => 0,
                     ]
 

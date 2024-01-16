@@ -282,7 +282,11 @@ export const BarStackedoptions = (object) => {
     colors: colors ?? ["#893FD3", "#7A31E8", "#5D3FD3", "#3F44D3", "#2B55EB"],
     dataLabels: {
       offsetY: 1,
+      formatter: function (val) {
+        return val; // Tampilkan nilai y sebagai label
+      },
       style: {
+        fontSize: "12px",
         colors: ["#fff"],
       },
       background: {
@@ -299,15 +303,6 @@ export const BarStackedoptions = (object) => {
     },
     legend: {
       show: false,
-      fontSize: 14,
-      offsetY: -6,
-      markers: {
-        shape: "square",
-        size: 8,
-      },
-      itemMargin: {
-        vertical: 0,
-      },
     },
     stroke: {
       show: false,
@@ -367,6 +362,7 @@ export const BarStackedoptions = (object) => {
       },
     },
     yaxis: {
+      show: true,
       tickAmount: 5,
       labels: {
         style: {
@@ -555,7 +551,7 @@ export const LineOptions = (props) => {
     xaxis: {
       type: "numeric",
       labels: {
-        show: false,
+        show: true,
         style: {
           fontSize: 15,
         },
@@ -583,7 +579,7 @@ export const LineOptions = (props) => {
       },
     },
     yaxis: {
-      show: false,
+      show: true,
       tickAmount: 5,
       labels: {
         style: {},
