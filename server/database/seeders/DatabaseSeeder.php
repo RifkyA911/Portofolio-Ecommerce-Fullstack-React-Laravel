@@ -35,35 +35,35 @@ class DatabaseSeeder extends Seeder
             'email' => 'super.duper@gmail.com',
             'password' => Hash::make('superadmin'),
             'role' => '0',
-            'pict' => 'silver_wolf.jpg'
+            'pict' => 'default.jpg'
         ]);
         Admin::create([
             'username' => 'Admin 1',
             'email' => 'admin.satu@gmail.com',
             'password' => Hash::make('123456'),
             'role' => 1,
-            'pict' => '84719630_p1.jpg'
+            'pict' => 'default.jpg'
         ]);
         Admin::create([
             'username' => 'Admin 2',
             'email' => 'admin.dua@gmail.com',
             'password' => Hash::make('123456'),
             'role' => 1,
-            'pict' => '77845097_p7.jpg'
+            'pict' => 'default.jpg'
         ]);
         Admin::create([
             'username' => 'Admin 3',
             'email' => 'admin.tiga@gmail.com',
             'password' => Hash::make('123456'),
             'role' => 1,
-            'pict' => '77845097_p3.jpg'
+            'pict' => 'default.jpg'
         ]);
         Admin::create([
             'username' => 'Admin X',
             'email' => 'admin.X@gmail.com',
             'password' => Hash::make('123456'),
             'role' => 1,
-            'pict' => '77845097_p0.jpg'
+            'pict' => 'default.jpg'
         ]);
         Admin::factory(25)->create();
 
@@ -74,7 +74,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('bogeng'),
             'address' => 'pluto',
             'verified' => null,
-            'pict' => '78949689_p4.jpg',
+            'pict' => 'default.jpg',
         ]);
         User::factory(25)->create();
 
