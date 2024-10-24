@@ -1,8 +1,16 @@
 # REACT-LARAVEL ECOMMERCE
 
-A brief description of what this project does and who it's for
-build with https://readme.so/editor
-**_BELOM SELESAI..........._**
+This project is a complete ecommerce platform built using Laravel for the backend and React for the frontend. It features a robust admin management system that allows administrators to manage products, categories, orders, users, and more. Designed for scalability and performance, the platform provides a seamless shopping experience for customers, while giving administrators full control over store operations.
+
+Key features include:
+
+Product management (add, edit, delete products)
+Order management and tracking
+User authentication and role-based access control (RBAC)
+Inventory and stock management
+Real-time analytics and reporting
+Responsive design with light/dark mode support
+This project is ideal for businesses looking to establish an online store with comprehensive management features and a modern, user-friendly interface.
 
 ## Authors
 
@@ -14,7 +22,7 @@ build with https://readme.so/editor
 
 **Client:** React, ...
 
-**Admin:** React, Redux, TailwindCSS, react-hook-form, react-cropper, axios, ,,,
+**Admin:** React, Redux, TailwindCSS, react-hook-form, react-cropper, axios, DataTable
 
 **Server:** JWT, Laravel 10
 
@@ -35,11 +43,11 @@ build with https://readme.so/editor
 
 ## Installation
 
-Install my-project with npm
+Install my-project with npm/yarn
 
 ```bash
   npm install
-  cd my-project
+  cd portofolio-ecommerce
 ```
 
 ## Environment Variables
@@ -63,13 +71,13 @@ To deploy this project run
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://portofolio-ecommerce
 ```
 
 Go to the project directory
 
 ```bash
-  cd my-project
+  cd portofolio-ecommerce
 ```
 
 Install dependencies
@@ -84,61 +92,14 @@ Start the server
   npm run start
 ```
 
-## Running Tests
-
-To run tests, run the following command
-
-```bash
-  npm run test
-```
-
-## Usage/Examples
-
-```javascript
-import Component from "my-project";
-
-function App() {
-  return <Component />;
-}
-```
-
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
-## Support
-
-For support, email fake@fake.com or join our Slack channel.
-
-![Logo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png)
-
-## Color Reference
-
-| Color         | Hex                                                              |
-| ------------- | ---------------------------------------------------------------- |
-| Example Color | ![#0a192f](https://via.placeholder.com/10/0a192f?text=+) #0a192f |
-| Example Color | ![#f8f8f8](https://via.placeholder.com/10/f8f8f8?text=+) #f8f8f8 |
-| Example Color | ![#00b48a](https://via.placeholder.com/10/00b48a?text=+) #00b48a |
-| Example Color | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #00d1a0 |
-
-## Badges
-
-Add badges from somewhere like: [shields.io](https://shields.io/)
+![Screenshot 2024-10-24 105516](https://github.com/user-attachments/assets/c101a444-c5ae-4113-8c1f-cc976c283d53)
+![localhost_5175_products](https://github.com/user-attachments/assets/7e5bfb25-489e-4061-982d-1fe59758b2d1)
+![localhost_5175_products (1)](https://github.com/user-attachments/assets/69ab0e42-320a-47a8-99d4-ccf65e1526f5)
+![localhost_5175_products (2)](https://github.com/user-attachments/assets/80c2286c-35aa-44e3-8b02-c20b640aa4e2)
+![localhost_5175_products (3)](https://github.com/user-attachments/assets/d82d410f-1ed0-4169-b3b5-b76fc0c851ec)
+![localhost_5173_](https://github.com/user-attachments/assets/4d960a51-f84e-42d4-8f3c-e1207ecac114)
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
-## FAQ
-
-#### Question 1
-
-Answer 1
-
-#### Question 2
-
-Answer 2
-
-## Lessons Learned
-
-What did you learn while building this project? What challenges did you face and how did you overcome them?
